@@ -29,6 +29,16 @@ Core thesis: the user should not need to learn how to operate the computer; the 
 - Never invent user research, test results, approved design values, or regulatory claims.
 - Do not commit secrets, credentials, signing materials, personal user data, or machine-specific Obsidian state.
 
+## Git workflow
+
+- `main` is the protected integration branch. Do normal work on a short-lived branch named `feature/<topic>`, `fix/<topic>`, `docs/<topic>`, or `chore/<topic>`.
+- Before editing, run `git status --short --branch` and review the current milestone. Preserve unrelated changes and never rewrite shared history.
+- Keep commits focused and use an imperative summary such as `Define MVP photo workflow`. Do not mix unrelated cleanup into a task commit.
+- Before committing, inspect `git diff`, run relevant validation, and update canonical docs, ADRs, safety policy, and eval coverage when behavior changes.
+- Push the task branch and merge through a reviewed pull request. Do not force-push `main`, bypass failed checks, or commit directly to `main` after repository bootstrap unless the user explicitly requests an exceptional hotfix.
+- Never commit API keys, GitHub tokens, credentials, signing materials, `.env` files, personal user data, generated build output, or volatile Obsidian workspace state.
+- After merge, synchronize local `main` with a fast-forward-only pull and remove the completed local branch when safe.
+
 ## Finish every task
 
 1. Validate the change in proportion to risk, including links and affected evals.
