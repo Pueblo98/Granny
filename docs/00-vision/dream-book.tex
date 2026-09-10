@@ -1,0 +1,1167 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{setspace}
+
+\definecolor{GrannyBlue}{HTML}{243B53}
+\definecolor{GrannyAccent}{HTML}{486581}
+\definecolor{GrannyLight}{HTML}{F0F4F8}
+\definecolor{GrannyGreen}{HTML}{2F855A}
+\definecolor{GrannyAmber}{HTML}{B7791F}
+\definecolor{GrannyRed}{HTML}{C53030}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=GrannyBlue,
+    urlcolor=GrannyAccent,
+    pdftitle={Granny: AI Companion Platform Dream Book},
+    pdfauthor={Working Product Vision}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{GrannyAccent}{Granny AI Companion}}
+\rhead{\textcolor{GrannyAccent}{Dream Book}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+\titleformat{\section}{\Large\bfseries\color{GrannyBlue}}{\thesection}{0.75em}{}
+\titleformat{\subsection}{\large\bfseries\color{GrannyBlue}}{\thesubsection}{0.75em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{GrannyAccent}}{\thesubsubsection}{0.75em}{}
+
+\newcommand{\visionbox}[1]{
+\begin{center}
+\fcolorbox{GrannyAccent}{GrannyLight}{%
+\begin{minipage}{0.92\textwidth}
+\vspace{0.4em}
+#1
+\vspace{0.4em}
+\end{minipage}}
+\end{center}
+}
+
+\newcommand{\principle}[2]{\textbf{#1.} #2}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{2.0cm}
+{\Huge\bfseries\color{GrannyBlue} Granny\\[0.3cm]}
+{\LARGE\color{GrannyAccent} AI Companion Platform Dream Book\\[1.0cm]}
+{\large A formal vision for an AI-first personal computer for older adults\\[1.5cm]}
+
+\visionbox{
+\textbf{Working premise:} The user should not need to learn how to operate a computer. The computer should learn how to operate itself for the user.
+}
+
+\vfill
+\begin{tabular}{rl}
+\textbf{Document type:} & End-state product vision / dream book \\
+\textbf{Scope:} & Full product, not MVP \\
+\textbf{Audience:} & Founders, product, design, engineering, caregivers, investors \\
+\textbf{Status:} & Working vision, intended to evolve \\
+\textbf{Date:} & September 2026 \\
+\end{tabular}
+\vfill
+
+{\small The name ``Granny'' is used as a working product name in this document. The final brand can change without changing the product thesis.}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Executive Definition}
+
+\subsection{One-line explainer}
+\visionbox{
+\textbf{Granny is an AI-first personal computer for older adults that can talk, remember, understand the screen, and operate the device on the user's behalf.}
+}
+
+\subsection{Short explainer}
+Granny combines a simple tablet, an always-available voice companion, and an AI agent that can use the device like a person. Instead of forcing an older adult to learn apps, menus, passwords, settings, and workflows, Granny lets them ask naturally for what they want. The AI can open applications, find information, navigate interfaces, prepare actions, explain what is happening, and safely complete tasks with the user's permission. At the same time, it develops a persistent understanding of the user's family, routines, preferences, memories, stories, and relationships, becoming a long-term companion rather than a collection of disconnected commands.
+
+\subsection{One-paragraph explainer}
+Granny is a purpose-built AI companion and personal computing platform designed for older adults who do not want to become technology experts. The system combines conversational voice interaction, a simplified touch interface, persistent personal memory, family and caregiver support, and an AI device operator capable of controlling normal Android applications. A user can say things such as ``show me the photos Sophie sent last week,'' ``call my daughter,'' ``make the text bigger,'' ``find the restaurant David told me about,'' or ``I don't understand this screen, help me,'' and the agent can reason through the request, operate the tablet, ask for confirmation when necessary, and recover when something goes wrong. Over time, the companion also learns the user's life story, relationships, routines, preferences, and important events, turning everyday conversation into a durable personal archive for the user and their family. The goal is not to create a better voice assistant. The goal is to create a computer that increasingly operates itself for the person using it.
+
+\subsection{The product thesis}
+The core thesis is that modern computing is structurally hostile to people who are not comfortable navigating interfaces. Most technology assumes that the human will learn the operating system, understand application conventions, maintain credentials, interpret alerts, remember where information lives, and recover from unexpected states. For a highly technical person, these expectations are ordinary. For many older adults, they are the product failure.
+
+Granny reverses the model:
+
+\begin{itemize}[leftmargin=*]
+    \item The human expresses intent in natural language.
+    \item The AI translates intent into a plan.
+    \item The AI uses the device, applications, and services on the user's behalf.
+    \item The AI explains what it is doing in simple language.
+    \item The AI asks for approval before consequential actions.
+    \item The AI remembers enough context that the user does not need to repeatedly re-explain their life.
+    \item The human can still touch and use the device directly whenever they want.
+\end{itemize}
+
+The end state is a personal computer whose primary interface is not a grid of applications. Its primary interface is a trusted, persistent agent.
+
+\section{Why Granny Exists}
+
+\subsection{The underlying problem}
+The problem is not that older adults lack access to technology. Many already own smartphones, tablets, televisions, smart speakers, and computers. The problem is that the interaction model remains too demanding.
+
+A normal device repeatedly asks the user to answer questions such as:
+
+\begin{itemize}[leftmargin=*]
+    \item Which app contains the thing I want?
+    \item Where is the right button?
+    \item What does this icon mean?
+    \item Why did the screen change?
+    \item Where did the file download?
+    \item Why did I get logged out?
+    \item Is this notification important?
+    \item What password is this asking for?
+    \item Did my message actually send?
+    \item Why is the text suddenly too small?
+    \item How do I get back to where I was?
+\end{itemize}
+
+Granny should absorb this complexity.
+
+\subsection{The deeper opportunity}
+The opportunity is larger than accessibility. Once an agent can operate the computer and understand the user's personal context, the system can become the interface to a person's digital life.
+
+It can help with communication, media, photos, scheduling, information, travel, household administration, family coordination, storytelling, memory, routine, and social connection. For the user, this removes friction. For the family, it reduces the recurring burden of remote technical support. For the product, it creates a long-term relationship that grows more useful as it learns.
+
+\subsection{The north-star promise}
+\visionbox{
+\textbf{If the user can explain what they want in ordinary language, Granny should either do it, help them do it, or clearly explain why it cannot safely be done.}
+}
+
+\section{Who the Product Is For}
+
+\subsection{Primary user}
+The primary user is an older adult who may be perfectly capable, independent, and socially active, but who does not want to learn or maintain the complexity of modern digital systems.
+
+The product should not assume cognitive impairment. It should assume that technology is a means to an end, not a hobby.
+
+Common user characteristics may include:
+
+\begin{itemize}[leftmargin=*]
+    \item comfortable speaking, less comfortable navigating layered interfaces;
+    \item wants to call family, view photos, listen to music, watch videos, manage appointments, and find information;
+    \item may struggle with small controls, changing interfaces, password prompts, popups, app updates, and inconsistent navigation;
+    \item may repeatedly ask family members for technical help;
+    \item values continuity, familiarity, clear explanations, and human-like patience;
+    \item may have mild hearing, vision, dexterity, or memory limitations, but the product should remain useful without any medical framing.
+\end{itemize}
+
+\subsection{Secondary user: family}
+A daughter, son, grandchild, spouse, or trusted family member may help configure the system and occasionally assist remotely.
+
+Their goals are different:
+
+\begin{itemize}[leftmargin=*]
+    \item make the device easy to use without constant instruction;
+    \item add contacts, appointments, photos, music, or accounts;
+    \item help remotely when something breaks;
+    \item know that important settings remain intact;
+    \item reduce technical-support calls without reducing human contact;
+    \item preserve meaningful family stories and memories over time.
+\end{itemize}
+
+\subsection{Tertiary users}
+Depending on product direction, trusted helpers may include professional caregivers, retirement communities, assisted-living staff, or other authorized supporters. Their permissions must be narrower and more explicit than family access.
+
+\section{Product Principles}
+
+\subsection{Human principles}
+\begin{enumerate}[leftmargin=*]
+    \item \principle{Preserve agency}{The AI assists and operates, but the user remains the owner of the device and the final authority over important actions.}
+    \item \principle{Never make the user feel stupid}{The system should explain, repair, and adapt without condescension.}
+    \item \principle{Speak plainly}{Use ordinary language, concrete options, and visible confirmation.}
+    \item \principle{Remember appropriately}{The user should not have to re-explain basic relationships and preferences every day.}
+    \item \principle{Earn trust through behavior}{Show what will happen before consequential actions and clearly report what happened afterward.}
+    \item \principle{Stay useful when voice fails}{Touch should remain simple, visible, and fully usable.}
+\end{enumerate}
+
+\subsection{Technical principles}
+\begin{enumerate}[leftmargin=*]
+    \item \principle{Use APIs first}{If a task can be completed reliably through a supported system or app API, prefer that path.}
+    \item \principle{Use semantic UI control second}{When APIs are unavailable, use the accessibility and UI hierarchy.}
+    \item \principle{Use vision and coordinate control last}{Screenshot understanding and raw taps are a fallback, not the default.}
+    \item \principle{Verify every meaningful action}{The agent should check that its action changed the device into the intended state.}
+    \item \principle{Make autonomy permissioned}{The level of autonomy should depend on the action category and user preference.}
+    \item \principle{Design for recovery}{Unexpected screens, popups, network errors, login prompts, and app changes are normal states, not edge cases.}
+\end{enumerate}
+
+\subsection{Product principles}
+\begin{enumerate}[leftmargin=*]
+    \item The product is not an app launcher with voice commands layered on top.
+    \item The AI should increasingly become the user's interface to the device.
+    \item Existing apps remain valuable. Granny should operate them rather than rebuild every vertical from scratch.
+    \item The companion relationship should become more useful over months and years.
+    \item Hardware should make the system feel like an appliance and companion, not a fragile general-purpose tablet setup.
+\end{enumerate}
+
+\section{The End-State Product}
+
+\subsection{Physical form}
+The ideal product consists of two integrated components:
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{A tablet display}: large, bright, touch-friendly, detachable, and usable independently.
+    \item \textbf{A companion base}: a compact cylindrical or softly sculpted dock containing far-field microphones, speakers, tactile controls, status lighting, power, and a magnetic mechanical docking system.
+\end{enumerate}
+
+The tablet should dock with a satisfying, obvious motion. Magnets provide alignment and retention. The user should not need to orient cables or understand connectors. Ideally, power and data connect automatically when docked.
+
+The base remains in a familiar location such as a kitchen counter, bedside table, living room table, or desk. The tablet can be removed for reading, video calls, travel around the home, or conventional touch interaction.
+
+\subsection{The device should feel like a companion appliance}
+The user's mental model should not be ``this is my Android tablet.'' It should be closer to ``this is Granny, and Granny has a screen.''
+
+That difference matters. The system should feel persistent, ambient, and personal. Docked mode emphasizes voice, presence, audio, reminders, and shared viewing. Handheld mode emphasizes touch, reading, photos, video, and mobility.
+
+\subsection{Core physical controls}
+The final device should include only controls that remain valuable when software is confusing or unavailable:
+
+\begin{itemize}[leftmargin=*]
+    \item a prominent talk / ask button;
+    \item volume up and down or a large physical rotary control;
+    \item a physical microphone mute control with unmistakable visual feedback;
+    \item optional dedicated help button;
+    \item clear charging and connectivity indication;
+    \item no dense keyboard of specialized hardware buttons.
+\end{itemize}
+
+\section{The Interaction Model}
+
+\subsection{The primary interface is intent}
+The user should be able to begin with ordinary requests:
+
+\begin{quote}
+``Call Sophie.''
+
+``Show me the pictures from Italy.''
+
+``What did David send me yesterday?''
+
+``Make this bigger.''
+
+``I don't know what this screen is asking me.''
+
+``Find the restaurant Mark told me about.''
+
+``Play the music we listened to yesterday.''
+
+``I was reading something before lunch. Can you take me back?''
+\end{quote}
+
+The system is responsible for resolving ambiguity, selecting the right application, planning the steps, performing the task, and explaining what happened.
+
+\subsection{Three modes of interaction}
+\subsubsection{Conversational mode}
+The user talks naturally. The screen supports the conversation with cards, photos, names, large confirmation buttons, transcriptions, and visual context.
+
+\subsubsection{Direct touch mode}
+The user can use normal applications and Granny's simplified launcher directly. The AI remains available but does not constantly interfere.
+
+\subsubsection{Co-pilot mode}
+The user starts manually, becomes confused, and asks for help. Granny inspects the current state and continues from where the user is.
+
+Example:
+
+\begin{quote}
+User: ``I was trying to send this photo to Sophie and now I don't know what happened.''
+
+Granny: ``You're in the sharing menu. Sophie is here. I can select her and prepare the message. Want me to do that?''
+\end{quote}
+
+\section{The AI Device Operator}
+
+\subsection{Definition}
+The device operator is the execution layer that gives the companion agency over the computer. It should not merely recommend steps. It should be able to perform them.
+
+The agent should have access to structured device capabilities such as:
+
+\begin{itemize}[leftmargin=*]
+    \item current application and screen state;
+    \item semantic accessibility tree;
+    \item visible text and controls;
+    \item screenshots when necessary;
+    \item open application;
+    \item click control;
+    \item enter text;
+    \item scroll;
+    \item back / home navigation;
+    \item notifications;
+    \item audio, display, and selected device settings;
+    \item permissions and account-state diagnostics;
+    \item approved app-specific integrations;
+    \item task-state verification.
+\end{itemize}
+
+\subsection{The operator loop}
+For every non-trivial task, the end-state operator should follow an explicit loop:
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Understand}: interpret user intent and relevant personal context.
+    \item \textbf{Plan}: choose applications, tools, and a sequence of actions.
+    \item \textbf{Inspect}: read current device state.
+    \item \textbf{Act}: perform the next safe action.
+    \item \textbf{Verify}: confirm that the expected result occurred.
+    \item \textbf{Recover}: if the state differs from expectation, re-plan.
+    \item \textbf{Confirm}: before consequential actions, obtain explicit approval.
+    \item \textbf{Report}: tell the user what was completed in plain language.
+\end{enumerate}
+
+\subsection{How far the operator should be pushed}
+The long-term ambition should be broad. If a task is something a competent human could reasonably do on the tablet, Granny should aspire to help complete it.
+
+Examples include:
+
+\begin{itemize}[leftmargin=*]
+    \item communication across messaging, calling, and email applications;
+    \item photos and media browsing;
+    \item calendar and reminders;
+    \item information lookup and web navigation;
+    \item travel documents and simple trip information;
+    \item music, video, podcasts, and audiobooks;
+    \item household portals and service websites;
+    \item forms and appointment preparation;
+    \item accessibility and device settings;
+    \item downloading, opening, and locating files;
+    \item helping the user understand unfamiliar screens or error messages;
+    \item navigating apps that have no dedicated Granny integration.
+\end{itemize}
+
+The limiting principle is not technical ambition. It is user safety and permission.
+
+\section{The Senior-First Home Experience}
+
+\subsection{The launcher}
+The default home screen should not expose a dense general-purpose Android layout. It should show only the information and actions that matter.
+
+A representative home state:
+
+\begin{verbatim}
++-------------------------------------------+
+|                                           |
+|           Good morning, Barbara           |
+|                                           |
+|                  9:42                     |
+|                                           |
+|           What can I help with?           |
+|                                           |
+|              [  ASK ME  ]                 |
+|                                           |
+|   FAMILY      PHOTOS       MUSIC           |
+|                                           |
+|        TODAY            HELP               |
+|                                           |
++-------------------------------------------+
+\end{verbatim}
+
+\subsection{Dynamic simplicity}
+The home screen should adapt slowly, not chaotically. Frequently used actions may become more prominent, but the user should never feel that the layout is constantly rearranging itself.
+
+The AI can recommend contextually useful actions without turning the interface into a feed of suggestions.
+
+Examples:
+
+\begin{itemize}[leftmargin=*]
+    \item ``Sophie usually calls on Sundays.''
+    \item ``You have a dentist appointment tomorrow at 10:30.''
+    \item ``David sent three new photos.''
+    \item ``Would you like to continue the book you were reading?''
+\end{itemize}
+
+\subsection{When normal apps are visible}
+Granny should not hide the existence of apps entirely. Sometimes the user will want the familiar Spotify, YouTube, Photos, browser, or messaging interface. The difference is that Granny remains able to help inside those applications.
+
+\section{Persistent Memory and Personal Understanding}
+
+\subsection{Memory is a product feature, not a transcript archive}
+The end-state system should build structured understanding of the user over time. This should include facts, relationships, routines, preferences, recurring events, meaningful stories, and unresolved threads.
+
+The goal is not to remember everything. The goal is to remember what makes future assistance more useful and personal.
+
+\subsection{Personal knowledge graph}
+A simplified representation could include:
+
+\begin{verbatim}
+BARBARA
+|
++-- family
+|   +-- Sophie, daughter, Boston
+|   +-- David, son, Chicago
+|   +-- Robert, late husband
+|
++-- routines
+|   +-- coffee around 8:00
+|   +-- Sophie usually calls Sundays
+|   +-- evening television after dinner
+|
++-- preferences
+|   +-- Frank Sinatra
+|   +-- gardening
+|   +-- mystery novels
+|
++-- memories
+|   +-- met Robert at university
+|   +-- honeymoon in Rome
+|   +-- first home in Ann Arbor
+|
++-- upcoming
+    +-- dentist Thursday 10:30
+    +-- Sophie visiting next month
+\end{verbatim}
+
+\subsection{Memory categories}
+Memory should be separated into at least the following conceptual classes:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Identity}: preferred name, communication style, important settings.
+    \item \textbf{Relationships}: family, friends, caregivers, relationship context.
+    \item \textbf{Preferences}: music, food, entertainment, routines, interface preferences.
+    \item \textbf{Logistics}: recurring appointments, household details, known service providers.
+    \item \textbf{Stories}: rich autobiographical memories collected through conversation.
+    \item \textbf{Threads}: promises, plans, unanswered questions, things to revisit.
+    \item \textbf{Interaction history}: recent actions and device context useful for continuity.
+\end{itemize}
+
+\subsection{Memory controls}
+The user should be able to ask:
+
+\begin{quote}
+``What do you remember about Sophie?''
+
+``Don't remember that.''
+
+``That story is private.''
+
+``You got Robert's birthday wrong.''
+\end{quote}
+
+The system should make correction, review, and deletion understandable without requiring the user to navigate a database-like memory manager.
+
+\section{Life Story and Legacy}
+
+\subsection{The emotional wedge}
+One of the strongest long-term differentiators is that everyday conversation can gradually create something meaningful beyond the immediate task.
+
+When the user tells stories, Granny can identify people, places, dates, relationships, photographs, and themes. Over months or years, these fragments can form a life archive.
+
+\subsection{Story capture experience}
+Granny should never turn normal conversation into an interrogation. It can gently return to unfinished stories when appropriate.
+
+Example:
+
+\begin{quote}
+``Yesterday you mentioned meeting Robert at university. You said your first date went completely wrong, but we never finished the story. What happened?''
+\end{quote}
+
+The resulting artifact may include:
+
+\begin{itemize}[leftmargin=*]
+    \item original voice recording;
+    \item transcript;
+    \item cleaned narrative version;
+    \item linked people and places;
+    \item relevant family photographs;
+    \item approximate dates;
+    \item optional family annotations;
+    \item uncertainty markers when the system is unsure.
+\end{itemize}
+
+\subsection{Generated artifacts}
+Over time, the product could create:
+
+\begin{itemize}[leftmargin=*]
+    \item a private life-story book;
+    \item family timeline;
+    \item audio memoir;
+    \item ``stories about Robert'' collection;
+    \item travel memory albums;
+    \item birthday or anniversary compilations;
+    \item family-tree narrative;
+    \item annual ``year with Granny'' archive.
+\end{itemize}
+
+The user should control which artifacts are private, shared, or exportable.
+
+\section{Companion Behavior}
+
+\subsection{The companion is not merely reactive}
+The final product should support carefully bounded proactive behavior. The companion can check in, remind, reconnect threads, and surface meaningful information without becoming nagging or intrusive.
+
+\subsection{Daily rhythm}
+A possible daily experience:
+
+\begin{quote}
+\textbf{Morning:} ``Good morning, Barbara. You have one appointment today at 2:00. Would you like the weather and your schedule?''
+
+\textbf{Midday:} ``Sophie sent you three photos. Want to see them?''
+
+\textbf{Afternoon:} ``You asked me yesterday to remind you to call the pharmacy. Would you like me to open their number?''
+
+\textbf{Evening:} ``You told me a wonderful story about Rome today. I made a short page from it. Want to hear it?''
+\end{quote}
+
+\subsection{Proactivity should be earned}
+The product should learn the user's desired level of initiative. Some users may want an active companion. Others may want the system to stay silent unless addressed.
+
+A simple internal preference could range from:
+
+\begin{center}
+Quiet \hspace{1.5cm} Helpful \hspace{1.5cm} Proactive
+\end{center}
+
+This preference should be adjustable in natural language.
+
+\section{Communication and Social Connection}
+
+\subsection{Calls and messages}
+The product should make family communication radically easier.
+
+Examples:
+
+\begin{quote}
+``Call Sophie.''
+
+``Send David the photo on the screen.''
+
+``Tell Mark I'll be there around six.''
+
+``Who messaged me today?''
+
+``What did Anna say about Sunday?''
+\end{quote}
+
+\subsection{Message preparation and confirmation}
+The system can prepare low-risk communication, but it should make the final content visible and easy to approve.
+
+Example:
+
+\begin{quote}
+Granny: ``I can send Sophie: `I'll call you after dinner.' Send it?''
+\end{quote}
+
+Large controls:
+
+\begin{center}
+\fbox{\textbf{SEND}} \hspace{1.5cm} \fbox{\textbf{CHANGE IT}} \hspace{1.5cm} \fbox{\textbf{CANCEL}}
+\end{center}
+
+\subsection{Context across communication channels}
+The long-term system should be able to help the user navigate communication history regardless of which application contains it, subject to permissions and platform constraints.
+
+The user should think in terms of people and conversations, not application silos.
+
+\section{Photos, Media, and Personal Content}
+
+\subsection{Photos as memory, not file management}
+Users should not need to remember which photo application or folder contains something.
+
+Examples:
+
+\begin{quote}
+``Show me pictures of Sophie's wedding.''
+
+``Find the photo of the house in Rome.''
+
+``Show me the pictures David sent last week.''
+
+``Put these into an album called Christmas 2025.''
+\end{quote}
+
+\subsection{Media}
+Granny should mediate entertainment naturally:
+
+\begin{quote}
+``Play Frank Sinatra.''
+
+``Put on the show we watched yesterday.''
+
+``Make it a little quieter.''
+
+``Find me a gardening video about tomatoes.''
+\end{quote}
+
+The agent should prefer direct service integrations when reliable, but remain able to operate visible interfaces when needed.
+
+\section{Calendar, Routines, and Everyday Organization}
+
+The product should become a calm interface to everyday logistics.
+
+Capabilities can include:
+
+\begin{itemize}[leftmargin=*]
+    \item show today's schedule;
+    \item explain upcoming appointments;
+    \item create reminders;
+    \item prepare calls related to appointments;
+    \item surface travel timing and locations;
+    \item keep track of things the user said they intended to do;
+    \item reconnect unfinished tasks;
+    \item help locate tickets, documents, or confirmation emails;
+    \item summarize only the information relevant to the user right now.
+\end{itemize}
+
+Granny should avoid turning life into a productivity dashboard. The design goal is orientation, not optimization.
+
+\section{The Family and Caregiver Layer}
+
+\subsection{Purpose}
+The family layer exists to make support easier without turning the device into surveillance technology.
+
+A trusted family member should be able to help configure and maintain the device, while the older adult remains in control of personal content and privacy.
+
+\subsection{Family capabilities}
+Depending on granted permissions, a trusted family member may be able to:
+
+\begin{itemize}[leftmargin=*]
+    \item add or edit trusted contacts;
+    \item add appointments or reminders;
+    \item send photos or albums to the device;
+    \item configure accessibility preferences;
+    \item add services or account connections;
+    \item troubleshoot connectivity;
+    \item view device health such as battery or connectivity;
+    \item start an approved remote-assistance session;
+    \item contribute names or context to family photos and stories;
+    \item receive selected user-approved summaries or alerts.
+\end{itemize}
+
+\subsection{What family should not automatically see}
+Family access should not imply access to:
+
+\begin{itemize}[leftmargin=*]
+    \item private conversations with Granny;
+    \item message contents;
+    \item browsing history;
+    \item personal stories marked private;
+    \item full microphone history;
+    \item arbitrary screen viewing;
+    \item financial or account credentials.
+\end{itemize}
+
+Any broader access must be explicit, understandable, revocable, and visible to the user.
+
+\section{Safety, Trust, and Autonomy}
+
+\subsection{Autonomy tiers}
+The AI should classify actions by consequence.
+
+\begin{longtable}{>{\bfseries}p{0.18\textwidth} p{0.35\textwidth} p{0.36\textwidth}}
+\toprule
+Tier & Example actions & Default behavior \\
+\midrule
+Green & Open app, play music, show photos, change volume, navigate back, search, enlarge text & Execute directly, then report if useful \\
+\addlinespace
+Yellow & Send message, initiate call, share photo, create appointment, delete ordinary content, change account preference & Prepare action and request clear confirmation \\
+\addlinespace
+Red & Purchases, banking, password changes, account recovery, legal agreements, installation of unknown software, security settings & Strong confirmation, possible additional authentication, or refuse delegation \\
+\bottomrule
+\end{longtable}
+
+\subsection{Visible agency}
+The user should always be able to understand when the AI is acting. The system should avoid invisible chains of consequential actions.
+
+Useful patterns include:
+
+\begin{itemize}[leftmargin=*]
+    \item ``I found Sophie's chat.''
+    \item ``I drafted the message, but I have not sent it.''
+    \item ``This screen is asking for a password. I won't enter or reveal one without you.''
+    \item ``The app changed unexpectedly, so I stopped.''
+\end{itemize}
+
+\subsection{Undo and recovery}
+Whenever technically possible, Granny should provide a simple undo path.
+
+Example:
+
+\begin{quote}
+``I moved the photo into the album. If that was wrong, I can put it back.''
+\end{quote}
+
+\subsection{Confidence-aware behavior}
+The system should distinguish between:
+
+\begin{itemize}[leftmargin=*]
+    \item ``I know exactly what this control does.''
+    \item ``This appears to be the right button, but I'm not certain.''
+    \item ``I don't understand this screen safely enough to act.''
+\end{itemize}
+
+Low confidence should lead to clarification, safe inspection, or asking the user for help rather than confident guessing.
+
+\section{Privacy and Data Philosophy}
+
+\subsection{Privacy must be understandable}
+The intended user should not need to understand data architecture to understand privacy.
+
+The product should be able to answer questions such as:
+
+\begin{quote}
+``Are you listening right now?''
+
+``Who can see this story?''
+
+``What do you remember about me?''
+
+``Can Sophie see our conversations?''
+\end{quote}
+
+with short, direct answers.
+
+\subsection{Core privacy principles}
+\begin{enumerate}[leftmargin=*]
+    \item Store only what serves a clear product purpose.
+    \item Separate private companion memory from family-shared information.
+    \item Make microphone state physically obvious.
+    \item Make remote-access sessions visible on the device.
+    \item Support natural-language review and deletion of stored memories.
+    \item Do not silently expand caregiver visibility.
+    \item Treat credentials, financial data, and highly sensitive information as separate trust domains.
+\end{enumerate}
+
+\section{Failure Handling}
+
+\subsection{The product must be designed for broken states}
+Real-world mobile interfaces fail constantly. Apps update. Buttons move. Networks drop. Permissions expire. Login screens appear. Popups interrupt workflows. Granny's reliability depends less on perfect first actions and more on graceful recovery.
+
+\subsection{Failure classes}
+The system should explicitly recognize:
+
+\begin{itemize}[leftmargin=*]
+    \item application not installed;
+    \item app signed out;
+    \item permission missing;
+    \item network unavailable;
+    \item content not found;
+    \item accessibility tree insufficient;
+    \item UI changed since previous model assumption;
+    \item ambiguous person or object;
+    \item destructive action risk;
+    \item unsupported security boundary;
+    \item user manually changed the device during execution.
+\end{itemize}
+
+\subsection{How Granny should fail}
+Bad failure:
+
+\begin{quote}
+``Something went wrong.''
+\end{quote}
+
+Good failure:
+
+\begin{quote}
+``WhatsApp is asking you to sign in again. I can't safely complete that part for you. I can stay here and explain each step.''
+\end{quote}
+
+The user should know what happened, what the system can still do, and what human input is required.
+
+\section{End-State Technical Architecture}
+
+\subsection{Layered model}
+The final platform can be thought of as six layers:
+
+\begin{verbatim}
++--------------------------------------------------+
+|               COMPANION EXPERIENCE               |
+| voice, personality, memory, routines, stories    |
++--------------------------------------------------+
+|                 SAFETY / POLICY                   |
+| permissions, confirmations, action boundaries    |
++--------------------------------------------------+
+|                  AGENT BRAIN                      |
+| planning, reasoning, tool selection, recovery    |
++--------------------------------------------------+
+|               DEVICE OPERATOR                     |
+| APIs, UI tree, screenshots, gestures, validation |
++--------------------------------------------------+
+|                SENIOR SHELL                       |
+| launcher, assistant, notifications, accessibility|
++--------------------------------------------------+
+|                 ANDROID / AOSP                    |
+| apps, services, hardware, connectivity           |
++--------------------------------------------------+
+\end{verbatim}
+
+\subsection{Model independence}
+The intelligence layer should not be permanently coupled to a single foundation model provider.
+
+The system may use different models for different tasks:
+
+\begin{itemize}[leftmargin=*]
+    \item fast conversational model;
+    \item stronger planner for difficult device tasks;
+    \item vision model for ambiguous interfaces;
+    \item local wake-word or audio processing;
+    \item specialized summarization or memory extraction;
+    \item future on-device models as hardware improves.
+\end{itemize}
+
+The proprietary product layer should be the combination of device control, senior UX, memory, family system, safety logic, and long-term behavioral data, not dependence on one model's intelligence.
+
+\subsection{When a custom Android fork becomes valuable}
+A custom Android / AOSP layer is justified when stock Android prevents reliable delivery of the intended experience.
+
+Possible reasons include:
+
+\begin{itemize}[leftmargin=*]
+    \item stronger system-level accessibility and UI introspection;
+    \item more reliable background assistant execution;
+    \item tighter device-owner control;
+    \item controlled updates and app compatibility;
+    \item simplified provisioning;
+    \item direct system APIs for settings and navigation;
+    \item unified permission mediation;
+    \item deeper integration between hardware controls and companion state;
+    \item improved observability of current device state;
+    \item recovery mechanisms that ordinary apps cannot implement.
+\end{itemize}
+
+The custom OS is a means to reliability, not the product itself.
+
+\section{Representative Full Workflows}
+
+\subsection{Workflow A: Find a family photo from a message}
+\textbf{User:} ``Sophie sent me pictures of her new house last week. Show me those.''
+
+\textbf{Expected system behavior:}
+\begin{enumerate}[leftmargin=*]
+    \item Resolve ``Sophie'' from relationship memory.
+    \item Determine likely messaging channel based on recent history.
+    \item Open the relevant application.
+    \item Search or navigate to Sophie's conversation.
+    \item Identify the relevant date window.
+    \item Locate image attachments.
+    \item Open the images full screen.
+    \item Ask, ``Are these the ones you meant?'' if confidence is not high.
+    \item Optionally offer to save them into a named family album.
+\end{enumerate}
+
+\subsection{Workflow B: User is lost inside an app}
+\textbf{User:} ``I don't know what I did. Can you fix this?''
+
+\textbf{Expected behavior:}
+\begin{enumerate}[leftmargin=*]
+    \item Inspect current application and screen state.
+    \item Infer likely context from recent actions.
+    \item Explain simply: ``You're in the settings page for YouTube.''
+    \item Determine whether returning to the previous task is safe.
+    \item Offer: ``You were watching a gardening video. I can take you back.''
+    \item Execute back navigation and verify the video page appears.
+\end{enumerate}
+
+\subsection{Workflow C: Family technical support}
+\textbf{Situation:} Barbara calls Sophie because ``the internet is broken.''
+
+Instead of a 30-minute support call:
+
+\begin{enumerate}[leftmargin=*]
+    \item Granny diagnoses Wi-Fi status and router connectivity.
+    \item It explains: ``The tablet is connected to Wi-Fi, but the internet connection is not working.''
+    \item With Barbara's approval, Sophie opens a remote support session.
+    \item Barbara sees a persistent ``Sophie is helping'' banner.
+    \item Sophie can view the relevant settings screen, not unrestricted private content.
+    \item Once fixed, remote access ends automatically.
+\end{enumerate}
+
+\subsection{Workflow D: Story becomes family artifact}
+\textbf{User:} spends 20 minutes telling Granny about meeting Robert.
+
+The system:
+\begin{enumerate}[leftmargin=*]
+    \item records or transcribes with permission;
+    \item identifies Robert, university, approximate year, and related family context;
+    \item stores the story as a private memory;
+    \item asks later whether Barbara wants it added to her life story;
+    \item links existing photos if confidence is high;
+    \item creates a short polished chapter;
+    \item allows Barbara to listen to it, edit details by voice, and decide whether Sophie can see it.
+\end{enumerate}
+
+\subsection{Workflow E: Everyday communication}
+\textbf{User:} ``Tell David I'll call tonight after dinner.''
+
+The system:
+\begin{enumerate}[leftmargin=*]
+    \item resolves which David the user means;
+    \item selects the usual communication channel;
+    \item drafts the message;
+    \item reads it aloud or displays it;
+    \item asks for confirmation;
+    \item sends only after approval;
+    \item verifies that the application reports successful sending.
+\end{enumerate}
+
+\section{Capability Map}
+
+\subsection{Communication}
+\begin{itemize}[leftmargin=*]
+    \item call family and trusted contacts;
+    \item video call;
+    \item prepare and send messages;
+    \item read recent incoming messages when permitted;
+    \item find historical conversations;
+    \item share photos and links;
+    \item explain suspicious or confusing messages without automatically acting on them.
+\end{itemize}
+
+\subsection{Media and entertainment}
+\begin{itemize}[leftmargin=*]
+    \item play specific music, artists, playlists, radio, podcasts, audiobooks;
+    \item continue previously played content;
+    \item find videos by description rather than exact title;
+    \item control volume, captions, playback, and screen size;
+    \item recommend familiar content based on user preference without turning into an engagement feed.
+\end{itemize}
+
+\subsection{Photos and memories}
+\begin{itemize}[leftmargin=*]
+    \item search by person, place, date, event, or remembered context;
+    \item locate photos inside messaging applications;
+    \item create albums;
+    \item display family photo slideshows;
+    \item connect photos to life stories;
+    \item help identify unknown people with family input.
+\end{itemize}
+
+\subsection{Device help}
+\begin{itemize}[leftmargin=*]
+    \item enlarge text;
+    \item increase contrast;
+    \item change volume and brightness;
+    \item understand and dismiss harmless popups;
+    \item explain errors;
+    \item reconnect to known Wi-Fi;
+    \item find downloaded files;
+    \item locate applications;
+    \item return the user to a previous task;
+    \item guide secure login when required.
+\end{itemize}
+
+\subsection{Personal organization}
+\begin{itemize}[leftmargin=*]
+    \item calendar;
+    \item reminders;
+    \item recurring routines;
+    \item appointment context;
+    \item travel details;
+    \item simple household tasks;
+    \item family birthdays and anniversaries;
+    \item ``things I said I would do'' reminders.
+\end{itemize}
+
+\subsection{Companionship and storytelling}
+\begin{itemize}[leftmargin=*]
+    \item daily conversation;
+    \item continuity across previous stories;
+    \item gentle questions about meaningful memories;
+    \item family context;
+    \item music and photos connected to memories;
+    \item life-story generation;
+    \item reflective summaries;
+    \item optional family sharing.
+\end{itemize}
+
+\section{What Granny Should Not Become}
+
+\subsection{Not a replacement for family}
+The system should make family connection easier, not simulate that human relationships are unnecessary.
+
+\subsection{Not a surveillance system}
+Caregivers should not silently receive full transcripts, screen activity, or private conversations.
+
+\subsection{Not a medical authority}
+The product may eventually integrate with wellness and health systems, but it should not present itself as a physician or autonomously make high-stakes medical decisions.
+
+\subsection{Not a manipulative engagement product}
+Success is not measured by maximizing screen time or conversation time. A good outcome may be that the user quickly completes a task and goes on with their day.
+
+\subsection{Not an AI that hides uncertainty}
+When the agent does not know, it should say so. Trust is more important than maintaining the appearance of intelligence.
+
+\section{The Final User Experience in One Day}
+
+Imagine Barbara, age 78, living independently.
+
+At 8:30, she walks into the kitchen. The tablet is docked. Granny says nothing until Barbara presses the large talk button.
+
+\begin{quote}
+Barbara: ``What's happening today?''
+
+Granny: ``You have lunch with Anne at 12:30 and a dentist appointment tomorrow morning. Sophie sent two photos last night. Want to see them?''
+\end{quote}
+
+Barbara says yes. The screen opens the photos. She removes the tablet from the magnetic dock and looks at them.
+
+At 10:00, she opens Facebook manually, taps into the wrong menu, and says:
+
+\begin{quote}
+``I can't get back to the thing I was looking at.''
+\end{quote}
+
+Granny inspects the screen, explains where she is, and takes her back.
+
+At noon, Barbara asks:
+
+\begin{quote}
+``What was the name of that restaurant David told me about?''
+\end{quote}
+
+Granny searches the relevant conversation, finds the restaurant, shows it, and offers directions.
+
+After lunch, Barbara tells Granny a story about her first apartment with Robert. The conversation lasts fifteen minutes. Granny remembers the story but does not share it.
+
+At 4:00, Barbara says:
+
+\begin{quote}
+``Tell Sophie I'm tired today but I'll call tomorrow.''
+\end{quote}
+
+Granny drafts the message and asks Barbara to approve it before sending.
+
+At 7:00, the companion asks whether Barbara wants to hear the short story page it created from the afternoon conversation. Barbara listens and corrects the year. Granny updates it.
+
+At no point did Barbara need to know which application contained a photo, which messaging service Sophie used, what menu Facebook opened, where a downloaded file lived, or how to troubleshoot the tablet. She expressed intent. The computer absorbed the interface complexity.
+
+That is the end-state experience.
+
+\section{The Dream-State Product Definition}
+
+A fully realized Granny system has succeeded when the following statements are true:
+
+\begin{enumerate}[leftmargin=*]
+    \item The user can accomplish most ordinary tablet tasks by describing the desired outcome rather than navigating the interface.
+    \item The AI can reliably inspect, operate, verify, and recover across a broad range of Android applications.
+    \item The user can always take direct control through touch.
+    \item Consequential actions require clear, understandable approval.
+    \item The interface is calm enough that a person can use it every day without technology becoming the subject of the interaction.
+    \item The system remembers relationships, preferences, routines, and stories sufficiently to create genuine continuity.
+    \item Family can help with configuration and troubleshooting without automatically gaining access to private content.
+    \item The physical device feels like a coherent product, not a tablet attached to a smart speaker.
+    \item The system becomes more useful over time without becoming more confusing.
+    \item The user can ask ``Can you do this for me?'' far more often than ``How do I do this?''
+\end{enumerate}
+
+\section{Strategic Moat}
+
+The long-term defensibility should not be that a foundation model can press buttons. Large AI platforms and operating-system vendors will continue to improve that capability.
+
+The moat should come from the integrated system:
+
+\begin{itemize}[leftmargin=*]
+    \item senior-specific interaction design;
+    \item deeply reliable device-operation layer;
+    \item long-term personal and family memory graph;
+    \item permissioned caregiver infrastructure;
+    \item life-story and legacy archive;
+    \item safety and action-confirmation architecture;
+    \item hardware-software integration;
+    \item longitudinal understanding of what older adults actually ask computers to do;
+    \item trust built through years of useful, predictable behavior.
+\end{itemize}
+
+The product should be model-agnostic enough to benefit whenever underlying AI improves.
+
+\section{Ultimate Vision}
+
+\visionbox{
+\textbf{Granny should become the layer between an older adult and the digital world.} The person speaks in goals, questions, memories, and ordinary human language. Granny translates those intentions into digital actions, while preserving control, privacy, familiarity, and dignity.
+}
+
+The ambition is not to simplify every app manually. It is not to build a closed ecosystem of senior-specific substitutes. It is to create a trusted agent that can understand the user, understand the computer, and bridge the two.
+
+At full maturity, the product is simultaneously:
+
+\begin{itemize}[leftmargin=*]
+    \item a conversational companion;
+    \item a device operator;
+    \item a simple personal computer;
+    \item a memory and life-story archive;
+    \item a bridge to family;
+    \item a support layer for the digital world;
+    \item a persistent interface that grows with the user over time.
+\end{itemize}
+
+The defining product question should remain simple:
+
+\visionbox{
+\centering
+\Large\textbf{Can the user live their life without needing to become good at computers?}
+}
+
+If the answer increasingly becomes yes, Granny is working.
+
+\appendix
+\section{Appendix A: Example Natural-Language Requests}
+
+The following examples illustrate the intended breadth of the final product. They are not a strict feature checklist.
+
+\begin{longtable}{p{0.28\textwidth} p{0.66\textwidth}}
+\toprule
+Category & Example requests \\
+\midrule
+Family & ``Call Sophie.'' ``Show me what David sent yesterday.'' ``Send this photo to Anne.'' ``When is Mark visiting?'' \\
+\addlinespace
+Photos & ``Show me our Italy pictures.'' ``Find the photo from Sophie's wedding.'' ``Put these in an album.'' \\
+\addlinespace
+Messages & ``Tell David I'll call tonight.'' ``Who messaged me today?'' ``Find the restaurant Anna sent me.'' \\
+\addlinespace
+Media & ``Play Frank Sinatra.'' ``Continue the show from last night.'' ``Find me something about gardening.'' \\
+\addlinespace
+Device help & ``Make this bigger.'' ``What is this screen asking me?'' ``Take me back.'' ``Why isn't the sound working?'' \\
+\addlinespace
+Calendar & ``What's happening tomorrow?'' ``Remind me to call the pharmacy.'' ``When is my dentist appointment?'' \\
+\addlinespace
+Web & ``Find the opening hours for the museum.'' ``Show me the menu.'' ``Where did I read that article?'' \\
+\addlinespace
+Files & ``Open the plane ticket I downloaded.'' ``Where is the document Sophie sent me?'' \\
+\addlinespace
+Memory & ``What did I tell you about Robert?'' ``When did we go to Rome?'' ``Remember that Sophie hates olives.'' \\
+\addlinespace
+Storytelling & ``I want to tell you about my first job.'' ``Read me the story you made yesterday.'' \\
+\addlinespace
+Help & ``I don't know what I did.'' ``Can you finish this for me?'' ``I don't understand this message.'' \\
+\bottomrule
+\end{longtable}
+
+\section{Appendix B: Product Language}
+
+\subsection{Preferred framing}
+Use language such as:
+
+\begin{itemize}[leftmargin=*]
+    \item ``I can do that.''
+    \item ``I found it.''
+    \item ``I prepared the message. Want me to send it?''
+    \item ``This app is asking you to sign in.''
+    \item ``I am not certain enough to press that safely.''
+    \item ``Would you like me to take you back?''
+\end{itemize}
+
+Avoid framing that makes the user responsible for understanding system internals unless absolutely necessary.
+
+\subsection{Core brand sentence}
+\visionbox{
+\textbf{Granny is the computer you can simply ask.}
+}
+
+\end{document}

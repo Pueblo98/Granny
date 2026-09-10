@@ -1,0 +1,49 @@
+# Operating systems and editors
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+local.properties
+
+# Obsidian user/session state (shared vault settings may be committed)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspaces.json
+.obsidian/cache/
+.trash/
+
+# LaTeX build products; source and intentional PDFs remain tracked
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# Android / Gradle
+.gradle/
+**/build/
+captures/
+*.apk
+*.aab
+
+# Common application/build artifacts
+node_modules/
+dist/
+coverage/
+__pycache__/
+*.py[cod]
+.pytest_cache/
