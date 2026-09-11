@@ -10,7 +10,6 @@ related:
   - accessibility.md
   - voice-ux.md
   - figma.md
-  - ../../design-tokens/README.md
 ---
 
 # Design System Foundation
@@ -32,7 +31,10 @@ Granny should feel calm, warm, clear, familiar, non-clinical, and adult. It shou
 
 ## Semantic token roles
 
-Values are deliberately unassigned pending visual exploration and accessibility testing.
+Values are deliberately unassigned pending visual exploration and accessibility
+testing. Future machine-readable values live in the repository's
+`design-tokens/` implementation boundary; this document owns their product and
+design meaning inside the vault.
 
 - Color: `background.primary`, `background.secondary`, `surface.primary`, `surface.elevated`, `text.primary`, `text.secondary`, `border.primary`, `brand.primary`, `action.primary`, `success`, `warning`, `danger`, `info`, `focus`, `disabled`.
 - Typography: `display`, `heading.1`, `heading.2`, `body`, `body.large`, `button`, `caption`, `system.status`.

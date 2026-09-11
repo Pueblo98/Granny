@@ -5,8 +5,7 @@ owner: Simon
 last_updated: 2026-09-10
 tags: [decision, documentation]
 related:
-  - ../../README.md
-  - ../../AGENTS.md
+  - ../README.md
 ---
 
 # ADR-0003 — Repository as Source of Truth

@@ -7,7 +7,6 @@ tags:
   - architecture
   - system
 related:
-  - ../../ARCHITECTURE.md
   - ../03-agent/device-control.md
   - ../05-safety-privacy/safety-and-privacy.md
 ---
@@ -19,7 +18,10 @@ related:
 > future Granny OS, but it must not assume privileged/AOSP APIs or Stage 3
 > hardware.
 
-This document expands the boundaries in the root [architecture map](../../ARCHITECTURE.md). It is conceptual; no framework, vendor, database, protocol, or deployment topology is selected.
+This is the canonical detailed architecture inside the documentation vault. The
+repository-root `ARCHITECTURE.md` is a concise agent/engineering entry point
+that links inward here. No framework, vendor, database, protocol, or deployment
+topology is selected.
 
 ## Proposed components
 

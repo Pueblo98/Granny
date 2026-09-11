@@ -9,7 +9,6 @@ tags:
 related:
   - design-system.md
   - ../01-product/user-journeys.md
-  - ../../design-tokens/README.md
 ---
 
 # Figma Working Agreement
