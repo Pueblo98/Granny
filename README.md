@@ -2,7 +2,7 @@
 title: Granny Project
 status: draft
 owner: Simon
-last_updated: 2026-09-10
+last_updated: 2026-09-11
 tags:
   - project
   - navigation
@@ -10,6 +10,7 @@ related:
   - docs/README.md
   - docs/00-vision/product-vision.md
   - docs/10-execution/current-milestone.md
+  - docs/09-decisions/ADR-0007-three-stage-product-strategy.md
 ---
 
 # Granny
@@ -18,7 +19,15 @@ Granny is an AI-first personal computer for older adults that can talk, remember
 
 > The user should not need to learn how to operate the computer. The computer should learn how to operate itself for the user.
 
-The project is currently in product definition, experience design, and documentation foundation. It is not yet in substantial product implementation.
+Granny is a three-stage project. **Only Stage 1 is active.** The current work is
+product definition, research, experience design, safety, architecture, and
+evaluation planning for the Android tablet app—not substantial implementation.
+
+| Stage | Product | Status |
+|---|---|---|
+| 1 | Installable application for stock Android tablets | **Active and exclusive current scope** |
+| 2 | Granny-controlled Android/AOSP operating system | Future; context only |
+| 3 | Dedicated tablet plus voice dock/base hardware | Future; context only |
 
 ## Start here
 
@@ -31,11 +40,18 @@ The project is currently in product definition, experience design, and documenta
 - [Current milestone](docs/10-execution/current-milestone.md) and [backlog](docs/10-execution/backlog.md) — what to do now and next.
 - [Agent instructions](AGENTS.md) — mandatory working rules for coding agents.
 
-## Use this repository as an Obsidian vault
+## Open the documentation in Obsidian
 
-Open this repository's root directory in Obsidian: `/home/lgtw/Work/granny`. The Markdown remains portable and uses relative standard links. No community plugins are required. Recommended built-in features are backlinks, outgoing links, properties, templates, search, and local graph. Set `docs/_templates` as the Templates folder if you want template insertion in the UI.
+Open `/home/lgtw/Work/granny/docs` as the Obsidian vault. This keeps the
+knowledge experience focused on product documentation while code and build
+files remain outside the vault. The Markdown remains portable and uses relative
+standard links. No community plugins are required. Set `_templates` as the
+Templates folder if you want template insertion in the UI.
 
-The repository is the single source of truth; Obsidian is a view over it, not a second notes store. Local layout/workspace state is ignored by Git. See [.obsidian/README.md](.obsidian/README.md).
+The whole Git repository remains the project source of truth; `docs/` is its
+Obsidian knowledge surface, not an independent notes store. Local
+layout/workspace state is ignored by Git. See the
+[vault notes](docs/.obsidian/README.md).
 
 ## Repository layout
 
@@ -53,4 +69,7 @@ The initial Android reference device is a used Samsung Galaxy Tab A11+, purchase
 
 ## Current state
 
-The current milestone is to establish enough product and design definition to begin Figma exploration and controlled technical feasibility work. Do not start an AOSP fork, select permanent infrastructure vendors, or represent proposed visual values as approved.
+The current milestone is to make the Stage 1 app precise enough for research,
+Figma exploration, and controlled stock-Android feasibility work. Agents must
+not plan or implement Stage 2 OS or Stage 3 hardware work unless Simon
+explicitly changes the active stage.

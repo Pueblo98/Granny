@@ -2,7 +2,7 @@
 title: Conceptual Architecture
 status: proposed
 owner: Simon
-last_updated: 2026-09-10
+last_updated: 2026-09-11
 tags:
   - architecture
 related:
@@ -12,6 +12,10 @@ related:
 ---
 
 # Conceptual Architecture
+
+> **Active scope:** This architecture describes the Stage 1 stock-Android app.
+> Any custom-OS or dedicated-hardware component is future-stage context and is
+> not an implementation requirement.
 
 ## Purpose
 

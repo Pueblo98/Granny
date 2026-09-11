@@ -2,7 +2,7 @@
 title: Reference Hardware and Hardware Vision
 status: draft
 owner: Simon
-last_updated: 2026-09-10
+last_updated: 2026-09-11
 tags:
   - hardware
   - android
@@ -12,6 +12,10 @@ related:
 ---
 
 # Reference Hardware and Hardware Vision
+
+> [!IMPORTANT]
+> Stage 1 uses the Samsung tablet only as a test device. Dock/base concepts are
+> Stage 3 context and must not create current requirements or tasks.
 
 ## Known
 

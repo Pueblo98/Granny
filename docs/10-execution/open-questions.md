@@ -2,7 +2,7 @@
 title: Open Questions
 status: draft
 owner: Simon
-last_updated: 2026-09-10
+last_updated: 2026-09-11
 tags:
   - execution
   - questions
@@ -38,7 +38,8 @@ related:
 - OQ-012: What is the exact reference-tablet model/region/OS and its measured accessibility/device-control behavior?
 - OQ-013: Which components run on-device versus remotely, including offline fallback?
 - OQ-014: Which model/provider, data store, identity, and sync decisions can wait until experiments provide constraints?
-- OQ-015: What measured limitation, if any, would justify managed-device or AOSP work?
+- OQ-015: Which measured Stage 1 limitations should define the requirements and
+  entry timing for the future Stage 2 Granny OS?
 
 ## Inputs
 

@@ -2,7 +2,7 @@
 title: System Overview
 status: proposed
 owner: Simon
-last_updated: 2026-09-10
+last_updated: 2026-09-11
 tags:
   - architecture
   - system
@@ -13,6 +13,11 @@ related:
 ---
 
 # System Overview
+
+> [!IMPORTANT]
+> This is a Stage 1 app architecture. It may identify capability gaps for the
+> future Granny OS, but it must not assume privileged/AOSP APIs or Stage 3
+> hardware.
 
 This document expands the boundaries in the root [architecture map](../../ARCHITECTURE.md). It is conceptual; no framework, vendor, database, protocol, or deployment topology is selected.
 

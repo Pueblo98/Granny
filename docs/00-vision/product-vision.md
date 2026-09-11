@@ -2,7 +2,7 @@
 title: Product Vision
 status: draft
 owner: Simon
-last_updated: 2026-09-10
+last_updated: 2026-09-11
 tags:
   - vision
   - product
@@ -11,6 +11,7 @@ related:
   - product-principles.md
   - ../01-product/prd.md
   - ../01-product/scope-and-roadmap.md
+  - ../09-decisions/ADR-0007-three-stage-product-strategy.md
 ---
 
 # Product Vision
@@ -38,6 +39,20 @@ The full vision has six product layers:
 5. narrow, transparent family/caregiver assistance;
 6. an appliance-like tablet and dock with strong audio and physical privacy controls.
 
+## Product stages
+
+The long-term vision is pursued in three sequential stages:
+
+1. **Android tablet app — active.** Validate the experience as an installable
+   application on stock Android tablets.
+2. **Granny OS — future.** Build an Android/AOSP fork whose deeper privileges
+   and reliability requirements are informed by Stage 1 evidence.
+3. **Granny hardware — future.** Deliver an integrated tablet and voice
+   dock/base as a coherent appliance.
+
+Only Stage 1 is current product scope. Later-stage material preserves direction
+but must not be imported into the app's requirements.
+
 ## Differentiation
 
 The defensible product is the integrated system—not a particular model: senior-first experience, reliable device control, relationship memory, life-story artifacts, permissioned family support, safety/confirmation logic, and eventually dedicated hardware. General voice capability is expected to become commonplace.
@@ -52,11 +67,14 @@ See [scope and roadmap](../01-product/scope-and-roadmap.md) for current proposal
 
 ## Current phase
 
-Product definition, design-system foundations, and documentation. Figma exploration and controlled technical feasibility tests come next; substantial implementation does not.
+Stage 1 app definition, user/platform research, design-system foundations,
+safety policy, and documentation. Figma exploration and controlled stock-Android
+feasibility tests come next; substantial implementation does not.
 
 ## Constraints
 
-- Android is the initial platform and stock Android comes before any AOSP fork.
+- Stage 1 is an installable stock-Android tablet application and cannot assume
+  custom-OS or hardware privileges.
 - Semantic/API-driven control precedes vision and coordinate interaction.
 - Consequential action is permissioned and visible.
 - Touch remains usable when voice fails or is unwanted.

@@ -2,7 +2,7 @@
 title: Prioritized Backlog
 status: draft
 owner: Simon
-last_updated: 2026-09-10
+last_updated: 2026-09-11
 tags:
   - execution
   - backlog
@@ -15,6 +15,9 @@ related:
 
 ## Now — milestone decisions
 
+- [ ] Run the [Astra Stage 1 product-foundation mission](astra-stage-1-planning-metaprompt.md), beginning with instruction and product-consistency audits.
+- [ ] Red-team and formalize the Stage 1 App PRD with stable requirement IDs.
+- [ ] Produce the Android/AccessibilityService/Google Play feasibility and distribution decision brief.
 - [ ] Review and accept/revise the product principles and primary proto-persona/job.
 - [ ] Select 3–5 MVP thesis-test workflows from UC-001–UC-012.
 - [ ] Turn selected workflows into acceptance criteria and Figma briefs.
@@ -38,3 +41,6 @@ related:
 - [ ] Define memory consent/provenance prototype only after scope review.
 - [ ] Investigate managed-device capabilities from measured stock-Android gaps.
 - [ ] Revisit custom dock/hardware after software experience and audio requirements are evidenced.
+
+The final item above is Stage 3 context and remains dormant until Simon
+explicitly activates that stage.

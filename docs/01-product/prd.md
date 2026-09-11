@@ -1,8 +1,8 @@
 ---
-title: Product Requirements Document
+title: Stage 1 Android Tablet App — Product Requirements Document
 status: draft
 owner: Simon
-last_updated: 2026-09-10
+last_updated: 2026-09-11
 tags:
   - product
   - requirements
@@ -11,13 +11,20 @@ related:
   - personas.md
   - use-cases.md
   - scope-and-roadmap.md
+  - ../09-decisions/ADR-0007-three-stage-product-strategy.md
 ---
 
-# Product Requirements Document
+# Stage 1 Android Tablet App — Product Requirements Document
+
+> [!IMPORTANT]
+> This PRD covers only Stage 1: an installable application for stock Android
+> tablets. Granny OS/AOSP is Stage 2 and dedicated tablet/dock hardware is Stage
+> 3. Later-stage capabilities are not current requirements.
 
 ## Purpose
 
-Translate Granny's long-term vision into testable product requirements while keeping unchosen V1 and MVP scope explicit.
+Translate Granny's long-term vision into testable requirements for the Stage 1
+Android tablet app while keeping App V1 and App MVP scope explicit.
 
 ## Users and jobs
 
@@ -72,7 +79,11 @@ No target values are accepted yet. See [eval strategy](../06-evals/eval-strategy
 
 ## Constraints and non-goals
 
-See [scope and roadmap](scope-and-roadmap.md). Current non-goals include full Android implementation, an AOSP fork, production backend infrastructure, final model/database selection, finalized brand palette, autonomous high-risk transactions, medical diagnosis, and silent family monitoring.
+See [scope and roadmap](scope-and-roadmap.md). Current non-goals include
+substantial Stage 1 implementation during the planning milestone, any Stage 2
+AOSP work, Stage 3 hardware work, production backend infrastructure, permanent
+model/database selection, a finalized brand palette, autonomous high-risk
+transactions, medical diagnosis, and silent family monitoring.
 
 ## Open questions
 

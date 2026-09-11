@@ -4,11 +4,35 @@ Granny is an AI-first personal computer for older adults that can talk, remember
 
 Core thesis: the user should not need to learn how to operate the computer; the computer should learn how to operate itself for the user.
 
+## Active product stage — hard scope gate
+
+Granny has three long-term stages:
+
+1. **Stage 1 — Android tablet app:** an installable application running on
+   stock Android tablets. This is the only active stage.
+2. **Stage 2 — Granny OS:** a future Android/AOSP fork providing deeper system
+   ownership and reliability.
+3. **Stage 3 — Granny hardware:** a future dedicated tablet plus voice
+   dock/base with microphones, speaker, charging, and physical controls.
+
+Until Simon explicitly changes the active stage, all product planning, design,
+research, architecture, implementation, and evaluation must serve **Stage 1**.
+Stage 2 and Stage 3 documents are long-term context only. Do not treat their
+capabilities as Stage 1 requirements, start OS/AOSP or hardware work, expand a
+task to prepare those stages, or reject a viable Stage 1 design merely because
+it does not implement the final OS/hardware vision.
+
+When a source mixes stages, extract only the Stage 1 implications and label
+everything else `future-stage context`. If stage ownership is genuinely
+ambiguous and would materially change the result, record an open question
+instead of guessing.
+
 ## Start every task
 
 1. Read [docs/README.md](docs/README.md), then [the current milestone](docs/10-execution/current-milestone.md) and the canonical document for your work.
 2. Check [ADRs](docs/09-decisions/README.md), [open questions](docs/10-execution/open-questions.md), and `git status` before changing anything.
-3. Treat repository Markdown as the project knowledge base. Do not create a separate notes source of truth.
+3. Treat repository Markdown as the project knowledge base. `docs/` is the
+   Obsidian vault; do not create another notes source of truth.
 
 ## Sources and status
 
@@ -24,7 +48,9 @@ Core thesis: the user should not need to learn how to operate the computer; the 
 - Any consequential agent capability must update the autonomy/confirmation and safety specifications.
 - Any important new capability or fixed failure mode must receive planned or executable eval coverage.
 - Prefer native/system APIs, then semantic Android accessibility actions, then structured UI automation; use vision and coordinate clicks only as a fallback.
-- Do not begin AOSP/custom-OS work without an accepted ADR based on demonstrated stock-Android limitations.
+- Do not begin Stage 2 AOSP/custom-OS or Stage 3 hardware work without an
+  explicit user instruction activating that stage and the required accepted
+  technical ADRs.
 - Preserve direct touch operation, visible agency, verification, recovery, and understandable confirmation.
 - Never invent user research, test results, approved design values, or regulatory claims.
 - Do not commit secrets, credentials, signing materials, personal user data, or machine-specific Obsidian state.

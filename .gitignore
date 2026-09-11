@@ -15,12 +15,13 @@ Thumbs.db
 *.keystore
 local.properties
 
-# Obsidian user/session state (shared vault settings may be committed)
-.obsidian/workspace.json
-.obsidian/workspace-mobile.json
-.obsidian/workspaces.json
-.obsidian/cache/
-.trash/
+# Obsidian: docs/ is the vault; keep local application state out of Git
+/.obsidian/
+docs/.obsidian/*.json
+docs/.obsidian/cache/
+docs/.obsidian/plugins/
+docs/.obsidian/themes/
+docs/.trash/
 
 # LaTeX build products; source and intentional PDFs remain tracked
 *.aux

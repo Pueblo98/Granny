@@ -2,18 +2,27 @@
 title: Granny Documentation Map
 status: draft
 owner: Simon
-last_updated: 2026-09-10
+last_updated: 2026-09-11
 tags:
   - documentation
   - navigation
 related:
-  - ../AGENTS.md
   - 10-execution/current-milestone.md
+  - 09-decisions/ADR-0007-three-stage-product-strategy.md
 ---
 
 # Granny Documentation Map
 
-This repository is Granny's single source of truth and its Obsidian vault. Navigate intentionally from this page; the graph view is supplementary.
+This `docs/` directory is the Granny Obsidian vault. The surrounding Git
+repository remains the single source of truth for both documentation and future
+implementation. Navigate intentionally from this page; the graph view is
+supplementary.
+
+> [!IMPORTANT]
+> **Stage 1—the stock-Android tablet app—is the only active stage.** Stage 2
+> Granny OS and Stage 3 hardware material preserve the long-term vision but
+> must not drive current requirements or work unless Simon explicitly activates
+> a later stage.
 
 ## Canonical map
 
@@ -35,10 +44,13 @@ This repository is Granny's single source of truth and its Obsidian vault. Navig
 | Architecture | [System overview](04-architecture/system-overview.md) | Where are system boundaries and unknowns? |
 | Safety/privacy | [Safety and privacy](05-safety-privacy/safety-and-privacy.md) | What trust boundaries constrain the product? |
 | Evaluation | [Eval strategy](06-evals/eval-strategy.md) | How will quality and safety be measured? |
-| Hardware | [Reference hardware](07-hardware/reference-hardware.md) | What is known about the development device and dock? |
+| Hardware | [Reference hardware](07-hardware/reference-hardware.md) | Which tablet supports Stage 1 testing? Stage 3 dock material is context only. |
 | Research | [Research register](08-research/README.md) | What evidence exists, and what still needs verification? |
 | Decisions | [ADR index](09-decisions/README.md) | Which consequential choices are accepted or proposed? |
 | Execution | [Current milestone](10-execution/current-milestone.md) | What is the team doing now? |
+
+The next high-value planning session should use the
+[Astra Stage 1 product-foundation metaprompt](10-execution/astra-stage-1-planning-metaprompt.md).
 
 ## Knowledge-base conventions
 
@@ -57,4 +69,6 @@ The preserved Dream Book is available as [TeX](00-vision/dream-book.tex) and [PD
 
 ## Templates
 
-Use the concise templates in [`docs/_templates`](_templates/): spec, ADR, use case, user journey, research note, and eval. Templates prompt for evidence and open questions without forcing filler.
+Use the concise templates in [`_templates`](_templates/): spec, ADR, use case,
+user journey, research note, and eval. Templates prompt for evidence and open
+questions without forcing filler.
