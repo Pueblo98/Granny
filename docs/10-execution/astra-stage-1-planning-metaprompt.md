@@ -1,43 +1,68 @@
 ---
-title: Astra Stage 1 Product Foundation Metaprompt
+title: Astra Stage 1 Development-Readiness Metaprompt
 status: accepted
 owner: Simon
-last_updated: 2026-09-11
+last_updated: 2026-09-13
 tags:
   - execution
   - prompt
   - astra
   - stage-1
+  - development-readiness
 related:
   - current-milestone.md
   - backlog.md
+  - open-questions.md
   - ../09-decisions/ADR-0007-three-stage-product-strategy.md
 ---
 
-# Astra Stage 1 Product Foundation Metaprompt
+# Astra Stage 1 Development-Readiness Metaprompt
 
-Copy the instructions below into a new GPT-6 Astra Codex session opened at
-`/home/lgtw/Work/granny`.
+Copy everything between the horizontal rules into a new GPT-6 Astra Codex
+session opened at `/home/lgtw/Work/granny`.
 
 ---
 
-You are the lead product architect, staff engineer, senior accessibility
-designer, AI-agent safety reviewer, and documentation editor for Granny.
+You are the lead product architect for Granny. You are also acting as the
+senior product manager, product designer, Android architect, AI-agent systems
+designer, accessibility lead, safety/privacy reviewer, research lead, and
+documentation editor needed to complete this planning milestone.
 
-Work directly in the existing repository at:
+Work directly in the existing repository:
 
 ```text
 /home/lgtw/Work/granny
 ```
 
-Your job is to turn the existing Stage 1 product foundation into a coherent,
-review-ready specification that future product, design, research, Android,
-backend, agent, safety, and evaluation work can execute without reconstructing
-the product from chat history.
+## The assignment: build the specification, do not merely audit it
 
-This is an authorized documentation, product-definition, architecture,
-research, and planning task. Carry it through to a fully validated repository
-state. Do not stop after describing what you could do or producing only a plan.
+This is a **creation and completion task**. The repository currently contains
+useful vision material and starter scaffolding, but it does **not** contain a
+complete PRD, complete product design specification, implementation-ready agent
+contract, or complete development plan. Treat short existing documents as
+inputs to expand, challenge, and replace where needed—not as finished specs to
+approve with minor edits.
+
+Your required outcome is a coherent, detailed, internally linked **Stage 1
+development-readiness package**. It must be strong enough that the next Codex
+sessions can begin deliberately scoped implementation tasks without having to
+reconstruct the product from the Dream Book, old conversations, or unstated
+assumptions.
+
+Do the work in the repository. Do not stop at:
+
+- an audit report;
+- a list of recommendations;
+- an outline of a future PRD;
+- a roadmap saying that the PRD and designs still need to be written;
+- questions that could safely be represented as proposed assumptions;
+- a final chat response describing documents you did not actually create.
+
+Audit only long enough to understand the inputs and prevent contradictions.
+Then produce the canonical documents. Reviews are quality-control steps inside
+the work, not the primary deliverable.
+
+Do not begin substantial product implementation in this session.
 
 ## Non-negotiable product scope
 
@@ -51,48 +76,48 @@ Granny has three sequential long-term stages:
    dock/base with microphones, speaker, charging, physical controls, and
    hardware privacy indication.
 
-All work in this session must serve Stage 1. Stage 2 and Stage 3 documents are
-long-term context only. Do not:
+Every deliverable in this mission must help the team define, design, de-risk,
+or prepare implementation of **Stage 1**. Stage 2 and Stage 3 remain vision
+context. Do not design or implement them.
 
-- design or implement an Android/AOSP fork;
-- design custom system services that require Stage 2 privileges as if they
-  exist in Stage 1;
-- perform industrial, mechanical, electrical, acoustic, procurement, or
-  manufacturing work;
-- import dock buttons, sensors, audio hardware, custom firmware, root access,
-  system signatures, OEM privileges, or device-owner assumptions into Stage 1
-  requirements;
-- expand work merely to prepare later stages;
-- reject a viable Stage 1 app design because it does not deliver the final
-  OS/hardware vision.
+Specifically, do not make current requirements depend on:
 
-When the Dream Book or another source mixes stages, extract only the Stage 1
-implications. Label OS- or hardware-only material `future-stage context`.
-Stage 1 research may record stock-Android limitations as future Stage 2 inputs,
-but it must not begin solving them with an OS fork.
+- an AOSP fork, root, system signatures, custom system services, or OEM-only
+  privileges;
+- device-owner/managed-device powers unless a clearly labeled distribution
+  option explicitly supplies them;
+- a custom dock, far-field microphone array, speaker base, sensors, custom
+  firmware, or physical privacy controls;
+- capabilities that stock Android or the selected distribution route cannot
+  honestly provide.
 
-## Product definition
+When a source mixes stages, extract the Stage 1 implication and label the rest
+`future-stage context`. A measured Stage 1 platform limitation may become a
+future Stage 2 input, but it must not turn this mission into OS work.
+
+## Product thesis
 
 Granny is an AI-first personal computer experience for older adults that can
-talk, remember, understand the screen, and operate the device on the user's
-behalf.
+talk, remember, understand the screen, and safely operate the device on the
+user's behalf.
 
 Core thesis:
 
 > The user should not need to learn how to operate the computer. The computer
 > should learn how to operate itself for the user.
 
-Stage 1 must test that thesis through an installable Android tablet app using
-capabilities honestly available on stock Android and through a viable
-distribution path.
+Stage 1 must test this thesis through a stock-Android tablet app. The primary
+experience should let a user express intent naturally, understand what Granny
+is doing, interrupt or take over, and recover without being blamed or made to
+feel incapable.
 
-The agent is not merely a chatbot. Its intended loop is:
+The conceptual agent loop is:
 
 ```text
 Observe → Understand → Plan → Act → Verify → Recover
 ```
 
-The preferred device-control order is:
+Preferred device-control order:
 
 ```text
 supported native/system/app API
@@ -101,15 +126,31 @@ semantic Android accessibility action
     ↓
 structured UI automation
     ↓
-bounded vision plus coordinate interaction as a fallback
+bounded vision plus coordinate interaction as a last fallback
 ```
 
-Consequential actions remain permissioned, specific, visible, interruptible,
+Consequential actions must be permissioned, specific, visible, interruptible,
 and independently enforced. Family support must not become surveillance.
-Granny must never infantilize the user or infer that age implies cognitive
+Granny must never infantilize the user or assume that age means cognitive
 impairment.
 
-## Required source priority
+## Starting reality
+
+Assume the following until repository inspection proves otherwise:
+
+- The Dream Book is a long-term vision document, not a Stage 1 PRD.
+- The existing `docs/01-product/prd.md` is a seed, not a complete PRD.
+- The current design documents contain principles and starting constraints,
+  not a complete product design specification.
+- Existing use cases, journeys, evals, and agent documents are starter
+  examples, not an exhaustive or implementation-ready contract.
+- Existing architecture is conceptual and requires Stage 1 detail.
+- No user research or technical experiment has been completed merely because
+  a proposed finding appears in planning material.
+- The objective is not to preserve current wording. The objective is to
+  preserve confirmed intent while making it precise, coherent, and usable.
+
+## Source priority and decision authority
 
 Resolve conflicts in this order:
 
@@ -118,753 +159,1030 @@ Resolve conflicts in this order:
 3. The initialization handoff.
 4. The Dream Book as long-term vision.
 5. The captured previous planning conversation.
-6. Proposed/draft repository documents.
+6. Proposed or draft repository documents.
 7. Current primary-source research.
 8. Your inference.
 
-Never silently convert an assumption, illustrative scenario, external claim,
-or your preference into an accepted product decision. Preserve disagreements
-until they are resolved by source priority or a clearly labeled decision brief.
+Do not silently turn an idea, scenario, external claim, or personal preference
+into an accepted decision. However, do not use that rule as a reason to leave
+the documents empty or stop repeatedly for clarification.
 
-## Read before editing
+Use this decision protocol:
 
-Read the following in full before making substantive changes:
+- **Confirmed:** directly supported by explicit direction or an accepted
+  decision. Write it as current truth and cite/link its owner.
+- **Proposed:** a reasonable working choice needed to make the specification
+  concrete. Include the rationale, alternatives considered, and what would
+  validate or change it.
+- **Open decision:** a consequential choice whose alternatives would materially
+  change users, safety, distribution, architecture, cost, or release scope.
+  Prepare a concrete decision brief and recommendation.
+- **Unknown requiring evidence:** a claim that research, device testing, policy
+  review, or usability testing must answer. Define the experiment and gate.
+- **Future-stage context:** useful long-term direction that is not a Stage 1
+  requirement.
 
-1. `AGENTS.md`
-2. `CLAUDE.md`
-3. `README.md`
-4. `ARCHITECTURE.md`
-5. `docs/README.md`
-6. `docs/09-decisions/README.md` and every ADR
-7. `docs/10-execution/current-milestone.md`
-8. `docs/10-execution/backlog.md`
-9. `docs/10-execution/open-questions.md`
-10. `docs/00-vision/product-vision.md`
-11. `docs/00-vision/product-principles.md`
-12. `docs/00-vision/dream-book.tex` or the complete PDF text
-13. every current document under `docs/01-product/` through
-    `docs/08-research/`
-14. `docs/08-research/source-material/initialization-handoff.md`
-15. `docs/08-research/source-material/planning-conversation.md`
+Make routine, reversible planning choices yourself and label them `proposed`.
+Ask Simon only if a blocking choice cannot be represented safely this way.
+Before asking, complete every independent artifact and prepare the exact
+decision, recommendation, options, tradeoffs, and downstream impact.
 
-Also inspect:
+## Read and inspect before substantive editing
 
-- `git status --short --branch`;
-- recent Git history and current branch;
-- the complete tracked/untracked file map;
-- documentation metadata, internal links, and duplicated definitions;
-- any repository-level or nested agent instructions that apply.
+Read in full:
 
-Preserve all unrelated or user-created work. The user opened `docs/` as the
-Obsidian vault. Local `docs/.obsidian/*.json` files are ignored and must not be
-deleted, rewritten, or committed.
+1. `AGENTS.md`, `CLAUDE.md`, `README.md`, and `ARCHITECTURE.md`;
+2. `docs/README.md` and all documentation templates;
+3. every ADR and `docs/09-decisions/README.md`;
+4. all current files under `docs/00-vision/` through `docs/10-execution/`;
+5. the complete Dream Book source or extracted PDF text;
+6. `docs/08-research/source-material/initialization-handoff.md`;
+7. `docs/08-research/source-material/planning-conversation.md`;
+8. the current tracked/untracked file map, Git status, branch, and recent
+   history;
+9. any nested agent instructions that apply.
 
-## Operating method
+Preserve unrelated and user-created work. The user opens `docs/` as an
+Obsidian vault. Local `docs/.obsidian/*.json` files are ignored user state: do
+not delete, rewrite, stage, or commit them.
 
-1. Start with a concise progress update stating the active stage, intended
-   outcome, files/surfaces you expect to review, and validation approach.
-2. Audit before rewriting. Establish the current truth map and contradiction
-   map before changing canonical product content.
-3. Complete work already authorized by this prompt. Ask the user only when a
-   missing choice would materially change the product and cannot be represented
-   safely as a proposed option or open decision.
-4. Before asking a question, prepare the concrete decision brief: evidence,
-   options, recommendation, tradeoffs, documents affected, and what can proceed
-   without the answer.
-5. Use current web research for temporally unstable technical, policy,
-   accessibility, privacy, competitive, and platform claims. Prefer primary
-   sources: official Android/AOSP/Google Play/OpenAI/W3C documentation,
-   applicable regulators or standards bodies, and original research papers.
-6. Record source URL, publisher, access date, what the source establishes, and
-   limitations. Do not present marketing copy or prior assistant statements as
-   evidence.
-7. If collaboration tools and repository policy allow subagents, delegate only
-   bounded, independent audit or research lanes with explicit inputs,
-   deliverables, no-overlap file ownership, and verification criteria. Retain
-   canonical editing, conflict resolution, and acceptance in the root session.
-   Do not spawn agents for tightly coupled sequential edits or theatrical
-   complexity.
-8. Prefer improving existing canonical documents over generating new files.
-   Create a new document only when it has a distinct durable purpose and owner.
-9. Make frontmatter, statuses, stable IDs, links, and terminology consistent.
-10. Do not begin substantial Android, backend, model, agent-runtime, AOSP, or
-    hardware implementation. Small read-only inspections or disposable
-    feasibility experiments are allowed only if necessary to verify a planning
-    claim and leave no product scaffold behind.
-11. Do not install dependencies, enable Obsidian community plugins, create
-    cloud resources, transmit private data, change external systems, merge a
-    pull request, or push without explicit authorization.
-12. Work on a short-lived documentation branch. If already on a suitable
-    branch with the user's staged planning work, preserve and continue it.
+After reading, write a concise working inventory for yourself. Do not spend the
+mission producing giant standalone audit documents unless a material
+contradiction needs a durable record. Incorporate ordinary findings directly
+into the canonical specs.
 
-## Mission ASTRA-001 — Agent instruction stack audit
+## Required completion state
 
-Audit `AGENTS.md`, `CLAUDE.md`, root/documentation READMEs, templates, source
-priority rules, Git workflow, status conventions, current milestone, and any
-other applicable instructions.
+The repository is ready for the first implementation milestone only when it
+contains, at minimum:
 
-Find:
+1. a comprehensive Stage 1 PRD with stable, testable requirement IDs;
+2. explicit Vision versus Stage 1 App MVP versus Stage 1 App V1 versus later
+   stages;
+3. grounded proto-personas, jobs, prioritized use cases, complete signature
+   journeys, feature/scope map, and product success model;
+4. a detailed product design specification covering information architecture,
+   screens, components, interaction states, voice, touch, accessibility,
+   content, onboarding, permissions, confirmations, errors, and Figma handoff;
+5. an agent behavior and device-control contract detailed enough to design
+   typed implementation interfaces and evals;
+6. a Stage 1 Android architecture with component boundaries, data flows,
+   trust boundaries, permissions, failure behavior, and local/cloud options;
+7. an evidence-backed Android capability, AccessibilityService, and
+   distribution feasibility assessment;
+8. a privacy/safety model, threat model, memory policy, family/helper boundary,
+   and action/confirmation matrix;
+9. canonical evals, metrics, a failure taxonomy, and end-to-end requirements
+   traceability;
+10. a research plan aimed at the assumptions most likely to kill or reshape
+    the product;
+11. a staged product/design/technical roadmap with milestones, dependency
+    order, entry/exit gates, Definition of Ready, and a prioritized backlog;
+12. concise `AGENTS.md`, `CLAUDE.md`, README/navigation, templates, and ADR
+    conventions that make future agent sessions maintain this system;
+13. a development-readiness assessment stating what is ready, what is only
+    proposed, what evidence is missing, and exactly what may be implemented
+    next.
 
-- contradictions or ambiguous authority;
-- duplicated guidance likely to drift;
-- stale root-vault language;
-- missing Stage 1 scope gates;
-- rules that could cause an agent to overbuild, invent research, make product
-  decisions, start AOSP/hardware work, expose secrets, or bypass safety/evals;
-- instructions that are impossible to validate or too verbose to follow;
-- paths or filenames that no longer exist;
-- tension between autonomy, confirmation, and repository workflow.
+These are content requirements, not an instruction to create one tiny file per
+bullet. Prefer a smaller set of substantial canonical documents. Split files
+only where separate ownership, review, or update cadence makes the split
+useful.
 
-Create `docs/08-research/agent-instruction-audit.md` with:
+## Workstream 1 — Make the agent instruction stack operational
 
-- instruction sources inspected;
-- effective hierarchy;
-- `Confirmed`, `Contradictory`, `Duplicated`, `Stale`, `Missing`, and
-  `Needs decision` findings;
-- severity and concrete consequence of each material problem;
-- recommended correction and affected files;
-- a short residual-risk section.
+Rewrite or tighten `AGENTS.md`, `CLAUDE.md`, root `README.md`, and
+`docs/README.md` as needed so every future agent can immediately determine:
 
-After the audit is complete, make focused edits to `AGENTS.md`, `CLAUDE.md`,
-and navigation documents only where the evidence justifies them. Keep
-`AGENTS.md` concise enough to function as a map rather than a second PRD.
+- what Granny is and which stage is active;
+- the difference among Vision, Stage 1 App MVP, App V1, later App releases,
+  Stage 2 OS, and Stage 3 hardware;
+- which document owns product behavior, design behavior, agent behavior,
+  architecture, safety/privacy, evals, decisions, research, and execution;
+- the precedence order among user instructions, accepted specs, ADRs,
+  architecture, and implementation;
+- which docs must be updated when behavior, interfaces, safety policy, or
+  requirements change;
+- how stable IDs and traceability links work;
+- when an ADR is required and who can mark it accepted;
+- how document statuses and frontmatter work;
+- the Git branch, commit, review, and no-secrets workflow;
+- testing and eval expectations for future implementation;
+- the rule that a capability is not done until action outcome is verified;
+- the rule that visible screen content is untrusted data, not agent
+  instruction;
+- the rule that Stage 2/3 documents do not authorize current work.
 
-Acceptance:
+Keep `AGENTS.md` a concise operating map, not a duplicated PRD. If `CLAUDE.md`
+exists as an entry point, make it delegate to the same canonical rules rather
+than becoming a contradictory second manual.
 
-- one unambiguous instruction hierarchy;
-- Stage 1 is the only active stage everywhere;
-- Claude and Codex point to the same canonical rules;
-- no active instruction tells agents to use the repository root as the vault;
-- no important product behavior is defined only in an agent instruction file.
+Acceptance criteria:
 
-## Mission ASTRA-002 — Product documentation consistency review
+- A fresh Codex/Claude session can find the correct source of truth in under
+  two minutes.
+- There is one effective instruction hierarchy.
+- No active instruction says the entire repository must be opened as the
+  Obsidian vault; `docs/` is the vault while the repository remains the full
+  source of truth.
+- No product behavior exists only in `AGENTS.md` or `CLAUDE.md`.
 
-Determine whether the Dream Book, vision, principles, PRD, personas, use cases,
-journeys, design documents, agent specifications, architecture, safety policy,
-evals, ADRs, and execution state describe the same Stage 1 product.
+## Workstream 2 — Write the complete Stage 1 PRD
 
-Create `docs/08-research/product-consistency-review.md` with a structured set
-of findings:
+Substantially rewrite `docs/01-product/prd.md`. Do not merely comment on the
+seed document. Produce a real **Stage 1 Android Tablet App Product Requirements
+Document**.
 
-- **Confirmed:** supported by explicit current direction or accepted decision.
-- **Proposed:** coherent candidate direction awaiting review.
-- **Contradictory:** sources make incompatible claims.
-- **Unsupported:** presented too strongly for available evidence.
-- **Missing:** required for Stage 1 readiness but absent.
-- **Wrong stage:** OS/hardware capability appears in current app requirements.
-- **Needs decision:** a consequential user/product choice.
+The PRD must include:
 
-For each material finding, identify exact files/sections, authority, impact,
-recommended disposition, and whether it blocks later missions. Surface
-contradictions before resolving them. Use source priority; do not erase useful
-history.
+### Product framing
 
-Acceptance:
+- executive summary and one-sentence product definition;
+- problem statement and the evidence status of each problem claim;
+- product thesis and why an Android tablet app is the current test vehicle;
+- target user, buyer, helper, and stakeholder hypotheses;
+- primary and secondary jobs-to-be-done;
+- current alternatives and why the proposed experience may be better;
+- value proposition for the older adult and, separately, trusted family;
+- product principles and how they constrain requirements;
+- explicit assumptions and known unknowns.
 
-- Vision, Stage 1 App V1, and Stage 1 App MVP are distinguishable;
-- future OS/hardware capabilities cannot masquerade as current requirements;
-- duplicated canonical definitions have a recommended single owner;
-- unsupported research claims remain labeled as hypotheses.
+### Scope model
 
-## Mission ASTRA-003 — Stage 1 PRD red-team and formalization
+Define separately and precisely:
 
-Act as a skeptical senior product manager. Red-team the current PRD before
-rewriting it.
+- **Long-term Vision:** what Granny may eventually become;
+- **Stage 1 App MVP:** the smallest product/experiment that can test the core
+  delegation thesis safely;
+- **Stage 1 App V1:** the first coherent product release, broader than MVP;
+- **Later Stage 1 releases:** app capabilities deliberately deferred;
+- **Stage 2:** future OS/AOSP work, not current requirements;
+- **Stage 3:** future hardware, not current requirements.
 
-Challenge:
+For MVP and App V1, provide `In`, `Out`, and `Why` tables. Recommend a concrete
+MVP and V1 rather than leaving every feature undecided. Mark the recommendation
+`proposed` if Simon has not accepted it.
 
-- whether each requirement maps to a real user problem or explicit hypothesis;
-- whether “operate the tablet,” “remember,” “proactive,” “safe,” “simple,” and
-  “reliable” are testable;
-- whether the proposed primary user is too broad or unsupported;
-- whether family features create control, consent, abuse, or surveillance risk;
-- whether requirements contain implementation decisions better owned by
-  architecture;
-- whether success metrics can be observed without collecting excessive data;
-- whether MVP, App V1, future App releases, Stage 2, and Stage 3 are mixed;
-- whether distribution and AccessibilityService policy could invalidate the
-  assumed product shape.
+### Experience and capability requirements
 
-Then rewrite `docs/01-product/prd.md` as a coherent **Stage 1 Android Tablet App
-PRD**. Use stable IDs:
+Specify:
+
+- core end-to-end experience;
+- onboarding and permission setup;
+- natural voice request and touch entry;
+- visible listening/thinking/acting state;
+- app and screen understanding;
+- safe navigation and task execution;
+- ambiguity and entity resolution;
+- confirmations and prepare/commit behavior;
+- interruption, cancellation, direct touch takeover, retry, and undo;
+- verification and truthful completion reporting;
+- failure recovery and escalation to guidance/manual help;
+- conversation/session continuity;
+- memory, only to the depth recommended for MVP/V1;
+- family/helper experience, only to the depth recommended for MVP/V1;
+- accessibility customization and voice/touch equivalence;
+- settings, privacy controls, history/audit visibility, correction, and
+  deletion;
+- offline/degraded behavior and dependency loss;
+- support, diagnostics, and feedback suitable for early pilots.
+
+Use stable requirements:
 
 ```text
-PRD-OUT-###  user/product outcomes
-PRD-FR-###   functional requirements
-PRD-ACC-###  accessibility requirements
-PRD-SAF-###  safety and confirmation requirements
-PRD-PRV-###  privacy and data requirements
-PRD-NFR-###  reliability, latency, offline, maintainability requirements
+PRD-OUT-###  user and product outcomes
+PRD-FR-###   functional behavior
+PRD-ACC-###  accessibility behavior
+PRD-SAF-###  autonomy, safety, and confirmation behavior
+PRD-PRV-###  privacy, data, memory, and family boundaries
+PRD-NFR-###  reliability, performance, availability, supportability
+PRD-DST-###  platform, permissions, installation, and distribution
 ```
+
+Every requirement must contain or link to:
+
+- release applicability: MVP, App V1, later App, or future stage;
+- priority: Must, Should, Could, or Won't for that release;
+- user/problem rationale;
+- trigger and preconditions where relevant;
+- observable behavior and edge conditions;
+- testable acceptance criteria;
+- safety/privacy/accessibility implications;
+- linked use case, journey, design, architecture owner, and eval;
+- status: confirmed, proposed, evidence-needed, or blocked.
+
+Do not use vague requirements such as “simple,” “safe,” “fast,” “fully control
+the tablet,” or “remember the user” without operational definitions and test
+methods.
+
+### Quality and release model
 
 Include:
 
-- purpose and current status;
-- problem and evidence status;
-- primary and secondary users as proto-personas where unvalidated;
-- jobs-to-be-done;
-- Stage 1 value proposition;
-- App MVP, App V1, and later-App boundaries;
-- core experience and prioritized workflows;
-- functional and non-functional requirements;
-- accessibility and voice/touch equivalence;
-- autonomy, confirmation, interruption, verification, and recovery;
-- memory/privacy/family boundaries only to the selected release depth;
-- supported platform/device assumptions and distribution assumptions;
-- measurable success criteria with `proposed` targets when evidence is absent;
-- dependencies, constraints, non-goals, risks, and open decisions;
-- links to use cases, journeys, designs, architecture, safety, research, and
-  evals.
+- measurable product outcomes and leading indicators;
+- task-quality, safety, trust, usability, accessibility, latency, and
+  reliability measures;
+- proposed thresholds clearly distinguished from observed baselines;
+- platform/device/app support assumptions;
+- policy/distribution assumptions;
+- dependencies and constraints;
+- major risks and mitigations;
+- non-goals;
+- launch/pilot readiness conditions;
+- open decisions with recommendations.
 
-Do not accept a final user segment, market, exact MVP feature set, numeric
-reliability threshold, or distribution classification unless current evidence
-or an explicit user decision supports it. Produce a review-ready PRD with
-clearly bounded decision points rather than leaving vague filler.
+Never fabricate research findings, demand, conversion, reliability, or task
+success. A proposed target is allowed if labeled and justified.
 
-## Mission ASTRA-004 — Stage 1 product design and design-system foundation
+## Workstream 3 — Complete the product model and signature experiences
 
-Review the current design system, accessibility, voice UX, Figma agreement,
-personas, use cases, journeys, autonomy model, and safety requirements as a
-senior accessibility and product designer.
+Expand or create the smallest useful set of documents under
+`docs/01-product/` to own:
 
-Define the Stage 1 experience before choosing visual decoration:
+- proto-personas and excluded/unsupported user groups;
+- jobs-to-be-done and problem statements;
+- a feature/capability map by MVP, App V1, later App, Stage 2, and Stage 3;
+- 20–30 prioritized Stage 1 use cases;
+- 5–8 fully specified signature journeys;
+- product scope and roadmap;
+- requirements traceability.
 
-- product information architecture and navigation model;
+Personas must not treat “elderly people” as one generic user. Separate at
+least:
+
+- an independent but technologically uncomfortable older adult;
+- an older adult with vision, hearing, or dexterity access needs who remains
+  cognitively independent;
+- a trusted family/helper role;
+- future or excluded higher-assistance contexts whose medical/safeguarding
+  complexity is not an MVP assumption.
+
+Label them proto-personas until evidence exists. Include goals, context,
+capabilities, frustrations, trust boundaries, accessibility considerations,
+current workarounds, and risky assumptions—without inventing biographies as
+research facts.
+
+Each canonical use case needs:
+
+- stable `UC-###` ID;
+- actor and linked job/problem;
+- release and priority;
+- starting context and preconditions;
+- natural-language request and touch alternative;
+- desired outcome;
+- data and permissions used;
+- expected agent steps at a product-behavior level;
+- autonomy/confirmation class;
+- ambiguity and accessibility considerations;
+- primary failure/recovery paths;
+- privacy/safety risks;
+- success evidence;
+- linked PRD and eval IDs.
+
+Recommend approximately five MVP signature workflows. Strong candidates to
+evaluate include finding recently sent family photos, explaining a confusing
+screen, calling a known person, drafting and confirming a message, playing
+requested media, making an accessible device adjustment, or recovering from a
+failed app task. Choose based on thesis coverage, user value, feasibility,
+safety, differentiation, and evalability.
+
+Each signature journey needs:
+
+- stable `J-###` ID and linked use cases/requirements;
+- happy path from entry through verified outcome;
+- voice and touch paths;
+- screen-by-screen experience;
+- system/agent states and exact confirmation points;
+- interruption and manual takeover;
+- ambiguous-person/content handling;
+- permission, authentication, offline, app-change, and failure variants;
+- error recovery and honest partial-success language;
+- accessibility behavior;
+- Figma frames required;
+- evaluation success/failure evidence.
+
+## Workstream 4 — Write the complete Stage 1 product design specification
+
+Create a canonical `docs/02-design/product-design-spec.md` unless repository
+inspection identifies an already suitable canonical owner. This must be a
+detailed product interaction specification, not a mood board and not a list of
+generic design principles.
+
+Update supporting design files only where they have distinct durable roles,
+including `design-system.md`, `accessibility.md`, `voice-ux.md`, and `figma.md`.
+Create `information-architecture.md`, `interaction-states.md`, or
+`content-style-guide.md` only if separating that content makes maintenance
+clearer. Avoid filler stubs.
+
+The design specification must define:
+
+### Experience architecture
+
+- overall app information architecture;
+- navigation model and persistent/global controls;
 - Granny Home and primary entry points;
-- voice-first interaction with complete touch alternatives;
-- listening, heard, interpreting, planning, acting, waiting, interrupted,
-  confirmation, success, partial success, stopped, failed, uncertain, offline,
-  permission-lost, session-expired, and remote-help states;
-- back, cancel, stop, take-over, retry, and undo behavior;
-- onboarding, permissions, disclosures, model limitations, and trust setup;
-- recipient/content/action confirmations;
-- error prevention and recovery language;
-- stable layout behavior and appropriate adaptation;
-- readability, contrast, touch, focus order, semantics, captions, hearing,
-  dexterity, timing, cognitive load, and reduced motion;
-- content voice: warm, concise, adult, specific, never infantilizing;
-- design-token roles and component contracts;
-- Figma page/component/flow conventions and repository handoff.
+- relationship between the Granny surface and ordinary Android/apps;
+- voice-first behavior with complete touch alternatives;
+- portrait/landscape and supported tablet-window behavior;
+- where system Android UI cannot be restyled or controlled;
+- return-to-Granny, back, home, cancel, stop, and take-over semantics.
 
-Update existing files under `docs/02-design/` first. Create a separate
-`information-architecture.md`, `interaction-states.md`, or
-`content-style-guide.md` only if each has enough distinct canonical content to
-justify its own lifecycle.
+### Screen and flow inventory
 
-Do not invent a final color palette, typeface, logo, brand illustration,
-component library, or numeric accessibility values. Define semantic roles,
-selection criteria, test method, and candidate values clearly marked
-`proposed`. Verify current accessibility standards from primary sources.
+Create a screen inventory with stable `SCR-###` IDs. At minimum consider:
 
-The result must be detailed enough to brief Figma for the selected signature
-journeys without pretending a visual direction has been approved.
+- first launch and value explanation;
+- permission education and handoff to Android settings;
+- voice/touch home;
+- listening, transcript, and interpretation;
+- active task/progress;
+- ambiguity clarification;
+- consequential-action confirmation;
+- success, partial success, stopped, failed, and recovery;
+- conversation/task history;
+- memory review/correction/deletion if in scope;
+- people/relationship disambiguation if in scope;
+- accessibility and voice settings;
+- privacy/data/family controls;
+- family/helper invitation and access review if in scope;
+- offline, revoked permission, expired authentication, and unsupported action;
+- help, feedback, and pilot diagnostics.
 
-## Mission ASTRA-005 — Stage 1 system architecture review
+For each in-scope screen define:
 
-Review and improve `ARCHITECTURE.md` and
-`docs/04-architecture/system-overview.md` without prematurely selecting
-vendors or frameworks.
+- purpose and linked journey/requirements;
+- entry and exit conditions;
+- hierarchy and content regions;
+- visible controls and their labels;
+- primary, secondary, destructive, and escape actions;
+- UI data and privacy sensitivity;
+- all applicable loading, empty, disabled, error, and interrupted states;
+- focus order, semantics, touch behavior, keyboard/switch behavior where
+  relevant, and spoken feedback;
+- orientation/window adaptations;
+- telemetry/eval events, avoiding unnecessary private content;
+- open visual questions for Figma.
 
-Define Stage 1 boundaries among:
+### Agent interaction state model
+
+Define allowed transitions and user controls for:
+
+```text
+idle
+listening
+heard / transcript available
+needs clarification
+planning
+ready to confirm
+acting
+waiting on app/network/user
+verifying
+completed
+partially completed
+interrupted
+cancelled
+recovering
+failed safely
+offline/degraded
+permission lost
+authentication required
+unsupported/restricted
+```
+
+For each state define what the user sees and hears, what Granny may do, how the
+user interrupts, timeouts, and legal next states. Eliminate vague indefinite
+“thinking” experiences.
+
+### Component and design-system contracts
+
+Define semantic component behavior for:
+
+- global Stop/Cancel and manual takeover;
+- microphone/listening control;
+- primary and secondary buttons;
+- high-consequence confirmation and destructive confirmation;
+- progress/activity status;
+- transcript and editable intent preview;
+- person/content disambiguation choices;
+- message or action preview;
+- success/partial/failure result;
+- inline guidance and permission education;
+- toast/snackbar/dialog/sheet usage boundaries;
+- list rows, cards, media, settings, and accessibility controls;
+- focus, pressed, selected, loading, disabled, error, and completed states.
+
+Specify roles for color, typography, spacing, size, shape, elevation, motion,
+sound/haptics, focus, and iconography. Do not invent final brand values. Define
+candidate token values as `proposed`, their rationale, and how Figma/Android
+will stay aligned.
+
+### Accessibility and cognitive ergonomics
+
+Turn accessibility into testable internal requirements covering:
+
+- text scaling and no information loss;
+- contrast and non-color cues;
+- touch target sizing and spacing;
+- focus order and accessibility semantics;
+- screen reader, switch, keyboard, and touch operation as applicable;
+- reduced motion and animation timing;
+- captions/transcripts and non-audio alternatives;
+- hearing, vision, dexterity, attention, memory, and language load;
+- predictable layout and plain language;
+- generous timeouts and recovery from mistakes;
+- no forced speed, precision, recall, or technical vocabulary;
+- no infantilizing imagery, copy, or interaction.
+
+Verify standards from current primary sources. Separate external minimums from
+Granny's proposed internal targets and define how each will be tested.
+
+### Voice and content behavior
+
+Specify:
+
+- how Granny speaks: warm, concise, adult, specific, non-clinical;
+- how listening starts/stops and how privacy state is visible;
+- partial transcription and correction;
+- barge-in/interruption;
+- thinking/action progress language;
+- ambiguity and uncertainty language;
+- confirmation wording that names recipient, content, and consequence;
+- refusal/restriction, failure, partial success, and recovery wording;
+- verbosity and repetition rules;
+- pronunciation/name correction;
+- voice/touch equivalence;
+- sample copy for each signature journey and its failures.
+
+### Figma execution brief
+
+Make `figma.md` an actionable contract defining pages, sections, naming,
+components, variants, auto-layout expectations, annotations, linked requirement
+IDs, prototype connections, accessibility notes, status, and Git handoff.
+
+Specify the exact first Figma package to build:
+
+- required journeys and frames;
+- low-fidelity before visual exploration;
+- 3–4 warm/calm visual directions after interaction validation;
+- component/state coverage;
+- prototype test scenarios;
+- review questions and acceptance gate;
+- how accepted values return to Markdown and design tokens.
+
+Do not claim that a Figma file has been created unless it actually has.
+
+## Workstream 5 — Complete the agent and device-control specification
+
+Substantially expand the canonical documents under `docs/03-agent/`. Ensure
+they jointly define an implementation contract rather than repeating product
+aspirations.
+
+Specify:
+
+- agent purpose, allowed role, and prohibited behavior;
+- observation model, provenance, freshness, and sensitive-data handling;
+- intent interpretation and entity resolution;
+- plan representation and consequence classification;
+- capability registry and least-privilege tool selection;
+- prepare versus commit separation;
+- action preconditions and postconditions;
+- confirmation binding, expiration, and invalidation;
+- semantic element identity and stale-node handling;
+- native/API versus accessibility versus vision fallback selection;
+- verification evidence and truthful result reporting;
+- retries, maximum steps/time, loop detection, and circuit breakers;
+- unexpected dialogs, login/authentication, permissions, app updates, network
+  failure, and direct user interaction;
+- cancellation, interruption, touch takeover, and safe resumption;
+- activity/audit events without unnecessary personal content;
+- simulation, replay, and evaluation interfaces;
+- proactive behavior boundaries, even if proactive execution is deferred;
+- memory reads/writes and untrusted-content boundaries.
+
+Define typed, vendor-neutral tool/capability contracts at the specification
+level for the proposed MVP. Include input, output, permissions, consequence
+class, confirmation rule, preconditions, verification, common failures,
+idempotency/retry behavior, audit evidence, and privacy sensitivity.
+
+Never design a generic unrestricted shell, unbounded coordinate tapper, raw
+credential tool, unrestricted network tool, or untyped “do anything” action
+for the model.
+
+## Workstream 6 — Complete the Stage 1 architecture and Android feasibility
+
+Update root `ARCHITECTURE.md` as the concise system map and create or expand
+focused canonical architecture documents under `docs/04-architecture/`.
+
+Define boundaries among:
 
 - Android app shell and adaptive tablet UI;
-- launcher-like home experience within ordinary Android constraints;
+- launcher-like Granny home experience within ordinary Android constraints;
 - voice input/output and visible activity state;
-- conversation/session orchestration;
+- session/conversation orchestrator;
 - screen observer;
-- device-control service and action executor;
+- device-control service/action executor;
 - planner/agent;
 - policy, authorization, and confirmation enforcement;
-- memory and personal-knowledge services;
+- memory and personal knowledge;
 - model/provider adapter or router;
-- backend and identity/sync boundary;
-- family experience, if in scope;
-- observability, audit, eval, and support surfaces.
+- backend, identity, sync, and update boundaries;
+- family/helper experience if in scope;
+- observability, audit, diagnostics, eval, and support surfaces.
 
-For every component specify responsibility, inputs/outputs, owner of canonical
-state, trust level, permissions, failure behavior, local/cloud placement
-options, offline behavior, and interfaces to adjacent components.
+For each component define responsibility, APIs/events, canonical state owner,
+trust level, permissions, process/device placement, local/cloud options,
+offline behavior, failure isolation, data handled, and adjacent dependencies.
 
-Distinguish:
+Document major flows for:
 
-- local from remote;
-- privileged from unprivileged;
-- synchronous user-request paths from future background/proactive paths;
-- model proposals from independently enforced tool/policy decisions;
-- Stage 1 interfaces from Stage 2 capability gaps;
-- product decisions from technology choices still open.
+- a voice request from capture to verified result;
+- screen observation and semantic navigation;
+- a consequential action with confirmation;
+- cancellation/interruption during execution;
+- failure recovery and safe stop;
+- memory read, write, correction, and deletion if in scope;
+- family/helper access if in scope;
+- model/provider outage and offline/degraded behavior.
 
-Add major data flows and trust boundaries for voice request, screen
-observation, read-only navigation, consequential action, memory write, family
-assistance, cancellation, and failure recovery. Keep the root architecture
-short; place details in the system overview or focused canonical documents.
+Clearly distinguish model proposals from independently enforced policy/tool
+decisions, and product decisions from replaceable technology choices.
 
-## Mission ASTRA-006 — Android feasibility, privilege gap, and distribution
+### Android feasibility and distribution
 
-Create `docs/08-research/android-stage-1-feasibility.md` based on current
-primary sources and clearly labeled hypotheses where device testing is pending.
-
-For each dreamed Stage 1 capability, classify the likely route:
+Create or substantially rewrite
+`docs/08-research/android-stage-1-feasibility.md` using current primary-source
+evidence. Classify each proposed capability as:
 
 ```text
 ordinary Android/app API
 user-granted runtime or special permission
 AccessibilityService semantic inspection/action
 MediaProjection or other explicit session grant
-notification listener or approved integration
+notification listener or approved app integration
 default-app/launcher role
 device-owner or managed-device mode
 OEM/system privilege
-root/AOSP only (future Stage 2)
-currently unknown or infeasible
+root/AOSP only — future Stage 2
+unknown or infeasible pending evidence
 ```
 
-Include:
+Cover observation/action limits, permission enablement and revocation,
+background execution, screen capture and secure windows, package visibility,
+notifications, contacts, calls, messages, media, settings, files, authentication,
+semantic-tree quality, vision fallback, Samsung/OEM variance, verification,
+and realistic app/device test matrices.
 
-- what can be observed and acted on;
-- user enablement and revocation;
-- background-execution constraints;
-- screen capture and secure-window behavior;
-- app-to-app interaction and package visibility;
-- notifications, calls, messaging, contacts, media, settings, files, and
-  accessibility controls;
-- semantic-tree quality and vision fallback limitations;
-- Samsung/OEM variability;
-- reliable post-action verification;
-- synthetic-account/device test matrix;
-- distribution options and update path;
-- Google Play AccessibilityService declarations, disclosure/consent, and the
-  restriction on autonomous planning/execution for apps that do not qualify as
-  accessibility tools;
-- honest analysis of whether Granny's current target/user framing could qualify
-  as an accessibility tool—do not claim approval;
-- experiments or Play-review questions required to resolve uncertainty.
+Treat distribution as a first-order product constraint. Research current Google
+Play policies relevant to AccessibilityService, autonomous device behavior,
+prominent disclosure/consent, sensitive permissions, and target-user claims.
+Do not claim that Granny qualifies for an accessibility exception or will pass
+review without authoritative evidence. Compare viable paths, tradeoffs, pilot
+options, questions for Play review, and required validation. Produce a clear
+`go`, `conditional go`, `no-go`, or `needs evidence` recommendation for each
+candidate MVP control/distribution model.
 
-This is a primary Stage 1 kill-risk. Do not bury it under general Android
-architecture discussion. Produce an explicit go/no-go/needs-evidence decision
-brief for the distribution and control model.
+## Workstream 7 — Complete safety, privacy, autonomy, memory, and family policy
 
-## Mission ASTRA-007 — Device control-plane contract
+Create one canonical action-policy matrix under `docs/05-safety-privacy/` or
+clearly link to the canonical owner if it belongs under `docs/03-agent/`.
 
-Turn the conceptual loop into an implementable, vendor-neutral contract.
-Improve the current agent/device-control/tool documents, consolidating rather
-than duplicating when possible.
-
-Specify:
-
-- observation snapshot structure, provenance, freshness, and sensitive-data
-  handling;
-- intent and entity resolution with ambiguity gates;
-- plan representation and consequence classification;
-- typed capability registry and least-privilege tool selection;
-- action preconditions and postconditions;
-- prepare versus commit separation;
-- confirmation token binding and expiry;
-- semantic element identity and stale-node handling;
-- native/API versus accessibility versus vision fallback selection;
-- verification evidence and truthful result reporting;
-- retry limits, maximum steps/time, loop detection, and circuit breakers;
-- unexpected dialogs, authentication, permission loss, app updates, network
-  failure, and manual user interaction;
-- cancellation, interruption, direct touch takeover, and safe resumption;
-- audit/event boundaries that avoid collecting unnecessary private content;
-- simulation and eval interfaces.
-
-Never expose a generic shell, arbitrary unrestricted coordinates, raw
-credentials, unrestricted network access, or an untyped “do anything” tool to
-the model.
-
-## Mission ASTRA-008 — Autonomy, confirmation, and sensitive-action policy
-
-Red-team the current autonomy model. Create one canonical policy matrix mapping
-action categories to:
+For each action category, specify whether Granny may:
 
 ```text
 Observe
 Prepare
 Execute directly
-Execute after fresh specific confirmation
+Execute after fresh, specific confirmation
 Execute only under explicit bounded delegation
-Restricted / never execute in Stage 1
+Restrict or never execute in Stage 1
 ```
 
-Cover at minimum:
+Cover opening/searching apps, reading content, device settings, drafting and
+sending communications, calls, photos/files, calendar/reminders, app installs,
+permissions/security, credentials/account recovery, purchases/finance, legal
+agreements, location/emergency actions, memory operations, family/helper
+configuration, remote assistance, and proactive routines.
 
-- opening/searching/navigating apps;
-- reading messages and notifications;
-- changing volume, brightness, text, connectivity, and settings;
-- drafting/sending messages and email;
-- starting calls or video calls;
-- selecting/sharing/deleting photos and files;
-- calendar/reminder creation and deletion;
-- installing/uninstalling apps;
-- permissions, security settings, passwords, account recovery;
-- purchases, financial apps, legal agreements;
-- location sharing and emergency requests;
-- memory creation, correction, deletion, and sharing;
-- family/caregiver configuration and remote assistance;
-- future proactive/routine actions.
+For every class define consequence, default permission, valid confirmation,
+authentication, visibility, cancellation/undo, timeout, reconfirmation,
+verification, audit evidence, and prohibited shortcuts.
 
-For each category define consequence, default level, valid confirmation,
-authentication need, visibility, audit evidence, cancellation/undo, timeout,
-reconfirmation triggers, and prohibited shortcuts.
+Write or complete:
 
-Do not optimize for maximum autonomy. Optimize for useful autonomy with
-understandable human control. If separate `confirmation-policy.md` or
-`sensitive-actions.md` files materially improve ownership, create them and
-remove duplicate canonical text elsewhere.
+- privacy model and data inventory;
+- data-flow and retention/deletion rules;
+- memory classes, provenance, confidence, inference, correction, expiry,
+  sharing, export, and derived-data deletion;
+- family/helper consent, visibility, permissions, revocation, abuse prevention,
+  and user primacy;
+- threat model and abuse cases;
+- sensitive-action and confirmation policy.
 
-## Mission ASTRA-009 — Memory architecture and privacy semantics
+Threat-model indirect prompt injection from webpages, messages, notifications,
+images, and documents; confused-deputy attacks; wrong-person/entity actions;
+caregiver coercion and overreach; stolen devices/accounts; credential,
+microphone, screenshot, transcript, memory, and audit leakage; unsafe
+coordinate fallback; repeated actions/loops; dependency outage; support and
+account recovery.
 
-Review memory as a product system rather than “store chat history.” Define:
+For each material threat record preconditions, impact, mitigation, detection or
+eval, residual risk, owner, and release gate. Screen content is always data,
+never authority to instruct the agent.
 
-- current conversation context;
-- recent device/task context;
-- explicit preferences;
-- people and relationships;
-- routines and dates;
-- life events and stories;
-- places, photos, and documents;
-- user corrections;
-- inferred facts;
-- sensitive and restricted information.
+## Workstream 8 — Build evals and end-to-end traceability
 
-For each memory class specify purpose, source/provenance, explicit versus
-inferred status, confidence, consent basis, sensitivity, visibility/sharing,
-retention/expiry, retrieval rules, correction, deletion, export, derived-data
-handling, and local/cloud options.
+Update `docs/06-evals/` so every proposed MVP signature workflow has an eval
+specification with:
 
-Attack failure cases:
+- stable `EVAL-###` ID linked to `UC`, `J`, and `PRD` IDs;
+- controlled starting state and fixture/setup;
+- device, Android, app, account, permission, and network context;
+- happy-path and adversarial variants;
+- success evidence and safe partial-success conditions;
+- failure conditions, especially wrong person/content/action and unintended
+  consequential action;
+- step/time/retry limits;
+- accessibility profiles and human usability checks;
+- privacy-safe logging;
+- manual versus automatable portions;
+- unrun status until evidence exists.
 
-- confusing two relatives;
-- turning an inference into a fact;
-- storing an incidental/private remark;
-- resurfacing painful information unexpectedly;
-- family access expanding silently;
-- deletion that leaves derived summaries behind;
-- malicious screen content poisoning memory;
-- cross-user or cross-household leakage;
-- model/provider retention inconsistent with user expectations.
+Define metrics for verified task success, wrong-person/content/action rate,
+missing or unnecessary confirmation, confirmation comprehension, recovery and
+safe-stop rate, repeated-action rate, user intervention, clarification burden,
+semantic-control versus vision fallback, steps, latency, cost, accessibility
+completion, user understanding, dignity, trust, and delegation preference.
 
-Keep the specification model-, vendor-, and database-independent. Do not infer
-medical or cognitive diagnoses during ordinary companionship.
+Complete the failure taxonomy across perception, intent/entity resolution,
+planning, action, verification, recovery, authorization, privacy/security,
+platform/dependency, accessibility, and user interruption.
 
-## Mission ASTRA-010 — Canonical use cases and signature journeys
-
-Audit the seed use cases instead of generating a huge artificial catalog.
-Identify the 20–30 use cases that best define the Stage 1 app, grouped by
-domain and release horizon. Explicitly nominate approximately five **MVP
-signature workflows** for user review.
-
-Strong candidates include:
-
-- finding family photos sent recently;
-- explaining a confusing screen;
-- recovering to a previous task;
-- calling a known person;
-- drafting and confirming a message;
-- playing requested media;
-- accessible device adjustment;
-- inspecting/correcting memory;
-- capturing a personal story, if memory is selected for MVP/V1;
-- bounded family remote help, only if selected for App V1.
-
-Every expanded use case needs a stable ID, actor, job/problem, starting state,
-natural-language request or touch trigger, desired outcome, agent behavior,
-data used, autonomy/confirmation, accessibility needs, failure/recovery,
-privacy risk, success evidence, and linked PRD/eval IDs.
-
-Turn only the highest-value flows into complete journeys. Include onboarding,
-permissions, interruption, ambiguity, offline/error, cancellation, and direct
-touch takeover. These journeys must be usable as Figma briefs and eval inputs.
-
-## Mission ASTRA-011 — Evaluation architecture and failure taxonomy
-
-Answer: how will the team know Granny is becoming more useful and safer?
-
-Update evaluation documents so every MVP signature workflow has a canonical
-eval with controlled starting state, variants, success evidence, failure
-conditions, limits, device/app/version context, privacy constraints, and
-manual-usability components.
-
-Define metrics beyond average task success:
-
-- verified task success and safe partial completion;
-- wrong-person, wrong-content, and wrong-action rates;
-- unintended consequential action and missing-confirmation rate;
-- confirmation comprehension/correctness;
-- recovery and safe-stop rate;
-- repeated-action/agent-loop rate;
-- user intervention and clarification rate;
-- semantic-control versus vision-fallback rate;
-- steps, latency, and resource cost;
-- accessibility completion across configured profiles;
-- user understanding, trust, dignity, and preference for delegation versus
-  guidance.
-
-Refine the failure taxonomy across perception, intent/entity resolution,
-planning, action, verification, recovery, authorization, privacy, security,
-dependency/platform, accessibility/interaction, and user interruption.
-
-Never manufacture baseline numbers, user-study outcomes, Gemini comparisons,
-or reliability results. Mark all unrun evals as specifications.
-
-## Mission ASTRA-012 — Requirements traceability
-
-Create a lightweight traceability system using stable IDs and Markdown links:
+Create a lightweight traceability owner, preferably
+`docs/01-product/traceability.md`, connecting:
 
 ```text
-Problem/job
+Problem / job
     ↓
 PRD requirement
     ↓
 Use case
     ↓
-Journey/design flow
+Journey / screen / component
     ↓
-Architecture component and safety policy
+Agent and architecture contract
     ↓
-Future implementation
+Safety policy
     ↓
-Eval and observed research evidence
+Implementation task
+    ↓
+Eval and research evidence
 ```
 
-Create `docs/01-product/traceability.md` only if it can remain concise and
-maintainable. It should expose missing links rather than pretend everything is
-complete. Define ownership rules so future agents update traceability when
-requirements, behavior, or evals change.
+Expose missing links honestly. Do not create fake implementation or test links
+for work that has not begun.
 
-Do not introduce an enterprise requirements tool, database, or duplicate task
-system. Stable IDs and Markdown references are sufficient.
+## Workstream 9 — Produce the evidence and research program
 
-## Mission ASTRA-013 — Threat model and abuse cases
+Create or complete a prioritized Stage 1 research plan. It must focus on
+assumptions capable of killing or materially changing the product, including:
 
-Expand the safety foundation into a Stage 1 threat model proportionate to a
-tablet app that can observe personal content and act across apps.
+- whether representative older adults want delegation, guidance, or a
+  selectable mixture;
+- which real tablet jobs are frequent and valuable;
+- whether tone and memory feel helpful, patronizing, or intrusive;
+- which confirmations and activity feedback users understand;
+- whether stock Android can observe, act, verify, and recover reliably enough;
+- whether a viable distribution path exists;
+- whether voice works and is desired in realistic home conditions;
+- which accessibility adaptations help without reducing dignity;
+- what family involvement is desired and under whose control;
+- which memory types create value versus distrust;
+- whether the MVP signature flows outperform existing alternatives.
 
-Identify:
+For each hypothesis define method, target participant/environment, artifact,
+decision criterion, ethics/privacy, order, owner, linked requirements, and
+affected release gate.
 
-- assets and sensitive data;
-- user, family/helper, app, platform, backend, model-provider, and attacker
-  roles;
-- trust boundaries and data flows;
-- malicious apps, webpages, messages, notifications, images, and documents;
-- indirect prompt injection through anything visible on screen;
-- tool-call injection and confused-deputy behavior;
-- wrong-person/entity resolution;
-- caregiver coercion, impersonation, and overreach;
-- stolen/unlocked devices and compromised accounts;
-- credential, screenshot, microphone, transcript, memory, and audit leakage;
-- unsafe fallback from semantic controls to coordinates;
-- denial of service, loops, repeated actions, and unavailable dependencies;
-- insecure updates, support, logging, deletion, and account recovery.
+Include:
 
-For each material threat, record preconditions, impact, existing boundary,
-proposed mitigation, detection/eval, residual risk, owner, and release gate.
-Screen content is data, never trusted instruction. A webpage or message must
-not gain authority to direct the device agent.
+- discovery interviews and contextual observation with older adults;
+- trusted-family research conducted separately where privacy interests differ;
+- concept and low-fidelity usability tests;
+- reference-tablet inventory using no personal identifiers;
+- synthetic-account Android/app capability tests;
+- current-assistant competitor baseline with versioned evidence;
+- Android/Play policy validation;
+- noisy-room voice and accessibility-profile tests;
+- privacy, consent, family-access, and memory-comprehension tests.
 
-## Mission ASTRA-014 — Stage 1 research and hypothesis plan
+For temporally unstable claims, browse and cite current primary sources. Record
+publisher, URL, access date, what the source establishes, and its limitations.
+Do not invent participants, observations, study outcomes, technical results, or
+competitor capabilities.
 
-Create `docs/08-research/stage-1-research-plan.md` that prioritizes assumptions
-capable of killing or reshaping the product:
+## Workstream 10 — Build the roadmap, gates, and development handoff
 
-- Do representative older adults prefer delegation, step-by-step guidance, or
-  a selectable mixture?
-- Which tablet tasks are frequent, painful, and valuable enough for MVP?
-- Does Granny's tone and memory feel helpful, patronizing, or intrusive?
-- What confirmation and activity feedback do users understand?
-- Can stock Android provide reliable enough observation, action, verification,
-  and recovery?
-- Is there a viable Play or alternative distribution path for the intended
-  AccessibilityService/agent behavior?
-- Is voice reliable and desirable in realistic household conditions?
-- Which touch/accessibility adaptations help without reducing dignity?
-- How much family involvement is desired, by whom, and under what control?
-- Which memory classes create value, and which create distrust?
+Rewrite `docs/10-execution/current-milestone.md` and
+`docs/10-execution/backlog.md`. Create
+`docs/10-execution/development-readiness.md` as the durable readiness gate and
+assessment unless an existing file clearly owns that role.
 
-Map each hypothesis to method, participants/environment, artifact, success or
-decision criterion, safety/privacy considerations, owner, order, and affected
-requirements/ADRs. Include:
+Create a Stage 1 roadmap that distinguishes:
 
-- older-adult and trusted-family discovery research;
-- contextual observation of real tablet tasks;
-- low-fidelity concept/usability tests;
-- reference-tablet inventory and synthetic-account app matrix;
-- current-assistant/Gemini benchmark with versioned evidence;
-- Android/Play policy research;
-- accessibility and noisy-room voice tests;
-- privacy/consent comprehension tests.
+1. **Foundation/specification:** canonical product, design, agent,
+   architecture, safety, eval, and research contracts.
+2. **Feasibility spikes:** smallest experiments for Android control,
+   observation, verification, voice, distribution, and privacy assumptions.
+3. **Experience prototype:** Figma prototype of the signature journeys and
+   user testing.
+4. **Controlled technical prototype:** narrow, synthetic-account implementation
+   of selected flows with safety/eval instrumentation.
+5. **MVP build:** the proposed MVP scope after evidence gates pass.
+6. **Pilot readiness:** usability, safety, privacy, reliability, support,
+   distribution, and consent gates.
+7. **App V1:** coherent release only after MVP evidence.
 
-Do not invent participant findings. Separate research questions, hypotheses,
-methods, and actual results.
+For every milestone define:
 
-## Mission ASTRA-015 — ADR and decision-gap review
+- objective and hypothesis;
+- entry criteria;
+- concrete deliverables;
+- dependencies;
+- owner or discipline;
+- validation/evidence;
+- exit gate with observable pass/fail criteria;
+- decisions unlocked;
+- work explicitly excluded.
 
-Review every accepted and proposed ADR plus important choices hidden in prose.
-Identify decisions that deserve records, including:
-
-- Stage 1 distribution and AccessibilityService classification;
-- Stage 1 MVP signature workflows;
-- local/cloud processing and offline boundary;
-- model/provider independence versus initial provider;
-- memory ownership, retention, and deletion semantics;
-- family/helper permissions;
-- voice activation approach;
-- one device-control service versus multiple capability services;
-- supported device/Android-version matrix;
-- design accessibility baselines;
-- observability and privacy-preserving eval data.
-
-Do not create an ADR for every small choice. Create proposed ADRs only for
-consequential decisions that are ready for a concrete options analysis.
-Accepted status requires explicit source authority or user decision. Preserve
-superseded records rather than rewriting history.
-
-## Canonical ownership and file discipline
-
-Prefer these ownership boundaries:
-
-- `docs/00-vision/` — long-term product intent and three-stage strategy.
-- `docs/01-product/` — Stage 1 outcomes, users, requirements, use cases,
-  journeys, scope, and traceability.
-- `docs/02-design/` — Stage 1 experience, accessibility, voice/content,
-  interaction states, design system, and Figma contract.
-- `docs/03-agent/` — Stage 1 agent behavior, autonomy, control plane, memory,
-  recovery, and tool contracts.
-- `docs/04-architecture/` and root `ARCHITECTURE.md` — Stage 1 conceptual system
-  architecture and boundaries.
-- `docs/05-safety-privacy/` — Stage 1 safety, privacy, threats, action policy,
-  consent, and caregiver boundaries.
-- `docs/06-evals/` — capability/task evaluation and failure measurement.
-- `docs/07-hardware/` — Stage 1 reference-tablet facts; Stage 3 concepts clearly
-  dormant.
-- `docs/08-research/` — questions, methods, sources, observations, and audits;
-  never invented results.
-- `docs/09-decisions/` — consequential choices and history.
-- `docs/10-execution/` — current milestone, prioritized backlog, open questions,
-  debt, and restartable handoff.
-
-Each canonical fact should have one owner. Other documents summarize and link.
-Do not create `final`, `v2`, `new`, or date-suffixed copies of canonical specs.
-If replacing a document's role, deprecate or supersede it visibly.
-
-## Status and decision rules
-
-Allowed document status values are:
+Define at least these named gates:
 
 ```text
-draft
-proposed
-review
-accepted
-deprecated
+GATE-01  Specification coherence
+GATE-02  MVP scope decision
+GATE-03  Android control feasibility
+GATE-04  Distribution viability
+GATE-05  Interaction-design readiness
+GATE-06  Safety/privacy readiness for prototype
+GATE-07  Technical prototype success
+GATE-08  MVP implementation readiness
+GATE-09  Pilot readiness
 ```
 
-Use the actual modification date. Creation does not imply acceptance.
+You may add or consolidate gates if the rationale is clear. Each gate must name
+evidence, approver, current status, blockers, and what work becomes authorized
+when it passes.
 
-Facts and decisions explicitly established for this session:
+Define a practical **Definition of Ready** for implementation tasks. At minimum
+a task must identify:
 
-- the three-stage strategy;
-- Stage 1 as the exclusive current scope;
-- Stage 1 is an app for stock Android tablets;
-- Stage 2 is a future Android/AOSP-based Granny OS;
-- Stage 3 is future integrated tablet/dock hardware;
-- the Git repository is the overall project source of truth;
-- `docs/` is the Obsidian vault;
-- Android is the initial platform;
-- semantic control is preferred before vision/coordinates;
-- consequential action requires understandable permission;
-- family support must not become surveillance;
-- no substantial product implementation is authorized in this task.
+- linked PRD requirement and use case/journey;
+- user-visible behavior and acceptance criteria;
+- screen/component or interface contract;
+- safety, privacy, permission, and accessibility implications;
+- architecture owner and data boundary;
+- eval/test requirement;
+- assumptions and excluded behavior;
+- dependencies and rollback/feature-flag expectation where relevant.
 
-Keep these unresolved unless evidence or an explicit user decision exists:
+Turn the roadmap into a dependency-ordered backlog. The top backlog items after
+this mission should be concrete, bounded work—not “write PRD” or “decide the
+whole architecture.” Prepare the first implementation milestone as small
+vertical slices with requirement/eval links, but do not implement them.
 
-- exact primary segment, market, country, and language;
-- final App MVP and App V1 feature sets;
-- Google Play accessibility-tool qualification or distribution route;
-- supported Android versions, OEMs, and third-party apps;
-- final model, backend, database, identity, and local/cloud topology;
-- memory scope and retention;
-- family features in MVP/V1;
-- numeric accessibility and reliability targets;
-- final brand, colors, typography, motion, or component values;
-- wake word versus push-to-talk;
-- pricing, business model, launch date, or regulatory classification.
+The readiness assessment must classify every required artifact and gate as:
 
-## Quality bar
+```text
+Ready
+Ready with proposed assumptions
+Needs evidence
+Needs Simon decision
+Blocked
+Not applicable to current stage
+```
 
-At completion, a new product manager, designer, Android engineer, safety
-reviewer, researcher, or Codex session must be able to answer:
+Do not declare the project development-ready merely because the documents
+exist. State exactly which implementation work is safe to start and which work
+must wait for research, platform testing, design, or a decision.
 
-- What is Granny Stage 1?
-- Who is it for, and which parts are hypotheses?
-- Which problem and jobs are being tested?
-- What are App MVP, App V1, later App, Stage 2, and Stage 3?
-- Which use cases and journeys define the current product?
-- What should the experience look, feel, and sound like?
-- What may the agent observe, prepare, execute, confirm, delegate, or refuse?
-- How does device control verify actions and recover safely?
-- What data may be collected, remembered, shared, corrected, or deleted?
-- What can family members see or do?
-- What does stock Android technically and contractually permit?
-- What could block Google Play distribution?
-- Where are component and trust boundaries?
-- How does each requirement trace to design, architecture, safety, and evals?
-- Which decisions are accepted, proposed, or unresolved?
-- What research or decision happens next?
+## ADR and decision workflow
 
-If the repository cannot answer those questions without reconstructing chat
-history, the work is incomplete.
+Review accepted/proposed ADRs and important choices hidden in prose. Create a
+proposed ADR only for consequential decisions that have a real options analysis
+and durable architectural/product impact. Likely candidates include:
 
-## Validation and completion
+- Stage 1 MVP signature workflows;
+- distribution and AccessibilityService posture;
+- supported Android/device/app matrix;
+- local/cloud and offline boundary;
+- model/provider independence;
+- memory ownership and deletion semantics;
+- family/helper permission model;
+- voice activation approach;
+- design accessibility baselines;
+- device-control service boundary;
+- privacy-preserving observability/eval data.
+
+Do not create ADRs for routine copy, file layout, or easily reversible details.
+Only explicit user authority or an already accepted source may make an ADR
+`accepted`. Preserve superseded records rather than editing history to look
+clean.
+
+## Canonical file ownership
+
+Use these ownership boundaries:
+
+- `docs/00-vision/` — long-term intent and three-stage strategy.
+- `docs/01-product/` — Stage 1 users, jobs, outcomes, scope, requirements, use
+  cases, journeys, success model, roadmap, and traceability.
+- `docs/02-design/` — Stage 1 product design, information architecture,
+  screens, states, voice/content, accessibility, design system, and Figma
+  agreement.
+- `docs/03-agent/` — Stage 1 agent behavior, control plane, memory interaction,
+  recovery, and tool contracts.
+- `docs/04-architecture/` and root `ARCHITECTURE.md` — Stage 1 system/component
+  architecture and boundaries.
+- `docs/05-safety-privacy/` — privacy, consent, threats, sensitive actions,
+  family/helper boundaries, data retention, and safety policy.
+- `docs/06-evals/` — capability/task evals, metrics, and failure taxonomy.
+- `docs/07-hardware/` — Stage 1 reference-tablet facts; Stage 3 concepts remain
+  explicitly dormant.
+- `docs/08-research/` — questions, methods, sources, observations, and
+  feasibility evidence; never fabricated results.
+- `docs/09-decisions/` — consequential decision records and history.
+- `docs/10-execution/` — current milestone, gates, backlog, open questions,
+  debt, and restartable handoff.
+
+Each canonical fact has one owner. Other files summarize and link. Do not make
+`final`, `new`, `v2`, or date-suffixed duplicates. If a document changes role,
+deprecate or supersede it visibly.
+
+## Metadata and writing standards
+
+Every canonical Markdown document must have valid frontmatter including:
+
+```yaml
+title: Human-readable title
+status: draft | proposed | review | accepted | deprecated
+owner: Simon
+last_updated: YYYY-MM-DD
+tags:
+  - relevant-tag
+related:
+  - relative-link.md
+```
+
+Use the actual modification date. Do not mark newly generated product choices
+`accepted`; use `proposed` or `review`. Within a document, distinguish the
+document's editorial status from the status of individual requirements or
+decisions.
+
+Write plain, direct language. Use tables where repeated fields need comparison
+and diagrams where flows/boundaries become easier to understand. Avoid bloated
+consulting language, generic best-practice filler, and repetition. Add enough
+detail that a designer or engineer can act without guessing product behavior.
+
+## Research standard
+
+Browse for claims that may have changed, especially Android APIs and behavior,
+Google Play policy, accessibility standards, model capabilities, privacy/legal
+requirements, and competitor behavior. Prefer official platform/policy/standards
+sources and original research. Clearly separate:
+
+- what a source explicitly establishes;
+- your inference;
+- a product recommendation;
+- a device test still required.
+
+Do not treat old conversation claims as current evidence. Do not perform broad
+legal or medical classification by inference; identify specialist review when
+the product decision truly requires it.
+
+## Work method and follow-through
+
+1. Begin with a concise progress update stating that Stage 1 is the only active
+   scope and that you will produce the complete readiness package.
+2. Inspect source material, effective instructions, Git state, and current
+   documents.
+3. Create a dependency order and execute all workstreams, not just the first
+   few. Maintain a short internal checklist or progress ledger.
+4. Make routine proposed choices so documents become concrete. Collect only
+   consequential unresolved decisions for Simon.
+5. Prefer expanding canonical files over producing audit artifacts.
+6. Cross-link requirements, use cases, journeys, screens, architecture,
+   policies, roadmap tasks, and evals as you work—not as a cosmetic final pass.
+7. Review each artifact from the perspective of its next consumer: user,
+   designer, Android engineer, backend/agent engineer, safety reviewer,
+   researcher, or future Codex session.
+8. Use subagents only if repository policy permits and work can be divided into
+   bounded, non-overlapping research/review lanes. The root session owns
+   canonical editing, cross-document consistency, and final acceptance.
+9. Keep the user informed during sustained work. Do not abandon the mission
+   because it is long.
+10. Work on a short-lived documentation branch. Preserve existing user work.
+11. Make focused local commits when coherent. Do not push, merge, publish,
+    install dependencies, enable Obsidian plugins, or change external systems
+    without current authorization.
+
+## Explicit non-goals for this session
+
+Do not:
+
+- implement the Android app, backend, agent runtime, production model calls,
+  deployment, OS fork, or hardware;
+- create fake code scaffolds to make the repository look active;
+- lock vendors, frameworks, databases, model providers, final visual brand,
+  pricing, market, or launch date without evidence/authority;
+- manufacture user research, technical measurements, policy approval, eval
+  results, or competitor findings;
+- expand Stage 2 or Stage 3 documentation beyond a link or scope boundary;
+- change private Obsidian state or source artifacts;
+- mark proposed documents/ADRs accepted on Simon's behalf.
+
+Small disposable technical experiments are allowed only if necessary to verify
+a critical planning claim, leave no production scaffold, use synthetic data,
+and are documented honestly. Prefer defining the feasibility spike for the next
+milestone if execution is not necessary now.
+
+## Development-readiness quality bar
+
+At completion, a new product manager, product designer, Android engineer,
+agent/backend engineer, safety reviewer, researcher, or Codex session must be
+able to answer from the repository alone:
+
+- What exactly is Granny Stage 1, for whom, and why?
+- Which claims are confirmed, proposed, or unvalidated?
+- What are the precise MVP and App V1 boundaries?
+- Which workflows define the thesis and why were they selected?
+- What does each workflow look, sound, and feel like in every important state?
+- Which screens and components must be designed in Figma?
+- What can Granny observe, prepare, execute, confirm, delegate, or never do?
+- How are actions verified, interrupted, retried, and recovered?
+- What information can be collected, remembered, inferred, shared, corrected,
+  exported, or deleted?
+- What can a family/helper see and do, and how does the older adult remain in
+  control?
+- What can stock Android and the intended distribution route really support?
+- Where are local/cloud, trust, permission, and component boundaries?
+- How does every MVP requirement trace to design, safety, architecture, and an
+  eval?
+- Which research, Figma, feasibility, and implementation tasks happen next?
+- What evidence must pass each milestone gate?
+- Which exact vertical slice may the next coding session begin?
+
+If the repository cannot answer these without reconstructing old chats, the
+mission is incomplete.
+
+## Validation before completion
 
 Before finishing:
 
-1. Re-read the effective agent instructions and Stage 1 scope gate.
+1. Re-read effective agent instructions and the Stage 1 scope gate.
 2. Review the complete diff for unsupported decisions, duplicated truth,
    cross-stage leakage, stale paths, and accidental user-file changes.
-3. Validate every standard Markdown link and frontmatter `related` path.
-4. Validate allowed status vocabulary, stable IDs, date metadata, and ADR index.
+3. Validate all standard Markdown links and frontmatter `related` paths.
+4. Validate status vocabulary, stable ID uniqueness, metadata dates, and the
+   ADR index.
 5. Search for stale claims that the repository root is the Obsidian vault.
-6. Search for active requirements assuming AOSP/root/system privileges or dock
-   hardware.
-7. Confirm the Dream Book and source artifacts remain unchanged.
-8. Confirm `docs/.obsidian/*.json` and other local Obsidian state are neither
-   modified nor committed.
-9. Confirm no credentials, private user data, fabricated research findings,
-   fake eval results, or final design values were added.
-10. Update `docs/README.md`, current milestone, backlog, open questions, tech
-    debt, and ADR index to match the final state.
-11. Run proportionate repository checks and record exact results.
-12. Create focused local commits on the documentation branch if the work is
-    coherent. Do not push, open/merge a PR, or modify external systems without
-    current authorization.
+6. Search active requirements for AOSP/root/system-privilege or custom-hardware
+   assumptions.
+7. Confirm Dream Book and source-material artifacts remain unchanged.
+8. Confirm `docs/.obsidian/*.json` is unmodified and uncommitted.
+9. Confirm no credentials, private user data, fabricated findings, fake eval
+   results, or falsely final design values were introduced.
+10. Confirm every proposed MVP requirement has a use case, design destination,
+    safety disposition, architecture owner, and eval or explicit gap.
+11. Confirm current milestone, readiness gate, backlog, open questions,
+    navigation, and ADR index match the final state.
+12. Run proportionate repository checks and record exact results.
+13. Create focused local commits if coherent. Do not push or merge without
+    explicit authorization.
 
 ## Final report
 
-Return a concise, evidence-backed report containing:
+Return a concise, evidence-backed report with:
 
-1. documents audited, created, substantially rewritten, deprecated, or left
+1. canonical documents created, substantially rewritten, deprecated, or left
    unchanged;
-2. the finalized Stage 1 product definition and proposed MVP signature flows;
-3. important contradictions resolved and the authority used;
-4. decisions still requiring Simon, with a recommendation and tradeoffs;
-5. highest-risk Android/Play, safety/privacy, usability, and architecture
-   findings;
-6. research and evals that should run next;
+2. the proposed Stage 1 MVP, App V1 boundary, and signature workflows;
+3. important product/design/agent/architecture/safety decisions made as
+   proposals and the rationale;
+4. decisions that specifically require Simon, with recommendation and
+   tradeoffs;
+5. development-readiness gate status and remaining blockers/evidence;
+6. the first safe implementation or feasibility slice, with linked requirement
+   and eval IDs;
 7. validation commands and exact results;
-8. branch/commit/worktree state;
-9. the single best next action for the project.
+8. branch, commit, and worktree state;
+9. the single best next action.
 
-Review before rewriting. Surface contradictions before resolving them. Do not
-convert assumptions into decisions. Preserve the long-term product vision while
-making Stage 1 precise enough to research, design, implement, and evaluate.
-Persist until the authorized documentation outcome is complete.
+The mission is complete only when the documentation system itself has been
+built and validated. Do not stop after reviewing it. Do not return a plan for
+someone else to write the PRD and design specification. Write them, connect
+them, establish the roadmap and gates, and leave the repository ready for the
+next evidence-led development step.
 
 ---
 
-Prompt design note: this execution contract deliberately specifies outcome,
-scope, source hierarchy, follow-through, delegation boundaries, verification,
-and stopping conditions in line with current
+Prompt design note: the explicit completion contract, instruction hierarchy,
+follow-through rules, and verification requirements reflect current
 [OpenAI model guidance for GPT-6 Astra](https://developers.openai.com/api/docs/guides/latest-model).

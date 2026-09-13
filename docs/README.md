@@ -2,7 +2,7 @@
 title: Granny Documentation Map
 status: draft
 owner: Simon
-last_updated: 2026-09-11
+last_updated: 2026-09-13
 tags:
   - documentation
   - navigation
@@ -50,7 +50,7 @@ supplementary.
 | Execution | [Current milestone](10-execution/current-milestone.md) | What is the team doing now? |
 
 The next high-value planning session should use the
-[Astra Stage 1 product-foundation metaprompt](10-execution/astra-stage-1-planning-metaprompt.md).
+[Astra Stage 1 development-readiness metaprompt](10-execution/astra-stage-1-planning-metaprompt.md).
 
 ## Knowledge-base conventions
 

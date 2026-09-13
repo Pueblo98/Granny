@@ -1,8 +1,8 @@
 ---
-title: Current Milestone — Stage 1 App Definition and Design Foundation
+title: Current Milestone — Stage 1 Development-Readiness Package
 status: accepted
 owner: Simon
-last_updated: 2026-09-11
+last_updated: 2026-09-13
 tags:
   - execution
   - milestone
@@ -13,13 +13,14 @@ related:
   - ../01-product/prd.md
 ---
 
-# Current Milestone — Stage 1 App Definition and Design Foundation
+# Current Milestone — Stage 1 Development-Readiness Package
 
 ## Outcome
 
-Make the Stage 1 stock-Android tablet app precise enough to begin evidence-led
-Figma exploration and controlled technical feasibility work without importing
-Stage 2 OS or Stage 3 hardware requirements.
+Produce the complete Stage 1 product, interaction-design, agent, architecture,
+safety/privacy, evaluation, research, and execution specification needed to
+start narrowly scoped development without reconstructing decisions from old
+conversations. Stage 2 OS and Stage 3 hardware remain dormant.
 
 ## Completed in initialization
 
@@ -29,19 +30,37 @@ Stage 2 OS or Stage 3 hardware requirements.
 - Six accepted initialization ADRs, concise templates, and proposed design-token schema.
 - Seed use cases, journeys, requirements, canonical evals, and failure taxonomy.
 
+These are useful inputs, not complete product or design specifications.
+
 ## Exit criteria
 
-- Instruction-stack and product-consistency audits completed.
-- Stage 1 App PRD red-teamed, formalized with stable IDs, and ready for user review.
-- Android/AccessibilityService/Play feasibility and distribution risks documented.
-- Primary proto-persona/job reviewed and initial research plan approved.
-- MVP thesis and 3–5 canonical workflows selected.
-- Accessibility and voice-UX baselines reviewed against current primary guidance.
-- Initial Figma exploration brief accepted.
-- Reference tablet physically inventoried and a limited stock-Android feasibility plan defined.
+- Complete Stage 1 PRD with testable stable IDs and explicit MVP, App V1, later
+  App, Stage 2, and Stage 3 boundaries.
+- Proto-personas, jobs, prioritized use cases, 5–8 signature journeys, feature
+  map, product outcomes, and traceability completed for review.
+- Canonical product design specification defines information architecture,
+  screen inventory, interaction states, components, voice/content behavior,
+  accessibility requirements, and the first Figma package.
+- Agent behavior, device control, autonomy, confirmation, recovery, memory,
+  family/helper, and typed tool boundaries specified to implementation depth.
+- Stage 1 Android architecture, permissions, data flows, trust boundaries,
+  local/cloud options, and degraded behavior documented.
+- Android/AccessibilityService/Google Play feasibility and distribution options
+  researched from current primary sources with explicit evidence gaps.
+- Safety/privacy model, action-policy matrix, threat model, and MVP release
+  gates completed.
+- Every proposed MVP requirement traces to a use case, journey/design surface,
+  architecture owner, safety disposition, and eval or an explicit gap.
+- Research plan targets the highest-risk product, usability, privacy,
+  accessibility, platform, and distribution hypotheses without invented results.
+- Stage 1 roadmap, milestones, named entry/exit gates, Definition of Ready,
+  dependency-ordered backlog, and development-readiness assessment completed.
+- `AGENTS.md`, `CLAUDE.md`, and repository navigation accurately tell future
+  agents how to maintain the canonical documentation and active-stage boundary.
 
 ## Out of scope
 
 Substantial Android/backend/agent implementation, all Stage 2 OS/AOSP work, all
-Stage 3 hardware work, production infrastructure, final vendor/database
-choices, and final brand values.
+Stage 3 hardware work, production infrastructure, unsupported vendor/database
+lock-in, final visual-brand choices without exploration, and invented research
+or eval results.
