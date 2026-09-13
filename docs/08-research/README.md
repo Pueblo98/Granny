@@ -13,6 +13,10 @@ related:
 
 # Research and source register
 
+[Execution protocols](research-protocols.md) supply moderator prompts, consent/worksheet boundaries and deidentified synthesis for the planned studies. [Evidence protocol](../06-evals/evidence-protocol.md) defines how actual results are recorded and reviewed. No new participant/device evidence was collected during workflow refinement.
+
+Workflow-tool source, accessed 2026-09-14: OpenAI [Build skills](https://learn.chatgpt.com/docs/build-skills) documents repo-local .agents/skills discovery, SKILL.md name/description metadata and optional UI settings. This establishes the packaging convention, not successful discovery or behavioral reliability in a fresh session. Repository skills are instruction-only and do not install global plugins/configuration.
+
 [Research plan](research-plan.md) owns hypotheses, methods, ethics and evidence gates. No completed user/device study is implied by a specification. [Android feasibility](android-stage-1-feasibility.md) owns current platform/policy desk findings; [naming](../02-design/naming-exploration.md) owns preliminary candidate screening. Store future dated observations using the [research template](../_templates/research-note.md), not by editing source history.
 
 ## Preserved inputs

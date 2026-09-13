@@ -22,9 +22,11 @@ Read the [documentation map](docs/README.md) → [current milestone](docs/10-exe
 
 The Stage 1 specification package is written: [PRD](docs/01-product/prd.md), [product design](docs/02-design/product-design-spec.md), [agent contracts](docs/03-agent/tool-contracts.md), [system architecture](ARCHITECTURE.md), [action/privacy policy](docs/05-safety-privacy/action-policy.md), [evals](docs/06-evals/canonical-tasks.md) and [traceability](docs/01-product/traceability.md). These are proposals and unrun test specifications, not a built product.
 
-Proposed MVP: family photos, screen explanation/recovery, exact message draft/confirmation, requested media and Granny text adjustment. V1 adds validated calls/reminders/selected documents, explicit facts and optional helper configuration proposals. At least two useful external delegated workflows must be verified to support the thesis. [Android policy/feasibility](docs/08-research/android-stage-1-feasibility.md) constrains how: a broad dynamic AccessibilityService public assistant is not a viable Play assumption.
+Accepted experiment scope ([ADR-0009](docs/09-decisions/ADR-0009-mvp-and-control-posture.md)): family photos, screen explanation/recovery, exact message draft/confirmation, requested media and Granny text adjustment. Final release feasibility and detailed requirements remain evidence-gated/proposed. V1 proposes validated calls/reminders/selected documents, explicit facts and optional helper configuration proposals. At least two useful external delegated workflows must be verified to support the thesis. [Android policy/feasibility](docs/08-research/android-stage-1-feasibility.md) constrains how: a broad dynamic AccessibilityService public assistant is not a viable Play assumption.
 
 ## Review and next work
+
+[Delivery workflows and four repository skills](docs/10-execution/operating-workflows.md) explain how to refine specs, prepare design, implement bounded slices and review evidence. [First task packets](docs/10-execution/task-packets.md) give concrete inputs, outputs, adverse cases and stop boundaries for T-101/102/103/108. No global skills/plugins, scheduled jobs or external workflows are installed.
 
 [Brand territories](docs/02-design/brand-and-visual-identity.md), [81-name exploration](docs/02-design/naming-exploration.md) and [local static identity boards](docs/02-design/identity-review.html) provide concrete choices. Open Day is the proposed visual direction; Daykind, Handspan and Clearfold are uncleared naming finalists. No Figma file has been created; [the execution brief](docs/02-design/figma.md) specifies it.
 
@@ -36,4 +38,4 @@ Open **docs/** as the Obsidian vault; the whole repository remains the source of
 
 docs/ owns knowledge, preserved sources and decisions; design-tokens/ owns token handoff; existing android/, agent/, backend/ and evals/ directory notes are future implementation placeholders, not active code. hardware/ is dormant Stage 3 context. [Reference tablet](docs/07-hardware/reference-hardware.md) records supplied provenance; exact physical model/OS/app matrix is still unknown.
 
-Documentation checks: `python3 scripts/validate-docs.py` and `git diff --check`. No production build/test command exists yet. See the [validation record](docs/10-execution/development-readiness.md) for actual results and limitations.
+Documentation checks: `python3 scripts/validate-docs.py`, `python3 -m unittest discover -s scripts -p 'test_*.py'` and `git diff --check`. The unit tests validate documentation tooling, not product behavior. No production build/test command exists yet. See the [validation record](docs/10-execution/development-readiness.md) for actual results and limitations.

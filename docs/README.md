@@ -40,6 +40,10 @@ related:
 | What evidence exists and what comes next? | [Source register](08-research/README.md), [Android feasibility](08-research/android-stage-1-feasibility.md), [research program](08-research/research-plan.md) |
 | What is accepted versus proposed? | [ADR index](09-decisions/README.md); eight accepted records including the MVP experiment/control decision, two proposals, one deprecated historical record |
 | How do agents maintain this system? | [AGENTS](../AGENTS.md); [CLAUDE](../CLAUDE.md) delegates to it |
+| How do we move from specs to bounded work? | [Delivery workflows and repo skills](10-execution/operating-workflows.md), [first task packets](10-execution/task-packets.md) |
+| What happens at dispatch, Stop, crash and recovery? | [Execution transaction protocol](03-agent/execution-protocol.md); tool schemas and policy remain their existing owners |
+| When is an adapter/build actually supported? | [Capability admission and support lifecycle](04-architecture/capability-admission.md) |
+| How do we collect and judge evidence? | [Evidence protocol](06-evals/evidence-protocol.md), [research execution protocols](08-research/research-protocols.md) |
 
 ## Knowledge conventions
 
@@ -54,3 +58,5 @@ Update one canonical owner, affected downstream contracts/evals and dates/links.
 Preserved [Dream Book PDF](00-vision/dream-book.pdf)/[TeX](00-vision/dream-book.tex), [handoff](08-research/source-material/initialization-handoff.md) and [conversation](08-research/source-material/planning-conversation.md) remain inputs, not new acceptance. [Source register](08-research/README.md) records hashes. The [mission metaprompt](10-execution/astra-stage-1-planning-metaprompt.md) is retained historical assignment context, not a next task to repeat.
 
 Templates: [spec/requirement](_templates/spec.md), [ADR](_templates/adr.md), [use case](_templates/use-case.md), [journey](_templates/user-journey.md), [eval](_templates/eval.md), [research](_templates/research-note.md). Replace prompts, add actual relative links and today's modification date; no empty stubs as deliverables. Run `python3 scripts/validate-docs.py` from repository root; exact results in [readiness](10-execution/development-readiness.md).
+
+Execution templates: [task packet](_templates/task-packet.md), [design handoff](_templates/design-handoff.md), [gate review](_templates/gate-review.md). Repository SKILL.md files use their host packaging schema, with owner/status/date under metadata; the validator checks them separately. Run `python3 -m unittest discover -s scripts -p 'test_*.py'` when changing the documentation checker. Structural validation does not prove skill behavior or fresh-session discovery.

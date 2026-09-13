@@ -39,6 +39,8 @@ The canonical specification package is written and linked. It is **ready for bou
 | Roadmap/gates/DoR/backlog/handoff | This file, [backlog](backlog.md), [milestone](current-milestone.md), [questions](open-questions.md) | Ready with proposed assumptions; not authorization for broader implementation |
 | Instructions/navigation/templates/decisions | [AGENTS](../../AGENTS.md), [docs index](../README.md), [ADRs](../09-decisions/README.md) | Ready as operating map; ADR-0009 accepted 2026-09-14, ADR-0010/0011 proposed, seven earlier accepted records unchanged |
 | Stage 2 OS / Stage 3 hardware | [Accepted stage strategy](../09-decisions/ADR-0007-three-stage-product-strategy.md) | Not applicable to current stage; no development work |
+| Delivery workflows / skills / first task packets | [Workflows](operating-workflows.md), [packets](task-packets.md), [execution protocol](../03-agent/execution-protocol.md), [admission](../04-architecture/capability-admission.md) | Ready with proposed assumptions for bounded preparation/fake implementation; four repo skills structurally checked, fresh-session behavior/discovery not proven |
+| Evidence / research execution protocol | [Evidence review](../06-evals/evidence-protocol.md), [research protocols](../08-research/research-protocols.md) | Ready with proposed assumptions as procedures; no device/participant/runtime results |
 
 ## Named gates: evidence, approver, blockers and unlocks
 
@@ -85,6 +87,8 @@ Before code, the task must identify:
 
 T-103 satisfies **specification-level** DoR for pure fake replay. The coding session must inspect available language/test tools and choose a reversible implementation/testing approach; no framework/vendor selection is implied. T-111 is an extension epic and explicitly fails per-task DoR until broken down.
 
+The [T-103 packet](task-packets.md#t-103-packet) now supplies explicit fake ports, independent ledger, 20 boundary/adversarial cases and A–D execution units. [T-102](task-packets.md#t-102-packet) supplies the low-fi design package and annotation contract. These clarify how to start an explicitly requested task; they do not perform it or confer external access.
+
 ## Exactly what may start next
 
 - **First safe coding slice:** [T-103](backlog.md#t-103), offline typed prepare/confirm/act/verify/cancel replay. PRD-SAF-001–005, PRD-FR-012/013, PRD-NFR-003/004; EVAL-006/010 plus provider-negative EVAL-009. Fake adapters and synthetic ledger only. No Android permission, microphone, network, real account or final brand dependency.
@@ -113,6 +117,34 @@ Scope/vault text searches found old root-vault instructions only in preserved in
 No app/runtime/backend was built, no user/device study or EVAL-001–017 was executed, and no Figma file/store approval/final brand was fabricated. Local source wording and formatted PRD migration were preserved while expanding behavior. The package is coherent for bounded next work; remaining evidence and Simon decisions above still block MVP/pilot readiness.
 
 ## Restart handoff
+
+### Workflow refinement validation — T-113, 2026-09-14
+
+The follow-up goal was to make the planning package operational before product design/development. It delivered six focused contract/workflow/packet documents, three execution templates, four repository-local skills and regression-tested documentation tooling, with linked canonical updates. T-103 remains unimplemented; no device, participant, Figma or provider execution occurred.
+
+| Check | Actual result | Limit |
+|---|---|---|
+| python3 scripts/validate-docs.py | Exit 0, PASS, 0 errors; 77 canonical/template Markdown files, four skills, all local references, 48 PRD/trace rows, 14 task IDs, four source hashes | External URLs not fetched; supported Markdown forms, not a complete CommonMark renderer |
+| python3 -m unittest discover -s scripts -p 'test_*.py' | Exit 0; 19 tests passed | Parser/frontmatter, skill metadata, undefined IDs, trace status drift and implementation-status progression; not app evals |
+| Bundled skill-creator quick_validate.py for each of four skill directories | Four exit-0 “Skill is valid!” results | Packaging only, not discovery or independent agent behavior |
+| git diff --check | Exit 0, no whitespace errors | Staged check also required before commit |
+| git diff --exit-code over vision, source-material, Obsidian and ADR paths | Exit 0; unchanged from task start | Existing user action-policy heading edit preserved separately, not part of this task |
+| Targeted private-key/API-token format scan of new docs/skills/tooling | Exit 1; no matches | Heuristic only; synthetic fixtures and diff also reviewed |
+
+Self-review scenario walkthrough, **not agent execution or an independent test**:
+
+| Request scenario | Instruction/contract result checked |
+|---|---|
+| Review voice proposal | Spec skill distinguishes review from edit; no automatic implementation |
+| Accept only ADR-0009 | Decision workflow preserves ADR-0010/0011 and other gate statuses |
+| Prepare T-103 | Task skill yields a packet/test plan, not runtime code |
+| Implement T-103 then claim Android success | Fake-only packet and evidence layer reject the broader device claim |
+| Prepare Figma manifest | Design skill preserves external-write boundary and cannot invent a file link |
+| Prefer Open Day | Design workflow does not accept a name, font, logo or every token |
+| Use 20 fake passes to approve GATE-03 | Evidence review requires actual device configuration/Stop/postconditions |
+| Complete a task with an unknown message effect | Execution protocol forbids completion/retry without independent evidence |
+
+Fresh-session discovery and behavioral smoke tests remain explicit skill debt; no false passing claim. Numeric budgets, journal encoding, real adapter admission, ADR-0010/0011, identity and research protocols remain proposed/evidence-gated. GATE-02 alone retains Simon's accepted experiment scope; no other gate was promoted by this refinement.
 
 Decision follow-up validation, 2026-09-14: after recording Simon's ADR-0009 approval and updating GATE-02, T-100 and linked scope/status summaries, `python3 scripts/validate-docs.py` passed with 0 errors (1,211 local links; unchanged requirement/eval counts and four source hashes); `git diff --check` exited 0. No runtime evidence or other gate acceptance was added.
 

@@ -8,6 +8,7 @@ try:
     import yaml
 except ImportError:
     sys.exit("PyYAML required; do not install without authorization.")
+from doc_checks import markdown_links, skill_errors, split_frontmatter, trace_errors
 ROOT=Path(__file__).resolve().parents[1]
 errors=[]; counts=collections.Counter()
 def fail(message): errors.append(message)
@@ -21,7 +22,8 @@ preserved={
 "docs/08-research/source-material/planning-conversation.md":"d1d4edd3419123df3a3470720d2fda1932c68ba38fdd40df62c9a8aa003106d5"}
 texts={p:p.read_text() for p in paths}
 def body(text):
-    if text.startswith("---\n"): text=text.split("---",2)[2]
+    try: _,text=split_frontmatter(text)
+    except ValueError: pass
     return re.sub(r"(?ms)^("+chr(96)+r"{3,}|~{3,})[^\n]*\n.*?^\1[ \t]*$","",text)
 def anchors(text):
     found=set(re.findall(r'<a\s+id="([^"]+)"',text)); used=collections.Counter()
@@ -33,6 +35,8 @@ def anchors(text):
     return found
 anchor_map={p:anchors(t) for p,t in texts.items()}
 def link(source,raw,kind="link"):
+    if not isinstance(raw,str) or not raw.strip():
+        fail(f"{rel(source)}: invalid {kind} destination"); return
     raw=raw.strip().strip("<>")
     if raw.startswith(("http:","https:","mailto:","data:")):
         counts["external_links_not_fetched"]+=1; return
@@ -47,13 +51,20 @@ for p,text in texts.items():
     name=rel(p)
     if name in preserved:
         counts["preserved_markdown_exempt"]+=1; continue
+    try: meta,_=split_frontmatter(text)
+    except ValueError as exc:
+        fail(f"{name}: {exc}"); continue
+    if name.startswith(".agents/skills/") and p.name=="SKILL.md":
+        counts["skills"]+=1
+        try: ui=yaml.safe_load((p.parent/"agents/openai.yaml").read_text())
+        except (OSError,yaml.YAMLError) as exc:
+            fail(f"{name}: missing/invalid UI metadata: {exc}"); ui={}
+        for error in skill_errors(meta,p.parent.name,ui): fail(f"{name}: {error}")
+        destinations,unresolved=markdown_links(body(text))
+        for raw in destinations: link(p,raw)
+        for label in unresolved: fail(f"{name}: undefined link reference {label}")
+        continue
     counts["markdown"]+=1
-    if not text.startswith("---\n") or text.count("---")<2:
-        fail(f"{name}: missing frontmatter"); continue
-    try: meta=yaml.safe_load(text.split("---",2)[1])
-    except yaml.YAMLError as exc:
-        fail(f"{name}: invalid YAML {exc}"); continue
-    if not isinstance(meta,dict): fail(f"{name}: metadata not map"); continue
     for key in ["title","status","owner","last_updated","tags","related"]:
         if key not in meta: fail(f"{name}: missing metadata {key}")
     if meta.get("status") not in {"draft","proposed","review","accepted","deprecated"}: fail(f"{name}: bad status")
@@ -63,9 +74,11 @@ for p,text in texts.items():
     if name in changed and isinstance(date,datetime.date) and date<datetime.date(2026,9,13): fail(f"{name}: changed package file date predates mission")
     for key in ["tags","related"]:
         if not isinstance(meta.get(key),list): fail(f"{name}: {key} not list")
-    for target in meta.get("related",[]): link(p,target,"related path")
+    for target in meta.get("related",[]) if isinstance(meta.get("related"),list) else []: link(p,target,"related path")
     clean=body(text)
-    for match in re.finditer(r"!?\[[^\]\n]*\]\(([^)\n]+)\)",clean): link(p,match[1])
+    destinations,unresolved=markdown_links(clean)
+    for raw in destinations: link(p,raw)
+    for label in unresolved: fail(f"{name}: undefined link reference {label}")
     for a,n in collections.Counter(re.findall(r'<a\s+id="([^"]+)"',text)).items():
         if n>1: fail(f"{name}: duplicate anchor {a}")
     width=None
@@ -90,13 +103,14 @@ owners=[
 definitions={}
 for label,owner,pattern,expected in owners:
     ids=re.findall(pattern,(ROOT/owner).read_text()); counts[label]=len(ids); definitions[label]=set(ids)
-    if len(ids)!=expected or len(set(ids))!=len(ids): fail(f"{owner}: expected {expected} unique {label}, got {len(ids)} / {len(set(ids))}")
+    if len(ids)<expected or len(set(ids))!=len(ids): fail(f"{owner}: expected at least baseline {expected} unique {label}, got {len(ids)} / {len(set(ids))}")
 trace=(ROOT/"docs/01-product/traceability.md").read_text()
 ids=re.findall(r'<a id="(prd-[^"]+)"',trace); counts["trace_rows"]=len(ids)
-if {i.upper() for i in ids}!=definitions["requirements"] or len(ids)!=48: fail("PRD/trace IDs differ")
+if {i.upper() for i in ids}!=definitions["requirements"] or len(ids)!=len(set(ids)): fail("PRD/trace IDs differ")
+for error in trace_errors((ROOT/"docs/01-product/prd.md").read_text(),trace,definitions): fail(error)
 for line in trace.splitlines():
     if '<a id="prd-' in line:
-        for key in ["PROB-","JOB-","UC-","J-","SCR-","CMP-","system-overview.md#","tool-contracts.md","action-policy.md","T-","EVAL-","RES-","not implemented","unrun"]:
+        for key in ["PROB-","JOB-","UC-","J-","SCR-","CMP-","system-overview.md#","tool-contracts.md","action-policy.md","T-","EVAL-","RES-"]:
             if key not in line: fail(f"Trace missing {key}: {line[:80]}")
 naming=(ROOT/"docs/02-design/naming-exploration.md").read_text()
 longlist=re.findall(r"(?m)^\d+\. (.+)$",naming.split("## Earlier scored set")[0])
@@ -124,10 +138,11 @@ if counts["contrast_pairs"]!=36: fail("Expected 36 contrast pairs")
 index=(ROOT/"docs/09-decisions/README.md").read_text(); adrs=sorted((ROOT/"docs/09-decisions").glob("ADR-*.md"))
 counts["adrs"]=len(adrs)
 for p in adrs:
-    meta=yaml.safe_load(p.read_text().split("---",2)[1])
-    if f"]({p.name}) | {meta['status']} |" not in index: fail("ADR missing/status mismatch "+p.name)
+    try: meta,_=split_frontmatter(p.read_text())
+    except ValueError: continue
+    if f"]({p.name}) | {meta.get('status')} |" not in index: fail("ADR missing/status mismatch "+p.name)
     if int(p.name[4:8])<=8 and git("diff","ddaacf1","--",rel(p)).strip(): fail("Historical ADR modified "+p.name)
-if len(adrs)!=11: fail("Expected 11 ADRs")
+if len(adrs)<11: fail("Missing baseline ADRs")
 for path,digest in preserved.items():
     if hashlib.sha256((ROOT/path).read_bytes()).hexdigest()!=digest: fail("Preserved source changed "+path)
     counts["source_hashes"]+=1

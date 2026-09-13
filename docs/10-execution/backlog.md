@@ -13,9 +13,11 @@ related:
 
 # Dependency-ordered Stage 1 backlog
 
-Planning package complete for review; T-100's experiment/control decision is accepted, while other product choices and runtime evidence remain open. Except for the completed decision task, these are **planned tasks, not implemented work**. [Readiness](development-readiness.md) owns gates and Definition of Ready. [Traceability](../01-product/traceability.md) supplies exact requirement links. P0 = kill-risk/foundation, P1 = controlled prototype, P2 = MVP/pilot, P3 = V1 after learning. No task includes permission to push, install dependencies or modify external services.
+Planning package complete for review; T-100's experiment/control decision is accepted, while other product choices and runtime evidence remain open. T-113 covers documentation/workflow refinement; other tasks remain **planned, not implemented work** unless individually marked. [Readiness](development-readiness.md) owns gates and Definition of Ready. [Traceability](../01-product/traceability.md) supplies exact requirement links. P0 = kill-risk/foundation, P1 = controlled prototype, P2 = MVP/pilot, P3 = V1 after learning. No task includes permission to push, install dependencies or modify external services.
 
 Order: T-100/101 decision/evidence + T-102/108 interaction/research; independently T-103 fake contract replay → admitted T-104/105/106 + local T-107 → T-109 integrated evidence → T-110 gated MVP/pilot → T-111 V1. T-112 stays deferred. Product/visual decisions need not block fake safety tests; missing route evidence does block real external automation.
+
+[Task packets](task-packets.md) now detail T-101/102/103/108; [delivery workflows](operating-workflows.md) own preparation, implementation, review and evidence procedures. T-113 records the documentation/workflow refinement, not execution of those downstream tasks.
 
 <a id="t-100"></a>
 ## T-100 — Review MVP/control decision brief
@@ -55,6 +57,7 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 
 - **Priority / discipline:** P0 — first safe coding slice / Agent/safety engineer; Simon owns acceptance.
 - **Dependencies / entry:** Read PRD/tool/policy/DoR; GATE-01 editorial coherence; synthetic-only contract scope. No device/provider or brand decision needed.
+- **Execution packet:** [T-103](task-packets.md#t-103-packet), 20 deterministic cases; [execution protocol](../03-agent/execution-protocol.md) and [admission contract](../04-architecture/capability-admission.md) resolve operation/journal/Stop boundaries. Explicit coding request required; this documentation pass does not start runtime work.
 - **Trace / contract:** PRD-SAF-001–005, FR-004/012/013/016, NFR-001/003/004, DST-004; UC-003/006/011/019/025; J-002/003; EVAL-006/009/010.
 - **Bounded deliverable:** Implement minimal pure typed intent/prepared action/permit/receipt/evidence state machine using fake registry/observer/planner/executor/clock/ledger. One synthetic message effect and one reversible navigation. Exact recipient/content bound; deny wrong/stale/replayed/changed approvals. Stop prevents post-latch dispatch; crash restart quarantines unknown; action success without postcondition cannot complete.
 - **Acceptance / evidence:** Deterministic tests for valid once-only effect, 60s expiry, >2s stale observation, malformed/forged tool, screen injection, late model, cancel races, budget/loop cutoff, unknown outcome/no resend and provider swap. No actual network/files from model. Record tests and limitations; contract replay is not GATE-03/07 device evidence.
@@ -160,6 +163,16 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Excluded / rollback:** No OS/AOSP/hardware; no preparatory backend or surveillance infrastructure. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
 - **Status:** planned; no code, test result or assigned staffed team claimed.
 
-## Task handoff rule
+<a id="t-113"></a>
+## T-113 — Refine delivery contracts, repository skills and task handoffs
+
+- **Scope / authority:** Simon requested a holistic documentation, skills and workflow refinement before actual design/development on 2026-09-14; no product runtime code in this task.
+- **Trace / contract:** PRD-SAF-001–005/FR-012/013/NFR-003/DST-002–004; UC-003/006/011/019/025; J-002/003. [Execution protocol](../03-agent/execution-protocol.md), [admission](../04-architecture/capability-admission.md), [task packets](task-packets.md), [delivery workflows](operating-workflows.md), [evidence](../06-evals/evidence-protocol.md) and [research protocols](../08-research/research-protocols.md).
+- **Deliverables:** Four repo-local instruction-only skills, concrete T-101/102/103/108 packets, 20 unrun T-103 cases, design/gate/task templates, maintained ownership/navigation and regression-tested documentation validation.
+- **Acceptance:** Canonical links/status/IDs and skills validate; documentation-tool tests pass; no source/private Obsidian/unrelated edit included; accepted scope intact; remaining design/device/runtime evidence explicit. EVAL-006/008/009/010 coverage refined but remains unrun.
+- **Status:** complete — documentation and four skills written, 19 documentation-tool tests and structural validation passed on 2026-09-14; see readiness validation. This does not complete T-103 or pass a runtime gate.
+- **Excluded:** App/backend/runtime implementation, participant contact, Figma mutation, global installs/config, external publication and Stage 2/3.
+
+## Session handoff
 
 Each next session selects **one bounded slice**, reads its PRD/UC/J, canonical interface/screen and policy, checks current gates and Git, then writes tests and implementation together. Add actual source/test links to traceability only when they exist. If feasibility changes the intended outcome, amend canonical behavior and gate decision before widening code. Do not turn an unsuccessful integration into silent Stage 2 work.

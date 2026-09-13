@@ -1,0 +1,4 @@
+interface:
+  display_name: "Granny Spec Change"
+  short_description: "Keep Stage 1 specs and decisions coherent"
+  default_prompt: "Use $granny-spec-change to refine a named Stage 1 requirement and update its affected contracts and traceability."

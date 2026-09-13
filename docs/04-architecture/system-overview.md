@@ -12,7 +12,7 @@ related:
 
 # Stage 1 architecture
 
-Proposed component contracts for the stock-Android app. [ADR-0001/0005/0007](../09-decisions/README.md) constrain platform/control; [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md), [ADR-0010](../09-decisions/ADR-0010-local-authority-and-data.md) and [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md) propose scope, local authority/data and explicit voice/access. No framework, database, model vendor, backend topology or public distribution is selected.
+Proposed component contracts for the stock-Android app. [ADR-0001/0005/0007](../09-decisions/README.md) constrain platform/control; [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) accepts experiment/control scope. [ADR-0010](../09-decisions/ADR-0010-local-authority-and-data.md) and [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md) still propose local authority/data and explicit voice/access. No framework, database, model vendor, backend topology or public distribution is selected. [Execution protocol](../03-agent/execution-protocol.md) owns transaction/event ordering; [capability admission](capability-admission.md) owns registry/build/support lifecycle.
 
 ## Trust and process map
 

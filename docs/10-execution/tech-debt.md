@@ -21,6 +21,7 @@ No application code exists to assess implementation debt. Do not confuse missing
 | Figma/user/access/name testing absent; identity proposals only | T-108/RES-03/06/09/GATE-05; local boards not final assets |
 | Provider retention/egress/cost and market obligations unknown | RES-05/08/OQ-04/08; real-data cloud blocked |
 | Typed contracts not executed; cancellation/visibility not measured | T-103 then device EVAL-006; fake pass cannot prove Android behavior |
+| Repository skill discovery and realistic agent behavior not yet independently tested | Four instruction-only skills have structural validation and documented scenario review; fresh-session smoke test before relying on automatic selection |
 | V1 adapters/helper protocol need task-level refinement | T-111 after MVP learning; not MVP blockers when excluded |
 | Candidate dark/high-contrast/font/small-logo tests absent | Brand production/Figma brief; production tokens cannot be inferred from light board |
 

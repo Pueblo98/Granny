@@ -49,6 +49,14 @@ System app screens use annotated neutral placeholders: “Android-owned; exact l
 
 ## Components and responsive contract
 
+### Handoff manifest and review separation
+
+Use the [design-handoff template](../_templates/design-handoff.md) and [T-102 packet](../10-execution/task-packets.md#t-102-packet) to prepare the first package. The manifest may exist in Markdown before Figma access; it must not contain invented file/node URLs. When frames are actually created, record their real references and source commit in the handoff.
+
+Worked annotation example (proposed, not an existing frame): `J-003/SCR-007/confirm-draft/portrait-600/font-100/proposed`. Entry: resolved fictional endpoint/channel and locally prepared exact text. State: ready to confirm, local coordinator owner. Content: recipient, channel, exact message, “Open this draft in [app]”; no sent/delivered claim. Controls: Change it, Open draft, Cancel; no default approval. Readable preview first, then actions in visual order; focus never automatically activates Open draft. Expiry keeps text visible but requires refreshed approval. Correction returns to a new preview revision; Cancel returns to stopped/no-effect; admitted handoff leads to draft-opened partial, while unknown effect leads to honest recovery. Data is private transient preview, not diagnostic content. Links: PRD-FR-008/009, SAF-002, EVAL-003/010/012, CMP-003. Android's draft screen is a separate device-dependent placeholder. This example illustrates annotation shape; product design and policy remain the behavior owners.
+
+Separate reviews: interaction coverage first, accessible component behavior second, identity preference third, implementation fidelity after actual code exists. A reviewer records precise missing frame/variant or contradictory behavior. Simon's identity selection does not approve an unreviewed workflow; engineering acceptance of layout does not confer name clearance. Research preparation and actual collection follow [research protocols](../08-research/research-protocols.md).
+
 CMP-001 Stop/Take over, 002 microphone/transcript, 003 consequence preview, 004 activity, 005 choices, 006 outcome, 007 buttons/forms, 008 guidance/permissions, 009 lists/media/settings compose all screens. Component names `Granny/Confirmation/prepare`, properties `state`, `inputMode`, `consequence`, `sizeProfile`, `themeCandidate`; identity name is a property, not four forked behavior libraries.
 
 Use auto-layout with wrapping text; no fixed-height text containers, truncation of recipients or scrolling-hidden Stop. Layout constraints: 360/600/840dp logical widths; portrait and landscape; 100/130/200% font scenarios. These are design reference units, not proof of Android reflow. Touch bounds ≥56dp, main/Stop ≥64dp, 12dp gaps. Annotate nonvisual label/role/state, focus order, status live announcements, switch/keyboard route, focus restoration, reduced-motion equivalent and sensitive regions.

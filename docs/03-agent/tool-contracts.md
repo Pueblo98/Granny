@@ -12,7 +12,7 @@ related:
 
 # Typed capability contracts
 
-Specification only; no runtime exists. These vendor-neutral interfaces define the proposed MVP. [Policy](../05-safety-privacy/action-policy.md) owns grants/consequence/permit rules; [device control](device-control.md) owns serialization and verification. There is no generic shell, arbitrary HTTP, raw credential, unbounded tap or model-defined script capability.
+Specification only; no runtime exists. These vendor-neutral interfaces define the proposed MVP. [Policy](../05-safety-privacy/action-policy.md) owns grants/consequence/permit rules; [device control](device-control.md) owns budgets/freshness and [execution protocol](execution-protocol.md) owns transaction/event/journal semantics. [Capability admission](../04-architecture/capability-admission.md) owns build/configuration support. There is no generic shell, arbitrary HTTP, raw credential, unbounded tap or model-defined script capability.
 
 ## Common types and trust
 
@@ -45,7 +45,7 @@ FailureCode = PER_INCOMPLETE | INT_AMBIGUOUS | ACT_NO_EFFECT | VRF_UNKNOWN |
               USR_INTERRUPTED | PLN_BUDGET | REC_STOPPED
 ```
 
-UUIDs are session/install-scoped internal IDs, never device serials. Content references resolve only inside scope-aware local stores; raw personal values do not go into audit. HumanObserved is a test oracle, not production claim. UserReported is presented as “You said…” and does not upgrade independent task verification. Model confidence alone cannot produce Verified. Outputs cannot create new executable capabilities.
+UUIDs are session/install-scoped internal IDs, never device serials. Content references resolve only inside scope-aware local stores; raw personal values do not go into audit. Prepared/element content digests are private transient values, not exportable anonymous identifiers. The execution protocol defines exact-content encoding and prohibits durable personal-content hashes/permits. HumanObserved is a test oracle, not production claim. UserReported is presented as “You said…” and does not upgrade independent task verification. Model confidence alone cannot produce Verified. Outputs cannot create new executable capabilities.
 
 Result is a tagged union, not a free-form model object: each variant contains ResultCommon and a fixed discriminator. Verified requires a registered postcondition satisfied by fresh independent evidence; Prepared identifies the immutable preview and explicitly has no completed external outcome; Partial lists verified predicate IDs and unresolved IDs; Unknown names a possibly dispatched effect and forbids repeat; Denied includes policy reason and no-effect evidence; Failed includes failure category and whether no effect is proven. Uncertain effect must return Unknown/Partial, never Denied or Failed with an implicit no-effect claim. Missing/extra fields, wrong types and out-of-range values fail schema validation before dispatch.
 

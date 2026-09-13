@@ -1,0 +1,4 @@
+interface:
+  display_name: "Granny Task Slice"
+  short_description: "Prepare and build a bounded, tested Stage 1 slice"
+  default_prompt: "Use $granny-task-slice to prepare T-103's offline test plan without starting code."

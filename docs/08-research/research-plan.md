@@ -126,6 +126,8 @@ Use synthetic contacts, content and accounts for prototype tasks. Do not ask par
 
 ## First study and device worksheets
 
+Use the [research execution protocols](research-protocols.md) for concrete session prompts, consent/readiness, access/voice, helper/privacy and naming comparisons. Use [evidence protocol](../06-evals/evidence-protocol.md) for actual records and [T-101/108 packets](../10-execution/task-packets.md) for bounded deliverables. Methods below remain planned; protocols do not imply participant recruitment or device execution.
+
 Discovery prompts: “Tell me about the last tablet task you wanted to finish”; “What did you do when it stopped working?”; “When would you want the computer to act, and when only explain?”; “Who may help, and what should they never see?” Avoid introducing memory/caregiver features before hearing actual needs. Record job, context, frequency example, workaround, failure impact, acceptable delegation and contradictory cases.
 
 Reference-device worksheet: local anonymous fixture label, manufacturer/exact model/SKU, Android/API/security patch, OEM UI/build, RAM/storage class, display/logical dp/font scale, installed target package/version, language/timezone, permission grant method, launcher/default roles, service/background behavior, network profile, app signed-in synthetic/not-signed-in state. Do not collect serial/IMEI/MAC/account address. Current supplied marketing name is unverified; [hardware owner](../07-hardware/reference-hardware.md) must be updated only after actual inventory.

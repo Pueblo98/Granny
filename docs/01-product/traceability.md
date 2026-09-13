@@ -20,7 +20,7 @@ Problem/job chain: PROB-01→JOB-01 delegation; PROB-02→JOB-02 understanding/r
 
 ## Contract routing
 
-All tasks use [typed capability envelopes](../03-agent/tool-contracts.md), [behavior loop](../03-agent/agent-behavior.md), [device-control invariants](../03-agent/device-control.md) and canonical [action policy](../05-safety-privacy/action-policy.md). Observer/executor/verifier owners use the corresponding finite capabilities; shell/audit/memory owners use local interfaces. No row invents an implementation link. T-IDs below are planned backlog tasks, not code.
+All tasks use [typed capability envelopes](../03-agent/tool-contracts.md), [behavior loop](../03-agent/agent-behavior.md), [device-control invariants](../03-agent/device-control.md), [execution protocol](../03-agent/execution-protocol.md), [capability admission](../04-architecture/capability-admission.md) and canonical [action policy](../05-safety-privacy/action-policy.md). Observer/executor/verifier owners use the corresponding finite capabilities; shell/audit/memory owners use local interfaces. No row invents an implementation link. T-IDs below are planned backlog tasks, not code. [Task packets](../10-execution/task-packets.md) detail the first slices; [evidence protocol](../06-evals/evidence-protocol.md) governs results without changing the requirement's own status.
 
 Policy column names the default class, not a blanket grant: actual consequence may elevate class; runtime capability admission, freshness, permission and cancellation always apply. All consequential workflows include CMP-001 Stop and CMP-003 confirmation even where the primary screen/component differs.
 

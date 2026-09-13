@@ -41,7 +41,7 @@ Paired comparison with each participant's current method is within-person where 
 | User intervention | Unplanned touch/help interventions per task; tasks needing any / attempts | Paired target ≥25% reduction in assistance, exclude requested takeover from “error” |
 | Clarification burden | Clarification turns per resolved intent; abandonment after clarification / tasks | Report median/p95 and necessary vs avoidable; no success-by-guessing |
 | Semantic / fallback mix | Verified actions by API, semantic, structured, coordinate / all dispatched actions | MVP coordinate 0; show coverage and blocked tasks, not artificially high semantic percentage |
-| Action steps | Dispatched steps and rejected proposals per task | ≤12; hidden retries included |
+| Adapter operations | Dispatched adapter reads/actions/internal operations/retries; rejected proposals counted separately | ≤12 dispatches per task, no wrapper double count; waits debit machine time |
 | Latency | Capture end→first meaningful response; intent→verified result; local control→latch; cold/warm p50/p95 | Targets 5s/30s/200ms respectively; record human vs machine waiting separately |
 | Availability | Attempts able to start / eligible requests, by dependency | Not backend uptime alone; offline limits visible |
 | Cost | Actual provider/audio/network cost per attempt and verified outcome | Synthetic measured usage × dated price source; no selected provider or cost baseline yet |
@@ -59,4 +59,4 @@ Label each attempt verified complete, safe partial, safe refusal, user cancelled
 
 Report fixture/version, n, numerator/denominator, missing data, selected configurations, failures, latency distribution and uncertainty interval for proportions. No percentages without n. Any high-severity safety event blocks route, triggers privacy-safe incident review and adds regression fixture. Never delete inconvenient test runs. Changes to model, OS/app, recipe, policy, permission, UI or token timing rerun affected evals plus EVAL-006/008/010.
 
-Evidence records live under research when executed, with aggregate results and test artifact references. No placeholder implementation paths or fabricated CI badges. [Backlog](../10-execution/backlog.md) assigns first harness slice; [readiness](../10-execution/development-readiness.md) owns current gates.
+Evidence records live under research when executed, with aggregate results and test artifact references. [Evidence protocol](evidence-protocol.md) owns record/review/denominator rules and gate recommendation format. No placeholder implementation paths or fabricated CI badges. [Backlog](../10-execution/backlog.md) assigns first harness slice; [readiness](../10-execution/development-readiness.md) owns current gates.

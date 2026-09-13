@@ -59,6 +59,8 @@ Remote viewing/control remains later App. Do not send “safety alerts” that r
 
 ## Pilot support and incidents
 
+Transaction/journal refinement: [execution protocol](../03-agent/execution-protocol.md) specifies local ordering and a content-free crash journal. Private prepared/element digests remain transient; ordinary hashes of names/messages are not anonymous audit evidence. No hidden payload, permit or content fingerprint may survive history deletion to support duplicate detection. Retention expiry, deletion or reinstall removes local evidence, not a remote effect; no promise of exactly-once behavior across those boundaries. Unknown effect never triggers automated resend. EVAL-008/010 must test these limits with synthetic canaries and interrupted journal writes.
+
 Before real users: name support owner and reachable channel/hours, install provenance, supported matrix, participant withdrawal route, incident escalation and tested rollback. No response SLA is promised until staffed.
 
 Suspected wrong-person send/data exposure: disable affected capability locally; preserve minimal content-free event; tell user the known effect and uncertainty; prevent repeated action; investigate using synthetic reproduction. Do not upload raw personal screen/audio by default. Restore capability only after root cause, updated eval and reviewer approval. Account recovery belongs to owning account provider; support never asks for passwords/OTP or takes invisible control.

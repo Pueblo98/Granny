@@ -30,6 +30,8 @@ No clarification blocks completing the documentation. Routine reversible choices
 | OQ-11 · evidence | Prove visible accessible Stop/return and exclusion of human action during external control | If overlay/service/foreground lifecycle cannot meet it, use manual handoff; cannot claim guaranteed takeover | EVAL-006, T-101/104; GATE-03/06; device-specific |
 | OQ-12 · evidence | Find real permitted route to person/date/photo and media/message postconditions | App intents/tree may be insufficient; alternative admitted integration or revised workflow needs explicit scope review | EVAL-001/003/004; GATE-03/07; ≥2 external jobs required |
 
+T-113 refined execution/journal/Stop and admission contracts without accepting new product decisions. OQ-04/09 still govern durable data placement and retention: [execution protocol](../03-agent/execution-protocol.md) proposes content-free journal fields and explicit missing-history limits; [capability admission](../04-architecture/capability-admission.md) identifies configuration evidence needed for OQ-02/03/11/12. The [task packets](task-packets.md) make these testable; no new vendor/framework/backend is selected.
+
 ## Simon's minimum next decision packet
 
 OQ-01 and OQ-02's control posture were accepted together on 2026-09-14; actual route admission remains evidence-gated. Remaining decisions include ADR-0010/0011 and the [name feedback table](../02-design/naming-exploration.md) / [four identity boards](../02-design/identity-review.html). Choosing a direction does not imply accepting name/legal clearance or all token values. Fake contract replay T-103 can proceed in a separately requested coding session without these brand/market choices.
