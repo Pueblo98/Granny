@@ -102,6 +102,12 @@ Granny is an AI-first personal computer experience for older adults that can
 talk, remember, understand the screen, and safely operate the device on the
 user's behalf.
 
+`Granny` is a **temporary project codename**, not the accepted public name.
+Treat naming as an open, high-value brand decision. The repository and documents
+may continue using `Granny` for continuity until Simon explicitly selects a
+replacement. Do not design the identity as though the placeholder name must
+survive.
+
 Core thesis:
 
 > The user should not need to learn how to operate the computer. The computer
@@ -146,6 +152,8 @@ Assume the following until repository inspection proves otherwise:
 - The repository does not yet contain a complete brand strategy, visual
   identity, logo system, chosen color palette, typography system, imagery
   direction, or emotional design language.
+- `Granny` is a temporary codename. A broad, structured naming exploration has
+  not yet been completed.
 - Existing use cases, journeys, evals, and agent documents are starter
   examples, not an exhaustive or implementation-ready contract.
 - Existing architecture is conceptual and requires Stage 1 detail.
@@ -228,10 +236,11 @@ contains, at minimum:
 4. a detailed product design specification covering information architecture,
    screens, components, interaction states, voice, touch, accessibility,
    content, onboarding, permissions, confirmations, errors, and Figma handoff;
-5. a real brand strategy and visual-identity exploration covering positioning,
-   personality, emotional goals, naming implications, logo concept families,
-   color, typography, imagery, iconography, motion, and sound, with 3–4
-   concrete territories and a recommended direction for Simon's decision;
+5. a real brand, naming, and visual-identity exploration covering positioning,
+   personality, emotional goals, at least 60 credible name candidates, a scored
+   shortlist, logo concept families, color, typography, imagery, iconography,
+   motion, and sound, with 3–4 concrete identity territories and recommended
+   directions for Simon's iteration and decision;
 6. an agent behavior and device-control contract detailed enough to design
    typed implementation interfaces and evals;
 7. a Stage 1 Android architecture with component boundaries, data flows,
@@ -663,9 +672,122 @@ Do not confuse brand with a logo alone. Define:
 - positioning relative to generic assistants, simplified senior launchers,
   accessibility tools, caregiver monitoring products, and clinical technology;
 - how the product principles become visible and audible brand behavior;
-- implications and risks of the name `Granny`, including warmth, gender,
-  cultural interpretation, memorability, possible infantilization, and future
-  extensibility. Do not rename the product without Simon's decision.
+- confirmation that `Granny` is only a temporary project codename and must not
+  constrain the permanent naming or identity system.
+
+### Naming exploration — mandatory
+
+Create a separate canonical `docs/02-design/naming-exploration.md` because the
+name has its own iteration, screening, and decision lifecycle. The purpose is
+to give Simon a large, varied, thoughtfully filtered option space that can be
+iterated—not to generate five obvious synonyms and declare a winner.
+
+First determine whether the naming system needs separate names for:
+
+- the company or parent brand;
+- the tablet-app/product platform;
+- the conversational companion or assistant persona;
+- a possible spoken invocation/wake word;
+- future OS and hardware extensions.
+
+Compare a unified masterbrand against a multi-name architecture. Recommend a
+provisional approach while keeping wake-word naming separate if technical or
+linguistic needs differ.
+
+Define naming criteria before generating options. Include:
+
+- respectful, adult, and dignity-preserving;
+- warm and human without being childish, gendered, patronizing, or clinical;
+- easy to hear, pronounce, remember, and spell after hearing once;
+- comfortable to say aloud in a home and during a support request;
+- distinctive enough to search and discuss;
+- suitable for voice recognition and robust against common mishearing;
+- able to extend from an Android app toward a future OS and hardware platform;
+- not limited to one relative role, age stereotype, disability, or medical
+  condition;
+- culturally and linguistically adaptable, with unknown target markets clearly
+  identified;
+- credible both to an older adult and to a family member considering the
+  product;
+- capable of supporting an ownable wordmark/app icon rather than depending on
+  a descriptive phrase.
+
+Generate **at least 60 credible candidates across at least eight genuinely
+different naming territories**. Possible territories to investigate include,
+but are not limited to:
+
+- warm human or companion-like names;
+- agency, enablement, and “I can do this” ideas;
+- clarity, ease, and guidance;
+- connection, family, and belonging;
+- memory, continuity, and life stories;
+- calm home presence;
+- abstract or metaphorical names;
+- invented, coined, or blended words;
+- platform-scale names that are not explicitly senior-coded.
+
+Do not pad the count with nonsense, spelling variants, suffix changes, or names
+that differ only by one letter. Do not assume the final name must signal age,
+grandparents, caregiving, assistance, memory, or AI. Avoid generic “AI” names,
+robot clichés, medical language, helplessness framing, and names that make the
+user sound like a patient.
+
+For the full candidate pool, record at least:
+
+- candidate and simple pronunciation;
+- naming territory and idea/source;
+- intended feeling;
+- why it could fit the product;
+- immediate concern, collision, ambiguity, or linguistic risk;
+- whether it seems better suited to company, product, companion, or wake word.
+
+Then create:
+
+1. a **30-name viable longlist** after removing clearly weak or conflicting
+   options;
+2. a **12–15-name scored shortlist** with deeper evaluation;
+3. a **3–5-name recommended finalist set** representing meaningfully different
+   strategic choices—not superficial variations.
+
+Score the shortlist against pronunciation, spelling, recall, warmth, dignity,
+distinctiveness, voice use, cross-generation appeal, extensibility,
+international risk, likely visual potential, and obvious collision risk. Show
+the weighting and explain where scores depend on evidence not yet available.
+
+For shortlisted names, perform proportionate preliminary web screening using
+current sources:
+
+- obvious existing technology, healthcare, accessibility, consumer-electronics,
+  or companion-product uses;
+- obvious app-store/search crowding;
+- readily observable domain and social-handle constraints where useful;
+- obvious negative dictionary/slang meanings in English and any currently
+  proposed initial market languages;
+- official trademark databases for a preliminary knockout check when target
+  jurisdictions are known.
+
+This is **discovery screening, not legal clearance**. Record search date,
+jurisdiction, source, search terms, limitations, and uncertainty. Never claim a
+trademark, domain, handle, or company name is available merely because a quick
+search did not find it. Recommend professional trademark and linguistic review
+before commitment.
+
+For each finalist, include:
+
+- concise naming story and strategic position;
+- pronunciation and natural example sentences spoken by a user;
+- company/product/companion/wake-word fit;
+- likely wordmark, symbol, and app-icon opportunities;
+- compatible identity territories;
+- strongest argument for and against;
+- testing questions for older adults and family members;
+- what Simon might combine, alter, or use as a direction for the next round.
+
+End with an iteration kit for Simon: a compact response table where he can mark
+each finalist or shortlist candidate `love`, `interesting`, `neutral`,
+`dislike`, or `never`, plus fields for desired qualities, disliked patterns,
+new references, and naming territories to expand. Define how the next naming
+round should use this feedback rather than restarting randomly.
 
 ### Emotional and sensory design language
 
@@ -702,7 +824,8 @@ memorable working name. Each territory must include:
   availability considerations, and readability rationale;
 - logo concept families: wordmark approach, symbol/metaphor possibilities,
   app icon, horizontal/stacked lockups, small-size/monochrome behavior, and
-  concepts to avoid;
+  concepts to avoid. Keep wordmarks adaptable across shortlisted names until
+  Simon selects a name;
 - shape, layout, icon, imagery/illustration, motion, and sound direction;
 - example home-screen and confirmation-screen art direction;
 - strengths, risks, cultural/accessibility concerns, and what user testing
@@ -725,6 +848,10 @@ Recommend one territory or a clearly defined hybrid. Explain:
 - what should be tested with representative users;
 - what can proceed provisionally before final selection;
 - what would cause the recommendation to change.
+
+Recommend naming finalists separately from the identity territory. Explain
+which names pair naturally with which territories, but do not force Simon to
+accept a name merely to choose a visual direction.
 
 Create a compact decision matrix comparing all territories against brand fit,
 distinctiveness, accessibility, emotional warmth, clarity, scalability,
@@ -776,7 +903,8 @@ accepted Git-backed tokens and Android implementation
 
 Candidate palettes and typography may be written as real proposed values; do
 not leave them as “warm color TBD.” Do not mark a direction, logo, palette, or
-typeface `accepted` without Simon's explicit approval. Make clear which
+typeface `accepted` without Simon's explicit approval. Do not treat `Granny` as
+the final wordmark. Make clear which
 feasibility prototypes may use provisional neutral tokens and which production
 UI work must wait for the brand-direction gate.
 
@@ -784,6 +912,9 @@ Acceptance criteria:
 
 - Granny has a documented brand promise, personality, emotional target, and
   anti-patterns.
+- `Granny` is recorded as a temporary codename; the naming system has at least
+  60 credible candidates, a 30-name longlist, a scored 12–15-name shortlist,
+  3–5 finalists, preliminary screening, and a Simon iteration kit.
 - There are 3–4 visually and strategically distinct, reproducible identity
   territories—not merely adjectives.
 - Every territory includes real candidate colors, typography, logo concepts,
@@ -1083,7 +1214,7 @@ GATE-01  Specification coherence
 GATE-02  MVP scope decision
 GATE-03  Android control feasibility
 GATE-04  Distribution viability
-GATE-05  Interaction-design and brand-direction readiness
+GATE-05  Interaction-design, naming, and brand-direction readiness
 GATE-06  Safety/privacy readiness for prototype
 GATE-07  Technical prototype success
 GATE-08  MVP implementation readiness
@@ -1279,6 +1410,8 @@ able to answer from the repository alone:
 - What does each workflow look, sound, and feel like in every important state?
 - What does the Granny brand promise, what should it feel like, which identity
   territories were explored, and which direction is recommended?
+- Which public-name candidates were explored, screened, shortlisted, and
+  recommended, and what feedback must Simon provide for the next naming round?
 - Which screens and components must be designed in Figma?
 - What can Granny observe, prepare, execute, confirm, delegate, or never do?
 - How are actions verified, interrupted, retried, and recovered?
@@ -1330,7 +1463,8 @@ Return a concise, evidence-backed report with:
    unchanged;
 2. the proposed Stage 1 MVP, App V1 boundary, and signature workflows;
 3. important product/design/brand/agent/architecture/safety decisions made as
-   proposals and the rationale, including the recommended identity territory;
+   proposals and the rationale, including naming finalists and the recommended
+   identity territory;
 4. decisions that specifically require Simon, with recommendation and
    tradeoffs;
 5. development-readiness gate status and remaining blockers/evidence;

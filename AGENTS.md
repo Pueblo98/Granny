@@ -1,6 +1,10 @@
 # AGENTS.md
 
-Granny is an AI-first personal computer for older adults that can talk, remember, understand the screen, and operate the device on the user's behalf.
+Granny is the temporary project codename for an AI-first personal computer for
+older adults that can talk, remember, understand the screen, and operate the
+device on the user's behalf. Do not treat `Granny` as the accepted public
+product, company, companion, or wake-word name; naming remains an active brand
+decision.
 
 Core thesis: the user should not need to learn how to operate the computer; the computer should learn how to operate itself for the user.
 

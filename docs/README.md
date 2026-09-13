@@ -18,6 +18,9 @@ repository remains the single source of truth for both documentation and future
 implementation. Navigate intentionally from this page; the graph view is
 supplementary.
 
+`Granny` is the temporary project/repository codename, not an accepted public
+name. Naming exploration and selection belong to the current brand workstream.
+
 > [!IMPORTANT]
 > **Stage 1—the stock-Android tablet app—is the only active stage.** Stage 2
 > Granny OS and Stage 3 hardware material preserve the long-term vision but

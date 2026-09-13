@@ -2,7 +2,7 @@
 title: Granny Project
 status: draft
 owner: Simon
-last_updated: 2026-09-11
+last_updated: 2026-09-13
 tags:
   - project
   - navigation
@@ -16,6 +16,11 @@ related:
 # Granny
 
 Granny is an AI-first personal computer for older adults that can talk, remember, understand the screen, and operate the device on the user's behalf.
+
+> [!NOTE]
+> **Granny is a temporary project codename.** The public company, product,
+> companion, and possible wake-word naming system has not been selected. The
+> repository name can remain `granny` while naming exploration proceeds.
 
 > The user should not need to learn how to operate the computer. The computer should learn how to operate itself for the user.
 

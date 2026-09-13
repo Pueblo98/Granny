@@ -2,7 +2,7 @@
 title: Product Vision
 status: draft
 owner: Simon
-last_updated: 2026-09-11
+last_updated: 2026-09-13
 tags:
   - vision
   - product
@@ -15,6 +15,11 @@ related:
 ---
 
 # Product Vision
+
+> [!NOTE]
+> **Granny is a temporary project codename.** The final company, product,
+> companion, and possible wake-word names remain open. The vision below uses
+> `Granny` only as shorthand until a naming decision is accepted.
 
 ## Definition
 

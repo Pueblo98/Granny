@@ -21,8 +21,11 @@ related:
 - [ ] Write the canonical product design specification and detailed first Figma
   execution brief.
 - [ ] Create the brand strategy and visual-identity package with 3–4 distinct
-  territories, real candidate palettes and typography, logo concept families,
-  accessibility analysis, and a recommended direction for Simon's review.
+  territories, real candidate palettes and typography, adaptable logo concept
+  families, accessibility analysis, and a recommended direction for Simon's review.
+- [ ] Treat `Granny` as a temporary codename and produce at least 60 credible
+  naming candidates across 8+ territories, a 30-name longlist, scored 12–15-name
+  shortlist, 3–5 finalists, preliminary screening, and an iteration kit.
 - [ ] Complete the agent/device-control, autonomy, confirmation, memory,
   recovery, privacy, family/helper, and safety contracts.
 - [ ] Complete Stage 1 Android architecture and current Android/AccessibilityService/Google Play feasibility research.
@@ -42,6 +45,9 @@ related:
   voice/touch, ambiguity, confirmations, interruption, recovery, and degraded states.
 - [ ] Turn the 3–4 documented brand territories into visual boards, logo/app-icon
   explorations, and representative product screens.
+- [ ] Review naming candidates with Simon, record his reactions, run another
+  focused naming round, and obtain professional linguistic/trademark review
+  before accepting a public name.
 - [ ] Select or revise one identity direction with Simon; validate its palette,
   typography, logo behavior, and semantic design tokens before production UI polish.
 - [ ] Run older-adult and trusted-family discovery/concept research using the

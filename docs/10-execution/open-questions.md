@@ -2,7 +2,7 @@
 title: Open Questions
 status: draft
 owner: Simon
-last_updated: 2026-09-11
+last_updated: 2026-09-13
 tags:
   - execution
   - questions
@@ -44,3 +44,9 @@ related:
 ## Inputs
 
 - OQ-016: Is there an original downloadable/exported planning-conversation artifact to preserve verbatim, beyond the in-chat text captured in the structured source note?
+
+## Brand and naming
+
+- OQ-017: What should replace the temporary `Granny` codename, and should the
+  company, product platform, conversational companion, and possible wake word
+  share one name or use a deliberate naming architecture?

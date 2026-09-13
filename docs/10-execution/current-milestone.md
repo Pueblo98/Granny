@@ -42,9 +42,11 @@ These are useful inputs, not complete product or design specifications.
   screen inventory, interaction states, components, voice/content behavior,
   accessibility requirements, and the first Figma package.
 - Brand strategy and visual-identity package defines Granny's promise,
-  personality, emotional design language, naming implications, 3–4 concrete
-  identity territories, candidate palettes and typography, logo concept
-  families, accessibility analysis, and a recommended direction for Simon.
+  personality and emotional design language; records `Granny` as a temporary
+  codename; produces at least 60 credible name candidates, a scored shortlist
+  and finalists; and defines 3–4 concrete identity territories, candidate
+  palettes and typography, adaptable logo concept families, accessibility
+  analysis, and recommended directions for Simon.
 - Agent behavior, device control, autonomy, confirmation, recovery, memory,
   family/helper, and typed tool boundaries specified to implementation depth.
 - Stage 1 Android architecture, permissions, data flows, trust boundaries,
