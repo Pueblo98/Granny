@@ -34,7 +34,7 @@ supplementary.
 | Users and outcomes | [Personas and JTBD](01-product/personas.md) | Whose problems and outcomes matter? |
 | Workflows | [Use cases](01-product/use-cases.md) and [journeys](01-product/user-journeys.md) | What should users be able to accomplish? |
 | Scope | [Scope and roadmap](01-product/scope-and-roadmap.md) | What are Vision, V1, MVP, and non-goals? |
-| Design | [Design system](02-design/design-system.md) | What should the experience feel like? |
+| Design | [Design system](02-design/design-system.md) | What should the interaction and visual identity feel like? |
 | Voice/accessibility | [Voice UX](02-design/voice-ux.md) and [accessibility](02-design/accessibility.md) | How should it communicate and remain usable? |
 | Figma | [Figma handoff](02-design/figma.md) | How do visual artifacts relate to specifications? |
 | Agent | [Agent behavior](03-agent/agent-behavior.md) | How does the agent reason and act? |

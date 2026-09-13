@@ -41,6 +41,10 @@ These are useful inputs, not complete product or design specifications.
 - Canonical product design specification defines information architecture,
   screen inventory, interaction states, components, voice/content behavior,
   accessibility requirements, and the first Figma package.
+- Brand strategy and visual-identity package defines Granny's promise,
+  personality, emotional design language, naming implications, 3–4 concrete
+  identity territories, candidate palettes and typography, logo concept
+  families, accessibility analysis, and a recommended direction for Simon.
 - Agent behavior, device control, autonomy, confirmation, recovery, memory,
   family/helper, and typed tool boundaries specified to implementation depth.
 - Stage 1 Android architecture, permissions, data flows, trust boundaries,
@@ -62,5 +66,5 @@ These are useful inputs, not complete product or design specifications.
 
 Substantial Android/backend/agent implementation, all Stage 2 OS/AOSP work, all
 Stage 3 hardware work, production infrastructure, unsupported vendor/database
-lock-in, final visual-brand choices without exploration, and invented research
-or eval results.
+lock-in, silently treating generated logos or visual-brand choices as accepted,
+and invented research or eval results.

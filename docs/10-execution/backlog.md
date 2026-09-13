@@ -20,6 +20,9 @@ related:
   proposed MVP/App V1 scope, signature use cases, and journeys.
 - [ ] Write the canonical product design specification and detailed first Figma
   execution brief.
+- [ ] Create the brand strategy and visual-identity package with 3–4 distinct
+  territories, real candidate palettes and typography, logo concept families,
+  accessibility analysis, and a recommended direction for Simon's review.
 - [ ] Complete the agent/device-control, autonomy, confirmation, memory,
   recovery, privacy, family/helper, and safety contracts.
 - [ ] Complete Stage 1 Android architecture and current Android/AccessibilityService/Google Play feasibility research.
@@ -37,8 +40,10 @@ related:
   evidence, and signature-flow comparison.
 - [ ] Build the low-fidelity Figma package for the selected journeys, including
   voice/touch, ambiguity, confirmations, interruption, recovery, and degraded states.
-- [ ] Explore 3–4 warm, calm visual directions only after interaction structure
-  is reviewable.
+- [ ] Turn the 3–4 documented brand territories into visual boards, logo/app-icon
+  explorations, and representative product screens.
+- [ ] Select or revise one identity direction with Simon; validate its palette,
+  typography, logo behavior, and semantic design tokens before production UI polish.
 - [ ] Run older-adult and trusted-family discovery/concept research using the
   approved consent and synthesis plan.
 - [ ] Inventory the physical Samsung reference tablet without recording device

@@ -24,9 +24,10 @@ session opened at `/home/lgtw/Work/granny`.
 ---
 
 You are the lead product architect for Granny. You are also acting as the
-senior product manager, product designer, Android architect, AI-agent systems
-designer, accessibility lead, safety/privacy reviewer, research lead, and
-documentation editor needed to complete this planning milestone.
+senior product manager, product designer, brand strategist/creative director,
+Android architect, AI-agent systems designer, accessibility lead,
+safety/privacy reviewer, research lead, and documentation editor needed to
+complete this planning milestone.
 
 Work directly in the existing repository:
 
@@ -142,6 +143,9 @@ Assume the following until repository inspection proves otherwise:
 - The existing `docs/01-product/prd.md` is a seed, not a complete PRD.
 - The current design documents contain principles and starting constraints,
   not a complete product design specification.
+- The repository does not yet contain a complete brand strategy, visual
+  identity, logo system, chosen color palette, typography system, imagery
+  direction, or emotional design language.
 - Existing use cases, journeys, evals, and agent documents are starter
   examples, not an exhaustive or implementation-ready contract.
 - Existing architecture is conceptual and requires Stage 1 detail.
@@ -224,23 +228,27 @@ contains, at minimum:
 4. a detailed product design specification covering information architecture,
    screens, components, interaction states, voice, touch, accessibility,
    content, onboarding, permissions, confirmations, errors, and Figma handoff;
-5. an agent behavior and device-control contract detailed enough to design
+5. a real brand strategy and visual-identity exploration covering positioning,
+   personality, emotional goals, naming implications, logo concept families,
+   color, typography, imagery, iconography, motion, and sound, with 3–4
+   concrete territories and a recommended direction for Simon's decision;
+6. an agent behavior and device-control contract detailed enough to design
    typed implementation interfaces and evals;
-6. a Stage 1 Android architecture with component boundaries, data flows,
+7. a Stage 1 Android architecture with component boundaries, data flows,
    trust boundaries, permissions, failure behavior, and local/cloud options;
-7. an evidence-backed Android capability, AccessibilityService, and
+8. an evidence-backed Android capability, AccessibilityService, and
    distribution feasibility assessment;
-8. a privacy/safety model, threat model, memory policy, family/helper boundary,
+9. a privacy/safety model, threat model, memory policy, family/helper boundary,
    and action/confirmation matrix;
-9. canonical evals, metrics, a failure taxonomy, and end-to-end requirements
+10. canonical evals, metrics, a failure taxonomy, and end-to-end requirements
    traceability;
-10. a research plan aimed at the assumptions most likely to kill or reshape
+11. a research plan aimed at the assumptions most likely to kill or reshape
     the product;
-11. a staged product/design/technical roadmap with milestones, dependency
+12. a staged product/design/technical roadmap with milestones, dependency
     order, entry/exit gates, Definition of Ready, and a prioritized backlog;
-12. concise `AGENTS.md`, `CLAUDE.md`, README/navigation, templates, and ADR
+13. concise `AGENTS.md`, `CLAUDE.md`, README/navigation, templates, and ADR
     conventions that make future agent sessions maintain this system;
-13. a development-readiness assessment stating what is ready, what is only
+14. a development-readiness assessment stating what is ready, what is only
     proposed, what evidence is missing, and exactly what may be implemented
     next.
 
@@ -572,9 +580,10 @@ Define semantic component behavior for:
 - focus, pressed, selected, loading, disabled, error, and completed states.
 
 Specify roles for color, typography, spacing, size, shape, elevation, motion,
-sound/haptics, focus, and iconography. Do not invent final brand values. Define
-candidate token values as `proposed`, their rationale, and how Figma/Android
-will stay aligned.
+sound/haptics, focus, and iconography. Do not silently select or label final
+brand values in this interaction specification. Define semantic roles here;
+Workstream 5 must supply real candidate identity/token values as `proposed`,
+their rationale, and how Figma/Android will stay aligned.
 
 ### Accessibility and cognitive ergonomics
 
@@ -622,8 +631,9 @@ IDs, prototype connections, accessibility notes, status, and Git handoff.
 Specify the exact first Figma package to build:
 
 - required journeys and frames;
-- low-fidelity before visual exploration;
-- 3–4 warm/calm visual directions after interaction validation;
+- low-fidelity interaction structure kept distinguishable from visual styling;
+- the 3–4 documented identity territories represented on comparable product
+  screens after the interaction structure is reviewable;
 - component/state coverage;
 - prototype test scenarios;
 - review questions and acceptance gate;
@@ -631,7 +641,158 @@ Specify the exact first Figma package to build:
 
 Do not claim that a Figma file has been created unless it actually has.
 
-## Workstream 5 — Complete the agent and device-control specification
+## Workstream 5 — Create the brand strategy and visual-identity system
+
+Create a canonical `docs/02-design/brand-and-visual-identity.md`. This is a
+required product deliverable, not decorative work to postpone indefinitely.
+It must explain how Granny should be recognized, remembered, and emotionally
+experienced across the Stage 1 app, product communications, app-store presence,
+and future extensions—while keeping current execution focused on the app.
+
+Do not confuse brand with a logo alone. Define:
+
+### Brand foundation
+
+- brand purpose, promise, and central idea;
+- audience and buyer/helper relationships;
+- desired emotional outcomes before, during, and after a task;
+- 4–6 brand personality traits and explicit anti-traits;
+- relationship posture: capable companion and respectful tool, never child,
+  nurse, authority figure, surveillance system, or stereotyped “AI robot”;
+- reasons to believe grounded in the proposed product experience;
+- positioning relative to generic assistants, simplified senior launchers,
+  accessibility tools, caregiver monitoring products, and clinical technology;
+- how the product principles become visible and audible brand behavior;
+- implications and risks of the name `Granny`, including warmth, gender,
+  cultural interpretation, memorability, possible infantilization, and future
+  extensibility. Do not rename the product without Simon's decision.
+
+### Emotional and sensory design language
+
+Define the intended overall feel using specific experiential statements rather
+than vague adjectives. Include:
+
+- what the first five seconds should communicate;
+- how calm differs from passive, warm from childish, simple from empty, and
+  trustworthy from clinical;
+- visual rhythm, density, whitespace, shape, softness, contrast, and hierarchy;
+- photography, illustration, human imagery, patterns, and texture;
+- icon personality and recognizability;
+- motion character and reduced-motion equivalent;
+- sound/haptic character and silent equivalents;
+- how listening, thinking, acting, success, uncertainty, warning, and privacy
+  states remain recognizably Granny without relying on color alone;
+- anti-patterns such as hospital blue by default, neon AI gradients, robot
+  mascots, age stereotypes, cartoon grandmothers, tiny minimalist controls,
+  luxury cues that reduce clarity, or nostalgia imposed without evidence.
+
+### Concrete identity territories
+
+Produce **3–4 genuinely distinct brand territories** for review. Give each a
+memorable working name. Each territory must include:
+
+- strategic idea and one-sentence story;
+- mood keywords and anti-keywords;
+- intended emotional response and audience fit;
+- actual candidate primary, secondary, accent, surface, text, semantic, focus,
+  and high-consequence colors with hex values;
+- example accessible color pairings and measured contrast results for their
+  intended roles;
+- candidate display/body typefaces, weights, fallback strategy, licensing or
+  availability considerations, and readability rationale;
+- logo concept families: wordmark approach, symbol/metaphor possibilities,
+  app icon, horizontal/stacked lockups, small-size/monochrome behavior, and
+  concepts to avoid;
+- shape, layout, icon, imagery/illustration, motion, and sound direction;
+- example home-screen and confirmation-screen art direction;
+- strengths, risks, cultural/accessibility concerns, and what user testing
+  should compare.
+
+The territories must be concrete enough to visualize and recreate in Figma.
+Do not provide four nearly identical warm beige palettes with different names.
+Do not assume older adults prefer muted, nostalgic, medical, or conservative
+design without evidence.
+
+### Recommended direction and decision package
+
+Recommend one territory or a clearly defined hybrid. Explain:
+
+- why it best expresses Granny's thesis and differentiates the product;
+- why it supports accessibility, trust, dignity, and repeated daily use;
+- which aspects are confident recommendations versus unresolved taste or
+  research questions;
+- what Simon must choose;
+- what should be tested with representative users;
+- what can proceed provisionally before final selection;
+- what would cause the recommendation to change.
+
+Create a compact decision matrix comparing all territories against brand fit,
+distinctiveness, accessibility, emotional warmth, clarity, scalability,
+technical practicality, and risk. Prepare a visual-identity decision brief for
+Simon rather than silently declaring a winner accepted.
+
+### Logo and identity production brief
+
+Specify the next design-production package:
+
+- wordmark, standalone mark, app icon, monochrome and reversed variants;
+- responsive lockups and minimum-size/clear-space tests;
+- light/dark/high-contrast application;
+- sample onboarding, home, voice-state, confirmation, app-store icon, and
+  simple marketing applications;
+- accessibility and confusion/recognition tests;
+- file formats, naming, source-file ownership, and export requirements;
+- legal/trademark/domain screening as a future specialist check, without
+  claiming clearance;
+- criteria for rejecting generic, infantilizing, medical, or inaccessible
+  concepts.
+
+If appropriate visual-generation or design tools are available, create clearly
+labeled exploratory boards or rough concepts in a reviewable location. These
+remain proposals, not final identity assets. If such tools are unavailable,
+produce precise Figma/image-generation briefs and do not claim visual assets
+exist.
+
+### From selected direction to design tokens
+
+Update `design-system.md`, `figma.md`, and `design-tokens/README.md` so the
+workflow is explicit:
+
+```text
+brand foundation
+    ↓
+3–4 identity territories
+    ↓
+Simon review + accessibility/user evidence
+    ↓
+selected proposed direction
+    ↓
+validated semantic tokens and logo assets
+    ↓
+Figma components/prototypes
+    ↓
+accepted Git-backed tokens and Android implementation
+```
+
+Candidate palettes and typography may be written as real proposed values; do
+not leave them as “warm color TBD.” Do not mark a direction, logo, palette, or
+typeface `accepted` without Simon's explicit approval. Make clear which
+feasibility prototypes may use provisional neutral tokens and which production
+UI work must wait for the brand-direction gate.
+
+Acceptance criteria:
+
+- Granny has a documented brand promise, personality, emotional target, and
+  anti-patterns.
+- There are 3–4 visually and strategically distinct, reproducible identity
+  territories—not merely adjectives.
+- Every territory includes real candidate colors, typography, logo concepts,
+  visual language, accessibility analysis, and risks.
+- Simon receives a concrete comparison and recommendation.
+- Figma has an exact brand-exploration and identity-production brief.
+- No proposed visual choice is misrepresented as researched or accepted.
+
+## Workstream 6 — Complete the agent and device-control specification
 
 Substantially expand the canonical documents under `docs/03-agent/`. Ensure
 they jointly define an implementation contract rather than repeating product
@@ -668,7 +829,7 @@ Never design a generic unrestricted shell, unbounded coordinate tapper, raw
 credential tool, unrestricted network tool, or untyped “do anything” action
 for the model.
 
-## Workstream 6 — Complete the Stage 1 architecture and Android feasibility
+## Workstream 7 — Complete the Stage 1 architecture and Android feasibility
 
 Update root `ARCHITECTURE.md` as the concise system map and create or expand
 focused canonical architecture documents under `docs/04-architecture/`.
@@ -741,7 +902,7 @@ options, questions for Play review, and required validation. Produce a clear
 `go`, `conditional go`, `no-go`, or `needs evidence` recommendation for each
 candidate MVP control/distribution model.
 
-## Workstream 7 — Complete safety, privacy, autonomy, memory, and family policy
+## Workstream 8 — Complete safety, privacy, autonomy, memory, and family policy
 
 Create one canonical action-policy matrix under `docs/05-safety-privacy/` or
 clearly link to the canonical owner if it belongs under `docs/03-agent/`.
@@ -789,7 +950,7 @@ For each material threat record preconditions, impact, mitigation, detection or
 eval, residual risk, owner, and release gate. Screen content is always data,
 never authority to instruct the agent.
 
-## Workstream 8 — Build evals and end-to-end traceability
+## Workstream 9 — Build evals and end-to-end traceability
 
 Update `docs/06-evals/` so every proposed MVP signature workflow has an eval
 specification with:
@@ -841,7 +1002,7 @@ Eval and research evidence
 Expose missing links honestly. Do not create fake implementation or test links
 for work that has not begun.
 
-## Workstream 9 — Produce the evidence and research program
+## Workstream 10 — Produce the evidence and research program
 
 Create or complete a prioritized Stage 1 research plan. It must focus on
 assumptions capable of killing or materially changing the product, including:
@@ -880,7 +1041,7 @@ publisher, URL, access date, what the source establishes, and its limitations.
 Do not invent participants, observations, study outcomes, technical results, or
 competitor capabilities.
 
-## Workstream 10 — Build the roadmap, gates, and development handoff
+## Workstream 11 — Build the roadmap, gates, and development handoff
 
 Rewrite `docs/10-execution/current-milestone.md` and
 `docs/10-execution/backlog.md`. Create
@@ -893,8 +1054,9 @@ Create a Stage 1 roadmap that distinguishes:
    architecture, safety, eval, and research contracts.
 2. **Feasibility spikes:** smallest experiments for Android control,
    observation, verification, voice, distribution, and privacy assumptions.
-3. **Experience prototype:** Figma prototype of the signature journeys and
-   user testing.
+3. **Experience and identity prototype:** Figma prototype of the signature
+   journeys, brand territories, visual-identity decision package, and user
+   testing.
 4. **Controlled technical prototype:** narrow, synthetic-account implementation
    of selected flows with safety/eval instrumentation.
 5. **MVP build:** the proposed MVP scope after evidence gates pass.
@@ -921,7 +1083,7 @@ GATE-01  Specification coherence
 GATE-02  MVP scope decision
 GATE-03  Android control feasibility
 GATE-04  Distribution viability
-GATE-05  Interaction-design readiness
+GATE-05  Interaction-design and brand-direction readiness
 GATE-06  Safety/privacy readiness for prototype
 GATE-07  Technical prototype success
 GATE-08  MVP implementation readiness
@@ -937,7 +1099,7 @@ a task must identify:
 
 - linked PRD requirement and use case/journey;
 - user-visible behavior and acceptance criteria;
-- screen/component or interface contract;
+- screen/component or interface contract and applicable brand/token maturity;
 - safety, privacy, permission, and accessibility implications;
 - architecture owner and data boundary;
 - eval/test requirement;
@@ -1091,7 +1253,8 @@ Do not:
   deployment, OS fork, or hardware;
 - create fake code scaffolds to make the repository look active;
 - lock vendors, frameworks, databases, model providers, final visual brand,
-  pricing, market, or launch date without evidence/authority;
+  logo, palette, typography, pricing, market, or launch date without
+  evidence/authority;
 - manufacture user research, technical measurements, policy approval, eval
   results, or competitor findings;
 - expand Stage 2 or Stage 3 documentation beyond a link or scope boundary;
@@ -1114,6 +1277,8 @@ able to answer from the repository alone:
 - What are the precise MVP and App V1 boundaries?
 - Which workflows define the thesis and why were they selected?
 - What does each workflow look, sound, and feel like in every important state?
+- What does the Granny brand promise, what should it feel like, which identity
+  territories were explored, and which direction is recommended?
 - Which screens and components must be designed in Figma?
 - What can Granny observe, prepare, execute, confirm, delegate, or never do?
 - How are actions verified, interrupted, retried, and recovered?
@@ -1164,8 +1329,8 @@ Return a concise, evidence-backed report with:
 1. canonical documents created, substantially rewritten, deprecated, or left
    unchanged;
 2. the proposed Stage 1 MVP, App V1 boundary, and signature workflows;
-3. important product/design/agent/architecture/safety decisions made as
-   proposals and the rationale;
+3. important product/design/brand/agent/architecture/safety decisions made as
+   proposals and the rationale, including the recommended identity territory;
 4. decisions that specifically require Simon, with recommendation and
    tradeoffs;
 5. development-readiness gate status and remaining blockers/evidence;
