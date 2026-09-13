@@ -40,7 +40,10 @@ instead of guessing.
 
 ## Sources and status
 
-- Priority: current user instruction → initialization handoff → accepted repository documents/Dream Book → historical conversation → inference.
+- Priority: current explicit user instruction → accepted ADRs and accepted
+  canonical repository documents → initialization handoff → Dream Book as
+  long-term vision → historical planning conversation → proposed/draft
+  documents → current primary-source research → inference.
 - Keep facts, accepted decisions, proposals, assumptions, and open questions visibly distinct.
 - Allowed document statuses: `draft`, `proposed`, `review`, `accepted`, `deprecated`. Creation does not imply acceptance.
 - Product truth lives under `docs/01-product`; design under `docs/02-design`; agent behavior under `docs/03-agent`; architecture under `docs/04-architecture` and `ARCHITECTURE.md`; safety under `docs/05-safety-privacy`; evals under `docs/06-evals`; decisions under `docs/09-decisions`; execution state under `docs/10-execution`.
