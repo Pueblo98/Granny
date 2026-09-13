@@ -26,6 +26,8 @@ Accepted experiment scope ([ADR-0009](docs/09-decisions/ADR-0009-mvp-and-control
 
 ## Review and next work
 
+Change sessions use an isolated task worktree, validate and commit scoped work, then push and verify the GitHub branch under Simon's standing authorization. Read the [Git delivery workflow](docs/10-execution/git-workflow.md); main merges remain separately authorized. Until integration, start sessions needing this package from docs/git-workflow, not the older main.
+
 [Delivery workflows and four repository skills](docs/10-execution/operating-workflows.md) explain how to refine specs, prepare design, implement bounded slices and review evidence. [First task packets](docs/10-execution/task-packets.md) give concrete inputs, outputs, adverse cases and stop boundaries for T-101/102/103/108. No global skills/plugins, scheduled jobs or external workflows are installed.
 
 [Brand territories](docs/02-design/brand-and-visual-identity.md), [81-name exploration](docs/02-design/naming-exploration.md) and [local static identity boards](docs/02-design/identity-review.html) provide concrete choices. Open Day is the proposed visual direction; Daykind, Handspan and Clearfold are uncleared naming finalists. No Figma file has been created; [the execution brief](docs/02-design/figma.md) specifies it.

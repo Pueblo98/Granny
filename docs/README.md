@@ -40,6 +40,7 @@ related:
 | What evidence exists and what comes next? | [Source register](08-research/README.md), [Android feasibility](08-research/android-stage-1-feasibility.md), [research program](08-research/research-plan.md) |
 | What is accepted versus proposed? | [ADR index](09-decisions/README.md); eight accepted records including the MVP experiment/control decision, two proposals, one deprecated historical record |
 | How do agents maintain this system? | [AGENTS](../AGENTS.md); [CLAUDE](../CLAUDE.md) delegates to it |
+| How is work isolated and published? | [Git worktrees, push verification and reviewed integration](10-execution/git-workflow.md); standing task-branch push authority, no automatic main merge |
 | How do we move from specs to bounded work? | [Delivery workflows and repo skills](10-execution/operating-workflows.md), [first task packets](10-execution/task-packets.md) |
 | What happens at dispatch, Stop, crash and recovery? | [Execution transaction protocol](03-agent/execution-protocol.md); tool schemas and policy remain their existing owners |
 | When is an adapter/build actually supported? | [Capability admission and support lifecycle](04-architecture/capability-admission.md) |

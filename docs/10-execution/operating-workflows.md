@@ -79,7 +79,7 @@ A gate record names configuration, approving person/role, evidence, exceptions, 
 
 Freeze the failing configuration; stop only affected admission where possible. Record expected/actual outcome, severity and privacy-safe reproduction. Add an adversarial case to the owning EVAL before re-enabling. Preserve the user's unrelated work; inspect dirty paths before staging specific files.
 
-Handoff contains: requested task and scope; actual changes; commands and exit/results; unrun tests and reasons; accepted/proposed/evidence distinctions; remaining risks; branch/commit/worktree; next bounded action. No raw research data or real message content. Do not push, merge or publish without current authority.
+Handoff contains: requested task and scope; actual changes; commands and exit/results; unrun tests and reasons; accepted/proposed/evidence distinctions; remaining risks; branch/commit/worktree and verified remote SHA; next bounded action. No raw research data or real message content. Change tasks follow the [Git workflow](git-workflow.md): isolated worktree, scoped commits and task-branch pushes under Simon's standing authorization. This does not authorize review-only edits, PR creation, main merges or product publication.
 
 ## Change-impact routing
 
