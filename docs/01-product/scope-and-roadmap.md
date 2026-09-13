@@ -10,7 +10,7 @@ related:
 
 # Stage 1 scope and product progression
 
-**Confirmed:** only the stock-Android app is active under [ADR-0007](../09-decisions/ADR-0007-three-stage-product-strategy.md). **Proposed:** the release boundaries below; acceptance belongs to Simon through [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md). The [PRD](prd.md) owns testable behavior; execution gates live in [development readiness](../10-execution/development-readiness.md).
+**Confirmed:** only the stock-Android app is active under [ADR-0007](../09-decisions/ADR-0007-three-stage-product-strategy.md). Simon accepted the five-workflow experiment scope, candidate/lab control boundary and two externally verified workflow minimum through [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) on 2026-09-14. **Proposed/evidence-gated:** detailed release commitments, supporting behavior and V1 additions below; experiment selection does not establish feasibility or authorize release. The [PRD](prd.md) owns testable behavior; execution gates live in [development readiness](../10-execution/development-readiness.md).
 
 ## Separate products and releases
 

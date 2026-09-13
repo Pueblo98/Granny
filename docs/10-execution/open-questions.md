@@ -17,8 +17,8 @@ No clarification blocks completing the documentation. Routine reversible choices
 
 | ID / type | Decision brief / recommendation | Alternatives and tradeoff | Evidence / downstream effect / owner |
 |---|---|---|---|
-| OQ-01 · Simon | Accept five-workflow MVP and two external delegation bar; [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) | Guidance-only is easier but tests a different thesis; broader autonomy increases route/safety risk | RES-01/02/04; GATE-02; scope + T-104–106 |
-| OQ-02 · Simon + evidence | API/integration-led public candidate; static recipes only after review; keep dynamic accessibility lab separate | Private pilot has install/support friction and no Play assurance; genuine disability-specific product is a material audience change, not a label | [Policy evidence](../08-research/android-stage-1-feasibility.md); GATE-04; Android/policy |
+| OQ-01 · resolved decision | Simon accepted five MVP experiments and two external delegation bar on 2026-09-14; [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) | Guidance-only tests a different thesis; broader autonomy increases route/safety risk; acceptance does not promise feasibility | GATE-02 passed; T-100 complete; RES-01/02/04 and T-104–106 evidence remain unrun |
+| OQ-02 · accepted posture + open evidence | Simon accepted API/integration-led candidate, evidence-gated static recipes and separate synthetic dynamic lab on 2026-09-14; actual distribution viability remains unknown | Private pilot has install/support friction and no Play assurance; genuine disability-specific product is a material audience change, not a label | [Policy evidence](../08-research/android-stage-1-feasibility.md); GATE-04 still Needs evidence; Android/policy |
 | OQ-03 · evidence | Inventory actual Samsung tablet; propose API34 synthetic test floor plus current stable and second OEM before expansion | Wider support costs testing; named marketing model may be inaccurate | RES-04/T-101; exact min/target SDK and support matrix remain unselected |
 | OQ-04 · Simon + evidence | Local policy/Stop/data authority, replaceable cloud/local proposals; [ADR-0010](../09-decisions/ADR-0010-local-authority-and-data.md) | Local-only lowers egress but capability unknown; cloud-owned authority risks outage/overcapture | RES-05/08; GATE-06/08; provider terms/cost budget before real data |
 | OQ-05 · Simon | Tap-to-talk with complete touch path and stronger access targets; [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md) | Always-on may reduce initiation but privacy/background/acoustic risk unproven | RES-03/06; GATE-05; wake word deferred separately from public name |
@@ -32,7 +32,7 @@ No clarification blocks completing the documentation. Routine reversible choices
 
 ## Simon's minimum next decision packet
 
-Review OQ-01/02 together: accept the proposed experiments and constrained candidate/lab posture, while leaving actual route admission evidence-gated. Then mark the [name feedback table](../02-design/naming-exploration.md) and compare [four identity boards](../02-design/identity-review.html). Choosing a direction does not imply accepting name/legal clearance or all token values. Fake contract replay T-103 can proceed in a separately requested coding session without these brand/market choices.
+OQ-01 and OQ-02's control posture were accepted together on 2026-09-14; actual route admission remains evidence-gated. Remaining decisions include ADR-0010/0011 and the [name feedback table](../02-design/naming-exploration.md) / [four identity boards](../02-design/identity-review.html). Choosing a direction does not imply accepting name/legal clearance or all token values. Fake contract replay T-103 can proceed in a separately requested coding session without these brand/market choices.
 
 Unknowns must produce dated evidence or remain unknown. Only update an ADR to accepted with Simon's explicit decision and authority/date; never convert a tentative preference, lack of objection or a successful synthetic test into acceptance.
 
@@ -43,7 +43,7 @@ The initialization queue used three-digit OQ IDs. They are preserved here as ali
 | Legacy ID / original topic | Current owner / disposition |
 |---|---|
 | OQ-001 market/user setting | OQ-08 + RES-01; unresolved |
-| OQ-002 MVP workflows | OQ-01; proposal written, Simon decision pending |
+| OQ-002 MVP workflows | OQ-01; experiment scope accepted by Simon 2026-09-14, feasibility and release still gated |
 | OQ-003 V1/memory/family scope | OQ-09 and scope map; proposed |
 | OQ-004 observed workarounds | RES-01/07; unrun |
 | OQ-005 action classes/confirmation | Action policy now specified; OQ-01/05 and EVAL-010/012 validate |

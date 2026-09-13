@@ -38,7 +38,7 @@ related:
 | How do we prove quality and classify failure? | [Canonical evals](06-evals/canonical-tasks.md), [metrics/strategy](06-evals/eval-strategy.md), [failure taxonomy](06-evals/failure-taxonomy.md) |
 | What stock hardware is actually known? | [Reference tablet](07-hardware/reference-hardware.md); exact inventory pending, Stage 3 inactive |
 | What evidence exists and what comes next? | [Source register](08-research/README.md), [Android feasibility](08-research/android-stage-1-feasibility.md), [research program](08-research/research-plan.md) |
-| What is accepted versus proposed? | [ADR index](09-decisions/README.md); seven accepted records, three new proposals, one deprecated historical record |
+| What is accepted versus proposed? | [ADR index](09-decisions/README.md); eight accepted records including the MVP experiment/control decision, two proposals, one deprecated historical record |
 | How do agents maintain this system? | [AGENTS](../AGENTS.md); [CLAUDE](../CLAUDE.md) delegates to it |
 
 ## Knowledge conventions

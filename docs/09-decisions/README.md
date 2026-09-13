@@ -24,7 +24,7 @@ ADRs record consequential scope, distribution, authority/data, platform and inte
 | [ADR-0006](ADR-0006-reference-hardware.md) | accepted | Supplied Samsung reference tablet, exact inventory pending |
 | [ADR-0007](ADR-0007-three-stage-product-strategy.md) | accepted | Stage 1 exclusively active |
 | [ADR-0008](ADR-0008-docs-obsidian-vault.md) | accepted | docs/ is Obsidian vault; repository remains full source of truth |
-| [ADR-0009](ADR-0009-mvp-and-control-posture.md) | proposed | Five MVP workflows; policy-bounded candidate vs synthetic dynamic lab |
+| [ADR-0009](ADR-0009-mvp-and-control-posture.md) | accepted | Five MVP experiments; policy-bounded candidate vs synthetic dynamic lab; Simon approved 2026-09-14, feasibility/release gates remain open |
 | [ADR-0010](ADR-0010-local-authority-and-data.md) | proposed | Local independent authority, explicit memory and minimized replaceable cloud |
 | [ADR-0011](ADR-0011-explicit-activation-and-access.md) | proposed | Tap-to-talk/full touch, stronger measurable access baseline |
 

@@ -16,7 +16,7 @@ related:
 
 **Assessment date: 2026-09-14. Scope: Stage 1 stock-Android app only.** Primary-source desk research was performed on 2026-09-13; editing and final validation crossed midnight in Europe/Madrid.
 
-The canonical specification package is written and linked. It is **ready for bounded synthetic contract work and targeted evidence collection with proposed assumptions**, not ready for an MVP build, real-user autonomous pilot, public distribution or final branded production UI. No runtime/device/user eval has run. Simon has not accepted the new scope, architecture/data or activation ADRs. Desk policy evidence rules out the general-assistant dynamic AccessibilityService Play route under the reviewed policy; other routes are conditional.
+The canonical specification package is written and linked. It is **ready for bounded synthetic contract work and targeted evidence collection with proposed assumptions**, not ready for an MVP build, real-user autonomous pilot, public distribution or final branded production UI. No runtime/device/user eval has run. Simon accepted ADR-0009's five-experiment scope, control posture and two externally verified workflow minimum on 2026-09-14; architecture/data ADR-0010 and activation ADR-0011 remain proposed. Desk policy evidence rules out the general-assistant dynamic AccessibilityService Play route under the reviewed policy; other routes are conditional.
 
 “Ready” describes an artifact/gate's specified scope, not global release authority. Status labels: Ready; Ready with proposed assumptions; Needs evidence; Needs Simon decision; Blocked; Not applicable to current stage. Gate criteria are prospective proposals until Simon adopts them. A completed specification does not turn unknown platform behavior into fact.
 
@@ -24,7 +24,7 @@ The canonical specification package is written and linked. It is **ready for bou
 
 | Required artifact | Canonical owner | Classification / remaining limit |
 |---|---|---|
-| Comprehensive PRD / MVP-V1 boundary | [PRD](../01-product/prd.md), [scope](../01-product/scope-and-roadmap.md) | Ready with proposed assumptions; 48 requirements, scope decision outstanding |
+| Comprehensive PRD / MVP-V1 boundary | [PRD](../01-product/prd.md), [scope](../01-product/scope-and-roadmap.md) | Ready with proposed assumptions; five-experiment/control scope accepted, 48 detailed requirements and final release commitments retain individual status |
 | Users/jobs/capabilities/use cases/journeys | [Personas](../01-product/personas.md), [25 UCs](../01-product/use-cases.md), [8 journeys](../01-product/user-journeys.md) | Ready with proposed assumptions; no validated user segment or demand |
 | Interaction/screens/states/components | [Product design](../02-design/product-design-spec.md), [system](../02-design/design-system.md) | Ready with proposed assumptions; 15 screens, 19 states, 9 components; device/Figma usability untested |
 | Accessibility/voice/content | [Access](../02-design/accessibility.md), [voice](../02-design/voice-ux.md) | Ready with proposed assumptions; standards desk-checked, internal targets untested |
@@ -37,7 +37,7 @@ The canonical specification package is written and linked. It is **ready for bou
 | Evals/metrics/failures/trace | [17 evals](../06-evals/canonical-tasks.md), [metrics](../06-evals/eval-strategy.md), [taxonomy](../06-evals/failure-taxonomy.md), [trace](../01-product/traceability.md) | Ready with proposed assumptions as specs; all runtime/human evals unrun |
 | Research program | [Research plan](../08-research/research-plan.md), [sources](../08-research/README.md) | Ready with proposed assumptions; recruitment/protocol approvals and actual evidence missing |
 | Roadmap/gates/DoR/backlog/handoff | This file, [backlog](backlog.md), [milestone](current-milestone.md), [questions](open-questions.md) | Ready with proposed assumptions; not authorization for broader implementation |
-| Instructions/navigation/templates/decisions | [AGENTS](../../AGENTS.md), [docs index](../README.md), [ADRs](../09-decisions/README.md) | Ready as operating map; three new ADRs remain proposed, seven accepted unchanged |
+| Instructions/navigation/templates/decisions | [AGENTS](../../AGENTS.md), [docs index](../README.md), [ADRs](../09-decisions/README.md) | Ready as operating map; ADR-0009 accepted 2026-09-14, ADR-0010/0011 proposed, seven earlier accepted records unchanged |
 | Stage 2 OS / Stage 3 hardware | [Accepted stage strategy](../09-decisions/ADR-0007-three-stage-product-strategy.md) | Not applicable to current stage; no development work |
 
 ## Named gates: evidence, approver, blockers and unlocks
@@ -45,7 +45,7 @@ The canonical specification package is written and linked. It is **ready for bou
 | Gate | Pass evidence / approver | Current status and blockers | Work unlocked when passed |
 |---|---|---|---|
 | GATE-01 Specification coherence | Link/frontmatter/ID/trace checks + cross-discipline editorial review; document editor verifies mechanics, Simon reviews product proposals | Ready with proposed assumptions; automated validation recorded below, stakeholder acceptance distinct | Bounded fake-interface tests, low-fi/design briefs and evidence planning; not production |
-| GATE-02 MVP scope decision | Simon explicitly accepts ADR-0009 or revised scope, five workflows and ≥2 external delegation bar | Needs Simon decision; no accepted new MVP yet | Commit resources to admitted workflow experiments; not bypass GATE-03/04 |
+| GATE-02 MVP scope decision | Simon explicitly accepts ADR-0009 or revised scope, five workflows and ≥2 external delegation bar | Ready — passed 2026-09-14: Simon explicitly accepted ADR-0009 after review; experiment scope only, not feasibility or blanket specification acceptance | Commit resources to admitted workflow experiments; not bypass GATE-03/04/06 or authorize MVP build/pilot |
 | GATE-03 Android control feasibility | Exact device/app matrix, API/semantic route, fresh targeting, Stop and independent postconditions; Android + safety review | Needs evidence; no physical tests, app adapters or Stop proof | Only demonstrated synthetic device/control capabilities; unsupported routes stay disabled |
 | GATE-04 Distribution viability | Capability-by-route policy map, declarations/disclosures and appropriate authoritative review evidence; Simon + policy reviewer | Needs evidence for API/static/private routes; general dynamic accessibility public route Blocked under reviewed policy | Chosen candidate distribution build and narrowly approved pilot route; not guaranteed Play acceptance |
 | GATE-05 Interaction-design, naming and brand-direction readiness | Full MVP flow/state/access coverage, formative comprehension, Simon's name/territory decision or explicit provisional prototype exception, professional name checks before public commitment | Needs Simon decision and evidence; briefs/boards exist, Figma/user tests/legal clearance absent | Styled controlled prototype with recorded maturity; public identity only after specialist clearance, production UI still GATE-08 |
@@ -114,4 +114,6 @@ No app/runtime/backend was built, no user/device study or EVAL-001–017 was exe
 
 ## Restart handoff
 
-Read [docs index](../README.md) → [current milestone](current-milestone.md) → selected T-ID/PRD/contract → [ADRs](../09-decisions/README.md) and [open questions](open-questions.md) → Git status. Preserved sources remain immutable. Review proposed ADR-0009/0010/0011 rather than treating polished prose as acceptance. Local commits are permitted by the mission; no push/merge/publication is authorized.
+Decision follow-up validation, 2026-09-14: after recording Simon's ADR-0009 approval and updating GATE-02, T-100 and linked scope/status summaries, `python3 scripts/validate-docs.py` passed with 0 errors (1,211 local links; unchanged requirement/eval counts and four source hashes); `git diff --check` exited 0. No runtime evidence or other gate acceptance was added.
+
+Read [docs index](../README.md) → [current milestone](current-milestone.md) → selected T-ID/PRD/contract → [ADRs](../09-decisions/README.md) and [open questions](open-questions.md) → Git status. Preserved sources remain immutable. ADR-0009 is accepted for experiment/control scope; ADR-0010/0011 remain proposed. Do not treat scope approval as runtime evidence or blanket specification acceptance. Local commits are permitted by the mission; no push/merge/publication is authorized.

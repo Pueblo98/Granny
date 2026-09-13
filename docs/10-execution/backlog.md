@@ -13,7 +13,7 @@ related:
 
 # Dependency-ordered Stage 1 backlog
 
-Planning package complete for review; product choices and runtime evidence remain open. These are **planned tasks, not implemented work**. [Readiness](development-readiness.md) owns gates and Definition of Ready. [Traceability](../01-product/traceability.md) supplies exact requirement links. P0 = kill-risk/foundation, P1 = controlled prototype, P2 = MVP/pilot, P3 = V1 after learning. No task includes permission to push, install dependencies or modify external services.
+Planning package complete for review; T-100's experiment/control decision is accepted, while other product choices and runtime evidence remain open. Except for the completed decision task, these are **planned tasks, not implemented work**. [Readiness](development-readiness.md) owns gates and Definition of Ready. [Traceability](../01-product/traceability.md) supplies exact requirement links. P0 = kill-risk/foundation, P1 = controlled prototype, P2 = MVP/pilot, P3 = V1 after learning. No task includes permission to push, install dependencies or modify external services.
 
 Order: T-100/101 decision/evidence + T-102/108 interaction/research; independently T-103 fake contract replay → admitted T-104/105/106 + local T-107 → T-109 integrated evidence → T-110 gated MVP/pilot → T-111 V1. T-112 stays deferred. Product/visual decisions need not block fake safety tests; missing route evidence does block real external automation.
 
@@ -24,9 +24,9 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Dependencies / entry:** None; specification package.
 - **Trace / contract:** ADR-0009 plus PRD-FR-006/009/010 and OUT-001; UC-002/004/006, J-001/003/005.
 - **Bounded deliverable:** Choose proposed five-workflow scope and candidate-vs-lab boundary; retain at least two useful external delegation bar; state alternatives if route fails.
-- **Acceptance / evidence:** Recorded Simon decision, unresolved evidence conditions and GATE-02 state; no acceptance inferred.
+- **Acceptance / evidence:** Simon explicitly accepted [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) on 2026-09-14 after review; GATE-02 passed for experiment scope only. Device/distribution/release evidence remains outstanding.
 - **Excluded / rollback:** No code, public submission or name lock. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
-- **Status:** planned; no code, test result or assigned staffed team claimed.
+- **Status:** complete — decision recorded 2026-09-14; no implementation or runtime test result claimed.
 
 <a id="t-101"></a>
 ## T-101 — Inventory tablet and map permitted capability routes
