@@ -45,12 +45,12 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 ## T-102 — Prototype neutral Home/input/permission and access interaction
 
 - **Priority / discipline:** P0 / Design/Android; Simon owns acceptance.
-- **Dependencies / entry:** Contract portion can start now; device shell requires DoR and T-101 environment; no final brand needed.
+- **Dependencies / entry:** Contract portion can start now; device shell requires DoR and T-101 environment; no final brand needed. Official remote Figma MCP authentication was verified 2026-09-14, but exact file creation/canvas mutation still requires current authority. Confirm live seat/tool-call limits before execution.
 - **Trace / contract:** PRD-FR-001/002/003/011; ACC-001–003; OUT-002; UC-007/013/014/022, J-006/007; SCR-001–004/011; CMP-002/007/008/009; EVAL-005/007.
 - **Bounded deliverable:** First low-fi frames including denied mic and typed path; next bounded own-app shell, transcript fixture and reversible text preview, no external automation.
 - **Acceptance / evidence:** 100/130/200% reflow and local semantics tests; explicit scope labels; design review then device accessibility evidence.
 - **Excluded / rollback:** No real model, mic/background capture without separate task, or global settings mutation. Neutral tokens proposed. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
-- **Status:** planned; no code, test result or assigned staffed team claimed.
+- **Status:** planned; MCP connection verified read-only, no Figma file created, and no code, test result or assigned staffed team claimed.
 
 <a id="t-103"></a>
 ## T-103 — Build offline authorization/cancellation/verification contract replay

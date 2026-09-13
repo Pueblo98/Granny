@@ -29,7 +29,7 @@ related:
 | What does the user see/control in every state? | [Product design spec](02-design/product-design-spec.md), [semantic components](02-design/design-system.md) |
 | How does it speak and remain accessible? | [Voice/content](02-design/voice-ux.md), [accessibility](02-design/accessibility.md) |
 | What is the brand and name option space? | [Brand/4 identities](02-design/brand-and-visual-identity.md), [naming/screening/iteration](02-design/naming-exploration.md), [local boards](02-design/identity-review.html) |
-| What exactly goes into Figma and tokens? | [Figma brief](02-design/figma.md), [token handoff](../design-tokens/README.md); no Figma file or accepted final identity yet |
+| What exactly goes into Figma and tokens? | [Figma MCP/execution brief](02-design/figma.md), [token handoff](../design-tokens/README.md); remote MCP connection verified, but no Figma file or accepted final identity yet |
 | How does the agent interpret, plan and recover? | [Behavior](03-agent/agent-behavior.md), [autonomy integration](03-agent/autonomy-model.md), [device control](03-agent/device-control.md) |
 | What typed capabilities and memory interfaces exist? | [Tools](03-agent/tool-contracts.md), [memory contract](03-agent/memory-system.md) |
 | Where are component/data/trust boundaries? | [Root map](../ARCHITECTURE.md), [system contract](04-architecture/system-overview.md) |

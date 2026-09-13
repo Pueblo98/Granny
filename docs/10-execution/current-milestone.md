@@ -15,9 +15,9 @@ related:
 
 ## Workflow refinement follow-up
 
-Simon's 2026-09-14 follow-up requests a holistic documentation/skills/workflow system **before actual design and development**. T-113 supplies [delivery workflows and four repository skills](operating-workflows.md), [first task packets](task-packets.md), [transaction protocol](../03-agent/execution-protocol.md), [capability admission](../04-architecture/capability-admission.md), [evidence review](../06-evals/evidence-protocol.md) and [research execution protocols](../08-research/research-protocols.md). Documentation-tool regression tests are executable; T-103's 20 product-contract cases remain unrun. No application code, external Figma file or participant/device study was created.
+Simon's 2026-09-14 follow-up requests a holistic documentation/skills/workflow system **before actual design and development**. T-113 supplies [delivery workflows and four repository skills](operating-workflows.md), [first task packets](task-packets.md), [transaction protocol](../03-agent/execution-protocol.md), [capability admission](../04-architecture/capability-admission.md), [evidence review](../06-evals/evidence-protocol.md) and [research execution protocols](../08-research/research-protocols.md). Documentation-tool regression tests are executable; T-103's 20 product-contract cases remain unrun. No application code, external Figma file or participant/device study was created. The official remote Figma MCP connection was verified read-only on 2026-09-14; no canvas mutation or credential/config file was added to the repository.
 
-The next user-authorized work can start a named low-fi design package or T-103's offline fake replay from these packets; no need for another broad specification-writing milestone. Remaining real-world evidence and Simon decisions still gate production work. Skills are repo-local, with no global settings/plugins or scheduled automation installed.
+The next user-authorized work can start a named low-fi design package or T-103's offline fake replay from these packets; no need for another broad specification-writing milestone. Remaining real-world evidence and Simon decisions still gate production work. Skills are repo-local. No new global setting, plugin or scheduled automation was installed by this repository task; the pre-existing official Figma plugin connection is documented in the Figma contract.
 
 The mission's documentation package is written for review. Only the stock-Android tablet app is active; no Android/runtime/backend implementation was started. Simon accepted the five MVP experiments and control posture on 2026-09-14; detailed product choices remain proposed and technical/user evals unrun. [Development readiness](development-readiness.md) is the authoritative gate/status assessment; [backlog](backlog.md) gives bounded next tasks, not another plan to write the PRD.
 
@@ -41,4 +41,7 @@ Naming recommendation: Daykind / Handspan / Clearfold, all uncleared with docume
 
 GATE-02 is passed for the agreed experiment scope, not blanket acceptance of every specification or release. GATE-03 platform proof, GATE-04 route viability and GATE-05 design/brand evidence remain outstanding. GATE-06 is specified for synthetic replay; real-device/data safety remains evidence-needed. GATE-07–09 are not passed. The [readiness validation record](development-readiness.md) contains exact mechanical checks.
 
-No push, merge, publication, dependency installation, external Figma edits, plugin enablement, private Obsidian edits or source-material rewrites are authorized by this milestone.
+No push, merge, publication, dependency installation, external Figma edits,
+new plugin enablement, private Obsidian edits or source-material rewrites were
+performed by this MCP setup. Connection verification does not authorize future
+canvas writes.

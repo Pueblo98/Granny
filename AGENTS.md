@@ -42,6 +42,29 @@ Stable IDs: PRD-OUT/FR/ACC/SAF/PRV/NFR/DST-###, UC-###, J-###, SCR-###, CMP-###,
 - No invented user research, performance, policy approval, legal conclusions or final brand values. Runtime evals remain unrun until executed; documentation validation is not runtime evidence.
 - Implementation tasks must meet [Definition of Ready](docs/10-execution/development-readiness.md), including fixtures/oracles, permissions/data/access, rollback and excluded behavior. No Stage 2/3 preparation disguised as architecture cleanup.
 
+## Figma MCP workflow
+
+- The official **remote Figma MCP** is the preferred design connection. Keep
+  OAuth/session credentials in the user's Codex/Figma connection, never in Git,
+  `.env`, `.codex/config.toml` or documentation. Do not add a duplicate project
+  server while the official plugin connection works.
+- Before any Figma task, read the [Figma contract](docs/02-design/figma.md) and
+  use the [granny-design-handoff skill](.agents/skills/granny-design-handoff/SKILL.md).
+  Use exact file/frame URLs and stable J/SCR/CMP/PRD IDs; avoid broad file
+  scraping and repeated whole-file calls.
+- Reading shared design context for an authorized task is allowed. Creating or
+  editing Figma files/frames, publishing libraries, changing Code Connect, or
+  deleting content requires current user authority plus an exact target and
+  scope. Inspect before mutation and report actual file/node references.
+- For Figma-to-code, load the official Figma design-to-code skill, fetch
+  structured design context and a reference screenshot, reuse repository
+  components/tokens, then verify adaptive Android semantics and visual fidelity.
+  Figma output is a reference to implement, never self-validating production code.
+- Product behavior, action policy and requirements remain canonical in Git;
+  Figma owns visual composition and prototype artifacts. Accepted visual/token
+  changes must return to repository specs/tokens. A polished frame cannot
+  silently change scope, confirmation, privacy, accessibility or agent behavior.
+
 ## Git and finish
 
 Normal work uses short-lived feature/, fix/, docs/ or chore/ branches; main is protected. Keep focused imperative commits, inspect full diff and run relevant checks first. Preserve user work and never rewrite shared history. No secrets, credentials/signing material, personal data, .env, generated builds or volatile Obsidian state in Git. Do not install dependencies, push, merge, publish or alter external systems without current authority. When authorized, use reviewed PRs with passing checks; after merge synchronize main fast-forward-only and remove completed local branch when safe.

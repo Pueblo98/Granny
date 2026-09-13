@@ -15,6 +15,109 @@ related:
 
 No Figma file has been created by this specification mission. The [local identity board](identity-review.html) is an exploratory repository artifact, not an interactive product prototype or final asset. [Product design](product-design-spec.md) owns behavior; [identity](brand-and-visual-identity.md) owns candidate styling; [naming](naming-exploration.md) owns candidate words.
 
+## Official Figma MCP connection
+
+The official remote Figma MCP connection was verified from Codex on
+2026-09-14. Authentication succeeded; no Figma file was created or changed.
+Account identifiers and OAuth credentials are deliberately not stored in the
+repository. The current authenticated seat reports Starter/View. Figma's
+current documentation says Starter and View/Collab seats on paid plans can be
+limited to six MCP tool calls per month, so confirm the live plan/limits before
+a substantial design run and use exact node-scoped calls.
+
+Preferred connection path:
+
+1. In Codex, open **Plugins**, find **Figma**, install/connect it, and complete
+   Figma OAuth. The existing host connection already passed this step.
+2. Restart Codex if the tool list does not refresh; use `/mcp` in the Codex TUI
+   or MCP settings in the desktop/IDE client to confirm the server is active.
+3. Verify authentication with the Figma identity/account check before
+   diagnosing file access. Do not record returned email, team IDs or tokens.
+4. If the plugin is unavailable, configure the official remote URL as a
+   user-level MCP connection and run OAuth:
+
+   ```text
+   codex mcp add figma --url https://mcp.figma.com/mcp
+   codex mcp login figma
+   ```
+
+5. Use Figma's desktop MCP at `http://127.0.0.1:3845/mcp` only for an
+   organization-specific need. It requires the Figma desktop app, an open
+   design file, Dev Mode, and the local MCP toggle; the remote server is the
+   default for Granny.
+
+Codex can scope MCP servers in `.codex/config.toml` for trusted projects, but
+Granny intentionally does not duplicate the working official plugin
+connection. Never commit bearer tokens, OAuth credentials or static
+authorization headers. See the current [Codex MCP documentation](https://learn.chatgpt.com/docs/extend/mcp)
+and [Figma's Codex setup guide](https://help.figma.com/hc/en-us/articles/39888629089175-Codex-and-Figma-Set-up-the-MCP-server).
+
+## MCP authorization and source-of-truth boundary
+
+Connection does not grant blanket permission to mutate Figma. Use these rules:
+
+| Operation | Default for a scoped design/development task | Required context |
+|---|---|---|
+| Verify connection/account | Read-only | No account identifiers committed |
+| Read metadata, variables, components or screenshot | Allowed when needed for an authorized shared design | Exact file/node URL and purpose |
+| Create a Granny Figma file | Ask for/confirm current external-write authority | Destination team/project, file name and initial pages |
+| Add or update frames/components | Requires authorized target and bounded manifest | Existing file/page, J/SCR/CMP IDs and expected changes |
+| Publish library or modify Code Connect | Separate explicit authorization | Version, mappings, affected code/components and rollback |
+| Delete/archive/move files or broad content | Never infer authorization | Exact targets and explicit confirmation |
+
+Git owns accepted product behavior, requirements, action policy, accessibility
+contracts, stable IDs and machine-readable tokens. Figma owns editable visual
+composition, component/variable application and prototype connections. When a
+review changes behavior, update Git's canonical owner first or in the same
+change. When Simon accepts visual values, record the real Figma file/node and
+version references in this document and promote the corresponding Git tokens.
+
+## MCP design-to-development loop
+
+### Repository to Figma
+
+1. Select one bounded task packet, normally T-102 or T-108, and prepare its
+   frame/variant annotation manifest before canvas mutation.
+2. Load the official Figma authoring skills. Search the target design system and
+   libraries before creating components. For Android/non-web UI, use native
+   Figma authoring rather than a browser screenshot as the editable source.
+3. Create or update only the authorized pages/frames. Name them with the stable
+   J/SCR/CMP convention below and annotate source commit, fidelity and status.
+4. Return actual file/frame URLs to this handoff contract. Never invent a URL or
+   call a generated frame accepted.
+
+### Figma to Android code
+
+1. Start from an exact Figma frame/component URL, linked PRD/J/SCR/CMP IDs and
+   an implementation task that meets Definition of Ready.
+2. Load the official Figma design-to-code skill, then retrieve structured design
+   context as the primary input and a screenshot as the visual reference.
+3. Map Figma variables/components to the Git-backed semantic token and Compose
+   component owners. Reuse existing code; do not copy generated framework code
+   blindly or create one-off raw values.
+4. Implement responsive behavior for the supported Android width, orientation,
+   font-scale and input profiles. Preserve TalkBack semantics, focus, Stop,
+   confirmation and truthful-result behavior even when absent from a single
+   reference frame.
+5. Compare the implementation against the reference at named configurations,
+   run component/accessibility tests, and record known deviations. A screenshot
+   match is not an accessibility, policy or device-feasibility pass.
+6. Add Code Connect mappings only after both sides are stable and that external
+   metadata write is explicitly authorized.
+
+### Call-budget discipline
+
+- Share exact frame/node URLs rather than asking the agent to explore an entire
+  file.
+- Group related component/variable/context reads into one design task.
+- Cache decisions in Git-backed specs and tokens; do not re-fetch unchanged
+  Figma data to rediscover product behavior.
+- Use screenshots for targeted visual verification, not as a substitute for
+  structured component/variable context.
+- Check the current seat and server limits before T-102/T-108; if the limit is
+  too low, prepare manifests locally and reserve calls for create/readback and
+  implementation-critical nodes.
+
 ## First package: interaction before styling
 
 Create one Stage 1 design file only after authorization to write to Figma. Owner Simon; designer maintains components. File description links this repository and source commit. Pages in order:
