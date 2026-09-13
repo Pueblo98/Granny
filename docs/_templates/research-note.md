@@ -1,24 +1,33 @@
 ---
-title: "Research — [Question]"
+title: "Research evidence template"
 status: draft
 owner: Simon
-last_updated: YYYY-MM-DD
-tags: [research]
-related: []
+last_updated: 2026-09-14
+tags: [template]
+related:
+  - ../README.md
 ---
 
-# Research — [Question]
+# Research — Question
 
-## Question and decision informed
+Set actual date/title/related links. Status draft/proposed/review describes document; study planned/unrun/completed describes evidence separately.
 
-## Method, date, and environment/participants
+## Decision and hypothesis
 
-## Primary sources or raw evidence
+RES/PRD/gate links; what would invalidate assumption and materially change scope.
 
-## Observations
+## Method, ethics and environment
 
-## Interpretation and confidence
+Planned versus actual participants/configuration, recruitment/consent/withdrawal, recording/retention/access, owner/order, synthetic fixtures and exclusions. No private participant/account data in Git.
 
-## Limitations
+## Primary sources and observations
 
-## Implications and follow-up
+Publisher/URL/access and publication/effective dates if known; exact claim established and limitation. Actual observations separated from inference; no invented results. Raw evidence stays in approved private research store; aggregate references only.
+
+## Interpretation and decision criterion
+
+Confidence, disconfirming cases, sample limitation, comparison and proposed recommendation. Specialist review needed where relevant.
+
+## Follow-through
+
+Canonical doc/ADR/task/eval/gate impact, approver and next experiment. No acceptance by prose alone.

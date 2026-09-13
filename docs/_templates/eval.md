@@ -1,28 +1,29 @@
 ---
-title: "EVAL-XXX — [Task]"
+title: "Evaluation specification template"
 status: draft
 owner: Simon
-last_updated: YYYY-MM-DD
-tags: [eval]
-related: []
+last_updated: 2026-09-14
+tags: [template]
+related:
+  - ../README.md
 ---
 
-# EVAL-XXX — [Task]
+# EVAL-XXX — Task or invariant
 
-**Requirement/use case:**
-**Environment/version:**
-**Consequence class:**
+Document status draft/proposed; execution status **unrun** until performed. Link PRD/UC/J/SCR/interface/policy/task and release applicability.
 
-## Goal and starting state
+## Controlled setup
 
-## Success evidence
+Fixture/oracle version, synthetic accounts/content, device model/API/OEM/app versions, locale/timezone, permission/auth/network states, model/recipe/policy, access profile. No personal identifiers.
 
-## Failure conditions
+## Procedure and variants
 
-## Variants and adversarial cases
+Happy path, ambiguity/injection/stale/replay/revocation/outage/cancel/takeover/crash variants; exact step/time/retry bounds.
 
-## Limits (steps/time/retries)
+## Independent evidence and failure
 
-## Result
+Postcondition oracle outside planner; absent unintended effects; safe partial/unknown distinction; severity/taxonomy, no app-open-as-complete shortcut.
 
-Not run / date, evidence, failure codes, notes.
+## Execution and results
+
+Automatable vs manual/human portions, privacy-safe logs, command/date/version, n and numerator/denominator, uncertainty, failures and limitations. Keep unrun if no execution. Link actual artifact only after exists; gate/approver and next regression.

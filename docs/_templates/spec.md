@@ -1,26 +1,29 @@
 ---
-title: "[Specification title]"
+title: "Specification / stable requirement template"
 status: draft
 owner: Simon
-last_updated: YYYY-MM-DD
-tags: []
-related: []
+last_updated: 2026-09-14
+tags: [template]
+related:
+  - ../README.md
 ---
 
-# [Specification title]
+# Specification title
 
-## Purpose
+Copy this template, set actual title/date/related paths and delete instructional prompts. One canonical owner; no “final/new/v2” duplicate.
 
-## Evidence and context
+## Purpose and scope
 
-Distinguish facts, decisions, assumptions, and hypotheses.
+State active Stage 1 release, user/job/problem, authority and exclusions. Separate confirmed intent, proposed choice, open decision and unknown evidence.
 
-## Requirements
+## Requirement records
 
-Use stable IDs where requirements will be tested.
+For each stable PRD-category ID: release (MVP/App V1/later App/future-stage context), priority (Must/Should/Could/Won't), individual status (confirmed/proposed/evidence-needed/blocked), job/rationale, trigger/preconditions, observable behavior, edge/failure/cancel conditions, testable acceptance. Link UC/J/SCR/CMP, agent/interface/architecture owner, action/data/access policy, planned T-ID, EVAL and RES. Link traceability, not duplicate full rows elsewhere.
 
-## Constraints and failure states
+## Contract, dependencies and failures
 
-## Open questions
+Inputs/outputs/state owner, permissions/trust/data, pre/postconditions, freshness, verification, confirmation, retry/idempotency, Stop/takeover, privacy/retention and access implications. No vague safe/fast/complete claim.
 
-## Related documents
+## Decisions and validation
+
+Options/recommendation/rationale/evidence that changes it; consequential ADR if needed. List actual tests/results separately from unrun planned evals and remaining gates.

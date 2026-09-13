@@ -1,39 +1,42 @@
 ---
-title: Research and Source Register
-status: draft
+title: "Research and source register"
+status: proposed
 owner: Simon
-last_updated: 2026-09-10
-tags:
-  - research
-  - sources
+last_updated: 2026-09-14
+tags: [research]
 related:
+  - research-plan.md
+  - android-stage-1-feasibility.md
   - source-material/initialization-handoff.md
   - source-material/planning-conversation.md
-  - ../00-vision/product-vision.md
 ---
 
-# Research and Source Register
+# Research and source register
 
-Research must separate verified evidence, observed test results, prior working assumptions, and product hypotheses.
+[Research plan](research-plan.md) owns hypotheses, methods, ethics and evidence gates. No completed user/device study is implied by a specification. [Android feasibility](android-stage-1-feasibility.md) owns current platform/policy desk findings; [naming](../02-design/naming-exploration.md) owns preliminary candidate screening. Store future dated observations using the [research template](../_templates/research-note.md), not by editing source history.
 
-## Supplied sources
+## Preserved inputs
 
-| Source | Role | Preservation note |
+| Source | Role / limits | Preservation |
 |---|---|---|
-| [Initialization handoff](source-material/initialization-handoff.md) | Governing initialization instructions | Copied byte-for-byte from Downloads; SHA-256 `80f9a4a56824ed9639d09292d4faf089b51fb4e6eccc55f467734288cf628d1d`. |
-| [Dream Book TeX](../00-vision/dream-book.tex) | Working end-state vision | Copied byte-for-byte; SHA-256 `6e6623afdfa857e997ed2e7cb5e8cafb66e49fd4632002c7ef800026dac373cf`. |
-| [Dream Book PDF](../00-vision/dream-book.pdf) | Rendered working vision | Copied byte-for-byte; SHA-256 `6524a06676c0926e78853769bc7fd6dd595bdd1fdf0d86a2683f52f23dbae7f4`. |
-| [Planning conversation](source-material/planning-conversation.md) | Proposed structure/details supplied in chat | Preserved as a structured source note on 2026-09-10; proposals are not accepted decisions. |
+| [Initialization handoff](source-material/initialization-handoff.md) | Governing initialization source; current user and accepted decisions take precedence | SHA-256 80f9a4a56824ed9639d09292d4faf089b51fb4e6eccc55f467734288cf628d1d |
+| [Dream Book TeX](../00-vision/dream-book.tex) | Long-term vision, mixed stages; not Stage 1 requirements | SHA-256 6e6623afdfa857e997ed2e7cb5e8cafb66e49fd4632002c7ef800026dac373cf |
+| [Dream Book PDF](../00-vision/dream-book.pdf) | Rendered vision; future-stage context separated by canonical specs | SHA-256 6524a06676c0926e78853769bc7fd6dd595bdd1fdf0d86a2683f52f23dbae7f4 |
+| [Planning conversation](source-material/planning-conversation.md) | Captured historical proposals, not approval/research results | SHA-256 d1d4edd3419123df3a3470720d2fda1932c68ba38fdd40df62c9a8aa003106d5 |
 
-## Research backlog
+## Current primary-source desk evidence — accessed 2026-09-13
 
-1. Interview/observe representative older adults and trusted helpers; validate proto-personas and jobs.
-2. Benchmark current assistants, including Gemini where applicable, on the seed canonical tasks.
-3. Inventory the physical reference tablet and test stock-Android/accessibility feasibility.
-4. Verify current Android and WCAG accessibility requirements from primary sources.
-5. Map competitor positioning without treating marketing claims as capability evidence.
-6. Investigate privacy, consent, consumer-protection, accessibility, and high-risk-domain obligations for intended markets.
+| Publisher / source | Establishes | Limits / canonical analysis |
+|---|---|---|
+| Google Play, [AccessibilityService policy](https://support.google.com/googleplay/android-developer/answer/10964491?hl=en) | General autonomous initiation/planning/execution restrictions, static rule distinction, accessibility-tool criteria and disclosure | Not approval for Granny; [feasibility](android-stage-1-feasibility.md) maps routes |
+| Google Play, [sensitive permissions](https://support.google.com/googleplay/android-developer/answer/16558241?hl=en), [User Data](https://support.google.com/googleplay/android-developer/answer/10144311?hl=en) | Permission and data/disclosure obligations | App/market-specific review still needed; no broad legal conclusion |
+| Android Developers, [accessibility services](https://developer.android.com/guide/topics/ui/accessibility/service), [AccessibilityService reference](https://developer.android.com/reference/android/accessibilityservice/AccessibilityService) | User-granted observation/action APIs and lifecycle | Does not establish target-app semantic quality or store permission |
+| Android Developers, [MediaProjection](https://developer.android.com/media/grow/media-projection), [foreground-service restrictions](https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start) | Capture grant/lifecycle and background limits | Secure windows/OEM/versions require tests |
+| Android Developers, [common intents](https://developer.android.com/guide/components/intents-common), [package visibility](https://developer.android.com/training/package-visibility) | Supported intents are scoped integrations, app-query restrictions | App launch is not task verification |
+| Android Developers, [accessible apps](https://developer.android.com/guide/topics/ui/accessibility/apps); W3C [WCAG 2.2](https://www.w3.org/TR/WCAG22/) | Platform target/contrast/semantics guidance and web criteria | [Accessibility spec](../02-design/accessibility.md) separates native internal targets from external minimums; no compliance certification |
+| Official foundries/repositories linked in [identity](../02-design/brand-and-visual-identity.md) | Candidate typeface provenance and licenses | Exact version, glyph coverage and performance untested; no fonts installed |
+| Primary company/app pages and CIPO linked in [naming](../02-design/naming-exploration.md) | Observable competing uses and specific trademark lead | Discovery screening only; unknown markets and unsearched classes; no clearance |
 
-## Evidence record format
+Desk-source dates are access dates, not publication/effective dates unless source explicitly says so. Recheck unstable API/policy/provider/competitor facts before implementing affected capability or distribution submission. Record changed source and resulting ADR/spec impact, not just replace URL.
 
-Use the [research-note template](../_templates/research-note.md). Record date, question, method, participants/environment, primary sources, observation, limitation, confidence, implications, and linked requirements/decisions. Never promote an illustrative scenario or prior assistant claim into evidence.
+Evidence confidence: official documentation supports a platform/policy statement; physical experiment supports only the measured configuration; small formative study supports observed themes, not market demand. An inference and a proposed target must be labeled. Specialist legal/privacy/accessibility/trademark review is not replaced by this register.

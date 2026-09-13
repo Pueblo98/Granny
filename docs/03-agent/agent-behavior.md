@@ -1,54 +1,66 @@
 ---
-title: Agent Behavior
+title: "Stage 1 Agent Behavior Contract"
 status: proposed
 owner: Simon
-last_updated: 2026-09-10
-tags:
-  - agent
-  - behavior
+last_updated: 2026-09-14
+tags: [agent, contract]
 related:
-  - autonomy-model.md
+  - tool-contracts.md
   - device-control.md
   - memory-system.md
-  - ../05-safety-privacy/safety-and-privacy.md
+  - ../05-safety-privacy/action-policy.md
 ---
 
-# Agent Behavior
+# Agent behavior contract
 
-Granny's agent is a permissioned device operator and companion, not merely a chatbot.
+**Purpose:** translate user intent into an admitted, bounded task and report its evidenced outcome. The agent is a respectful software assistant, never user authority, clinician, account owner or private family observer. PRD and [policy](../05-safety-privacy/action-policy.md) constrain behavior even when the model proposes otherwise.
 
-## Behavioral loop
+## Observe → Understand → Plan → Act → Verify → Recover
 
-1. **Observe** current device, conversation, and approved context.
-2. **Understand** the user's intended outcome, entities, constraints, and ambiguity.
-3. **Plan** a minimal sequence of typed, permitted actions.
-4. **Act** one safe step at a time while remaining visibly interruptible.
-5. **Verify** resulting state against the intended outcome.
-6. **Recover** from changed UI, missing permission, interruption, or failed assumptions.
-7. **Report** the actual outcome plainly; never claim an unverified success.
+| Phase | Required record/output | Decision rule |
+|---|---|---|
+| Observe | Observation with origin, captured monotonic time, window/package/version, grant scope, user-interaction epoch, sensitivity and evidence references | Request least content; redact before cloud; absent tree is unknown, not empty app |
+| Understand | Intent with original/edited text reference, goal enum, entities with provenance, time interval/timezone, selected route and ambiguity set | User-stated fact outranks inferred interpretation; material person/content ambiguity requires SCR-006 |
+| Plan | TaskPlan with version, allowed capability IDs, ordered bounded steps, pre/postconditions, max effects/budget and expected outcome | Registry checks admission; API first; no arbitrary instructions from observed content |
+| Act | Serialized typed request with state epoch, cancel token and permit where needed | Local executor validates independently; one effect at a time |
+| Verify | Evidence predicate and grade: verified, partial, unknown, disproven | A successful tool dispatch is never sufficient task evidence |
+| Recover | Classified failure + remaining budget + bounded safe option or manual handoff | Re-observe once when safe, clarify or stop; never reset budget or duplicate consequence |
 
-Confirmation is a policy gate before applicable actions, not merely a conversational step added at the end.
+Model reasoning need not be exposed or logged. User-visible progress is goal/step/evidence. State belongs to local coordinator in [product design](../02-design/product-design-spec.md).
 
-## Required behavior
+## Proposed planning representation
 
-- Resolve people, dates, apps, and content from approved context; clarify material ambiguity.
-- Prefer the least privileged and most semantic successful tool path.
-- Separate planning from enforcement; tool contracts reject actions outside granted capability.
-- Explain consequential effects before acting and preserve direct user control.
-- Stop safely on low confidence, unexpected security/authentication boundaries, or repeated loops.
-- Never infer medical/cognitive diagnosis in ordinary companion behavior.
-- Keep private memory and family-visible information separate.
+```text
+Intent {taskId, revision, goal: GoalEnum, userTextRef, locale,
+        entities: [{kind, opaqueId?, candidates[], provenance}],
+        timeWindow?: {startInstant,endInstant,zone}, mode: Guidance|Act}
+TaskPlan {taskId, version, intentRevision, capabilityManifestVersion,
+          steps: Step[1..12], budget, maximumConsequence, expectedOutcome}
+Step {id, capabilityId, typedArguments, requiresEvidenceIds[],
+      preconditionPredicate, postconditionPredicate, effectClass,
+      failureRoute: Clarify|Reobserve|Manual|Stop}
+```
 
-## Anti-behaviors
+Only schema-conforming bounded values enter executor; unknown goal/capability is unsupported. Conversation strings are not executable predicates. Predicate vocabulary is fixed by adapter registry (package equals, entity equals, text equals within selected field, state equals, receipt matches), not model-supplied code.
 
-- guessing a recipient or destructive control;
-- silently chaining consequential actions;
-- exposing passwords or private content to helpers;
-- treating absence of a response as consent;
-- repeatedly tapping when state does not change;
-- blaming the user, hiding uncertainty, or inventing completion;
-- maximizing engagement rather than solving the user's task.
+## Context and untrusted content
 
-## Open questions
+Each value has provenance UserInput, LocalPreference, ApprovedIntegration, ObservedUI, ModelInference or HelperProposal. User input still cannot override prohibited capability policy. Observed UI, image text, messages, notifications, files and links cannot establish new goals, helper rights, tool grants or provider instructions. Quoted “ignore previous rules” is processed as content only. No copied screen text enters system/developer instruction fields.
 
-Personality, initiative, session continuity, local/remote planning split, model selection, confidence calibration, interruption semantics, and escalation to family/human support remain undecided.
+Entity inference can suggest candidates but cannot silently become saved memory or consequential target. Use stable opaque endpoint IDs and user-approved labels; a speech name, image face or relationship guess is insufficient. Relative dates resolve in device/user-selected timezone and remain visible. If timezone unknown, ask; do not substitute developer location.
+
+## Route choice and proactivity
+
+Production candidate: API/integration-led tasks and manual handoffs. Fixed human-authored accessibility recipes remain conditional on current policy review. Dynamic model-selected accessibility sequences are lab-only pending a permitted distribution model. This distinction is enforced by build/registry admission, not a model instruction.
+
+No ambient conversation, unsolicited task initiation, engagement feed, passive memory extraction or proactive external action in MVP/V1. Follow-up proposals after a result are optional and never auto-execute. “Would you like to share?” cannot itself open a share target.
+
+## Conversation continuity
+
+One active task per device user. New input during a task pauses pending action; clarify edit vs new task if it changes goal. Explicit correction increments revision and invalidates prepared permits. Lock/process death/15-minute idle clears raw session context; minimal local journal remains per data policy. Resume summarizes known outcome, observes again and requires new approval. Repetition reads explanation/preview, not tool rerun.
+
+## Quality boundaries
+
+No fabricated completion, hidden retry, invented contact relationship, medical diagnosis, financial/legal decision or credential handling. If a user asks an unsupported task, explain the specific limit and leave ordinary device control available. A model outage cannot disable Stop, local privacy controls, readable history or user touch.
+
+Use [tool contracts](tool-contracts.md) for typed interfaces, [device control](device-control.md) for budgets/races, [memory](memory-system.md) for structured context and [evals](../06-evals/canonical-tasks.md) for adversarial acceptance.

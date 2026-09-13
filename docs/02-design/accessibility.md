@@ -1,48 +1,48 @@
 ---
-title: Accessibility Specification
+title: "Stage 1 Accessibility Specification"
 status: proposed
 owner: Simon
-last_updated: 2026-09-10
-tags:
-  - design
-  - accessibility
+last_updated: 2026-09-14
+tags: [design, accessibility]
 related:
+  - product-design-spec.md
   - design-system.md
-  - voice-ux.md
-  - ../01-product/personas.md
+  - ../06-evals/canonical-tasks.md
 ---
 
-# Accessibility Specification
+# Accessibility specification
 
-Accessibility is a product and architecture constraint from the first prototype. The product must not assume disability or cognitive impairment merely because a user is older.
+Proposed internal baseline for PRD-ACC-001–004 and every [screen](product-design-spec.md). Support is profile-specific and requires device and human evidence. No medical condition is inferred from preferences.
 
-## Requirements
+## External evidence, checked 2026-09-13
 
-- Provide touch alternatives for voice tasks and visual alternatives for audio-only status.
-- Preserve semantic labels, roles, order, focus, and state for screen readers and agent inspection.
-- Support text scaling and reflow without clipping or hiding actions.
-- Use strong contrast and never encode meaning by color alone.
-- Use forgiving, separated touch targets and avoid precision gestures for essential actions.
-- Keep layouts, language, and control placement predictable.
-- Give enough time to read, hear, decide, and respond; avoid surprise timeouts.
-- Offer replay, repeat, slower speech, captions/transcripts, and volume controls.
-- Minimize memory burden: keep relevant names, choices, and consequences visible.
-- Prevent errors, explain specific recovery, and preserve user-entered work.
-- Honor reduced-motion preferences and avoid unnecessary animation.
+Android's [app accessibility guidance](https://developer.android.com/guide/topics/ui/accessibility/apps) recommends touch areas at least 48×48dp, meaningful semantic descriptions and contrast based on text size (4.5:1 for smaller text; 3:1 for larger text under its stated thresholds). This is platform guidance, not measured Granny compliance.
 
-## Proposed internal targets—not accepted standards
+[WCAG 2.2](https://www.w3.org/TR/WCAG22/) specifies web success criteria including normal-text contrast 4.5:1, large-text contrast 3:1, non-text contrast 3:1, 200% text resizing, reflow, timing adjustment, keyboard operation and target-size minimum 24×24 CSS pixels with exceptions. Its enhanced target criterion is 44×44 CSS pixels. CSS px, Android dp and sp are not interchangeable. Use WCAG AA as an audit reference for applicable interactions, not a blanket native-app certification or legal conclusion.
 
-The planning conversation suggested exploring controls at least 56 dp, primary actions around 64–80 dp, body text around 20 sp, important information at 24–32 sp, and headings at 32–48 sp. These are design hypotheses to test on the physical tablet; they are not requirements copied from platform guidance and must not be accepted without layout and user validation.
+W3C's [Resize Text explanation](https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html) clarifies preserving content/function through resizing. Android guidance plus native assistive-tech tests govern actual implementation. Market-specific legal obligations require the chosen market and specialist review; none are inferred here.
 
-Before implementation, verify current Android and WCAG requirements from primary sources and document the supported conformance target. Do not rely on historical figures copied from the planning conversation.
+## Internal requirements and tests
 
-## Test matrix
+| ID | Proposed target beyond/alongside external baseline | Verification |
+|---|---|---|
+| A11Y-01 | All app text scales to 200%; controls expand/reflow; no clipped action, hidden content or essential horizontal scroll | SCR-001–015 at 1.0/1.3/2.0 font scale, display-size extremes, 360/600/840dp, both orientations; screenshots + manual reading |
+| A11Y-02 | Essential text ≥7:1 including buttons/status; supporting text ≥4.5:1; essential control boundaries/focus ≥3:1; no color-only meaning | Compute sRGB contrast on actual composites; scanner/manual audit; disabled essential explanation retains contrast |
+| A11Y-03 | Targets ≥56dp; main/Stop/confirm ≥64dp; distinct adjacent targets ≥12dp apart unless measured layout exception reviewed | Layout bounds test + dexterity study; dragging never sole interaction |
+| A11Y-04 | Native role/name/state/value/action, logical traversal, no duplicate decorative announcements; focus restored | TalkBack and keyboard walkthrough for all journeys; assert no autofocus on Send; switch scanning reaches Stop/Cancel |
+| A11Y-05 | All core tasks usable with no microphone and no sound; all voice status/confirmations visible | Deny microphone, mute audio, complete same fixtures; human silent-mode test |
+| A11Y-06 | Critical content stays until dismissed; authority expiry does not erase readable preview; extended reading never triggers action | Leave every confirmation idle, renew/edit/repeat; check no consent on silence and no data loss within stated session |
+| A11Y-07 | Reduced motion static equivalents, no flash effects; essential state independent of motion/haptics | Disable animations/reduced motion; inspect every state; no moving target or pulsing obligation |
+| A11Y-08 | Plain adult wording, one question at a time, visible chosen recipient/time/content, no forced recall | RES-03 teach-back: user explains effect and stop; note language/access profile and qualitative dignity feedback |
+| A11Y-09 | Speech rate and replay controls, private-content speech opt-out, no TalkBack/TTS competition | Audio-focus tests, Bluetooth route/disconnect, hearing/noisy-room study; text persists |
+| A11Y-10 | Preference changes predictable and reversible, do not infer cognitive status, no age caricatures | EVAL-007 persistence/restore, RES-06/09 identity testing and copy review |
 
-Test at minimum: font scaling, display scaling, high contrast, TalkBack, hearing without audio cues, use without voice, reduced dexterity, one-handed reach, ambient noise, slow responses, interruption, changed app layouts, offline states, and fatigue. Include representative older adults in observed testing.
+A11Y IDs are implementation audit items derived from PRD-ACC IDs, not a second product requirement authority.
 
-## Open questions
+## Profiles and evidence
 
-- Which accessibility profiles must V1 support and on which Android versions?
-- What numeric targets exceed platform minimums without making workflows inefficient?
-- Which speech rates, voices, languages, captions, and hearing-device integrations matter initially?
-- How will the agent distinguish access preference from inferred health status? It should not diagnose.
+Test independent dimensions: enlarged text/low vision; TalkBack; hearing without audio; touch with reduced dexterity; keyboard; switch; reduced motion; noisy room; slow response; low app familiarity. Combine key profiles (large text + keyboard; TalkBack + external control) to detect interference. People choose descriptions and accommodations; record no medical diagnosis in Git.
+
+Prototype metrics target ≥90% completion of supported flows for each supported profile, with zero inaccessible Stop or confirmation controls. Small usability samples cannot establish population rates; report counts and observed obstacles. A profile failing Stop/consent is a release blocker, not averaged away. External Android/app UI limitations must be documented and tested; Granny cannot claim to restyle or repair them.
+
+**Current evidence:** contrast arithmetic for candidate identity pairs only. No physical tablet, assistive-tech, usability or accessibility-conformance test has run. RES-06 / EVAL-007 / GATE-05 and GATE-09 own the next evidence.

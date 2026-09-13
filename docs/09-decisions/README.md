@@ -1,29 +1,33 @@
 ---
-title: Architecture Decision Records
-status: accepted
+title: "Decision records and authority"
+status: proposed
 owner: Simon
-last_updated: 2026-09-11
-tags:
-  - decisions
-  - adr
+last_updated: 2026-09-14
+tags: [decisions]
 related:
   - ../_templates/adr.md
   - ../10-execution/open-questions.md
+  - ../10-execution/development-readiness.md
 ---
 
-# Architecture Decision Records
+# Decision records and authority
 
-ADRs capture consequential, cross-cutting, or hard-to-reverse product/technical choices. `accepted` means current direction; `proposed` remains undecided. Supersede rather than rewrite an accepted decision's meaning.
+ADRs record consequential scope, distribution, authority/data, platform and interaction choices with real alternatives. Only Simon's explicit approval or already accepted source authority can make a decision accepted. An agent may propose and recommend, not accept on Simon's behalf. Editorial document status is distinct from individual decision status.
 
 | ADR | Status | Decision |
 |---|---|---|
-| [ADR-0001](ADR-0001-stock-android-first.md) | accepted | Start on stock Android; no AOSP fork yet. |
-| [ADR-0002](ADR-0002-android-primary-platform.md) | accepted | Android is the initial primary platform. |
-| [ADR-0003](ADR-0003-repository-source-of-truth.md) | accepted | This Git repository is the project source of truth. |
-| [ADR-0004](ADR-0004-repository-root-obsidian-vault.md) | deprecated | The repository root was initially the Obsidian vault; superseded by ADR-0008. |
-| [ADR-0005](ADR-0005-semantic-control-before-vision.md) | accepted | Prefer semantic control before vision/coordinates. |
-| [ADR-0006](ADR-0006-reference-hardware.md) | accepted | Use the supplied Samsung tablet as initial reference hardware, pending exact inventory. |
-| [ADR-0007](ADR-0007-three-stage-product-strategy.md) | accepted | Use a three-stage strategy and keep Stage 1 as the exclusive current scope. |
-| [ADR-0008](ADR-0008-docs-obsidian-vault.md) | accepted | Use `docs/`, not the repository root, as the Obsidian vault. |
+| [ADR-0001](ADR-0001-stock-android-first.md) | accepted | Stock Android first, no current AOSP |
+| [ADR-0002](ADR-0002-android-primary-platform.md) | accepted | Android initial platform |
+| [ADR-0003](ADR-0003-repository-source-of-truth.md) | accepted | Git repository source of truth |
+| [ADR-0004](ADR-0004-repository-root-obsidian-vault.md) | deprecated | Historical root vault, superseded by ADR-0008 |
+| [ADR-0005](ADR-0005-semantic-control-before-vision.md) | accepted | Semantic before vision/coordinates |
+| [ADR-0006](ADR-0006-reference-hardware.md) | accepted | Supplied Samsung reference tablet, exact inventory pending |
+| [ADR-0007](ADR-0007-three-stage-product-strategy.md) | accepted | Stage 1 exclusively active |
+| [ADR-0008](ADR-0008-docs-obsidian-vault.md) | accepted | docs/ is Obsidian vault; repository remains full source of truth |
+| [ADR-0009](ADR-0009-mvp-and-control-posture.md) | proposed | Five MVP workflows; policy-bounded candidate vs synthetic dynamic lab |
+| [ADR-0010](ADR-0010-local-authority-and-data.md) | proposed | Local independent authority, explicit memory and minimized replaceable cloud |
+| [ADR-0011](ADR-0011-explicit-activation-and-access.md) | proposed | Tap-to-talk/full touch, stronger measurable access baseline |
 
-Create new records from the [ADR template](../_templates/adr.md). Never recycle an ADR number.
+Accepted history remains unchanged. Routine copy/file layout does not need an ADR. Do not recycle IDs. New proposal links affected requirements, architecture, policy, eval and gate; specify options, recommendation, reversibility, evidence and approver. Acceptance records date/authority and unresolved evidence conditions without pretending tests passed. If an accepted decision changes, add superseding record and mark prior record deprecated with forward link; preserve historical reasoning.
+
+Use [ADR template](../_templates/adr.md). [Open questions](../10-execution/open-questions.md) owns Simon's decision queue; [readiness](../10-execution/development-readiness.md) owns gate authorization. This expanded index is editorially proposed; it does not demote or promote the unchanged indexed decisions.

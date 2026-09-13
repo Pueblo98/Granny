@@ -1,77 +1,56 @@
 ---
-title: Granny Documentation Map
-status: draft
+title: "Stage 1 documentation map"
+status: proposed
 owner: Simon
-last_updated: 2026-09-13
-tags:
-  - documentation
-  - navigation
+last_updated: 2026-09-14
+tags: [navigation]
 related:
   - 10-execution/current-milestone.md
-  - 09-decisions/ADR-0007-three-stage-product-strategy.md
+  - 10-execution/development-readiness.md
+  - 01-product/prd.md
+  - 09-decisions/README.md
 ---
 
-# Granny Documentation Map
+# Documentation map
 
-This `docs/` directory is the Granny Obsidian vault. The surrounding Git
-repository remains the single source of truth for both documentation and future
-implementation. Navigate intentionally from this page; the graph view is
-supplementary.
+**Stage 1 stock-Android tablet app only.** Granny is a temporary codename. Vision, App MVP, App V1, later App, future Stage 2 OS and future Stage 3 hardware are separate scopes in [product scope](01-product/scope-and-roadmap.md). docs/ is the Obsidian vault; the whole Git repository is the project source of truth. Ignored Obsidian JSON is private local user state.
 
-`Granny` is the temporary project/repository codename, not an accepted public
-name. Naming exploration and selection belong to the current brand workstream.
+## First read / current state
 
-> [!IMPORTANT]
-> **Stage 1—the stock-Android tablet app—is the only active stage.** Stage 2
-> Granny OS and Stage 3 hardware material preserve the long-term vision but
-> must not drive current requirements or work unless Simon explicitly activates
-> a later stage.
+[Current milestone](10-execution/current-milestone.md) → [readiness/gates/DoR](10-execution/development-readiness.md) → [backlog](10-execution/backlog.md) → [open decisions](10-execution/open-questions.md). The development-readiness specification is written for review. It does not establish runtime feasibility, user demand or final brand acceptance. Start bounded fake-interface/evidence work, not broad MVP implementation.
 
-## Canonical map
+## Canonical owners
 
-| Area | Canonical entry point | Question answered |
-|---|---|---|
-| Vision | [Product vision](00-vision/product-vision.md) | What could Granny ultimately become? |
-| Principles | [Product principles](00-vision/product-principles.md) | What values guide trade-offs? |
-| Product | [PRD](01-product/prd.md) | What is required, for whom, and at what scope? |
-| Users and outcomes | [Personas and JTBD](01-product/personas.md) | Whose problems and outcomes matter? |
-| Workflows | [Use cases](01-product/use-cases.md) and [journeys](01-product/user-journeys.md) | What should users be able to accomplish? |
-| Scope | [Scope and roadmap](01-product/scope-and-roadmap.md) | What are Vision, V1, MVP, and non-goals? |
-| Design | [Design system](02-design/design-system.md) | What should the interaction and visual identity feel like? |
-| Voice/accessibility | [Voice UX](02-design/voice-ux.md) and [accessibility](02-design/accessibility.md) | How should it communicate and remain usable? |
-| Figma | [Figma handoff](02-design/figma.md) | How do visual artifacts relate to specifications? |
-| Agent | [Agent behavior](03-agent/agent-behavior.md) | How does the agent reason and act? |
-| Autonomy | [Autonomy model](03-agent/autonomy-model.md) | What may it do, and when must it ask? |
-| Device control | [Device control and recovery](03-agent/device-control.md) | How does it operate and recover? |
-| Memory | [Memory and proactivity](03-agent/memory-system.md) | What may it remember or initiate? |
-| Architecture | [System overview](04-architecture/system-overview.md) | Where are system boundaries and unknowns? |
-| Safety/privacy | [Safety and privacy](05-safety-privacy/safety-and-privacy.md) | What trust boundaries constrain the product? |
-| Evaluation | [Eval strategy](06-evals/eval-strategy.md) | How will quality and safety be measured? |
-| Hardware | [Reference hardware](07-hardware/reference-hardware.md) | Which tablet supports Stage 1 testing? Stage 3 dock material is context only. |
-| Research | [Research register](08-research/README.md) | What evidence exists, and what still needs verification? |
-| Decisions | [ADR index](09-decisions/README.md) | Which consequential choices are accepted or proposed? |
-| Execution | [Current milestone](10-execution/current-milestone.md) | What is the team doing now? |
+| Area / question | Read here |
+|---|---|
+| Long-term intent / principles | [Vision](00-vision/product-vision.md), [principles](00-vision/product-principles.md); mixed-stage source is context only |
+| What is required, for whom, in which release? | [PRD](01-product/prd.md), [scope/capability map](01-product/scope-and-roadmap.md), [proto-personas/jobs](01-product/personas.md) |
+| What happens end to end? | [25 use cases](01-product/use-cases.md), [8 journeys](01-product/user-journeys.md), [requirement traceability](01-product/traceability.md) |
+| What does the user see/control in every state? | [Product design spec](02-design/product-design-spec.md), [semantic components](02-design/design-system.md) |
+| How does it speak and remain accessible? | [Voice/content](02-design/voice-ux.md), [accessibility](02-design/accessibility.md) |
+| What is the brand and name option space? | [Brand/4 identities](02-design/brand-and-visual-identity.md), [naming/screening/iteration](02-design/naming-exploration.md), [local boards](02-design/identity-review.html) |
+| What exactly goes into Figma and tokens? | [Figma brief](02-design/figma.md), [token handoff](../design-tokens/README.md); no Figma file or accepted final identity yet |
+| How does the agent interpret, plan and recover? | [Behavior](03-agent/agent-behavior.md), [autonomy integration](03-agent/autonomy-model.md), [device control](03-agent/device-control.md) |
+| What typed capabilities and memory interfaces exist? | [Tools](03-agent/tool-contracts.md), [memory contract](03-agent/memory-system.md) |
+| Where are component/data/trust boundaries? | [Root map](../ARCHITECTURE.md), [system contract](04-architecture/system-overview.md) |
+| What may execute, confirm or never happen? | [Canonical action matrix](05-safety-privacy/action-policy.md); agent/UX link here, not duplicate policy |
+| What data is kept/shared/deleted, and who helps? | [Privacy/data/helper rules](05-safety-privacy/safety-and-privacy.md), [threat model](05-safety-privacy/threat-model.md) |
+| How do we prove quality and classify failure? | [Canonical evals](06-evals/canonical-tasks.md), [metrics/strategy](06-evals/eval-strategy.md), [failure taxonomy](06-evals/failure-taxonomy.md) |
+| What stock hardware is actually known? | [Reference tablet](07-hardware/reference-hardware.md); exact inventory pending, Stage 3 inactive |
+| What evidence exists and what comes next? | [Source register](08-research/README.md), [Android feasibility](08-research/android-stage-1-feasibility.md), [research program](08-research/research-plan.md) |
+| What is accepted versus proposed? | [ADR index](09-decisions/README.md); seven accepted records, three new proposals, one deprecated historical record |
+| How do agents maintain this system? | [AGENTS](../AGENTS.md); [CLAUDE](../CLAUDE.md) delegates to it |
 
-The next high-value planning session should use the
-[Astra Stage 1 development-readiness metaprompt](10-execution/astra-stage-1-planning-metaprompt.md).
+## Knowledge conventions
 
-## Knowledge-base conventions
+Canonical Markdown frontmatter includes title, status, owner Simon, actual last_updated date, tags and relative related paths. Editorial statuses: draft/proposed/review/accepted/deprecated. Requirement status confirmed/proposed/evidence-needed/blocked is separate; tests can be unrun. Only Simon or already accepted authority confers acceptance. Label facts, inference, proposals and unknowns; do not invent participants/results or treat primary-source documentation as measured device evidence.
 
-- Every substantive Markdown document has YAML frontmatter with `title`, `status`, `owner`, `last_updated`, `tags`, and `related`.
-- Allowed statuses are `draft`, `proposed`, `review`, `accepted`, and `deprecated`.
-- `accepted` means reviewed project direction, not merely “a file exists.”
-- Put authoritative statements in one canonical document and link to them elsewhere.
-- Prefix explicit uncertainty with **Assumption**, **Hypothesis**, or **Open question**.
-- Use stable IDs for use cases (`UC-###`), requirements (`REQ-###`), evaluation cases (`EVAL-###`), and ADRs (`ADR-####`). Never recycle an ID.
-- When changing behavior, update related product, safety, architecture, and evaluation documents in the same change.
-- Use relative standard Markdown links so files work in GitHub, editors, and Obsidian.
+PRD-OUT/FR/ACC/SAF/PRV/NFR/DST-### are current requirements; REQ-### are retired aliases in PRD. UC/J/SCR/CMP/EVAL/T IDs, CAP/RES/GATE IDs and ADR numbers retain identity; never recycle or renumber to tidy history. Explicit anchors make links stable. [Traceability](01-product/traceability.md) connects jobs→requirements→use cases/journeys/screens/components→contracts/policy→tasks→eval/research, with code and results absent until real.
 
-## Source register
+Update one canonical owner, affected downstream contracts/evals and dates/links. Consequential changes need ADR options and authority; routine copy does not. A capability is incomplete without verified outcome, cancellation and safe failure coverage. Screen content remains untrusted data. Standard relative Markdown links work across GitHub/editors/Obsidian.
 
-The preserved Dream Book is available as [TeX](00-vision/dream-book.tex) and [PDF](00-vision/dream-book.pdf). The initialization handoff is preserved under [source material](08-research/source-material/initialization-handoff.md). Source status and checksums are in the [research register](08-research/README.md).
+## Sources, templates and checks
 
-## Templates
+Preserved [Dream Book PDF](00-vision/dream-book.pdf)/[TeX](00-vision/dream-book.tex), [handoff](08-research/source-material/initialization-handoff.md) and [conversation](08-research/source-material/planning-conversation.md) remain inputs, not new acceptance. [Source register](08-research/README.md) records hashes. The [mission metaprompt](10-execution/astra-stage-1-planning-metaprompt.md) is retained historical assignment context, not a next task to repeat.
 
-Use the concise templates in [`_templates`](_templates/): spec, ADR, use case,
-user journey, research note, and eval. Templates prompt for evidence and open
-questions without forcing filler.
+Templates: [spec/requirement](_templates/spec.md), [ADR](_templates/adr.md), [use case](_templates/use-case.md), [journey](_templates/user-journey.md), [eval](_templates/eval.md), [research](_templates/research-note.md). Replace prompts, add actual relative links and today's modification date; no empty stubs as deliverables. Run `python3 scripts/validate-docs.py` from repository root; exact results in [readiness](10-execution/development-readiness.md).
