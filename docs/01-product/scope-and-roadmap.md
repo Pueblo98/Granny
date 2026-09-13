@@ -1,52 +1,81 @@
 ---
-title: Scope, Non-goals, and Roadmap
+title: Stage 1 scope and product progression
 status: proposed
 owner: Simon
-last_updated: 2026-09-10
-tags:
-  - product
-  - roadmap
+last_updated: 2026-09-14
+tags: [product, stage-1]
 related:
   - prd.md
-  - ../10-execution/current-milestone.md
-  - ../10-execution/backlog.md
 ---
 
-# Scope, Non-goals, and Roadmap
+# Stage 1 scope and product progression
 
-## Vision
+**Confirmed:** only the stock-Android app is active under [ADR-0007](../09-decisions/ADR-0007-three-stage-product-strategy.md). Simon accepted the five-workflow experiment scope, candidate/lab control boundary and two externally verified workflow minimum through [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) on 2026-09-14. **Proposed/evidence-gated:** detailed release commitments, supporting behavior and V1 additions below; experiment selection does not establish feasibility or authorize release. The [PRD](prd.md) owns testable behavior; execution gates live in [development readiness](../10-execution/development-readiness.md).
 
-The full product may combine senior-first UI, broad device operation, companion memory, life stories, family support, and dedicated hardware. Vision is directional and not a release checklist.
+## Separate products and releases
 
-## V1 — not yet accepted
+| Horizon | Definition | Evidence needed |
+|---|---|---|
+| Vision | A personal computer experience that understands intent, acts, remembers appropriately and supports human connection | Long-term direction; not a checklist |
+| Stage 1 App MVP | A supervised, bounded thesis experiment on inventoried stock tablets: five workflows, explicit activation, touch parity, local enforcement and truthful recovery | Task value, control and distribution evidence before real-user pilot |
+| Stage 1 App V1 | Maintainable release for independent adults in a selected market, with tested app/device support, support operations and correctable explicit memory | MVP evidence plus localization, retention, reliability and support gates |
+| Later Stage 1 | Wider apps, stories, cross-app search, optional remote help and bounded routines | Separate task evidence and decisions |
+| Stage 2 OS | future-stage context: OS ownership | Dormant; Simon must activate |
+| Stage 3 hardware | future-stage context: integrated tablet/base | Dormant; Simon must activate |
 
-Working definition: the first coherent product that a representative independent older adult could use in real life, with a bounded set of dependable tasks, accessible voice/touch experience, explicit safety controls, and maintainable support. Exact tasks, markets, apps, family features, and memory scope are open.
+## MVP — In / Out / Why
 
-## MVP — proposed experiment shape
+| Area | In | Out | Why |
+|---|---|---|---|
+| Signature jobs | UC-002 photos; UC-003/011 explain/recover; UC-006 draft/confirm message; UC-004 media; UC-007 accessible adjustment | Calls, reminders, broad search as release promises | Cover observation, entity resolution, navigation, consequence, verification, recovery and immediate benefit |
+| Apps | One versioned communication candidate and one media candidate, approved per capability | Every installed app; blanket compatibility | Bounded reproducible evidence |
+| Agent | API capabilities; fixed human-authored recipes only if policy validation supports them; dynamic planner in synthetic lab only | General autonomous AccessibilityService in a public general-assistant build | Policy materially constrains the distribution model |
+| Communications | Exact draft and fresh approval for external handoff; executor send only with a supported, independently verifiable integration admitted at gates | SMS inbox/telephony assumption; silent send; claiming delivered from a click | Tablet may have no telephony; intents do not prove delivery |
+| Observation | User-started, scoped semantic inspection where permitted; selected screenshot for explanation | Continuous screen/audio recording; secure-window bypass; coordinate commit | Minimize exposure and test semantics |
+| Memory | Local UI preferences and user-entered contact aliases; current session context | Automatic autobiographical extraction, transcript archive, cloud sync | Test continuity without a life archive |
+| Help | User-led co-present setup, privacy-safe diagnostics preview/export | Remote family console, screen/control access | Avoid creating surveillance/account infrastructure |
+| Voice | Tap to talk; explicit listening window; Stop touch control; typed intent | Always-on/wake-word, ambient initiation, physical privacy indicator | Stock app lifecycle and home noise remain untested |
+| Installation | Synthetic lab build first; supervised pilot route selected at GATE-04 | Public store launch, bypassing restricted settings | Feasibility is not distribution approval |
 
-Test the central assumption: can natural intent plus safe, observable device operation reduce interface burden on a stock-Android reference tablet? Candidate flows are recent family photos (UC-002) and confusing-screen recovery (UC-003/UC-011), plus one confirmed action such as message sending (UC-006) to test confirmation.
+## App V1 — In / Out / Why
 
-No MVP feature set is accepted until personas, task frequency, baseline behavior, feasibility, and success thresholds are reviewed.
+| Area | In (after evidence) | Out | Why |
+|---|---|---|---|
+| Core | Reliable MVP flows plus known-person call, basic reminders, selected document opening, read-aloud and in-app history | Arbitrary delegated tasks | Coherent daily value with supportable boundaries |
+| People/memory | Explicit preferences, relationship aliases and important dates with provenance, correction, deletion and export | Inferred health, passive personal graph, recorded stories | Continuity with understandable control |
+| Family | Optional authenticated helper proposes contact/accessibility changes; adult reviews locally | Private content access, remote operation or surveillance | Support without overriding primary user |
+| Platform | Published tested device/OS/app/locale matrix and regression process | “All Android tablets” | App versions and OEM behavior vary |
+| Service | Account only if selected integration requires it; scoped provider consent and support/runbooks | Mandatory family account, ads, engagement optimization | Keep ownership and dependencies clear |
 
-## Current non-goals
+## Capability map
 
-- full Android application or production backend during documentation initialization;
-- custom AOSP distribution before demonstrated stock-Android limits and an accepted ADR;
-- permanent model vendor or database selection;
-- final palette/brand values before accessible Figma exploration;
-- custom dock engineering as the immediate implementation priority;
-- banking, purchases, legal agreements, medical diagnosis, emergency-service claims, or autonomous medication management;
-- silent monitoring, private transcript access, or unrestricted caregiver screen viewing;
-- maximizing engagement or replacing human family relationships.
+M = MVP, V = App V1, L = later App; a proposed inclusion is conditional on its gates.
 
-## Directional sequence
+| Capability | M | V | L | Stage 2 / Stage 3 |
+|---|---|---|---|---|
+| Home, voice/touch, visible state, stop, verification | Must | Maintain | Maintain | future-stage context only |
+| Recent message photos, explain/recover, message preparation, media, in-app text adjustment | Must | Extend tested support | Wider apps | No dependency |
+| Sending through supported integration | Conditional; handoff otherwise | Tested route required for claimed send support | More channels | No dependency |
+| Calls, reminders, documents, read-aloud | Out | Must for selected supported routes | Extend | No dependency |
+| Explicit private memory, export | Preferences/aliases only | Must | Richer classes | No dependency |
+| Helper proposals | Co-present only | Should | Extend | No dependency |
+| Story capture/derived artifacts; remote help; proactive routines | Out | Out | Could after new safety/eval gates | No current OS/hardware requirement |
+| Persistent OS-wide ownership; far-field dock | Out | Out | Out | Dormant Stage 2 / Stage 3 respectively |
 
-1. Review vision, principles, personas, jobs, and initial scope.
-2. Prioritize use cases and write the most important journeys.
-3. Validate accessibility and voice rules with target users.
-4. Explore visual directions and a shared token system in Figma.
-5. Benchmark current assistants and stock-Android control on the physical device.
-6. Specify and build the smallest typed device-control prototype.
-7. Run repeatable task evals and observed usability sessions.
-8. Define V1 only from accumulated evidence.
-9. Revisit managed-device, deeper OS integration, and hardware as demonstrated needs emerge.
+## Why these five workflows
+
+Proposed 1–5 judgment scores (not research); higher is better. Feasibility is uncertainty-adjusted, not a measurement.
+
+| Workflow | Value | Thesis coverage | Feasibility | Bounded safety | Differentiation | Evalability | Choice |
+|---|---|---|---|---|---|---|---|
+| Photos from known person | 5 | 5 | 2 | 4 | 5 | 4 | MVP; strongest feasibility risk |
+| Explain/recover screen | 5 | 5 | 3 | 4 | 5 | 5 | MVP; separate explanation from action |
+| Draft/confirm message | 5 | 5 | 3 | 3 | 4 | 5 | MVP; commit/handoff evidence explicit |
+| Media | 4 | 4 | 3 | 4 | 3 | 5 | MVP; reversible delegated outcome |
+| In-app text adjustment | 4 | 3 | 5 | 5 | 3 | 5 | MVP; reliable access benefit |
+| Known-person call | 5 | 4 | 2 | 3 | 3 | 4 | V1; tablet calling route unknown |
+| Story archive | 3 | 2 | 3 | 2 | 5 | 3 | Later App; privacy/research burden |
+
+If photos cannot be verified in a permitted route, report a scope failure and ask Simon to replace/defer that workflow; do not quietly redefine “photos Sophie sent” as arbitrary gallery images. A handoff counts as successful preparation, never delegated task completion. MVP thesis gate requires at least two useful externally verified delegated workflows; in-app resizing alone cannot validate the thesis.
+
+Roadmap sequence: foundation → device/policy spikes and interaction/identity prototypes → controlled technical prototype → MVP → pilot → App V1. Exact entry/exit conditions and dependency ordering are in [readiness](../10-execution/development-readiness.md) and [backlog](../10-execution/backlog.md).

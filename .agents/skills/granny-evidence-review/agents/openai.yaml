@@ -1,0 +1,4 @@
+interface:
+  display_name: "Granny Evidence Review"
+  short_description: "Review evidence without overstating readiness"
+  default_prompt: "Use $granny-evidence-review to assess whether supplied T-103 results support their claimed gate, read-only."

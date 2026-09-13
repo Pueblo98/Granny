@@ -1,56 +1,41 @@
 ---
-title: Granny Project
-status: draft
+title: "Granny — Stage 1 stock-Android app"
+status: proposed
 owner: Simon
-last_updated: 2026-09-10
-tags:
-  - project
-  - navigation
+last_updated: 2026-09-14
+tags: [navigation]
 related:
   - docs/README.md
-  - docs/00-vision/product-vision.md
-  - docs/10-execution/current-milestone.md
+  - docs/10-execution/development-readiness.md
+  - AGENTS.md
 ---
 
 # Granny
 
-Granny is an AI-first personal computer for older adults that can talk, remember, understand the screen, and operate the device on the user's behalf.
+Granny is a temporary project codename for an AI-first computer experience for older adults. The thesis: **the user should not need to learn to operate the computer; the computer should learn to operate itself for the user.**
 
-> The user should not need to learn how to operate the computer. The computer should learn how to operate itself for the user.
+Only **Stage 1, an installable stock-Android tablet app**, is active. Stage 2 OS/AOSP and Stage 3 custom hardware are dormant vision context. No final public name, visual identity, vendor, launch market/date or price is accepted.
 
-The project is currently in product definition, experience design, and documentation foundation. It is not yet in substantial product implementation.
+## Start in two minutes
 
-## Start here
+Read the [documentation map](docs/README.md) → [current milestone](docs/10-execution/current-milestone.md) → [development-readiness gates](docs/10-execution/development-readiness.md). Agents also follow [AGENTS.md](AGENTS.md).
 
-- [Documentation map](docs/README.md) — the canonical knowledge-base index.
-- [Product vision](docs/00-vision/product-vision.md) — what Granny is and the boundaries between Vision, V1, and MVP.
-- [Product requirements](docs/01-product/prd.md) — known requirements and unresolved product choices.
-- [Agent behavior](docs/03-agent/agent-behavior.md) — the intended agent loop and behavioral contract.
-- [Safety and privacy](docs/05-safety-privacy/safety-and-privacy.md) — current boundaries for trust, consent, and family access.
-- [Conceptual architecture](ARCHITECTURE.md) — the proposed system boundaries.
-- [Current milestone](docs/10-execution/current-milestone.md) and [backlog](docs/10-execution/backlog.md) — what to do now and next.
-- [Agent instructions](AGENTS.md) — mandatory working rules for coding agents.
+The Stage 1 specification package is written: [PRD](docs/01-product/prd.md), [product design](docs/02-design/product-design-spec.md), [agent contracts](docs/03-agent/tool-contracts.md), [system architecture](ARCHITECTURE.md), [action/privacy policy](docs/05-safety-privacy/action-policy.md), [evals](docs/06-evals/canonical-tasks.md) and [traceability](docs/01-product/traceability.md). These are proposals and unrun test specifications, not a built product.
 
-## Use this repository as an Obsidian vault
+Accepted experiment scope ([ADR-0009](docs/09-decisions/ADR-0009-mvp-and-control-posture.md)): family photos, screen explanation/recovery, exact message draft/confirmation, requested media and Granny text adjustment. Final release feasibility and detailed requirements remain evidence-gated/proposed. V1 proposes validated calls/reminders/selected documents, explicit facts and optional helper configuration proposals. At least two useful external delegated workflows must be verified to support the thesis. [Android policy/feasibility](docs/08-research/android-stage-1-feasibility.md) constrains how: a broad dynamic AccessibilityService public assistant is not a viable Play assumption.
 
-Open this repository's root directory in Obsidian: `/home/lgtw/Work/granny`. The Markdown remains portable and uses relative standard links. No community plugins are required. Recommended built-in features are backlinks, outgoing links, properties, templates, search, and local graph. Set `docs/_templates` as the Templates folder if you want template insertion in the UI.
+## Review and next work
 
-The repository is the single source of truth; Obsidian is a view over it, not a second notes store. Local layout/workspace state is ignored by Git. See [.obsidian/README.md](.obsidian/README.md).
+[Delivery workflows and four repository skills](docs/10-execution/operating-workflows.md) explain how to refine specs, prepare design, implement bounded slices and review evidence. [First task packets](docs/10-execution/task-packets.md) give concrete inputs, outputs, adverse cases and stop boundaries for T-101/102/103/108. No global skills/plugins, scheduled jobs or external workflows are installed.
 
-## Repository layout
+[Brand territories](docs/02-design/brand-and-visual-identity.md), [81-name exploration](docs/02-design/naming-exploration.md) and [local static identity boards](docs/02-design/identity-review.html) provide concrete choices. Open Day is the proposed visual direction; Daykind, Handspan and Clearfold are uncleared naming finalists. No Figma file has been created; [the execution brief](docs/02-design/figma.md) specifies it.
 
-```text
-docs/           Product knowledge base and source material
-design-tokens/  Proposed cross-platform token schema; no final brand values
-android/        Future Android client and senior shell
-agent/          Future planner/runtime and model adapters
-backend/        Future remote services
-evals/          Future executable evaluation fixtures and harnesses
-hardware/       Future industrial, electrical, and mechanical artifacts
-```
+[Backlog T-103](docs/10-execution/backlog.md#t-103) is the first safe coding slice: offline fake-adapter confirmation/cancel/verify replay, no device permission or personal data. Reference inventory and route evidence T-101 can proceed independently with device access. MVP implementation and a real-user pilot remain gated. This package contains no application/runtime/backend implementation.
 
-The initial Android reference device is a used Samsung Galaxy Tab A11+, purchased for approximately $140. The exact model/region/specification still needs physical verification before device-dependent engineering.
+## Repository and Obsidian
 
-## Current state
+Open **docs/** as the Obsidian vault; the whole repository remains the source of truth. No community plugin is required. Local docs/.obsidian JSON is ignored user state; do not rewrite or commit it. [Vault notes](docs/.obsidian/README.md) explain the boundary.
 
-The current milestone is to establish enough product and design definition to begin Figma exploration and controlled technical feasibility work. Do not start an AOSP fork, select permanent infrastructure vendors, or represent proposed visual values as approved.
+docs/ owns knowledge, preserved sources and decisions; design-tokens/ owns token handoff; existing android/, agent/, backend/ and evals/ directory notes are future implementation placeholders, not active code. hardware/ is dormant Stage 3 context. [Reference tablet](docs/07-hardware/reference-hardware.md) records supplied provenance; exact physical model/OS/app matrix is still unknown.
+
+Documentation checks: `python3 scripts/validate-docs.py`, `python3 -m unittest discover -s scripts -p 'test_*.py'` and `git diff --check`. The unit tests validate documentation tooling, not product behavior. No production build/test command exists yet. See the [validation record](docs/10-execution/development-readiness.md) for actual results and limitations.

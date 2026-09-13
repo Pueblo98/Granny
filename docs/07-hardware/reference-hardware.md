@@ -1,26 +1,25 @@
 ---
-title: Reference Hardware and Hardware Vision
-status: draft
+title: "Stage 1 reference-tablet facts"
+status: proposed
 owner: Simon
-last_updated: 2026-09-10
-tags:
-  - hardware
-  - android
+last_updated: 2026-09-14
+tags: [reference-hardware]
 related:
   - ../09-decisions/ADR-0006-reference-hardware.md
-  - ../10-execution/open-questions.md
+  - ../08-research/android-stage-1-feasibility.md
+  - ../08-research/research-plan.md
 ---
 
-# Reference Hardware and Hardware Vision
+# Stage 1 reference-tablet facts
 
-## Known
+Stage 1 uses an ordinary stock Android tablet. Stage 3 dock/hardware concepts are dormant [future-stage context](../00-vision/product-vision.md), not requirements or experiments here.
 
-The initial development/reference tablet is described in the handoff as a used **Samsung Galaxy Tab A11+**, purchased for approximately **$140**. The physical device, regional model number, Android/One UI version, memory/storage, and exact marketing name have not yet been inventoried; do so before device-specific conclusions.
+## Supplied fact versus unknown
 
-## Long-term vision
+The [initialization handoff](../08-research/source-material/initialization-handoff.md) describes a used **Samsung Galaxy Tab A11+**, purchased for approximately **$140**. This is supplied provenance, not a verified marketing model, device capability or current price. Exact physical model/region, Android/API/One UI/security build, memory/storage, installed apps and service behavior remain unknown. [ADR-0006](../09-decisions/ADR-0006-reference-hardware.md) selects the supplied tablet as initial reference, not a measured support matrix.
 
-The aspirational product pairs a detachable tablet with a compact dock/base providing far-field microphones, high-quality speaker, charging, magnetic/mechanical alignment, tactile talk and volume controls, an unmistakable physical microphone mute, and clear status indication. The dock is a vision item, not current implementation scope.
+## Inventory before device-dependent claims
 
-## Near-term validation
+Use the anonymous [RES-04 worksheet](../08-research/research-plan.md#res-04) and [T-101](../10-execution/backlog.md#t-101). Record exact model/SKU, OS/API/OEM build, language, logical display/font settings, relevant app/package/version and synthetic-account/grant/network states. **Do not collect serial, IMEI, MAC, account identifiers or personal content for this planning test.** No managed-device privileges, telephony availability or foreground microphone/control guarantee is assumed.
 
-Record model/serial information safely, OS/build, security-patch level, developer/managed-device availability, accessibility behavior, microphone/speaker performance, charging/docking constraints, display/touch/accessibility settings, and installed-app test matrix. Do not place personal device data, account credentials, or serial numbers in Git.
+Test ordinary tablet microphone/speaker/display/access behavior only where it affects Stage 1 flows. No dock acoustics, charging alignment, firmware or hardware design tasks. [Android feasibility](../08-research/android-stage-1-feasibility.md) owns route classification and proposed configuration matrix; only measured results can promote a device/app pair to supported.

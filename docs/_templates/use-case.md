@@ -1,27 +1,29 @@
 ---
-title: "UC-XXX — [Outcome]"
+title: "Use-case template"
 status: draft
 owner: Simon
-last_updated: YYYY-MM-DD
-tags: [use-case]
-related: []
+last_updated: 2026-09-14
+tags: [template]
+related:
+  - ../README.md
 ---
 
-# UC-XXX — [Outcome]
+# UC-XXX — Desired outcome
 
-**Actor:**
-**Desired outcome:**
-**Preconditions:**
-**Trigger:**
+Use next stable ID, retain retired aliases. Release/priority/status; actor/proto-persona and JOB/problem links.
 
-## Main flow
+## Start and goal
 
-## Alternatives and failures
+Starting context/preconditions; natural spoken request and complete touch alternative; desired independently observable result.
 
-## Data, autonomy, and confirmation
+## Behavior and boundaries
 
-## Accessibility and privacy
+Product-level steps; data and permissions; action class and exact confirmation; ambiguity/entity handling; access profile; privacy/safety risks.
 
-## Linked requirements, journey, and eval
+## Failure and recovery
 
-## Open questions
+Permission/auth/offline/app-change/injection/cancel/takeover variants; allowed retry/undo and honest partial outcome.
+
+## Evidence and trace
+
+Independent success oracle, unacceptable effects, PRD/J/SCR/contract/policy/EVAL/RES/T links. No fake implementation/result links.

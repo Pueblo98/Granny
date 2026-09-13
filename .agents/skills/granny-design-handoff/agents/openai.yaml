@@ -1,0 +1,4 @@
+interface:
+  display_name: "Granny Design Handoff"
+  short_description: "Turn journeys into reviewable design handoffs"
+  default_prompt: "Use $granny-design-handoff to prepare T-102's low-fidelity frame and accessibility manifest without writing to Figma."

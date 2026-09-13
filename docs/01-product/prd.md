@@ -1,84 +1,142 @@
 ---
-title: Product Requirements Document
-status: draft
+title: "Stage 1 Android Tablet App Product Requirements Document"
+status: proposed
 owner: Simon
-last_updated: 2026-09-10
-tags:
-  - product
-  - requirements
+last_updated: 2026-09-14
+tags: [product, requirements]
 related:
-  - ../00-vision/product-vision.md
-  - personas.md
-  - use-cases.md
   - scope-and-roadmap.md
+  - traceability.md
+  - ../10-execution/development-readiness.md
 ---
 
-# Product Requirements Document
+# Stage 1 Android Tablet App Product Requirements Document
 
-## Purpose
+## Definition and decision status
 
-Translate Granny's long-term vision into testable product requirements while keeping unchosen V1 and MVP scope explicit.
+Granny (temporary codename) is a stock-Android tablet app that lets independent older adults request a bounded set of everyday outcomes by voice or touch, see what the assistant is doing, and retain control through confirmation, stopping and recovery.
 
-## Users and jobs
+The thesis is that the computer can absorb navigation work for the person. Android is the accepted test vehicle ([ADR-0001](../09-decisions/ADR-0001-stock-android-first.md), [ADR-0002](../09-decisions/ADR-0002-android-primary-platform.md), [ADR-0007](../09-decisions/ADR-0007-three-stage-product-strategy.md)); this does not establish technical success or demand. Simon accepted the five-workflow **experiment scope**, policy-bounded control posture and minimum of two useful externally verified delegated workflows in [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) on 2026-09-14. Detailed requirements, numeric targets and final MVP/V1 release commitments in [scope](scope-and-roadmap.md) remain proposed or evidence-needed as individually marked; this was not blanket PRD acceptance. No user study, device experiment, app integration or production runtime has been completed in this package.
 
-The leading primary-user hypothesis is an independently living older adult who is cognitively independent but repeatedly encounters avoidable technology friction. A trusted relative is a secondary user who wants to help without constant remote troubleshooting or invasion of privacy. These are hypotheses, not research findings; see [personas](personas.md).
+Editorial status is proposed. Individual rows use confirmed (explicit instruction/accepted direction), proposed (working choice), evidence-needed (behavior specified but platform or distribution unproven), or blocked (deliberately unavailable pending new scope). Confirmed rows establish intent, not accepted numeric targets or proof of implementation.
 
-Core job: **When technology becomes confusing, help me accomplish what I intended without requiring me to understand the technology.**
+## Problem, audience and value
 
-## Core experience
+[Proto-personas and jobs](personas.md) own PROB-01–05 and JOB-01–05. Interface navigation, recovery uncertainty and support burden are hypotheses from vision material, not market findings. P-01 is the leading user, P-02 ensures access needs are treated directly, P-03 may buy/help without authority over P-01, and P-04 higher-assistance contexts are excluded.
 
-The user expresses a goal through voice or touch. Granny resolves relevant personal/device context, presents or executes safe steps, makes its activity visible, asks before consequential actions, verifies the result, and provides a clear recovery path. Direct touch remains available throughout.
+For the adult: get to the right photo, message or media with fewer navigation decisions, understand what happened, and stop without losing ownership. For the trusted helper: assist with setup and chosen configuration without private-content access. Do not optimize family time saved at the expense of the adult's privacy or human contact.
 
-## Initial requirements
+Current alternatives to investigate: ordinary Android with preferred accessibility settings; a familiar app plus a learned route; a generic assistant; simplified launcher; verbal or in-person helper support. Proposed advantage is verified cross-app outcomes and recovery in one consistent interaction. No competitor inferiority is established; RES-07 specifies a versioned paired baseline. Switching costs include installation, grants, learning the new entry point and trusting cloud processing.
 
-| ID | Requirement | Scope status |
+## Principles as constraints
+
+Ask in outcomes → accept intent without app vocabulary (FR-001/007). Preserve agency → local Stop and honest in-flight outcomes (FR-013). Verify useful work → no click-based success (FR-012). Respect adults → choices, no age-based diagnosis and research on tone (OUT-003). Accessible by construction → the ACC requirements apply to every screen. Familiar apps → adapters operate only an admitted support matrix. Memory by choice → explicit local preferences first. Family support → consent and capability scopes, not inferred kinship authority.
+
+## Release recommendation
+
+MVP contains recent family photos, explain/recover, message draft/confirm/handoff or admitted send, media playback and in-app accessible adjustment; onboarding, history, Stop, privacy and support are required infrastructure. App V1 adds tested calling/reminders/document reading, explicit correctable personal memory and optional helper configuration proposals. Later App covers stories, wider integrations, remote help and proactive routines. Stage 2 OS and Stage 3 hardware are **future-stage context** only.
+
+The canonical [In / Out / Why tables and capability map](scope-and-roadmap.md) are incorporated here by reference. Distribution and minimum delegated-work evidence cannot be waived by relabeling a handoff as completion.
+
+## End-to-end product contract
+
+User activates Talk or Type → transcript/intent is visible and editable → resolve person/content/channel → check admitted capability and actual grants → describe goal and operate bounded permitted steps → prepare exact consequence → user approves or takes over → executor rechecks authorization → verify postcondition → report complete, partial, unknown, stopped or unavailable.
+
+A request for an outcome authorizes ordinary in-scope navigation and preparation, not an external consequence. Permission to observe is separate from permission to upload. A third-party app's screen is untrusted data. Screen observation pauses at authentication; the user authenticates in the owning app and explicitly returns. Local Home/help/history/Stop remain usable offline. There is no offline send queue.
+
+## Requirement record format
+
+Each row defines release, priority, status, job rationale, trigger/precondition, behavior, edge cases and observable acceptance. Cross-cutting safety/privacy/access implications inherit [action policy](../05-safety-privacy/action-policy.md), [data policy](../05-safety-privacy/safety-and-privacy.md) and [accessibility](../02-design/accessibility.md), plus row-specific acceptance. MVP Must/Should obligations persist into V1 unless superseded explicitly.
+
+The final column links each requirement to its exact [traceability row](traceability.md), which supplies UC, journey, screen/component, architecture, agent/tool, policy, implementation task, eval and research destination. Unimplemented/unrun is a valid evidence status, never a passing result.
+
+| ID          | Release / priority / status     | Job and requirement                             | Trigger, behavior and edge conditions                                                                                                                                 | Acceptance evidence                                                                                                                            | Trace                                  |
+| ----------- | ------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| PRD-OUT-001 | MVP / Must / proposed           | JOB-01 — Compare delegation with current method | After five supported tasks, report verified completion and assistance separately; require two externally verified delegated workflows before claiming thesis support. | Paired baseline; ≥80% verified success in controlled prototype; no preparation/handoff counted as external completion.                         | [Mapping](traceability.md#prd-out-001) |
+| PRD-OUT-002 | MVP / Must / proposed           | JOB-04 — User understands and controls the task | At confirmation and result ask participants what will/did happen; stop is discoverable without coaching.                                                              | ≥90% correct consequence/state explanations and ≥90% find Stop within 5 seconds in usability sample; report n and uncertainty.                 | [Mapping](traceability.md#prd-out-002) |
+| PRD-OUT-003 | MVP / Should / proposed         | JOB-01 — Reduce interface burden with dignity   | Offer delegation and guidance choices; no age-based diagnosis or forced assistant usage.                                                                              | Paired task assistance falls ≥25%; ≥70% choose delegation for at least one useful job; any patronizing feedback investigated.                  | [Mapping](traceability.md#prd-out-003) |
+| PRD-FR-001  | MVP / Must / proposed           | JOB-01 — Voice and typed intent                 | From Home, tap Talk or Type a request; show partial/final transcript; user may edit before consequence. No microphone access before user activation and grant.        | Denied microphone still allows all five workflows by touch; corrected text replaces prior intent and invalidates prepared approval.            | [Mapping](traceability.md#prd-fr-001)  |
+| PRD-FR-002  | MVP / Must / proposed           | JOB-03 — Stable Home                            | Home offers Talk, Type a request, Photos, Message, Music, Make text larger, Help; History and Settings remain labeled.                                                | No automatic tile reordering; back from settings restores prior Home focus; empty setup offers useful touch demo.                              | [Mapping](traceability.md#prd-fr-002)  |
+| PRD-FR-003  | MVP / Must / proposed           | JOB-05 — Progressive onboarding                 | Explain value and limits before individual microphone, screen-access and cloud disclosures; Android owns grants; allow Skip for now.                                  | Decline each grant independently; only dependent feature disabled; return rechecks actual permission rather than trusting navigation result.   | [Mapping](traceability.md#prd-fr-003)  |
+| PRD-FR-004  | MVP / Must / confirmed          | JOB-04 — Visible agent activity                 | Every active task exposes state, current goal and Stop; foreground external control requires proven visible return/stop surface.                                      | No external automated action when activity/Stop surface cannot be maintained; state remains available without audio.                           | [Mapping](traceability.md#prd-fr-004)  |
+| PRD-FR-005  | MVP / Must / proposed           | JOB-02 — Scoped screen explanation              | On explicit request inspect approved active screen or selected image; state app/source and uncertainty; exclude credentials/secure content.                           | Cannot infer hidden content, identity or safety of a link; incomplete tree returns bounded explanation or unavailable.                         | [Mapping](traceability.md#prd-fr-005)  |
+| PRD-FR-006  | MVP / Must / evidence-needed    | JOB-01 — Recent family photos                   | Resolve person, channel and local date interval; show only evidenced matching attachments; no sending, saving or identity inference from faces.                       | Fixture person/date/media match; two Sophies clarify; missing date reports uncertainty; zero unrelated content asserted correct.               | [Mapping](traceability.md#prd-fr-006)  |
+| PRD-FR-007  | MVP / Must / proposed           | JOB-04 — Entity disambiguation                  | Before person/channel/content-dependent action, show distinct candidates from approved context; no frequency-based guess for consequential actions.                   | Duplicate names, missing contact and multiple channels block commit until resolved; no sensitive distinguishing data unnecessarily exposed.    | [Mapping](traceability.md#prd-fr-007)  |
+| PRD-FR-008  | MVP / Must / proposed           | JOB-01 — Exact message draft                    | User request yields literal proposed message; preserve tense/time/content, show recipient/channel and editable preview; no inferred commitments.                      | After dinner remains after dinner, not an invented hour; Change it creates new version; Cancel leaves no external send.                        | [Mapping](traceability.md#prd-fr-008)  |
+| PRD-FR-009  | MVP / Must / evidence-needed    | JOB-04 — Confirmed message handoff or send      | Fresh approval authorizes exact external draft handoff; supported commit adapter may send only after admitted at gates. If external app requires touch Send, say so.  | Handoff reports draft opened, not sent; verified accepted/sent states distinguished from delivery; unknown outcome never auto-resends.         | [Mapping](traceability.md#prd-fr-009)  |
+| PRD-FR-010  | MVP / Must / evidence-needed    | JOB-01 — Requested media                        | Resolve title/artist and supported service; play available non-purchase content; explicit alternatives for ambiguity, ads or subscriptions.                           | Verified matching title and playing state; launching app/search alone partial; paid offer never accepted; Pause works by touch.                | [Mapping](traceability.md#prd-fr-010)  |
+| PRD-FR-011  | MVP / Must / proposed           | JOB-03 — Accessible adjustment                  | Make this bigger targets Granny text when in Granny; external text request explains scope and offers Android/app settings handoff.                                    | Preview and apply in-app scale with Restore previous size; app restart retains choice; never promise device-wide change from local scaling.    | [Mapping](traceability.md#prd-fr-011)  |
+| PRD-FR-012  | MVP / Must / confirmed          | JOB-02 — Verify outcome and recover             | After every meaningful effect inspect postcondition; success language names evidence strength. Missing evidence enters verifying then partial/failed safely.          | True action return without postcondition cannot complete task; one bounded re-observation then safe recovery; no indefinite spinner.           | [Mapping](traceability.md#prd-fr-012)  |
+| PRD-FR-013  | MVP / Must / confirmed          | JOB-04 — Stop, cancellation and takeover        | Stop cancels queued work locally, revokes approval and stops audio/capture; Take over ends automation and leaves current app state.                                   | No new action dispatch after cancel latch; in-flight external effect reconciled as completed/unknown; never falsely promise reversal.          | [Mapping](traceability.md#prd-fr-013)  |
+| PRD-FR-014  | MVP / Must / proposed           | JOB-02 — Session continuity                     | Resume only on explicit user request; summarize safe completed work and unresolved outcome; re-observe and reauthorize.                                               | Process death or lock never resumes commit; 15-minute idle clears raw session context; task history can explain prior stopped status.          | [Mapping](traceability.md#prd-fr-014)  |
+| PRD-FR-015  | MVP / Must / proposed           | JOB-04 — History and correction                 | Show local task outcome/time and evidence category, excluding raw message/screenshot/audio; allow clear history.                                                      | Unknown remains unknown; content-free row survives crash; deleting row removes associated optional diagnostics references.                     | [Mapping](traceability.md#prd-fr-015)  |
+| PRD-FR-016  | MVP / Must / proposed           | JOB-02 — Degraded and unsupported paths         | Network/provider/app/permission/auth loss pauses execution and explains specific next step; manual access stays available.                                            | No queued send on reconnect; credentials entered only in owning app; Retry requires fresh observation; unsupported request causes zero action. | [Mapping](traceability.md#prd-fr-016)  |
+| PRD-FR-017  | MVP / Should / proposed         | JOB-02 — Pilot support                          | Help explains current capability status; user can preview/export redacted diagnostics with feedback.                                                                  | Export excludes raw personal content, identifiers and secrets; refusal to share has no effect on assistance.                                   | [Mapping](traceability.md#prd-fr-017)  |
+| PRD-FR-018  | App V1 / Must / evidence-needed | JOB-01 — Known-person call                      | Resolve person and supported call route; confirm start; handle no dialer, no account, busy and unknown initiation.                                                    | Correct remote test endpoint rings; never claim answered from launch; no emergency or premium-number delegation.                               | [Mapping](traceability.md#prd-fr-018)  |
+| PRD-FR-019  | App V1 / Must / evidence-needed | JOB-01 — Basic reminder                         | Confirm exact local date/time/timezone and one reminder; verify stored schedule, explain notification dependency.                                                     | DST/missing time clarified; one creation only; permission denial makes notification reliability explicit; no medication-critical claim.        | [Mapping](traceability.md#prd-fr-019)  |
+| PRD-FR-020  | App V1 / Must / proposed        | JOB-03 — Selected document and read-aloud       | Use user-selected URI/scope; show filename before read-aloud; stop and redact sensitive data from diagnostics.                                                        | No arbitrary file crawl, hidden attachments or link execution; expired URI asks to select again; transcript alternative available.             | [Mapping](traceability.md#prd-fr-020)  |
+| PRD-FR-021  | later App / Could / blocked     | JOB-05 — Story capture and remote help          | Only separate consented designs after dedicated evidence; preserve J-004 as deferred help design.                                                                     | MVP and V1 builds expose no remote control or passive story capture; new ADR and eval before enabling.                                         | [Mapping](traceability.md#prd-fr-021)  |
+| PRD-ACC-001 | MVP / Must / proposed           | JOB-03 — Text and layout access                 | Support system font scaling through 200%, portrait/landscape and narrow-window reflow without obscured controls.                                                      | Test all screens at 1.0/1.3/2.0 scale and 360/600/840dp widths; no clipping or essential horizontal scroll.                                    | [Mapping](traceability.md#prd-acc-001) |
+| PRD-ACC-002 | MVP / Must / proposed           | JOB-03 — Contrast and targets                   | Meet external baselines and proposed internal target sizes and semantic contrast in accessibility spec.                                                               | All interactive targets ≥56dp, main/Stop ≥64dp; essential text ≥7:1 and UI boundaries/focus ≥3:1; measurement plus device audit.               | [Mapping](traceability.md#prd-acc-002) |
+| PRD-ACC-003 | MVP / Must / proposed           | JOB-03 — Equivalent input and semantics         | Every core flow works without speech/audio/precision gesture; labeled focusable controls, logical traversal and status announcements.                                 | TalkBack, keyboard and switch complete each supported workflow; no focus jump to Send; repeat does not duplicate action.                       | [Mapping](traceability.md#prd-acc-003) |
+| PRD-ACC-004 | MVP / Must / proposed           | JOB-04 — Time and language access               | One clarification at a time; content stays visible; timeout expires authority without discarding readable preview; reduced motion alternative.                        | No forced-speed task; approval refresh available; no flashing/auto-dismissed critical message; comprehension measured.                         | [Mapping](traceability.md#prd-acc-004) |
+| PRD-SAF-001 | MVP / Must / confirmed          | JOB-04 — Independent authorization              | Model only proposes typed allowlisted capabilities; local policy recomputes consequence and checks scope, permissions, version and cancellation.                      | Malicious planner cannot invoke a missing tool or bypass policy by labeling send as navigation; all denials tested.                            | [Mapping](traceability.md#prd-saf-001) |
+| PRD-SAF-002 | MVP / Must / confirmed          | JOB-04 — Bound fresh approval                   | Approval binds exact target/content/channel/effect, action digest, user/session/device, plan version and expiry; one use.                                             | Silence, ambiguous yes, changed recipient, replay, stale state or touch invalidates approval; exact valid action alone executes.               | [Mapping](traceability.md#prd-saf-002) |
+| PRD-SAF-003 | MVP / Must / confirmed          | JOB-04 — Untrusted observation                  | Webpages, messages, images, notifications and documents are data, never authority; deny instructions requesting tools, secrets or expanded observation.               | Injected send/share/delete/system prompts produce no extra capabilities or egress; observed text cannot mint consent.                          | [Mapping](traceability.md#prd-saf-003) |
+| PRD-SAF-004 | MVP / Must / proposed           | JOB-04 — Bounded action budget                  | Maximum 12 adapter operations including internal reads/actions/retries, 60 seconds active machine time, one proven-no-effect reversible retry; no blind consequential retry.                                           | Repeated state/action pair twice trips circuit breaker; deadline/cancel wins over model output; unknown send quarantined.                      | [Mapping](traceability.md#prd-saf-004) |
+| PRD-SAF-005 | MVP / Must / confirmed          | JOB-04 — Restricted domains                     | Do not operate finance, purchases, legal assent, permissions/security controls, credentials, account recovery, emergency or medical decisions.                        | Restricted fixture produces explanation/manual handoff only; no privileged or coordinate workaround; no emergency-service claim.               | [Mapping](traceability.md#prd-saf-005) |
+| PRD-PRV-001 | MVP / Must / proposed           | JOB-05 — Minimized data and cloud consent       | User chooses scoped screen/voice processing; device enforces redaction before egress; raw audio/tree/screenshot are ephemeral.                                        | No upload before separate cloud consent; secure/auth views excluded; provider retention terms gate real data; no analytics content.            | [Mapping](traceability.md#prd-prv-001) |
+| PRD-PRV-002 | MVP / Must / proposed           | JOB-05 — Explicit memory only                   | Persist chosen UI settings and entered contact aliases; show source and delete/correct control; no passive facts extraction.                                          | Delete alias removes derived search/cache entries and stops future resolution; no transcript archive or inferred relationship.                 | [Mapping](traceability.md#prd-prv-002) |
+| PRD-PRV-003 | App V1 / Must / proposed        | JOB-05 — Memory rights                          | Explicit dates/preferences/relationships support local review, source, correction, export and deletion including derivatives.                                         | Tombstone prevents restored/synced resurrection; export names private scope; no diagnosis or unconfirmed inferred fact.                        | [Mapping](traceability.md#prd-prv-003) |
+| PRD-PRV-004 | MVP / Must / confirmed          | JOB-05 — User primacy in help                   | No remote helper data access in MVP; co-present setup requires adult's control and consent. Buyer never inherits authority.                                           | Unlinked helper gets zero data; no private transcript/health inference in support export; user can cancel setup.                               | [Mapping](traceability.md#prd-prv-004) |
+| PRD-PRV-005 | App V1 / Should / proposed      | JOB-05 — Helper proposals                       | Separate identity and explicit expiring scope; helper suggests settings/contacts; adult reviews local diff; revocation immediate locally.                             | Cannot read messages/history/memory/screens; revocation prevents proposal acceptance; invitation cannot auto-grant.                            | [Mapping](traceability.md#prd-prv-005) |
+| PRD-PRV-006 | MVP / Must / proposed           | JOB-05 — Retention and deletion                 | Apply canonical retention schedule, exclude sensitive stores from backup, expose Clear history and Delete local data.                                                 | Restart and expired records tests show deletion/expiry; crash logs contain IDs and codes only; no raw content in Git.                          | [Mapping](traceability.md#prd-prv-006) |
+| PRD-NFR-001 | MVP / Must / proposed           | JOB-04 — Responsive local controls              | Local acknowledgment and cancel do not depend on network or model; status names progress and deadline.                                                                | Proposed p95 acknowledgment ≤300ms; cancel latch ≤200ms; no later dispatch; measured on reference tablet, not asserted now.                    | [Mapping](traceability.md#prd-nfr-001) |
+| PRD-NFR-002 | MVP / Must / proposed           | JOB-01 — Latency and bounded dependency         | Task-specific wait prompts; p95 first meaningful response ≤5s and machine completion ≤30s for nominal fixtures.                                                       | Record cold/warm latency separately; at 5s show concrete wait, at 15s offer manual path, at budget expiry stop.                                | [Mapping](traceability.md#prd-nfr-002) |
+| PRD-NFR-003 | MVP / Must / proposed           | JOB-04 — Crash and restart safety               | Local action journal records dispatch/verification and unknown outcome; restart clears permits and never continues action automatically.                              | Kill between dispatch and receipt: task shows unknown until reconciled; no duplicate send, capture or upload resumes.                          | [Mapping](traceability.md#prd-nfr-003) |
+| PRD-NFR-004 | MVP / Must / confirmed          | JOB-05 — Replaceable provider boundary          | Normalized intent/plan proposal contract and typed failures; provider has no device authority.                                                                        | Use recorded and alternate fake adapters with same policy/evals; no proprietary model state needed to cancel or read local history.            | [Mapping](traceability.md#prd-nfr-004) |
+| PRD-NFR-005 | MVP / Must / proposed           | JOB-04 — Regression and supportability          | Version capability registry, recipe, OS/app/model/policy and log schema; unknown app version disables unvalidated recipe.                                             | Capability-specific kill switch denies before dispatch; test changed version yields guidance; install/update rollback documented before pilot. | [Mapping](traceability.md#prd-nfr-005) |
+| PRD-DST-001 | MVP / Must / confirmed          | JOB-01 — Ordinary stock Android                 | Installable app without root, OEM/system signing, device owner or custom hardware assumptions.                                                                        | Manifest/permission review and physical install show no forbidden privileges; device inventory includes no serial/account identifiers.         | [Mapping](traceability.md#prd-dst-001) |
+| PRD-DST-002 | MVP / Must / evidence-needed    | JOB-01 — Distribution matches control           | Ship only capabilities permitted by selected distribution route; no unverified accessibility-tool claim or general autonomous accessibility build on Play.            | Policy review maps every control route and disclosure to build; GATE-04 before pilot; prohibited route disabled in public candidate.           | [Mapping](traceability.md#prd-dst-002) |
+| PRD-DST-003 | MVP / Must / evidence-needed    | JOB-01 — Supported matrix                       | Publish exact tested tablet/OS/app/locale combinations; supplied Samsung marketing name remains unverified until inventory.                                           | Record physical model, OS/API/One UI and app versions without identifiers; unknown combination clearly marked unsupported/experimental.        | [Mapping](traceability.md#prd-dst-003) |
+| PRD-DST-004 | MVP / Must / proposed           | JOB-04 — Grant revocation and ownership         | Android owns permission/auth/default-app decisions; app rechecks on resume and immediately before action.                                                             | Revoke each dependency mid-task: stop, invalidate tokens, clear protected snapshots, preserve touch help; no self-enablement.                  | [Mapping](traceability.md#prd-dst-004) |
+
+## Success and release model
+
+[Eval strategy](../06-evals/eval-strategy.md) owns metric definitions, denominators and sample plans. All thresholds are **proposed**, no observed baseline exists. Prototype target ≥80% verified supported-task completion; pilot target ≥90% with zero observed unauthorized/wrong-person consequential actions. Zero observed harm in a finite sample does not prove zero risk. Report safety failures separately from averages, paired assistance/time, comprehension, dignity and delegation preference. Gate thresholds must be accepted before running release tests; never adjust them after seeing failures to claim a pass.
+
+Pilot readiness requires GATE-01–09: reviewed scope, permitted installation/control route, measured device matrix, accessible interaction, understood consent, tested stop/confirmation/privacy, successful synthetic evals, support and rollback, and informed participant consent. No launch date, price, demand, conversion, retention or cost ceiling is accepted. Measure per-task provider cost and establish a budget before real-data cloud use.
+
+## Assumptions, dependencies and risks
+
+| Assumption / unknown | Consequence if false | Mitigation / owner |
 |---|---|---|
-| REQ-001 | Accept ordinary spoken intent and provide a touch alternative for core flows. | V1 candidate |
-| REQ-002 | Provide a calm home experience with large, readable, stable controls. | V1 candidate |
-| REQ-003 | Inspect current Android/app state semantically when platform support allows. | MVP candidate |
-| REQ-004 | Operate a deliberately limited set of device/app actions through typed tools. | MVP candidate |
-| REQ-005 | Follow Observe → Understand → Plan → Act → Verify → Recover for non-trivial tasks. | MVP candidate |
-| REQ-006 | Make agent listening, acting, waiting, success, failure, and confirmation states apparent. | V1 candidate |
-| REQ-007 | Require understandable approval before consequential actions. | MVP constraint |
-| REQ-008 | Resolve people and relationships with ambiguity handling; never guess through a consequential action. | V1 candidate |
-| REQ-009 | Explain failures in plain language, preserve context, and offer a safe next step. | MVP constraint |
-| REQ-010 | Allow the user to inspect, correct, and delete retained personal memory. | V1 candidate |
-| REQ-011 | Separate private companion data from explicitly family-shared or administrative data. | V1 constraint |
-| REQ-012 | Keep model providers behind replaceable interfaces. | Architecture constraint |
+| Independent adults value delegation | Product thesis fails or becomes guidance-first | RES-01/03/07; product |
+| One communication route exposes person/date/content and verifiable result | Photo/message scope unachievable | Synthetic adapter matrix; Android; no substitute fixture presented as real integration |
+| Public distribution permits selected behavior | Release blocked or narrowed | [Feasibility](../08-research/android-stage-1-feasibility.md); GATE-04 |
+| User can understand and grant/revoke screen/cloud access | Consent or onboarding fails | Co-present help with adult control; RES-08 |
+| Voice works in selected locale/home conditions | Voice-first preference may change | Touch-equivalent path; RES-06 |
+| Cloud processing can meet retention, cost and privacy constraints | Remote model route unavailable | Recorded/fake adapter for prototypes; local degraded surface; ADR-0010 |
+| Tablet app has a visible safe-stop route while other apps are foreground | External automation unsafe | Device measurement; fail closed; user-led handoff |
+| Reference tablet identity and installed apps match assumptions | Support matrix changes | Inventory first; no telephony or OEM behavior assumption |
 
-These requirements establish direction, not an accepted release contract. Scope labels need product review.
+Open decisions, concrete options and recommendations live in [open questions](../10-execution/open-questions.md), including initial language/market, MVP/control route, local/cloud, name/brand and pilot support. English is a provisional specification/prototype language, not an accepted launch market; do not infer Spain from developer location.
 
-## Non-functional requirements
+## Legacy requirement migration
 
-- **Understandability:** status, confirmation, and failure language must be comprehensible without technical knowledge.
-- **Accessibility:** layout, type, touch, semantics, voice/touch equivalence, timing, and motion must follow the [accessibility specification](../02-design/accessibility.md).
-- **Safety:** tool enforcement cannot rely solely on model judgment; consequential approvals are auditable.
-- **Reliability:** meaningful actions are verified against resulting state; step success alone is insufficient.
-- **Privacy:** collect only purpose-bound data with visible sharing and deletion controls.
-- **Adaptability:** interface adaptation is slow and predictable, not a constantly rearranging feed.
+Seed REQ identifiers are retired aliases, never reused. Existing PRD table formatting is retained in this migration record; empty placeholder row is removed as part of the substantive rewrite.
 
-Numeric performance, latency, reliability, and accessibility targets remain open pending workflow definition and testing.
-
-## Success signals
-
-- task completion and safe-recovery rate on canonical workflows;
-- consequential actions never occurring without the required approval;
-- fewer user requests for app/menu knowledge during observed tests;
-- users can correctly describe what Granny is doing and how to stop it;
-- usability and dignity feedback from representative older adults;
-- low rates of wrong-person, wrong-content, and repeated-loop failures.
-
-No target values are accepted yet. See [eval strategy](../06-evals/eval-strategy.md).
-
-## Constraints and non-goals
-
-See [scope and roadmap](scope-and-roadmap.md). Current non-goals include full Android implementation, an AOSP fork, production backend infrastructure, final model/database selection, finalized brand palette, autonomous high-risk transactions, medical diagnosis, and silent family monitoring.
-
-## Open questions
-
-- Which use cases define MVP and V1?
-- What connectivity/offline behavior is essential?
-- Which third-party apps and locales are initial targets?
-- Which actions are prohibited versus strongly confirmed?
-- How should onboarding, identity, consent, and account recovery work?
-- What evidence threshold promotes these draft requirements into an accepted release contract?
+| ID      | Requirement owner after expansion                                                             | Scope status            |
+| ------- | --------------------------------------------------------------------------------------------- | ----------------------- |
+| REQ-001 | PRD-FR-001, PRD-ACC-003 — voice and touch                                                       | Superseded alias        |
+| REQ-002 | PRD-FR-002, PRD-ACC-001/002 — readable Home                                                    | Superseded alias        |
+| REQ-003 | PRD-FR-005 — screen inspection                                                               | Superseded alias        |
+| REQ-004 | PRD-SAF-001, PRD-DST-002 — bounded permitted tools                                             | Superseded alias        |
+| REQ-005 | PRD-FR-012 — observe through verified recovery                                                | Superseded alias        |
+| REQ-006 | PRD-FR-004 — visible states                                                                  | Superseded alias        |
+| REQ-007 | PRD-SAF-002 — specific approval                                                              | Superseded alias        |
+| REQ-008 | PRD-FR-007 — entity resolution                                                               | Superseded alias        |
+| REQ-009 | PRD-FR-016 — useful failure                                                                  | Superseded alias        |
+| REQ-010 | PRD-PRV-002/003 — memory rights                                                              | Superseded alias        |
+| REQ-011 | PRD-PRV-004/005 — helper boundaries                                                          | Superseded alias        |
+| REQ-012 | PRD-NFR-004 — replaceable provider                                                           | Superseded alias        |

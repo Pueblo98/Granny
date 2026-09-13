@@ -1,44 +1,28 @@
 ---
-title: Autonomy and Confirmation Model
+title: "Agent Autonomy and Permit Integration"
 status: proposed
 owner: Simon
-last_updated: 2026-09-10
-tags:
-  - agent
-  - autonomy
-  - safety
+last_updated: 2026-09-14
+tags: [agent, autonomy]
 related:
-  - agent-behavior.md
-  - ../05-safety-privacy/safety-and-privacy.md
-  - ../06-evals/canonical-tasks.md
+  - ../05-safety-privacy/action-policy.md
+  - tool-contracts.md
 ---
 
-# Autonomy and Confirmation Model
+# Autonomy integration
 
-## Conceptual levels
+The single category/class authority is [action policy](../05-safety-privacy/action-policy.md). Historical levels 0/1/2/3/4 map to POL-00/01/02/03/04; restricted maps to POL-R. They classify actual effects, not UI difficulty. Product scope and distribution admission may deny an otherwise permitted class.
 
-| Level | Meaning | Examples | Default gate |
-|---|---|---|---|
-| 0 — Observe | Read approved state without changing it. | Explain screen, inspect connectivity. | Consent/permission for data access. |
-| 1 — Safe navigation | Low-impact, easily stopped movement. | Open app, search, scroll, go back. | Execute and remain visible. |
-| 2 — Prepare/reversible | Prepare a state without committing externally. | Draft message, select photos, prepare call. | Execute, show result; do not commit. |
-| 3 — Consequential | Causes an external, destructive, privacy, account, or social effect. | Send, share, call, delete, create appointment. | Fresh, specific confirmation. |
-| 4 — Delegated routine | Narrow repeated action explicitly delegated by user. | A future pre-authorized routine reminder/action. | Bound by scope, time, revocation, and audit. |
-| Restricted | Risk exceeds current product authority. | Financial transfer, credentials, legal agreement, unknown install, security recovery. | Refuse or require a separately designed high-assurance flow. |
+## Agent obligations
 
-Levels classify effects, not UI difficulty. A one-tap send remains consequential.
+Planner proposes intended outcome, bounded steps, required scopes and maximum consequence. Registry and policy recompute consequence from the typed capability plus actual adapter effects. The model cannot approve itself, create a permit, relabel send as navigation, enable Android grants, or switch to a more permissive route after denial.
 
-## Valid confirmation
+For POL-03: produce immutable PreparedAction → render exact local preview → obtain user response on trusted UI → policy issues permit → executor atomically checks/consumes at dispatch → verifier records actual effect. A changed prepared action creates a new version and preview. Permit duration/invalidation is owned by action policy; the UI preserves preview content on expiry.
 
-Confirmation must be specific to the action, understandable, proximate in time, and freely revocable before execution. It identifies actor/recipient, object/content, channel/destination, and meaningful consequence. Ambiguous speech, silence, prior unrelated consent, caregiver preference, or the model's confidence is not confirmation.
+Examples: changing Granny text is local reversible; inserting a draft in another app can sync or send typing status and needs explicit external handoff approval; opening a chat may mark it read and must be declared. Silence and “yes” from a screen/recording are data, not consent.
 
-After confirmation, execute only the described action. Material changes require reconfirmation. Verify and report success/failure.
+## Denials and delegation
 
-## Initial mappings
+Denied scope is a typed result, not a prompt asking the model to try harder. Offer a truthful manual path from SCR-014. No alternate coordinates/provider/helper may bypass denial. Unknown effects default restricted. Routines and remote assistance remain disabled in MVP/V1; a proposed future interface is not authority to expose it.
 
-- Open/search/browse/change volume: Level 1, unless content exposure changes the risk.
-- Draft message/prepare call/select attachment: Level 2.
-- Send message/start call/share photo/delete ordinary content/create appointment: Level 3.
-- Purchases, banking, passwords/account recovery, legal agreements, security settings: Restricted pending explicit design and review.
-
-These mappings remain proposed. Before capability implementation, add the action to a maintained matrix, threat-model it, define confirmation UI/voice behavior, and add positive and negative evals.
+Runtime tests: EVAL-003/006/010/016. UX comprehension: EVAL-012. [Traceability](../01-product/traceability.md) binds these to PRD-SAF and PRD-PRV requirements.
