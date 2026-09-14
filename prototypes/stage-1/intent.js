@@ -7,8 +7,37 @@ function parse(text) {
     return {kind : "empty", request};
   const command = request.match(
       /^(?:please\s+)?(?:tell|message|text|write\s+(?:a\s+)?message\s+to)(?:\s+(.*))?$/i);
-  if (!command)
+  if (!command) {
+    const photoText = request.replace(
+        /\s+(?:and\s+)?mark(?:\s+(?:the\s+)?source)?\s+(?:as\s+)?read$/i, "");
+    let match = photoText.match(
+        /^(?:show|find|look for)\s+(?:me\s+)?(?:the\s+)?photos?(?:\s+(?:from|of)\s+([^,]+?))?(?:\s+(?:from|on)\s+(.+))?$/i);
+    if (match)
+      return {
+        kind : "photos",
+        request,
+        person : (match[1] || "").trim(),
+        date : (match[2] || "").trim(),
+        markRead : photoText !== request
+      };
+    match = request.match(
+        /^(?:what(?:'s| is) on|explain)(?:\s+(?:this|the))?\s*screen(?:\s+(.+))?$/i);
+    if (match)
+      return {kind : "explain", request, screen : (match[1] || "").trim()};
+    match = request.match(/^(?:play|listen to)\s+(?:some\s+)?(.+)$/i);
+    if (match)
+      return {kind : "media", request, query : match[1].trim()};
+    match = request.match(
+        /^(?:make|set|change)\s+(?:(the|granny|external)\s+)?(?:text|words|writing)(?:\s+size)?\s+(?:to\s+)?(larger|largest|smaller|normal)$/i);
+    if (match)
+      return {
+        kind : "readability",
+        request,
+        scope : (match[1] || "").toLowerCase(),
+        size : match[2].toLowerCase()
+      };
     return {kind : "unsupported", request};
+  }
   const tail = (command[1] || "").trim();
   if (!tail)
     return {
@@ -30,8 +59,12 @@ function parse(text) {
       /^(David|Sophie)(?:\s+(Brother|Gardening group|Daughter|Book club))?$/i);
   if (personOnly)
     return {
-      kind : "message", request, recipient : personOnly[1],
-      detail : personOnly[2] || "", channel : channel || "", body : ""
+      kind : "message",
+      request,
+      recipient : personOnly[1],
+      detail : personOnly[2] || "",
+      channel : channel || "",
+      body : ""
     };
   const match =
       content.match(

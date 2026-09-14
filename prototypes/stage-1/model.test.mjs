@@ -58,7 +58,7 @@ test("unknown input is not arbitrarily classified", () => {
   const s = P.create();
   P.dispatch(s, "submit", "Arrange the universe however you like");
   assert.equal(s.task.kind, "unsupported");
-  assert.equal(s.task.stage, "failed");
+  assert.equal(s.task.stage, "clarify-intent");
   assert.equal(s.task.dispatched, false);
 });
 test("incidental yes never approves", () => {
@@ -164,18 +164,21 @@ test("typed clarification replies stay in the current task", () => {
   assert.equal(s.task.stage, "preview");
 });
 
-test("typed correction edits exact body but yes remains a new unsupported request", () => {
-  const s = preview(), id = s.task.id;
-  assert.equal(P.isFollowup(s, "Actually, make it tomorrow."), true);
-  P.dispatch(s, "submit", "Actually, make it tomorrow.");
-  assert.equal(s.task.id, id);
-  assert.equal(s.task.slots.body, "tomorrow.");
-  assert.equal(P.isFollowup(s, "yes"), false);
-});
+test(
+    "typed correction edits exact body but yes remains a new unsupported request",
+    () => {
+      const s = preview(), id = s.task.id;
+      assert.equal(P.isFollowup(s, "Actually, make it tomorrow."), true);
+      P.dispatch(s, "submit", "Actually, make it tomorrow.");
+      assert.equal(s.task.id, id);
+      assert.equal(s.task.slots.body, "tomorrow.");
+      assert.equal(P.isFollowup(s, "yes"), false);
+    });
 
 test("full differentiator and optional channel resolve directly", () => {
   const s = P.create();
-  P.dispatch(s, "submit", "Write a message to David Brother: Tea at 4 via Example Mail");
+  P.dispatch(s, "submit",
+             "Write a message to David Brother: Tea at 4 via Example Mail");
   assert.equal(s.task.stage, "preview");
   assert.equal(s.task.slots.recipient.id, "david-family");
   assert.equal(s.task.slots.channel, "Example Mail");
@@ -194,10 +197,15 @@ test("missing body asks instead of inventing content", () => {
 
 test("edit rejects forged recipient objects", () => {
   const s = preview(), version = s.task.version;
-  assert.equal(P.dispatch(s, "edit", {recipient : {id : "david-family", name : "Mallory"}}), true);
+  assert.equal(
+      P.dispatch(s, "edit",
+                 {recipient : {id : "david-family", name : "Mallory"}}),
+      true);
   assert.equal(s.task.slots.recipient.name, "David");
   assert.ok(s.task.version > version);
-  assert.equal(P.dispatch(s, "edit", {recipient : {id : "not-a-fixture", name : "David"}}), false);
+  assert.equal(P.dispatch(s, "edit",
+                          {recipient : {id : "not-a-fixture", name : "David"}}),
+               false);
 });
 
 test("replacement archives prior assistant meaning", () => {
@@ -219,9 +227,208 @@ test("fault ends work immediately and invalidates callbacks", () => {
   }
 });
 
-test("hypothetical send mode is denied in Wave 1", () => {
+test("hypothetical send mode refreshes and binds exact effect", () => {
   const s = preview();
-  assert.equal(P.dispatch(s, "reviewer", {sendMode : true}), false);
-  assert.equal(s.reviewer.sendMode, false);
-  assert.match(P.signature(s.task), /open-unsent-draft/);
+  const old = P.signature(s.task);
+  assert.equal(P.dispatch(s, "reviewer", {sendMode : true}), true);
+  assert.equal(s.reviewer.sendMode, true);
+  assert.notEqual(P.signature(s.task), old);
+  assert.match(P.signature(s.task), /send-message/);
 });
+
+test("photos resolve alias and fixed yesterday with truthful fixtures", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "Show photos of Sophie from yesterday");
+  assert.equal(s.task.stage, "planning");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.equal(s.task.result.photos.length, 2);
+  assert.equal(s.task.result.uncertainDate, false);
+  assert.ok(s.task.result.photos.every(p => p.detail === "Daughter"));
+});
+test("deleted Sophie alias becomes ambiguous and explicit book club works",
+     () => {
+       const s = P.create();
+       P.dispatch(s, "aliasDelete", "sophie");
+       P.dispatch(s, "submit", "Find photos of Sophie from 2026-09-12");
+       assert.equal(s.task.stage, "clarify-person");
+       assert.equal(P.isFollowup(s, "Sophie"), false);
+       assert.equal(P.isFollowup(s, "Book club"), true);
+       P.dispatch(s, "submit", "Book club");
+       for (let i = 0; i < 4; i++)
+         advance(s);
+       assert.equal(s.task.result.photos[0].id, "meal");
+     });
+test("photo no-match and uncertain-date variants stay truthful", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "Find photos of Sophie Daughter from last week");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.equal(s.task.stage, "no-matches");
+  assert.equal(s.task.result.uncertainDate, true);
+});
+test("mark-read photo route requires exact bound preview", () => {
+  const s = P.create();
+  P.dispatch(
+      s, "submit",
+      "Show photos of Sophie Daughter from yesterday and mark source as read");
+  assert.equal(s.task.stage, "preview");
+  assert.match(P.signature(s.task), /open-source-mark-read/);
+  assert.equal(
+      P.dispatch(
+          s, "approve",
+          {taskId : s.task.id, version : s.task.version, signature : "wrong"}),
+      false);
+});
+test("screen explanation requires supplied selection and handles safe states",
+     () => {
+       for (const [id, stage] of [[ "article", "completed" ],
+                                  [ "signin", "failed" ],
+                                  [ "unknown", "failed" ]]) {
+         const s = P.create();
+         P.dispatch(s, "submit", "Explain this screen");
+         assert.equal(s.task.stage, "clarify-screen");
+         P.dispatch(s, "choose", id);
+         for (let i = 0; i < 4; i++)
+           advance(s);
+         assert.equal(s.task.stage, stage);
+         assert.equal(s.task.result.screen.id, id);
+       }
+     });
+test("screen explanation simpler and return are contextual", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "Explain screen article");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.equal(P.isFollowup(s, "explain more simply"), true);
+  P.dispatch(s, "submit", "explain more simply");
+  assert.equal(s.task.result.simple, true);
+  P.dispatch(s, "submit", "return");
+  assert.equal(s.task.result.next, "returned");
+});
+test(
+    "Nina Simone is ambiguous then silent player pauses and survives another task",
+    () => {
+      const s = P.create();
+      P.dispatch(s, "submit", "Play some Nina Simone");
+      assert.equal(s.task.stage, "clarify-media");
+      P.dispatch(s, "choose", "sinnerman");
+      for (let i = 0; i < 4; i++)
+        advance(s);
+      assert.equal(s.playing, true);
+      P.dispatch(s, "submit", "pause");
+      assert.equal(s.playing, false);
+      P.dispatch(s, "submit", "Something new");
+      assert.equal(s.playing, false);
+    });
+test("readability changes Granny only and restores; external is guidance",
+     () => {
+       const s = P.create();
+       P.dispatch(s, "submit", "Make text larger");
+       assert.equal(s.task.stage, "clarify-scope");
+       P.dispatch(s, "choose", "granny");
+       for (let i = 0; i < 4; i++)
+         advance(s);
+       assert.equal(s.scale, 1.3);
+       P.dispatch(s, "restoreScale");
+       assert.equal(s.scale, 1);
+       const x = P.create();
+       P.dispatch(x, "submit", "Make external text largest");
+       assert.equal(x.task.outcome, "external guidance only");
+       assert.equal(x.scale, 1);
+     });
+test("unknown acknowledge and manual never retry", () => {
+  for (const event of ["acknowledge", "manual"]) {
+    const s = preview();
+    P.dispatch(s, "reviewer", {fault : "unknown"});
+    approve(s);
+    for (let i = 0; i < 4; i++)
+      advance(s);
+    assert.equal(s.task.stage, "unknown");
+    assert.equal(P.isFollowup(s, "try again"), false);
+    P.dispatch(s, event);
+    assert.equal(s.task.stage, "completed");
+    assert.match(s.task.text, /not retry|will not retry/i);
+  }
+});
+test("new request invalidates active callback and archives stopped meaning",
+     () => {
+       const s = preview();
+       approve(s);
+       const stale = guard(s);
+       P.dispatch(s, "submit", "Play some Nina Simone");
+       assert.equal(P.dispatch(s, "advance", null, stale), false);
+       assert.match(s.turns.at(-2).text, /stopped/i);
+     });
+test("aliases validate fixtures and clearSession preserves preferences", () => {
+  const s = P.create();
+  assert.equal(P.dispatch(s, "aliasSave", {label : "X", personId : "forged"}),
+               false);
+  P.dispatch(s, "setScale", 1.5);
+  P.dispatch(s, "applyScale");
+  P.dispatch(s, "voice", true);
+  P.dispatch(s, "clearSession");
+  assert.equal(s.scale, 1.5);
+  assert.equal(s.settings.voice, true);
+  assert.equal(s.task, null);
+});
+test("correction after completed send is a fresh unsent local draft", () => {
+  const s = preview();
+  P.dispatch(s, "reviewer", {sendMode : true});
+  approve(s);
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.equal(s.task.result.sent, true);
+  P.dispatch(s, "submit", "change message to corrected local body");
+  assert.equal(s.task.stage, "preview");
+  assert.equal(s.task.effect, "open-unsent-draft");
+  assert.equal(s.task.slots.body, "corrected local body");
+});
+test("typed ambiguous first name is not selected by substring", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "Tell David hello");
+  assert.equal(P.isFollowup(s, "David"), false);
+  assert.equal(P.dispatch(s, "submit", "David"), true);
+  assert.equal(s.task.kind, "unsupported");
+});
+test("bound hypothetical send reports only simulated verified send", () => {
+  const s = P.create();
+  P.dispatch(s, "reviewer", {sendMode : true});
+  P.dispatch(s, "submit", "Tell David Brother: exact body via Example Mail");
+  assert.match(P.signature(s.task), /send-message/);
+  approve(s);
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.equal(s.task.outcome, "fictional message sent");
+  assert.equal(s.task.result.sent, true);
+});
+test("immediate fault after dispatch is unknown, never no-effect", () => {
+  const s = preview();
+  P.dispatch(s, "reviewer", {sendMode : true});
+  approve(s);
+  advance(s);
+  advance(s);
+  assert.equal(s.task.dispatched, true);
+  P.dispatch(s, "fault", "offline");
+  assert.equal(s.task.stage, "unknown");
+  assert.match(s.task.text, /can’t verify/i);
+});
+test("reviewer None clears configured outcome", () => {
+  const s = preview();
+  P.dispatch(s, "reviewer", {fault : "unknown"});
+  assert.equal(s.reviewer.fault, "unknown");
+  P.dispatch(s, "reviewer", {fault : ""});
+  assert.equal(s.reviewer.fault, "");
+});
+test("full reset clears changed preferences while preserving monotonic ids",
+     () => {
+       const s = preview(), id = s.task.id;
+       P.dispatch(s, "voice", true);
+       P.dispatch(s, "setScale", 1.5);
+       P.dispatch(s, "applyScale");
+       P.dispatch(s, "reset");
+       assert.equal(s.settings.voice, false);
+       assert.equal(s.scale, 1);
+       P.dispatch(s, "submit", "Tell David hello");
+       assert.ok(s.task.id > id);
+     });
