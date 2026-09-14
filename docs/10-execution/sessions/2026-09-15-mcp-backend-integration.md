@@ -73,3 +73,9 @@ Actual MCP stdio handshake/discovery/contact read passed outside sandbox; SDK 2.
 ## Actual combined browser checkpoint
 
 `node prototypes/conversation-runtime/browser-check.mjs`: 17 assertions passed through actual browser UI, HTTP runtime, MCP stdio and isolated demo files. Includes exact-body edit, ambiguity, explicit confirmation, independent stored read, stable replay IDs and preview Stop. Screenshot inspected. Two initial failures were test readiness/label selector mistakes; corrected only backend-owned test. No frontend implementation changes. `python3 -m unittest discover -s scripts -p 'test_*.py'`: 46 passed. CI workflow added with immutable actions and pinned SDK install, stub-only; hosted run unrun because no PR/main action authorized. Peer requests 8917f56 client correction before final acceptance; pending integration.
+
+## Final safety review before live-entry handoff
+
+Repeated Stop now preserves the authoritative epoch/cursor after cancellation, including one explicit unknown cancellation acknowledgment. Explicit quoted/marked exact bodies are independently checked so model offsets cannot silently trim punctuation/whitespace. MCP inbound buffer is bounded at 64 KiB. Combined regression run passed 123 tests before the extra exact-span case; that case subsequently passed in the 15-test runtime suite. Final transport fault cases additionally pause/terminate only their own MCP test children to exercise actual call timeout/disconnection. No tool/server scope expansion.
+
+Frontend's FE006 publishes final demo review and delegates only the live-consent entry in app.js/cloud.js and its specified test/document paragraphs; no active peer edits in those paths. Its actual demo review passed 13 checks, wire fixtures 29 and scripted browser 130. Backend will incorporate the exact final peer commit then apply existing Simon authority for that file-scoped extension, no paid calls.

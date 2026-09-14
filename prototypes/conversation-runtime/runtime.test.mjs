@@ -90,3 +90,21 @@ test('budgets, expiry and duplicate create cannot revive authority',()=>fixture(
  for(let i=0;i<64;i++)r.command(cmd(s,'turn',{text:'Hello'}));assert.throws(()=>r.command(cmd(s,'turn',{text:'Hello'})),/session_budget/);
  assert.equal(r.command(cmd(s,'cancel')).state,'stopped');await r.settled(s.sessionId);time=1800000;assert.throws(()=>r.events(s.sessionId,0),/session_expired/);r.close();
 }));
+test('repeated Stop preserves cursor/epoch; unknown error gets one cancellation acknowledgment',()=>fixture(async(_,m)=>{
+ const r=createRuntime({mcp:m}),s=create(r);const first=r.command(cmd(s,'cancel'));const second=r.command(cmd(s,'cancel'));assert.equal(second.epoch,first.epoch);assert.equal(second.cursor,first.cursor);r.close();
+ const broken=createRuntime({mcp:{call:async(name,...args)=>{const result=await m.call(name,...args);if(name==='demo_draft_create')throw Error('ack lost');return result;}}});const s2=create(broken),p=await preview(broken,s2);
+ broken.command(cmd(s2,'confirm',confirm(p)));await broken.settled(s2.sessionId);const stopped=broken.command(cmd(s2,'cancel'));assert.equal(stopped.events.at(-1).type,'cancellation');assert.equal(stopped.state,'unknown');assert.equal(broken.command(cmd(s2,'cancel')).cursor,stopped.cursor);broken.close();
+}));
+test('model cannot silently trim explicit message punctuation or whitespace',()=>fixture(async(_,m)=>{
+ for(const text of ['Tell David Brother "  Keep this!  " via Example Messages','Prepare a draft to David Brother via Example Messages. The exact message is: Keep this!']){
+  const start=text.indexOf('Keep this');const r=createRuntime({mcp:m,stub:{interpret:async()=>({kind:'draft',recipientQuery:'David Brother',channelQuery:'Example Messages',bodyStart:start,bodyEnd:start+'Keep this'.length})}}),s=create(r);
+  r.command(cmd(s,'turn',{text}));const result=await r.settled(s.sessionId);assert.equal(result.state,'clarifying');assert.equal(result.events.at(-1).data.field,'body');r.close();
+ }
+}));
+test('actual MCP tool timeout and disconnect while a request is pending',async()=>{
+ const m=await connectDemo();assert.ok(Number.isInteger(m.processId));process.kill(m.processId,'SIGSTOP');
+ try{await assert.rejects(m.call('demo_contacts_resolve',{query:'David'}),/mcp_failure/);}
+ finally{process.kill(m.processId,'SIGCONT');await m.close();}
+ const m2=await connectDemo();process.kill(m2.processId,'SIGSTOP');const pending=assert.rejects(m2.call('demo_contacts_resolve',{query:'David'}),/mcp_failure/);
+ process.kill(m2.processId,'SIGKILL');await pending;await m2.close();
+});

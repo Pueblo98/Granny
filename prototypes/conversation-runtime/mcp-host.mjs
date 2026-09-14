@@ -12,7 +12,7 @@ export function validateToolOutput(name,result){
 export async function connectDemo(options={}) {
   if(Object.keys(options).some(k=>k!=='timeout'))throw new SafeError('server_denied');
   const {timeout=5000}=options;
-  const transport=new StdioClientTransport({command:process.execPath,args:[fileURLToPath(new URL('./mcp-server.mjs',import.meta.url))],env:{PATH:process.env.PATH || '/usr/bin'},stderr:'pipe'});
+  const transport=new StdioClientTransport({command:process.execPath,args:[fileURLToPath(new URL('./mcp-server.mjs',import.meta.url))],env:{PATH:process.env.PATH || '/usr/bin'},stderr:'pipe',maxBufferSize:65536});
   // Never forward untrusted child stderr to logs or browser.
   transport.stderr?.on('data',()=>{});
   let protocol;
@@ -29,6 +29,7 @@ export async function connectDemo(options={}) {
   let closed=false;
   return {
     server:client.getServerVersion(),
+    processId:transport.pid, // Internal test lifecycle only; never serialized to browser/logs.
     protocol,
     async call(name,input,signal){
       if(closed || !Object.hasOwn(tools,name))throw new SafeError('tool_denied');
