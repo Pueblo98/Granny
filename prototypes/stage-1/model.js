@@ -376,13 +376,23 @@ function parseForState(s, text) {
                               `${a.label.toLowerCase()} `));
   if (!alias)
     return parsed;
+  let remainder = tail.slice(alias.label.length).trim();
+  const channelMatch =
+      remainder.match(/\s+(?:via|in)\s+(Example Messages|Example Mail)\s*$/i);
+  const channel = channelMatch
+                      ? F.channels.find(c => c.toLowerCase() ===
+                                             channelMatch[1].toLowerCase())
+                      : "";
+  if (channelMatch)
+    remainder = remainder.slice(0, channelMatch.index);
+  remainder = remainder.replace(/^that\s+/i, "");
   return {
     kind : "message",
     request : String(text).trim(),
     recipient : alias.label,
     detail : "",
-    channel : "",
-    body : tail.slice(alias.label.length + 1)
+    channel,
+    body : remainder
   };
 }
 function isFollowup(s, text) {
@@ -898,7 +908,8 @@ function dispatch(s, e, v, g) {
     if (!s.player)
       return false;
     s.playing = typeof v === "boolean" ? v : !s.playing;
-    if (t && t.kind === "media" && t.result) {
+    if (t && t.kind === "media" && t.stage === "completed" && t.result &&
+        t.result.track.id === s.player.id) {
       t.result.playing = s.playing;
       t.text = s.playing
                    ? `Resumed ${t.result.track.title} in the silent simulation.`

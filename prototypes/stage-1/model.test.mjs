@@ -640,3 +640,82 @@ test("restricted requests fail closed without catching message bodies", () => {
   P.dispatch(message, "submit", "Tell David buy bread");
   assert.equal(message.task.kind, "message");
 });
+test("failed requested track never acquires playback copy from prior player",
+     () => {
+       const s = P.create();
+       P.dispatch(s, "submit", "Play Quiet Harbour");
+       for (let i = 0; i < 4; i++)
+         advance(s);
+       P.dispatch(s, "reviewer", {fault : "unavailable"});
+       P.dispatch(s, "submit", "Play Sinnerman");
+       for (let i = 0; i < 4; i++)
+         advance(s);
+       const failedText = s.task.text;
+       assert.equal(s.task.result.track.id, "sinnerman");
+       assert.equal(s.task.result.playing, false);
+       assert.equal(s.player.id, "quiet-harbour");
+       P.dispatch(s, "playback", false);
+       assert.equal(s.playing, false);
+       assert.equal(s.task.result.playing, false);
+       assert.equal(s.task.text, failedText);
+       P.dispatch(s, "playback", true);
+       assert.equal(s.playing, true);
+       assert.equal(s.task.result.playing, false);
+       assert.equal(s.task.text, failedText);
+     });
+test("multiword alias preserves exact body and optional channel", () => {
+  const s = P.create();
+  P.dispatch(s, "aliasSave",
+             {id : "aunt", label : "Aunt May", personId : "sophie-family"});
+  P.dispatch(s, "submit", "Tell Aunt May that Bring Tea! via Example Mail");
+  assert.equal(s.task.stage, "preview");
+  assert.equal(s.task.slots.recipient.id, "sophie-family");
+  assert.equal(s.task.slots.channel, "Example Mail");
+  assert.equal(s.task.slots.body, "Bring Tea!");
+});
+test(
+    "clearSession removes conversation and player but preserves explicit preferences",
+    () => {
+      const s = P.create();
+      P.dispatch(s, "aliasSave",
+                 {id : "aunt", label : "Aunt May", personId : "sophie-family"});
+      P.dispatch(s, "voice", true);
+      P.dispatch(s, "submit", "Play Quiet Harbour");
+      for (let i = 0; i < 4; i++)
+        advance(s);
+      P.dispatch(s, "clearSession");
+      assert.deepEqual(s.turns, []);
+      assert.deepEqual(s.history, []);
+      assert.equal(s.task, null);
+      assert.equal(s.player, null);
+      assert.equal(s.playing, false);
+      assert.equal(s.settings.voice, true);
+      assert.ok(s.aliases.some(a => a.id === "aunt"));
+    });
+test("full reset removes conversation, player, and customized preferences",
+     () => {
+       const s = P.create();
+       P.dispatch(
+           s, "aliasSave",
+           {id : "aunt", label : "Aunt May", personId : "sophie-family"});
+       P.dispatch(s, "voice", true);
+       P.dispatch(s, "submit", "Play Quiet Harbour");
+       for (let i = 0; i < 4; i++)
+         advance(s);
+       P.dispatch(s, "reset");
+       assert.deepEqual(s.turns, []);
+       assert.deepEqual(s.history, []);
+       assert.equal(s.player, null);
+       assert.equal(s.settings.voice, false);
+       assert.equal(s.aliases.some(a => a.id === "aunt"), false);
+     });
+test(
+    "reviewer screen config never bypasses explicit fictional-screen selection",
+    () => {
+      const s = P.create();
+      P.dispatch(s, "reviewer", {screen : "display-settings"});
+      P.dispatch(s, "submit", "What am I looking at?");
+      assert.equal(s.reviewer.screen, "display-settings");
+      assert.equal(s.task.stage, "clarify-screen");
+      assert.equal(s.task.slots.screen, null);
+    });
