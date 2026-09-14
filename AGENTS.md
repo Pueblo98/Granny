@@ -2,7 +2,7 @@
 title: "Repository agent operating rules"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [instructions]
 related:
   - docs/README.md
@@ -14,7 +14,9 @@ related:
 
 ## Active design medium
 
-Simon authorized a **local browser prototype** on 2026-09-14 after Figma's MCP quota blocked authoring. Start design tasks from [browser design and handoff](docs/02-design/browser-prototype.md) and [prototype source](prototypes/stage-1/README.md). Figma is a paused optional artifact, not a prerequisite. This changes the design medium only: the product remains stock-Android Stage 1. Browser mock logic is not the production agent or T-103. Preserve fictional data, no egress/capture and explicit simulation labels; run its model/browser checks with documentation validation.
+**Current bounded exception, 2026-09-15:** Simon requested live Qwen testing. [Qwen experiment](docs/08-research/openrouter-qwen-prototype.md) owns the opt-in synthetic-text local proxy, key handling, limits and evidence. Scripted mode still has no model egress. Do not extend this to personal data, autonomous device actions, a production backend or T-103. The conversation-first code is being developed on a separate parent branch; reconcile its final handoff during authorized integration rather than overwriting that session's work. Historical no-provider/design-not-yet-requested statements below describe earlier scopes.
+
+Simon authorized a **local browser prototype** on 2026-09-14 after Figma's MCP quota blocked authoring. Start design tasks from [browser design and handoff](docs/02-design/browser-prototype.md) and [prototype source](prototypes/stage-1/README.md). Figma is a paused optional artifact, not a prerequisite. This changes the design medium only: the product remains stock-Android Stage 1. Browser mock logic is not the production agent or T-103. Preserve fictional data, no capture, explicit simulation labels and no egress outside the bounded opt-in experiment above; run its model/browser checks with documentation validation.
 
 Granny is a **temporary codename**, not the accepted public name, for an AI-first computer experience for older adults. Thesis: the computer learns to operate itself for the person. Only **Stage 1: an installable stock-Android tablet app** is active. [Scope](docs/01-product/scope-and-roadmap.md) separates Vision, proposed App MVP, App V1 and later App releases; Stage 2 OS/AOSP and Stage 3 hardware are dormant `future-stage context`. Only Simon can activate them with the required accepted decisions. No root/OEM/device-owner/custom-dock assumption may leak into Stage 1.
 

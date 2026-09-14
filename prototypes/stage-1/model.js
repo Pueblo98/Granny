@@ -277,7 +277,7 @@ function createWorkflow(s, p) {
     {value : "readability", label : "Change text size"}
   ];
 }
-function replace(s, p) {
+function archiveTask(s) {
   if (s.task) {
     s.epoch++;
     if (ACTIVE.includes(s.task.stage)) {
@@ -299,6 +299,10 @@ function replace(s, p) {
                                : null
       });
   }
+  s.task = null;
+}
+function replace(s, p) {
+  archiveTask(s);
   if (p.kind !== "message") {
     createWorkflow(s, p);
     return;
@@ -500,6 +504,13 @@ function dispatch(s, e, v, g) {
   if (!s || typeof e !== "string")
     return false;
   const t = s.task;
+  // UI-owned conversation only. This is deliberately NOT a tool/approval event.
+  if (e === "cloudTurn") {
+    if (!v || !["user", "assistant"].includes(v.role) || typeof v.text !== "string" || !v.text.trim() || v.text.length > 3000) return false;
+    if (v.role === "user") { archiveTask(s); s.epoch++; }
+    s.turns.push({ id: `cloud-${s.nextId++}`, role: v.role, text: v.text, kind: "cloud" });
+    return true;
+  }
   if (e === "reset") {
     const epoch = s.epoch + 1, nextId = s.nextId;
     Object.assign(s, create(), {epoch, nextId});

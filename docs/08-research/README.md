@@ -2,7 +2,7 @@
 title: "Research and source register"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [research]
 related:
   - research-plan.md
@@ -12,6 +12,8 @@ related:
 ---
 
 # Research and source register
+
+[Qwen conversation experiment](openrouter-qwen-prototype.md) records 2026-09-15 official OpenRouter sources, setup, synthetic live observations, failures and automated fixture evidence. This is model-prototype evidence, not a participant study or Android capability admission.
 
 [Execution protocols](research-protocols.md) supply moderator prompts, consent/worksheet boundaries and deidentified synthesis for the planned studies. [Evidence protocol](../06-evals/evidence-protocol.md) defines how actual results are recorded and reviewed. No new participant/device evidence was collected during workflow refinement.
 

@@ -2,7 +2,7 @@
 title: "Stage 1 documentation map"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [navigation]
 related:
   - 10-execution/current-milestone.md
@@ -12,6 +12,8 @@ related:
 ---
 
 # Documentation map
+
+**Current Qwen experiment:** [setup, local proxy boundaries and actual evidence](08-research/openrouter-qwen-prototype.md). This is an opt-in synthetic-text extension of the conversation-first browser branch, not production Android agency. The parent conversation session and its final integration remain distinct from this task.
 
 **Start here for development oversight:** [Cockpit](Cockpit.md) · [visual map](Development.canvas) · [session/message views](10-execution/cockpit.base) · [agent board](10-execution/agent-board.md). [Cockpit guide](10-execution/cockpit-guide.md) owns update/refresh rules. [Conversation-first redesign plan](02-design/conversation-first-plan.md) is pending review; no new app implementation in the cockpit task.
 

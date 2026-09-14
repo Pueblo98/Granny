@@ -2,7 +2,7 @@
 title: "Stage 1 System Architecture"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [architecture, android]
 related:
   - ../03-agent/tool-contracts.md
@@ -11,6 +11,8 @@ related:
 ---
 
 # Stage 1 architecture
+
+**Implemented experimental boundary, 2026-09-15:** [Qwen local proxy](../08-research/openrouter-qwen-prototype.md) connects a consented browser conversation to a fixed model with bounded task proposals. Server owns the key/input limits/routing; browser owns review and fictional task state. This is a disposable synthetic prototype, not implementation of the Android components below, not a production vendor choice, and not a new capability admission. No cloud response can issue a local action permit.
 
 Proposed component contracts for the stock-Android app. [ADR-0001/0005/0007](../09-decisions/README.md) constrain platform/control; [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) accepts experiment/control scope. [ADR-0010](../09-decisions/ADR-0010-local-authority-and-data.md) and [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md) still propose local authority/data and explicit voice/access. No framework, database, model vendor, backend topology or public distribution is selected. [Execution protocol](../03-agent/execution-protocol.md) owns transaction/event ordering; [capability admission](capability-admission.md) owns registry/build/support lifecycle.
 

@@ -7,12 +7,15 @@
   const $ = id => document.getElementById(id);
   const thread = $('thread'), composerText = $('request');
   let scheduler, pending = null, dialogReturn = null, menuPanel = '', lastAnnouncement = '', restoreFocus = false, editor = null;
+  const cloud = window.GrannyCloud.create({ onChange:() => { render(); announce(cloud.note); }, onTurn:(role,text) => dispatch('cloudTurn', { role,text }) });
 
   function atBottom() { return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100; }
   function scrollIfReadingEnd(wasAtBottom) { if (wasAtBottom) requestAnimationFrame(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'auto' })); }
   function active() { return !!(state.task && (P.ACTIVE || ['planning','acting','waiting','verifying']).includes(state.task.stage)); }
   function announce(text) { $('announcement').textContent = ''; requestAnimationFrame(() => { $('announcement').textContent = text; }); }
   function dispatch(event, value, guard) {
+    if (event !== 'cloudTurn' && event !== 'tick') cloud.cancel('The conversation changed. The previous AI proposal was discarded.');
+    if (event === 'reset' || event === 'clearSession') cloud.reset();
     const wasAtBottom = atBottom();
     if (scheduler && scheduler.elapse) scheduler.elapse();
     const changed = P.dispatch(state, event, value, guard);
@@ -21,7 +24,7 @@
   }
   function node(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
   function button(label, fn, cls, focusKey) { const b = node('button', cls || '', label); b.type = 'button'; b.dataset.focusKey = focusKey || label; b.addEventListener('click', fn); return b; }
-  function turn(role, text) { const c = node('article', 'turn ' + role); c.append(node('span', 'turn-label', role === 'user' ? 'You' : 'Granny'), node('p', '', text)); return c; }
+  function turn(role, text, kind) { const c = node('article', 'turn ' + role); c.append(node('span', 'turn-label', role === 'user' ? 'You' : kind === 'cloud' ? 'Granny · AI reply (not verified)' : 'Granny'), node('p', '', text)); return c; }
   function card(title, text) { const c = node('section', 'task-card'); if (title) c.append(node('h2', '', title)); if (text) c.append(node('p', '', text)); return c; }
   function taskText(task) {
     if (task.text) return task.text;
@@ -100,7 +103,7 @@
     const focusKey = document.activeElement && document.activeElement.dataset && document.activeElement.dataset.focusKey;
     thread.replaceChildren();
     $('welcome').hidden = !!(state.turns && state.turns.length);
-    (state.turns || []).forEach(t => thread.append(turn(t.role, t.text)));
+    (state.turns || []).forEach(t => thread.append(turn(t.role, t.text, t.kind)));
     if (state.task) {
       const task = state.task, editingTask = !!(editor && editor.taskId === task.id), c = card('Granny', taskText(task)); c.id = 'current-task'; c.dataset.stage = task.stage; c.dataset.kind = task.kind; c.querySelector('h2').tabIndex = -1;
       if (task.kind === 'message' && ['preview','expired','acting','waiting','verifying','completed','unknown','stopped','failed'].includes(task.stage)) c.append(editingTask ? editablePreview(task) : preview(task));
@@ -137,7 +140,24 @@
       preferences.append(aliases, button('Return to conversation', () => { menuPanel = ''; render(); }));
       thread.append(preferences);
     }
-    $('stop-button').hidden = !active();
+    if (cloud.note || cloud.proposal) {
+      const c = card('AI conversation', cloud.note); c.id = 'cloud-response';
+      if (cloud.proposal) {
+        c.append(node('blockquote','',cloud.proposal.request));
+        const apply = button('Review this simulated task', () => {
+          const p = cloud.takeProposal(); if (!p) return;
+          // Reviewer send-mode is never inherited by an AI-originated task.
+          dispatch('reviewer', { sendMode:false });
+          const toggle = $('review-send'); if (toggle) toggle.checked = false;
+          dispatch('submit', p.request);
+        }, 'primary'); apply.id = 'cloud-apply';
+        c.append(apply, button('Dismiss', () => cloud.cancel('Proposal dismissed. Nothing was run.')));
+      }
+      if (cloud.metrics) c.append(node('p','notice', `${(cloud.metrics.elapsedMs / 1000).toFixed(1)} seconds${cloud.metrics.tokens ? ' · ' + cloud.metrics.tokens + ' tokens' : ''}`));
+      thread.append(c);
+    }
+    $('cloud-status').textContent = cloud.enabled ? 'AI mode · synthetic text goes to OpenRouter and its selected provider · no real device access' : 'Scripted mode · stays in this tab';
+    $('stop-button').hidden = !active() && !cloud.busy && !cloud.proposal;
     $('menu-button').setAttribute('aria-expanded', String(!$('menu').hidden));
     document.documentElement.style.setProperty('--app-scale', String(state.scale || 1));
     if (focusKey && !editing && restoreFocus) requestAnimationFrame(() => { const target = Array.from(thread.querySelectorAll('[data-focus-key]')).find(n => n.dataset.focusKey === focusKey); (target || thread.querySelector('.task-card h2'))?.focus(); });
@@ -155,7 +175,7 @@
   function newRequest(text) {
     if (!text.trim()) return;
     if (contextualReply(text)) { composerText.value = ''; return; }
-    const submit = () => { composerText.value = ''; dispatch('submit', text); };
+    const submit = () => { composerText.value = ''; if (cloud.enabled) cloud.ask(text); else dispatch('submit', text); };
     if (hasWork()) ask('Start a new request?', 'Your unfinished message details will be replaced. The words are not saved anywhere.', submit, composerText); else submit();
   }
   $('composer').addEventListener('submit', event => { event.preventDefault(); newRequest(composerText.value); });
@@ -163,6 +183,16 @@
   $('talk-dialog').addEventListener('close', () => { if ($('talk-dialog').returnValue === 'use') newRequest($('talk-text').value); dialogReturn?.focus(); });
   $('confirm-dialog').addEventListener('close', () => { if ($('confirm-dialog').returnValue === 'confirm' && pending) pending(); pending = null; dialogReturn?.focus(); });
   $('stop-button').addEventListener('click', () => dispatch('stop'));
+  const aiButton = button('AI mode', async () => {
+    $('menu').hidden = true;
+    if (cloud.enabled) { cloud.enable(false); render(); return; }
+    try {
+      const response = await fetch('/api/config'); const config = await response.json();
+      if (!response.ok || !config.available) { menuPanel = ''; cloud.cancel(); announce('Qwen is not configured. Start the local server with --cloud and the server-only key.'); $('cloud-status').textContent = 'AI unavailable. Start the local server with --cloud and OPENROUTER_API_KEY. Scripted mode still works.'; return; }
+      ask('Try Qwen with fictional text?', 'This starts a new conversation and clears the current tab’s task history. New text and up to 10 recent AI messages go to OpenRouter and its selected model provider. Only fictional examples: no private names, passwords or personal messages. The key stays on the local server. AI can be wrong and can only propose simulated tasks. Provider retention is not controlled by clearing this tab. Menu → AI mode turns it off.', () => { dispatch('clearSession'); cloud.enable(true); composerText.focus(); }, aiButton);
+    } catch { announce('The local AI server is unavailable. Scripted mode still works.'); }
+  });
+  aiButton.id = 'ai-mode'; $('menu').append(aiButton);
   $('menu-button').addEventListener('click', () => { $('menu').hidden = !$('menu').hidden; $('menu-button').setAttribute('aria-expanded', String(!$('menu').hidden)); });
   document.querySelectorAll('[data-menu]').forEach(b => b.addEventListener('click', () => {
     const what = b.dataset.menu; $('menu').hidden = true;

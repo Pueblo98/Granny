@@ -5,9 +5,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { serve } from './serve.mjs';
 
-export async function browser() {
+export async function browser(serverOptions = {}) {
   const output = await mkdtemp(join(tmpdir(), 'granny-conversation-review-'));
-  const server = await serve(0), base = 'http://127.0.0.1:' + server.address().port;
+  const server = await serve(0, serverOptions), base = 'http://127.0.0.1:' + server.address().port;
   const chrome = spawn(process.env.GRANNY_CHROMIUM || '/usr/bin/chromium', [
     '--headless', '--disable-gpu', '--no-first-run', '--disable-background-networking',
     '--remote-debugging-port=0', '--user-data-dir=' + join(output, 'profile'), 'about:blank'

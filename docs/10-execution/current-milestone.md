@@ -2,7 +2,7 @@
 title: "Current milestone — delivery system refined, bounded design and evidence next"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [execution]
 related:
   - development-readiness.md
@@ -12,6 +12,10 @@ related:
 ---
 
 # Current milestone — Stage 1 development-readiness package
+
+## Current task — opt-in Qwen conversation experiment
+
+On 2026-09-15 Simon requested model testing to refine communication and agency. [T-116](backlog.md#t-116) adds the local server-only OpenRouter adapter, consented chat and bounded task proposals to conversation-first parent `387662f`. [Setup and evidence](../08-research/openrouter-qwen-prototype.md) records successful calls as well as tone, draft-fidelity and availability failures. This branch is ready for limited synthetic exploration, not reliable autonomous execution. Parent conversation work is still active; reconcile its final code/docs before main integration. Earlier “redesign not requested” and no-provider statements below are historical. T-103 and production/device gates remain unchanged.
 
 ## Active milestone — cockpit approved and complete; review conversation-first plan
 
