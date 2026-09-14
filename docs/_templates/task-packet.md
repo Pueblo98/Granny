@@ -27,4 +27,4 @@ Controlled initial state; private-data classification; expected value and indepe
 
 ## Evidence and handoff
 
-Actual commands/results only after execution; unrun cases and reason; real artifact references after creation; affected docs/trace/gates; reviewer and authority needed. Complete only this task; one next bounded action. No automatic installation, push, publication or adjacent task.
+Actual commands/results only after execution; unrun cases and reason; real artifact references after creation; affected docs/trace/gates; reviewer and authority needed. Complete only this task; one next bounded action. For change work, include worktree, base, commit, remote branch and matching SHA under the [Git workflow](../10-execution/git-workflow.md), or report publication blocked. No automatic installation, main merge, product publication or adjacent task.

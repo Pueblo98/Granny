@@ -1,0 +1,78 @@
+---
+title: "Git worktrees, publication and review workflow"
+status: proposed
+owner: Simon
+last_updated: 2026-09-14
+tags: [execution, git, workflow]
+related:
+  - ../../AGENTS.md
+  - operating-workflows.md
+  - current-milestone.md
+  - development-readiness.md
+---
+
+# Git delivery workflow
+
+This is the canonical owner for task isolation, commits, GitHub publication and integration. Product readiness and external product actions remain governed by their existing gates.
+
+## Authority and scope
+
+**Confirmed direction, Simon, 2026-09-14:** push completed work to the existing GitHub repository and make future change sessions use worktrees and push their work. This is standing authorization for ordinary, non-force task-branch pushes to **Pueblo98/Granny**, unless a later instruction says local-only or narrows that authority. It supersedes the historical planning mission's no-push restriction for repository task branches only. The procedural defaults below are proposed implementation of that direction, not new product decisions.
+
+- Review/explanation requests remain read-only: no manufactured edits, commits or pushes.
+- Change requests include validation, scoped commits and verified task-branch publication before handoff. Do not repeatedly ask Simon whether to push; request sandbox/network approval when the tool requires it.
+- This does not authorize force-pushes (including force-with-lease), direct main commits/pushes, merging PRs, releases, deployment, repository visibility/settings changes, dependency installation, Figma writes or participant/data uploads.
+- Use the existing origin only after confirming it resolves to Pueblo98/Granny. An unexpected remote, credential issue or visibility change needs investigation, not remote replacement or credentials in chat.
+- Never publish secrets, signing material, personal research data, raw support logs, private Obsidian JSON or unrelated user work. Publication permission is not permission to expose sensitive files.
+
+## Start: one task, one branch, one worktree
+
+1. Inspect `git status --short --branch`, `git diff`, `git branch -vv`, `git worktree list` and `git remote -v`. Read effective instructions. Inventory user-owned changes; leave them in their original worktree. Do not auto-stash, reset, clean or copy them into the task.
+2. Fetch origin. Normally choose current origin/main as base. For dependent work, explicitly name the unmerged parent branch/commit and dependency in the handoff. Do not use an outdated local main merely because it is convenient.
+3. Use a dedicated worktree and short-lived feature/topic, fix/topic, docs/topic or chore/topic branch. A clean existing worktree dedicated to the same task is reusable; do not create one per tool call or split a single task unnecessarily. Reuse a host-created isolated worktree when suitable; attach detached work to a unique branch before committing/pushing.
+4. Prefer a sibling directory outside the repository, for example `/home/lgtw/Work/granny-worktrees/docs-topic`. This is a local convention, not a portable required absolute path. Check the exact destination and branch are unused, and request filesystem approval if needed. Do not nest worktrees inside docs/ or share one mutable branch between sessions.
+5. Run subsequent commands with the task worktree as working directory. Read its own AGENTS/skills; they may differ from the starting checkout. Parallel agents, when separately authorized, need distinct branches/worktrees for independent writes; worktree policy does not itself authorize delegation.
+
+Example for a **new, independent** task after verifying the names and base:
+
+```bash
+git fetch origin
+git worktree add -b docs/example-topic /home/lgtw/Work/granny-worktrees/docs-example-topic origin/main
+```
+
+Transition for this package: the readiness/Figma history is on docs/stage-1-readiness; the Git workflow follow-up is on docs/git-workflow, based on a4fc05b. Until reviewed integration, new work needing these rules must start from the latest published follow-up, not the older main. Do not cherry-pick or duplicate the same history across parallel integration PRs.
+
+Worktrees isolate checkout files and index, **not** shared refs/config, external accounts, device state or databases. Avoid concurrent branch mutation and global Git configuration. No host worktree settings are changed by this document. OpenAI's [worktree documentation](https://learn.chatgpt.com/docs/environments/git-worktrees), accessed 2026-09-14, describes independent chats and the one-branch-per-worktree restriction; the sibling layout above is our proposed convention, not a Codex requirement.
+
+## Validate and commit
+
+- Keep changes within the requested scope and update canonical owners/trace/gates when affected. Review the complete diff, including newly added files, and compare against the intended base.
+- Run `python3 scripts/validate-docs.py`, relevant executable tests, and `git diff --check`. For this documentation package, also run `python3 -m unittest discover -s scripts -p 'test_*.py'`; validate changed skill packaging when applicable. Report missing dependencies instead of silently installing them. Runtime evidence is still separate.
+- Stage explicit paths or reviewed hunks; do not use blanket add/commit-all in a shared or dirty checkout. Inspect `git diff --cached --stat`, `git diff --cached` and `git diff --cached --check` for private data, unrelated changes and whitespace before committing.
+- Use focused imperative commits. Do not amend/rebase published history; use follow-up commits. Failed required checks prevent a completion claim; report blockers. A requested WIP checkpoint can be published only after scope/privacy review, clearly labeled incomplete with failing checks.
+- No task changes means no empty commit or redundant push. Preserve unrelated dirty files and report them separately from the task's clean/published status.
+
+## Push and verify before handoff
+
+From the task worktree, replace the example with the inspected branch:
+
+```bash
+git push --set-upstream origin docs/example-topic
+git rev-parse HEAD
+git ls-remote --exit-code origin refs/heads/docs/example-topic
+git status --short --branch
+```
+
+The remote branch SHA must equal the committed task HEAD. A local commit, an upstream label or a successful command launch alone is not proof of publication. Record commit, remote SHA and branch URL. If a network/authentication failure prevents verification, report **committed locally; publication blocked/unverified**, retain the worktree and give the precise next step. Retry transient errors in a bounded way; do not loop indefinitely, change remotes or bypass permissions. On non-fast-forward rejection, fetch and inspect divergence; preserve both histories and stop for coordination rather than force-push.
+
+## Review, integration and cleanup
+
+Publication is not integration. Hand off a GitHub compare link and summary/check results. If Simon requests a PR, inspect existing PRs first and create/update only the named task PR with base/head, scope, linked requirements/tasks, checks, unrun evidence, risks and exclusions. Use a draft when review is incomplete. PR creation and merge are not inferred from push-only authority.
+
+Main is protected by **repository convention**; do not claim GitHub branch protection, required checks or CI are configured without checking. No hooks/CI, automatic merge, release automation or remote ruleset is installed by this change. Merge only with explicit authority, reviewed changes and required checks satisfied. Prefer a non-rewriting integration method for this initial package: its validator references historical baseline ddaacf1, which must remain reachable in fresh clones. A squash requires deliberately replacing that baseline with an equivalent preserved reference and validating a fresh clone first.
+
+After an authorized merge, fetch and update a clean main checkout fast-forward-only. Do not switch or pull in a dirty user's checkout. Remove an exact task worktree only after confirming no tracked, untracked or ignored valuable local state, no live session using it, and merged/preserved history; obtain cleanup authority. Use `git worktree remove` without force, not recursive filesystem deletion. Delete branches with safe Git checks only when authorized; never delete remote branches implicitly. Report what was removed and where its commits remain recoverable.
+
+## Required finish evidence
+
+Handoff names: worktree path; task branch and base/dependency; scoped commits; exact validation results and unrun gaps; remote branch URL and matching SHA (or explicit blocker); remaining user changes; PR/integration status; next bounded action. Agents reading this revision must follow this workflow. Older checkouts do not acquire new rules until synchronized with a branch containing them; Markdown policy is not a technical guarantee of every future agent's behavior.
