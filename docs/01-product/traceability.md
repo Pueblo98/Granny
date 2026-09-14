@@ -2,7 +2,7 @@
 title: "Stage 1 requirements traceability"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [traceability]
 related:
   - prd.md
@@ -15,6 +15,8 @@ related:
 # Stage 1 requirements traceability
 
 ## Executable design artifact
+
+[T-116 Qwen experiment](../10-execution/backlog.md#t-116) traces PRD-FR-002/003/008/013 → UC-006/J-003 → SCR-003/005/007 → provider/planner/shell → POL-02/03 → [adapter/API tests](../../prototypes/stage-1/openrouter.test.mjs) and [browser test](../../prototypes/stage-1/cloud-browser-check.mjs) → [actual live observations](../08-research/openrouter-qwen-prototype.md). EVAL-003/006/009/010 are the associated canonical themes, **not passed runtime evals**. The experiment covers synthetic conversation and user-reviewed proposals only; exact wording and provider reliability remain evidence gaps. The inherited older browser-check is not claimed passing against the conversation shell; reconcile the parent conversation session's final test during integration.
 
 [T-102 browser coverage](../02-design/browser-prototype.md#journey-and-component-coverage) maps J-001/002/003/005/006/007, their UC/PRD IDs, view keys and planned EVALs to [actual source](../../prototypes/stage-1/README.md). [Model checks](../../prototypes/stage-1/model.test.mjs) and [browser checks](../../prototypes/stage-1/browser-check.mjs) test the design simulation only. They do not change any EVAL row to passed or demonstrate two external delegated jobs.
 

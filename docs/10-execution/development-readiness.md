@@ -2,7 +2,7 @@
 title: "Stage 1 development-readiness gates and handoff"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [execution]
 related:
   - current-milestone.md
@@ -13,6 +13,10 @@ related:
 ---
 
 # Development-readiness assessment
+
+## Qwen experiment assessment — 2026-09-15
+
+[T-116](backlog.md#t-116) is **Ready with proposed assumptions** for opt-in synthetic-text conversation and user-reviewed simulated task proposals. Adapter/API/Stop fixture tests pass; live communication is only partially evidenced. Prompt v3's exact-draft/refusal suite is incomplete due to provider availability; earlier outputs exposed tone and exact-wording problems. [Evidence and limits](../08-research/openrouter-qwen-prototype.md) owns the results. **Needs evidence:** repeatability, task fidelity, human dignity/comprehension and availability. **Needs Simon decision:** separate PR/main integration after reconciling the parent conversation branch. No GATE-03–09 change; real data, runtime execution, Android and production backend remain out of scope. Historical no-runtime-evidence statements below exclude this later synthetic model experiment.
 
 ## Cockpit and design-review follow-up, 2026-09-14
 

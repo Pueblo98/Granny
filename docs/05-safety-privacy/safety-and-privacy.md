@@ -2,7 +2,7 @@
 title: "Stage 1 Privacy and Data Policy"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [privacy, safety]
 related:
   - action-policy.md
@@ -11,6 +11,8 @@ related:
 ---
 
 # Privacy, data and user authority
+
+**Synthetic prototype exception:** Simon's 2026-09-15 request authorizes opt-in fictional conversation through a local OpenRouter proxy. [Experiment contract](../08-research/openrouter-qwen-prototype.md) owns actual fields, retention limits, disclosure, endpoint protections and test evidence. No real-user data use is authorized; no provider terms, region or deletion guarantee is accepted. This does not implement the product storage/retention inventory below.
 
 Proposed operational policy for PRD-PRV-001–006; confirmed boundary: family support must not become surveillance. [Action policy](action-policy.md) owns consequence rules; [threat model](threat-model.md) owns abuse cases. This is product specification, not a statement of legal compliance, medical classification or approved vendor terms.
 

@@ -2,7 +2,7 @@
 title: "Stage 1 decision queue and evidence unknowns"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [execution]
 related:
   - development-readiness.md
@@ -12,6 +12,8 @@ related:
 ---
 
 # Decision queue and evidence unknowns
+
+**Qwen experiment follow-up, 2026-09-15:** [T-116 evidence](../08-research/openrouter-qwen-prototype.md) shows useful conversation/task proposals but also endearment, draft-decoration and route-availability failures. Recommendation: keep synthetic opt-in mode and local confirmation, reconcile the conversation parent, then use a capped repeatability batch and typed semantic slots before richer agency. Do not relax privacy/price filters or enable real device effects to improve a demo. Production provider choice, privacy review and relevant gates remain open; the experiment does not select them.
 
 No clarification blocks completing the documentation. Routine reversible choices are proposed; these consequential decisions require Simon or actual evidence. “Choose” and “measure” are different work. No market, launch date, vendor, price, public name or final brand has been accepted here.
 

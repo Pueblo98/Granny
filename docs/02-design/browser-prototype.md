@@ -2,7 +2,7 @@
 title: "Stage 1 browser prototype and design handoff"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [design, prototype, handoff]
 related:
   - product-design-spec.md
@@ -18,6 +18,10 @@ related:
 ---
 
 # Browser-first interaction design
+
+## Current experiment overlay — 2026-09-15
+
+[Qwen conversation setup and evidence](../08-research/openrouter-qwen-prototype.md) adds an explicitly consented AI mode to the conversation-first shell. One composer remains the entry; AI mode lives in Menu, activity/Stop remain visible, model text is labeled unverified, and one inline proposal enters the existing local simulated task only after review. This narrowly supersedes earlier blanket no-provider/no-API claims below. Default scripted mode, no recording/real device effects and all product gates remain unchanged. The rest of this file preserves the initial tile-prototype handoff; the separate conversation session owns its full replacement, and integration must reconcile both histories.
 
 ## Decision, authority and scope
 

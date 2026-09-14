@@ -2,7 +2,7 @@
 title: "Stage 1 dependency-ordered backlog"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [execution]
 related:
   - development-readiness.md
@@ -12,6 +12,18 @@ related:
 ---
 
 # Dependency-ordered Stage 1 backlog
+
+<a id="t-116"></a>
+## T-116 — Explore Qwen conversation and bounded simulated agency
+
+- **Priority / discipline:** P1 / conversation design and provider integration.
+- **Authority / dependency:** Simon requested Qwen3.8 testing with a private OpenRouter key, 2026-09-15. Based on conversation-first `387662f`; reconcile later parent work before integration. Not T-103 or production backend work.
+- **Trace / DoR:** PRD-FR-002/003/008/013; UC-006/J-003; SCR-003/005/007; EVAL-003/006/009/010 themes. [Task/interface/evidence packet](../08-research/openrouter-qwen-prototype.md) supplies exact behavior, data boundaries, test oracles and exclusions.
+- **Deliverable:** Server-only key, opt-in cloud text, adult conversation prompt, one validated task proposal, explicit local review/confirmation, Stop/late-response guards, content-free error/usage reporting and dependency-free tests.
+- **Acceptance:** Local synthetic checks pass; observed live responses and failures recorded honestly. No remote/device task is claimed verified by a model. Proposed copy and meaning/fidelity require Simon review plus repeated synthetic tests.
+- **Status:** review — implementation and fixture checks delivered; live quality/availability evidence incomplete. No production gate passed.
+- **Next:** Review the live conversation, then run a capped repeatability batch and typed-slot proposal refinement. Separate authority needed for main merge; parent conversation reconciliation required.
+- **Excluded / rollback:** No personal data, credential tool, shell/network tool, device actuation, real sending, voice capture, persistent backend or deployment. Default cloud off; omit --cloud to disable, restart/clear tab to drop context. Never weaken privacy or price filters to hide routing failures.
 
 Planning package complete for review; T-100's experiment/control decision is accepted, while other product choices and runtime evidence remain open. T-113 covers documentation/workflow refinement; other tasks remain **planned, not implemented work** unless individually marked. [Readiness](development-readiness.md) owns gates and Definition of Ready. [Traceability](../01-product/traceability.md) supplies exact requirement links. P0 = kill-risk/foundation, P1 = controlled prototype, P2 = MVP/pilot, P3 = V1 after learning. Change-task commits are pushed under the [Git workflow's standing authority](git-workflow.md). Dependency installation, main merges and other external-service changes are not implied.
 
