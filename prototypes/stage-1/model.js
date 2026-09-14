@@ -1,206 +1,30 @@
-/* T-102 design simulation only. No device, provider or persistence adapters. */
-(function (root) {
-  "use strict";
-  const PEOPLE = [
-    { id: "david-family", name: "David", detail: "Brother" },
-    { id: "david-garden", name: "David", detail: "Gardening group" }
-  ];
-  const SOPHIES = [
-    { id: "sophie-family", name: "Sophie", detail: "Daughter" },
-    { id: "sophie-book", name: "Sophie", detail: "Book club" }
-  ];
-  const ACTIVE = ["planning", "acting", "waiting", "verifying"];
-  const META = {
-    home: ["J-007", "SCR-003", "idle"], listening: ["J-003", "SCR-004", "listening"],
-    request: ["J-007", "SCR-004", "heard"], intent: ["J-007", "SCR-006", "needs clarification"],
-    entry: ["J-003", "SCR-004", "heard"], heard: ["J-003", "SCR-004", "heard"],
-    person: ["J-003", "SCR-006", "needs clarification"], channel: ["J-003", "SCR-006", "needs clarification"],
-    preview: ["J-003", "SCR-007", "ready to confirm"], expired: ["J-003", "SCR-007", "ready to confirm"],
-    planning: ["J-002", "SCR-005", "planning"], acting: ["J-002", "SCR-005", "acting"],
-    waiting: ["J-002", "SCR-005", "waiting on app/network/user"], verifying: ["J-002", "SCR-005", "verifying"],
-    result: ["J-002", "SCR-008", "completed"], unknown: ["J-003", "SCR-008", "partially completed"],
-    stopped: ["J-002", "SCR-008", "interrupted"], cancelled: ["J-003", "SCR-008", "cancelled"],
-    manual: ["J-002", "SCR-008", "interrupted"], failed: ["J-002", "SCR-008", "failed safely"],
-    photoPerson: ["J-001", "SCR-006", "needs clarification"], photoDate: ["J-001", "SCR-006", "needs clarification"],
-    photoConsent: ["J-001", "SCR-007", "ready to confirm"], photos: ["J-001", "SCR-008", "completed"],
-    photoDetail: ["J-001", "SCR-008", "completed"], noPhotos: ["J-001", "SCR-008", "recovering"],
-    screen: ["J-002", "SCR-002", "idle"], explanation: ["J-002", "SCR-008", "completed"],
-    options: ["J-002", "SCR-008", "completed"], lostContext: ["J-002", "SCR-008", "recovering"],
-    music: ["J-005", "SCR-006", "needs clarification"], player: ["J-005", "SCR-008", "completed"],
-    mediaPartial: ["J-005", "SCR-008", "partially completed"], sizeScope: ["J-006", "SCR-006", "needs clarification"],
-    size: ["J-006", "SCR-011", "idle"], sizeResult: ["J-006", "SCR-008", "completed"],
-    setup: ["J-007", "SCR-001", "idle"], preferences: ["J-007", "SCR-011", "idle"],
-    micConsent: ["J-007", "SCR-002", "idle"], micOS: ["J-007", "SCR-002", "waiting on app/network/user"],
-    micDenied: ["J-007", "SCR-014", "permission lost"], cloudConsent: ["J-007", "SCR-002", "idle"],
-    screenConsent: ["J-007", "SCR-002", "idle"], settings: ["J-007", "SCR-011", "idle"],
-    history: ["J-007", "SCR-009", "idle"], privacy: ["J-007", "SCR-012", "idle"],
-    deleteHistory: ["J-007", "SCR-007", "ready to confirm"], memory: ["J-007", "SCR-010", "idle"],
-    aliasEdit: ["J-007", "SCR-010", "idle"], deleteAlias: ["J-007", "SCR-007", "ready to confirm"],
-    help: ["J-007", "SCR-015", "idle"], diagnostics: ["J-007", "SCR-015", "idle"],
-    offline: ["J-002", "SCR-014", "offline/degraded"], permission: ["J-002", "SCR-014", "permission lost"],
-    auth: ["J-002", "SCR-014", "authentication required"], restricted: ["J-002", "SCR-014", "unsupported/restricted"],
-    unsupported: ["J-003", "SCR-014", "unsupported/restricted"]
-  };
-  function create() {
-    return { screen: "home", revision: 0, job: "", draft: "I’ll call after dinner.",
-      recipient: null, channel: "", permission: false, mic: false, cloud: false,
-      sendMode: false, permit: null, clock: 0, started: 0, dispatched: false,
-      stopped: false, outcome: "", history: [], scale: 1, previousScale: 1, previewScale: 1.3,
-      photoPerson: SOPHIES[0], photoDate: "13 September", photoIndex: 0,
-      song: "Quiet Harbour", performer: "The Lantern Trio", playing: false,
-      alias: "Sophie means my daughter", requestText: "", note: "", error: "" };
-  }
-  function signature(s) { return JSON.stringify([s.draft, s.recipient && s.recipient.id, s.channel, s.sendMode]); }
-  function prepare(s) {
-    s.permit = { signature: signature(s), expires: s.clock + 60 };
-    s.dispatched = false; s.stopped = false; s.screen = "preview";
-  }
-  function start(s, job) {
-    s.job = job; s.started = s.clock; s.dispatched = false; s.stopped = false;
-    s.permit = null; s.outcome = ""; s.screen = "planning";
-  }
-  function stop(s, manual) {
-    s.permit = null; s.stopped = true;
-    s.screen = s.dispatched ? "unknown" : manual ? "manual" : "stopped";
-  }
-  function record(s, outcome) {
-    s.outcome = outcome;
-    s.history.unshift({ job: s.job, outcome: outcome });
-    s.history = s.history.slice(0, 20);
-  }
-  function dispatch(s, event, value, revision) {
-    if (revision !== undefined && revision !== s.revision) return false;
-    const before = s.screen;
-    s.error = "";
-    if (event === "reset") { Object.assign(s, create()); s.revision++; return true; }
-    if (event === "tick") {
-      if (!Number.isFinite(value) || value < 0) return false;
-      s.clock += value;
-      if (s.screen === "preview" && s.permit && s.clock >= s.permit.expires) { s.permit = null; s.screen = "expired"; }
-      if (ACTIVE.includes(s.screen) && s.clock - s.started >= 60) stop(s, false);
-    } else if (event === "stop" || event === "takeover") {
-      stop(s, event === "takeover");
-    } else if (event === "home" || event === "escape") {
-      if (ACTIVE.includes(s.screen) || s.screen === "listening" || s.dispatched && s.screen === "unknown") stop(s, false);
-      else { s.permit = null; s.screen = "home"; s.job = ""; }
-    } else if (event === "dismissUnknown" && s.screen === "unknown") {
-      record(s, "unknown"); s.dispatched = false; s.screen = "home"; s.job = "";
-    } else if (event === "manualUnknown" && s.screen === "unknown") {
-      record(s, "unknown"); s.dispatched = false; s.screen = "manual";
-    } else if (event === "cancel") {
-      if (s.dispatched) stop(s, false);
-      else { s.permit = null; s.screen = "cancelled"; }
-    } else if (event === "fault" && (ACTIVE.includes(s.screen) || ["preview", "expired", "screen"].includes(s.screen))) {
-      const faults = ["offline", "permission", "auth", "restricted", "failed", "partial", "noPhotos", "lostContext"];
-      if (!faults.includes(value)) return false;
-      if (value === "noPhotos" && s.job !== "photos" || value === "lostContext" && !["explain","return"].includes(s.job)) return false;
-      s.permit = null;
-      if (s.dispatched) s.screen = "unknown";
-      else if (value === "partial") s.screen = s.job === "music" ? "mediaPartial" : "failed";
-      else s.screen = value;
-    } else if (event === "reviewSend" && !ACTIVE.includes(s.screen) && s.screen !== "unknown") {
-      s.sendMode = !!value; s.permit = null;
-      if (before === "preview") s.screen = "expired";
-    } else if (event === "openPlayer" && s.screen === "home" && s.playing) { s.job = "music"; s.screen = "player";
-    } else if (event === "route" && !ACTIVE.includes(s.screen) && !s.dispatched && s.screen !== "listening") {
-      if (!["home", "request", "entry", "listening", "photoPerson", "screen", "music", "sizeScope", "settings", "setup", "history", "privacy", "memory", "help", "diagnostics"].includes(value)) return false;
-      s.permit = null; s.dispatched = false; s.stopped = false; s.screen = value;
-      if (["entry", "listening"].includes(value)) { s.job = "message"; s.recipient = null; s.channel = ""; }
-      if (value === "photoPerson") s.job = "photos";
-      if (value === "music") s.job = "music";
-      if (value === "screen") s.job = "explain";
-    } else if (event === "request" && ["request", "listening"].includes(s.screen)) {
-      const text = String(value || "").trim();
-      if (!text) s.error = "Write a request first, or choose a task on Home.";
-      else { s.requestText = text.slice(0, 2000); s.permit = null; s.screen = "intent"; }
-    } else if (event === "editRequest" && s.screen === "intent") s.screen = "request";
-    else if (event === "heard" && ["entry", "listening"].includes(s.screen)) {
-      const text = String(value || "").trim();
-      if (!text) { s.error = "Write a message first, or cancel."; }
-      else { s.draft = text.slice(0, 2000); s.permit = null; s.screen = "heard"; }
-    } else if (event === "useRequest" && s.screen === "heard") s.screen = "person";
-    else if (event === "edit" && ["heard", "preview", "expired", "person", "channel", "listening"].includes(s.screen)) {
-      s.permit = null; s.screen = before === "listening" ? "request" : "entry";
-    } else if (event === "person" && s.screen === "person") {
-      const p = PEOPLE.find(p => p.id === value); if (!p) return false;
-      s.recipient = p; s.channel = ""; s.permit = null; s.screen = "channel";
-    } else if (event === "channel" && s.screen === "channel") {
-      if (!["Example Messages", "Example Mail"].includes(value)) return false;
-      s.channel = value; prepare(s);
-    } else if (event === "renew" && s.screen === "expired") prepare(s);
-    else if (event === "confirm" && s.screen === "preview") {
-      if (!s.permit || s.permit.signature !== signature(s) || s.clock >= s.permit.expires || !s.recipient || !s.channel) {
-        s.permit = null; s.screen = "expired";
-      } else {
-        s.permit = null; s.started = s.clock; s.stopped = false;
-        s.dispatched = s.sendMode; s.screen = "acting"; s.job = "message";
-      }
-    } else if (event === "advance" && ACTIVE.includes(s.screen) && !s.stopped) {
-      if (s.screen === "planning") s.screen = "acting";
-      else if (s.screen === "acting") s.screen = "waiting";
-      else if (s.screen === "waiting") s.screen = "verifying";
-      else {
-        const job = s.job;
-        if (job === "message") { record(s, s.sendMode ? "sent" : "draft opened, not sent"); s.screen = "result"; }
-        else if (job === "photos") { record(s, "matching photos found"); s.screen = "photos"; }
-        else if (job === "music") { s.playing = true; record(s, "playing"); s.screen = "player"; }
-        else if (job === "explain") { s.screen = "explanation"; record(s, "sample screen explained"); }
-        else { record(s, "article restored"); s.screen = "result"; }
-        s.dispatched = false;
-      }
-    } else if (event === "photoPerson" && s.screen === "photoPerson") {
-      const p = SOPHIES.find(p => p.id === value); if (!p) return false;
-      s.photoPerson = p; s.screen = "photoDate";
-    } else if (event === "photoDate" && s.screen === "photoDate") {
-      if (!["13 September", "12 September"].includes(value)) return false;
-      s.photoDate = value; s.screen = "photoConsent";
-    } else if (event === "photoLook" && s.screen === "photoConsent") start(s, "photos");
-    else if (event === "photoOpen" && s.screen === "photos") {
-      if (![0, 1].includes(value)) return false; s.photoIndex = value; s.screen = "photoDetail";
-    } else if (event === "photoBack" && s.screen === "photoDetail") s.screen = "photos";
-    else if (event === "photoAgain" && ["photos", "noPhotos"].includes(s.screen)) s.screen = "photoPerson";
-    else if (event === "explain" && s.screen === "screen") start(s, "explain");
-    else if (event === "options" && s.screen === "explanation") s.screen = "options";
-    else if (event === "backArticle" && ["explanation", "options"].includes(s.screen)) start(s, "return");
-    else if (event === "music" && s.screen === "music") {
-      if (!["The Lantern Trio", "Evening Quartet"].includes(value)) return false;
-      s.performer = value; start(s, "music");
-    } else if (event === "playback" && s.screen === "player") { s.playing = !s.playing; record(s, s.playing ? "playing" : "paused"); }
-    else if (event === "size" && ["sizeScope", "settings", "preferences"].includes(s.screen)) { s.previewScale = s.scale; s.screen = "size"; }
-    else if (event === "previewScale" && s.screen === "size") {
-      if (![1, 1.15, 1.3, 1.5].includes(value)) return false; s.previewScale = value;
-    } else if (event === "applyScale" && s.screen === "size") {
-      s.previousScale = s.scale; s.scale = s.previewScale; s.screen = "sizeResult";
-    } else if (event === "restoreScale" && ["size", "sizeResult"].includes(s.screen)) {
-      const old = s.scale; s.scale = s.previousScale; s.previousScale = old; s.screen = "sizeResult";
-    } else if (event === "setupNext") {
-      const next = { setup: "preferences", preferences: "micConsent", micConsent: "micOS", micDenied: "cloudConsent", cloudConsent: "screenConsent" };
-      if (!next[s.screen]) return false; s.screen = next[s.screen];
-    } else if (event === "skipMic" && s.screen === "micConsent") { s.mic = false; s.screen = "cloudConsent"; }
-    else if (event === "mic" && s.screen === "micOS") { s.mic = !!value; s.screen = value ? "cloudConsent" : "micDenied"; }
-    else if (event === "screenChoice" && s.screen === "screenConsent") { s.permission = !!value; s.screen = "home"; }
-    else if (event === "deleteHistory" && s.screen === "privacy") s.screen = "deleteHistory";
-    else if (event === "clearHistory" && s.screen === "deleteHistory") { s.history = []; s.screen = "history"; }
-    else if (event === "aliasEdit" && s.screen === "memory") s.screen = "aliasEdit";
-    else if (event === "aliasSave" && s.screen === "aliasEdit") {
-      const text = String(value || "").trim();
-      if (!text) s.error = "Write an alias or cancel.";
-      else { s.alias = text.slice(0, 120); s.screen = "memory"; }
-    } else if (event === "deleteAlias" && s.screen === "memory" && s.alias) s.screen = "deleteAlias";
-    else if (event === "clearAlias" && s.screen === "deleteAlias") { s.alias = ""; s.screen = "memory"; }
-    else return false;
-    s.revision++;
-    return true;
-  }
-  function meta(s) {
-    const m = [...META[s.screen]];
-    if (ACTIVE.includes(s.screen) || ["result", "stopped", "manual", "failed", "offline", "permission", "auth", "restricted"].includes(s.screen)) {
-      m[0] = { message: "J-003", photos: "J-001", music: "J-005", explain: "J-002", return: "J-002" }[s.job] || m[0];
-    }
-    if (s.screen === "result" && s.outcome.includes("not sent")) m[2] = "partially completed";
-    return m;
-  }
-  const api = { create, dispatch, meta, META, ACTIVE, PEOPLE, SOPHIES };
-  root.GrannyPrototype = api;
-  if (typeof module !== "undefined") module.exports = api;
+/* T-102 design simulation only. No device, provider, network or persistence adapters. */
+(function(root){"use strict";
+const F=root.GrannyFixtures||require("./fixtures.js"),I=root.GrannyIntent||require("./intent.js"),ACTIVE=["planning","acting","waiting","verifying"],scales=[1,1.15,1.3,1.5];
+function create(){return{epoch:1,clock:0,nextId:1,turns:[],task:null,history:[],scale:1,previousScale:1,previewScale:1,aliases:[{id:"sophie",label:"Sophie",personId:"sophie-family"}],settings:{voice:false},reviewer:{fault:"",sendMode:false,screen:"article",territory:"neutral",delay:650},playing:false};}
+function signature(t){const p=t&&t.slots&&t.slots.recipient;return t?JSON.stringify([t.id,t.version,t.kind,p&&p.id,t.slots.channel,t.slots.body,"open-unsent-draft"]):"";}
+function choices(name){return F.people.filter(p=>p.name.toLowerCase()===name.toLowerCase()).map(p=>({value:p.id,label:`${p.name} — ${p.detail}`}));}
+function invalidate(s,t){s.epoch++;t.version++;t.permit=null;t.dispatched=false;}
+function askPerson(t,c){t.stage="clarify-person";t.prompt=c.length?`Which ${t.requestedName} do you mean?`:`I can’t safely match “${t.requestedName}”. Choose a known person or edit your request.`;t.text=t.prompt;t.choices=c;}
+function askChannel(t){t.stage="clarify-channel";t.prompt="Which example app should I use?";t.text=t.prompt;t.choices=F.channels.map(x=>({value:x,label:x}));}
+function prepare(s,t){if(!t.slots.recipient)return askPerson(t,F.people.map(p=>({value:p.id,label:`${p.name} — ${p.detail}`})));if(!t.slots.channel)return askChannel(t);if(!t.slots.body){t.stage="clarify-body";t.prompt="What should the message say?";t.text=t.prompt;t.choices=[];return;}t.version++;t.stage="preview";t.prompt="Check the exact draft before I open it.";t.text=`Draft for ${t.slots.recipient.name} (${t.slots.recipient.detail}) in ${t.slots.channel}. It will open unsent.`;t.choices=[];t.outcome="";t.result=null;t.dispatched=false;t.permit={signature:signature(t),expires:s.clock+60000};}
+function replace(s,p){if(s.task)s.epoch++;const t={id:s.nextId++,version:1,kind:p.kind==="message"?"message":"unsupported",stage:"failed",request:p.request,requestedName:p.recipient||"",text:"",prompt:"",choices:[],slots:p.kind==="message"?{recipient:null,channel:"",body:p.body}:{},permit:null,outcome:"",result:null,dispatched:false};s.task=t;s.turns.push({id:`turn-${t.id}-user`,role:"user",text:p.request});if(t.kind!=="message"){t.text="I’m not sure how to help with that yet. Nothing was opened or sent.";return;}const c=choices(p.recipient);if(c.length===1){t.slots.recipient=F.people.find(x=>x.id===c[0].value);askChannel(t);}else askPerson(t,c);}
+function guarded(s,g){const t=s.task;return!!t&&!!g&&g.epoch===s.epoch&&g.taskId===t.id&&g.version===t.version&&g.stage===t.stage;}
+function record(s,t,o){s.history.unshift({job:t.kind,outcome:o});s.history=s.history.slice(0,20);}
+function dispatch(s,e,v,g){if(!s||typeof e!=="string")return false;const t=s.task;
+if(e==="reset"){const epoch=s.epoch+1,nextId=s.nextId;Object.assign(s,create(),{epoch,nextId});return true;}
+if(e==="tick"){if(!Number.isFinite(v)||v<0)return false;s.clock+=v;if(t&&t.stage==="preview"&&t.permit&&s.clock>=t.permit.expires){t.permit=null;t.stage="expired";t.text="This approval expired. Your exact draft is still here to review.";}return true;}
+if(e==="submit"){const x=String(v==null?"":v);if(!x.trim())return false;if(t&&t.kind==="message"&&t.stage==="clarify-body"){invalidate(s,t);t.slots.body=x;prepare(s,t);}else replace(s,I.parse(x));return true;}
+if(e==="choose"&&t&&t.kind==="message"){if(t.stage==="clarify-person"){const p=F.people.find(x=>x.id===v);if(!p||!t.choices.some(c=>c.value===v))return false;invalidate(s,t);t.slots.recipient=p;t.slots.channel?prepare(s,t):askChannel(t);return true;}if(t.stage==="clarify-channel"){if(!F.channels.includes(v))return false;invalidate(s,t);t.slots.channel=v;prepare(s,t);return true;}return false;}
+if(e==="edit"&&t&&t.kind==="message"&&v&&typeof v==="object"){if(!["clarify-person","clarify-channel","clarify-body","preview","expired"].includes(t.stage))return false;invalidate(s,t);if(Object.hasOwn(v,"recipient"))t.slots.recipient=typeof v.recipient==="string"?F.people.find(p=>p.id===v.recipient)||null:v.recipient;if(Object.hasOwn(v,"channel"))t.slots.channel=F.channels.includes(v.channel)?v.channel:"";if(Object.hasOwn(v,"body"))t.slots.body=String(v.body);prepare(s,t);return true;}
+if(e==="approve"&&t&&t.stage==="preview"){if(!v||v.taskId!==t.id||v.version!==t.version||v.signature!==signature(t)||!t.permit||t.permit.signature!==signature(t)||s.clock>=t.permit.expires){t.permit=null;t.stage="expired";t.text="That approval is no longer current. Review this draft again.";return false;}t.permit=null;t.stage="planning";t.text="Preparing the fictional draft handoff…";return true;}
+if(e==="renew"&&t&&t.stage==="expired"){prepare(s,t);return true;}
+if(e==="advance"&&t&&ACTIVE.includes(t.stage)){if(!guarded(s,g))return false;if(t.stage==="planning"){t.stage="acting";t.text="Opening the fictional draft…";}else if(t.stage==="acting"){t.dispatched=!!s.reviewer.sendMode;t.stage="waiting";t.text="Waiting for the example app…";}else if(t.stage==="waiting"){t.stage="verifying";t.text="Checking what happened…";}else if(s.reviewer.fault==="unknown"||(t.dispatched&&s.reviewer.fault)){t.stage="unknown";t.outcome="unknown";t.text="I can’t verify whether the external effect happened. I won’t try again automatically.";record(s,t,"unknown");}else{t.stage="completed";t.outcome="draft opened, not sent";t.result={effect:"open-unsent-draft",recipient:t.slots.recipient,channel:t.slots.channel,body:t.slots.body,sent:false};t.dispatched=false;t.text="The fictional draft opened. It was not sent.";record(s,t,t.outcome);}return true;}
+if(e==="stop"&&t&&!["completed","unknown","stopped","failed"].includes(t.stage)){s.epoch++;t.permit=null;if(t.dispatched||["waiting","verifying"].includes(t.stage)){t.stage="unknown";t.outcome="unknown";t.text="Stopped. I can’t verify whether an external effect happened, so I won’t retry.";}else{t.stage="stopped";t.outcome="stopped";t.text="Stopped. Nothing was sent.";}record(s,t,t.outcome);return true;}
+if(e==="expire"&&t&&t.stage==="preview"){t.permit=null;t.stage="expired";t.text="This approval expired. Your exact draft is still here to review.";return true;}
+if(e==="fault"&&t){if(!["unknown","failed","offline","permission","auth","restricted"].includes(v))return false;s.reviewer.fault=v;return true;}
+if(e==="setScale"){if(!scales.includes(v))return false;s.previewScale=v;return true;}if(e==="applyScale"){s.previousScale=s.scale;s.scale=s.previewScale;return true;}if(e==="restoreScale"){const old=s.scale;s.scale=s.previousScale;s.previousScale=old;s.previewScale=s.scale;return true;}if(e==="playback"){s.playing=!s.playing;return true;}if(e==="clearHistory"){s.history=[];return true;}
+if(e==="reviewer"&&v&&typeof v==="object"){for(const k of["fault","screen","sendMode","territory","delay"])if(Object.hasOwn(v,k))s.reviewer[k]=v[k];return true;}
+if(e==="aliasSave"&&v&&v.label&&v.personId){const a=v.id&&s.aliases.find(x=>x.id===v.id);if(a)Object.assign(a,{label:String(v.label),personId:String(v.personId)});else s.aliases.push({id:v.id||`alias-${s.nextId++}`,label:String(v.label),personId:String(v.personId)});return true;}if(e==="aliasDelete"){const n=s.aliases.length;s.aliases=s.aliases.filter(a=>a.id!==v);return n!==s.aliases.length;}return false;}
+const api={create,dispatch,signature,ACTIVE};root.GrannyPrototype=api;if(typeof module!=="undefined")module.exports=api;
 })(globalThis);
