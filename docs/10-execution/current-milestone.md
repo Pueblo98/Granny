@@ -13,7 +13,9 @@ related:
 
 # Current milestone — Stage 1 development-readiness package
 
-## Active milestone — cockpit delivered; review conversation-first plan
+## Active milestone — cockpit approved and complete; review conversation-first plan
+
+Simon approved the development cockpit on 2026-09-14 and requested T-114 complete. [Approval record](sessions/2026-09-14-cockpit-approval.md) owns the exact scope and evidence. The conversation-first app redesign remains a separate review; no product gate changes.
 
 Simon's latest instruction is cockpit first, then a redesign plan. [Cockpit](../Cockpit.md), [visual map](../Development.canvas), [session deliveries and agent board](agent-board.md), and [plugin assessment](obsidian-cockpit-plugins.md) now provide development oversight. Bases/Canvas/Bookmarks were already enabled; no community installation or private Obsidian JSON edits occurred. [Maintenance](cockpit-guide.md) makes records and freshness checks part of future change tasks.
 

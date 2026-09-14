@@ -180,7 +180,7 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Trace / owner:** [Cockpit](../Cockpit.md), [guide](cockpit-guide.md), [agent board](agent-board.md); operational visibility supports PRD-NFR-005's documentation/support preparation, not a new product requirement.
 - **Deliverable:** Native Obsidian Bases/Canvas views, canonical-derived backlog/gate snapshot, evidence-linked session records, asynchronous message protocol, plugin assessment and regression checks.
 - **Acceptance:** Local links/metadata and source integrity pass; snapshot freshness and asset structure pass; no fabricated session timing/live presence, automatic merge, private settings edit or plugin installation. Obsidian in-app render and Simon's layout review remain pending.
-- **Status:** review — files and structural tests delivered; awaiting in-app and owner review. Not a product gate pass.
+- **Status:** complete — Simon approved the development cockpit on 2026-09-14: “move cockpit to complete it looks great.” Owner review is complete; not a product gate pass or approval of the app redesign.
 - **Excluded:** Live inter-agent transport, GitHub/CI synchronization, plugin downloads, automatic Git operations, UI redesign implementation, Android/agent runtime and Stage 2/3.
 
 <a id="t-115"></a>
