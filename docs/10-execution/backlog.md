@@ -2,7 +2,7 @@
 title: "Stage 1 dependency-ordered backlog"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [execution]
 related:
   - development-readiness.md
@@ -42,7 +42,7 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Status:** planned; no code, test result or assigned staffed team claimed.
 
 <a id="t-102"></a>
-## T-102 — Prototype neutral Home/input/permission and access interaction
+## T-102 — Prototype conversation/input/permission and access interaction
 
 - **Priority / discipline:** P0 / Design/Android; Simon owns acceptance.
 - **Dependencies / entry:** Contract portion can start now; device shell requires DoR and T-101 environment; no final brand needed. Simon authorized the local browser prototype on 2026-09-14; Figma quota no longer blocks design. Native Android shell and device integration remain separately gated.
@@ -50,7 +50,7 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Bounded deliverable:** First low-fi frames including denied mic and typed path; next bounded own-app shell, transcript fixture and reversible text preview, no external automation.
 - **Acceptance / evidence:** 100/130/200% reflow and local semantics tests; explicit scope labels; design review then device accessibility evidence.
 - **Excluded / rollback:** No real model, mic/background capture without separate task, or global settings mutation. Neutral tokens proposed. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
-- **Status:** review — revision requested by Simon: feature-button Home rejected on 2026-09-14. [Conversation-first plan](../02-design/conversation-first-plan.md) awaits review before new UI code. Existing mock source/checks remain intact; [coverage gaps](../02-design/browser-prototype.md) include assistive-tech/return-focus/full-state review. No Android shell or GATE-05 pass claimed.
+- **Status:** browser revision delivered for design review — Simon authorized the [conversation-first build](../02-design/conversation-first-plan.md) on 2026-09-14 and continued its working message checkpoint on 2026-09-15. [Session evidence](sessions/2026-09-14-conversation-build.md) tracks five integrated browser simulations, separate reviewer tools and access/safety checks. T-102 design acceptance and human/device evidence remain open; no Android shell or GATE-05 pass.
 
 <a id="t-103"></a>
 ## T-103 — Build offline authorization/cancellation/verification contract replay

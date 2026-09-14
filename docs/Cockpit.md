@@ -2,7 +2,7 @@
 title: "Granny development cockpit"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [execution, cockpit]
 related:
   - 10-execution/cockpit-guide.md
@@ -22,7 +22,7 @@ related:
 
 ```mermaid
 flowchart LR
-  A["Specification package<br/>written; proposals remain"] --> B["Experience design<br/>revision requested"]
+  A["Specification package<br/>written; proposals remain"] --> B["Conversation-first browser<br/>authorized revision"]
   A --> C["Android and distribution<br/>evidence missing"]
   B --> D["Controlled technical prototype<br/>not started"]
   C --> D
@@ -39,9 +39,9 @@ No percentage-of-product score: written documentation, mock test passes and real
 ## Decide and review
 
 > [!todo] Current design feedback
-> The feature-button Home was not accepted by Simon. He wants a minimal, conversation-led experience. The existing browser code remains a reference; do not polish its tile layout. A redesign **plan**, not another implementation, is the next design deliverable.
+> Simon authorized the conversation-first browser build and asked to continue the working message checkpoint direction. Explore the five scripted workflows; final design/brand and human/device evidence remain open.
 
-- [Conversation-first redesign plan](02-design/conversation-first-plan.md): proposed next interaction direction; no new UI code.
+- [Conversation-first experience](02-design/browser-prototype.md): browser review and coverage; [build handoff](10-execution/sessions/2026-09-14-conversation-build.md) records evidence and publication.
 - [Latest handoffs and issues](10-execution/agent-board.md): who needs what, evidence, acknowledgement and resolution.
 - [Scope and release gates](10-execution/development-readiness.md#named-gates-evidence-approver-blockers-and-unlocks): canonical approval criteria.
 - [Backlog and dependencies](10-execution/backlog.md): canonical work status; not a second checklist in this dashboard.

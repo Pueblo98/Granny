@@ -2,7 +2,7 @@
 title: "Granny — Stage 1 stock-Android app"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [navigation]
 related:
   - docs/README.md
@@ -14,7 +14,7 @@ related:
 
 ## Development cockpit
 
-Open [Cockpit](docs/Cockpit.md) in the docs/ vault for build/gate status, [visual overview](docs/Development.canvas), session deliveries, agent messages and decisions. [Setup and refresh](docs/10-execution/cockpit-guide.md) uses already-enabled Obsidian core tools; no new plugin is required. [Conversation-first redesign plan](docs/02-design/conversation-first-plan.md) responds to Simon's rejection of the feature-button Home. The existing browser prototype below is a reference, not an accepted UI.
+Open [Cockpit](docs/Cockpit.md) in the docs/ vault for build/gate status, [visual overview](docs/Development.canvas), session deliveries, agent messages and decisions. [Setup and refresh](docs/10-execution/cockpit-guide.md) uses already-enabled Obsidian core tools; no new plugin is required. The [conversation-first build](docs/02-design/conversation-first-plan.md) replaces the rejected feature Home with one interactive thread. Proposed interaction and visual values remain under review.
 
 ## Try the browser design prototype
 
