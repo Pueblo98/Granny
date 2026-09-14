@@ -141,7 +141,8 @@ test("confirmation stale stays readable until a fresh revised preview",
 test("stale epoch recovery cannot replace newer preview", async () => {
   const h = harness();
   await connected(h);
-  h.queue.push({body : snap("preview", [ {...preview(), epoch : 2} ], {epoch : 2})});
+  h.queue.push(
+      {body : snap("preview", [ {...preview(), epoch : 2} ], {epoch : 2})});
   await h.runtime.command("turn", {text : "x"});
   h.queue.push({body : snap("idle", [], {epoch : 1, cursor : 1})});
   assert.equal(await h.runtime.recover(), false);
@@ -353,4 +354,128 @@ test("disconnect fences late responses and clears tab-memory state",
        assert.equal(h.runtime.view.connection, "disconnected");
        assert.equal(h.runtime.view.snapshot, null);
        assert.deepEqual(h.runtime.view.events, []);
+     });
+test("replayed preview never restores locally invalidated confirmation",
+     async () => {
+       const h = harness();
+       await connected(h);
+       h.queue.push({body : snap("preview", [ preview() ], {epoch : 1})});
+       await h.runtime.command("turn", {text : "x"});
+       h.runtime.invalidatePreview();
+       h.queue.push({body : snap("preview", [], {epoch : 1, cursor : 1})});
+       assert.equal(await h.runtime.recover(), true);
+       assert.equal(h.runtime.view.current.data.actionId, "action-1");
+       assert.equal(h.runtime.view.canConfirm, false);
+     });
+test(
+    "type-state mismatches and unsafe preview ranges fail closed", async () => {
+      for (const bad
+               of [{...event(
+                       1, "chat", "completed",
+                       {text : "done", source : "stub-model", verified : false},
+                       {epoch : 1})},
+                   {
+                     ...preview(),
+                     data : {
+                       ...preview().data,
+                       provenance : {
+                         turnId : "turn-1",
+                         source : "user-edit",
+                         start : 9,
+                         end : 2
+                       }
+                     }
+                   },
+                   {...event(1, "cancellation", "stopped", {effect : "unknown"},
+                             {epoch : 1})}]) {
+        const h = harness();
+        await connected(h);
+        h.queue.push(
+            {body : snap(bad.state, [ bad ], {epoch : 1, cursor : 1})});
+        assert.equal(await h.runtime.command("turn", {text : "x"}), false);
+        assert.equal(h.runtime.view.error, "event_gap");
+      }
+    });
+test("cursor tail must match authoritative snapshot state", async () => {
+  const h = harness();
+  await connected(h);
+  const progress =
+      event(1, "progress", "creating", {phase : "creating"}, {epoch : 1});
+  h.queue.push(
+      {body : snap("completed", [ progress ], {epoch : 1, cursor : 1})});
+  assert.equal(await h.runtime.command("turn", {text : "x"}), false);
+  assert.equal(h.runtime.view.connection, "uncertain");
+  assert.equal(h.runtime.view.current, null);
+});
+test("cancel attempts backend while connection is uncertain", async () => {
+  const h = harness();
+  await connected(h);
+  h.queue.push(Promise.reject(new Error("lost")));
+  await h.runtime.command("turn", {text : "x"});
+  assert.equal(h.runtime.view.connection, "uncertain");
+  h.queue.push({
+    body : snap("stopped", [ event(1, "cancellation", "stopped",
+                                   {effect : "none"}, {epoch : 1}) ],
+                {epoch : 1})
+  });
+  const before = h.calls.length;
+  assert.equal(await h.runtime.cancel(), true);
+  assert.equal(h.calls.length, before + 1);
+  assert.equal(JSON.parse(h.calls.at(-1).init.body).kind, "cancel");
+  assert.equal(h.runtime.view.snapshot.state, "stopped");
+});
+test("cancel during session creation fences late activation", async () => {
+  const h = harness(), wait = deferred();
+  h.queue.push(wait.promise);
+  const connecting = h.runtime.connect();
+  assert.equal(h.runtime.view.connection, "connecting");
+  assert.equal(await h.runtime.cancel(), true);
+  assert.equal(h.runtime.view.connection, "disconnected");
+  h.queue.push({body : snap("stopped", [], {epoch : 1})});
+  wait.resolve(response(snap()));
+  assert.equal(await connecting, false);
+  assert.equal(JSON.parse(h.calls.at(-1).init.body).kind, "cancel");
+  assert.equal(h.runtime.view.connection, "disconnected");
+  assert.equal(h.runtime.view.snapshot, null);
+});
+test("same-epoch older cursor recovery cannot regress current state",
+     async () => {
+       const h = harness();
+       await connected(h);
+       h.queue.push({
+         body : snap("creating",
+                     [
+                       event(1, "progress", "interpreting",
+                             {phase : "interpreting"}, {epoch : 1}),
+                       event(2, "progress", "creating", {phase : "creating"},
+                             {epoch : 1})
+                     ],
+                     {epoch : 1, cursor : 2})
+       });
+       await h.runtime.command("turn", {text : "x"});
+       h.queue.push({body : snap("interpreting", [], {epoch : 1, cursor : 1})});
+       assert.equal(await h.runtime.recover(), false);
+       assert.equal(h.runtime.view.snapshot.state, "creating");
+       assert.equal(h.runtime.view.current.seq, 2);
+     });
+test("effect_unknown quarantine is sticky across stale preview recovery",
+     async () => {
+       const h = harness();
+       await connected(h);
+       h.queue.push({body : snap("preview", [ preview() ], {epoch : 1})});
+       await h.runtime.command("turn", {text : "x"});
+       h.queue.push({
+         body : {version : V, error : {code : "effect_unknown"}},
+         ok : false,
+         status : 409
+       });
+       assert.equal(await h.runtime.command("turn", {text : "new"}), false);
+       assert.equal(h.runtime.view.error, "effect_unknown");
+       h.queue.push({body : snap("preview", [], {epoch : 1, cursor : 1})});
+       assert.equal(await h.runtime.recover(), false);
+       assert.equal(h.runtime.view.error, "effect_unknown");
+       assert.equal(h.runtime.view.canConfirm, false);
+       const count = h.calls.length;
+       assert.equal(await h.runtime.command("turn", {text : "retry"}), false);
+       assert.equal(h.calls.length, count);
      });

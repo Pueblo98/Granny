@@ -24,6 +24,7 @@ function create(options = {}) {
   let sessionId = null, cursor = 0, epoch = 0, generation = 0, timer = null,
       polling = false, controller = null, previewRevision = 0,
       previewAcceptedRevision = -1;
+  let quarantined = false;
   const eventIds = new Set();
   let data = {
     connection : "disconnected",
@@ -42,8 +43,8 @@ function create(options = {}) {
   }
   function canConfirm() {
     const c = data.current;
-    return data.connection === "connected" && !data.pending && !data.stopping &&
-           previewAcceptedRevision === previewRevision &&
+    return data.connection === "connected" && !quarantined && !data.pending &&
+           !data.stopping && previewAcceptedRevision === previewRevision &&
            c?.type === "preview" && c.state === "preview" &&
            data.snapshot?.state === "preview" &&
            typeof c.data?.actionId === "string" &&
@@ -74,45 +75,56 @@ function create(options = {}) {
         typeof e.eventId !== "string" || !e.data || typeof e.data !== "object")
       return false;
     if (e.type === "progress")
-      return e.data.phase === e.state;
+      return ACTIVE.has(e.state) && e.data.phase === e.state;
     if (e.type === "chat")
-      return typeof e.data.text === "string" &&
+      return e.state === "idle" && typeof e.data.text === "string" &&
              [ "stub-model", "live-model" ].includes(e.data.source) &&
              e.data.verified === false;
     if (e.type === "clarification")
-      return [ "recipient", "channel", "body" ].includes(e.data.field) &&
+      return e.state === "clarifying" &&
+             [ "recipient", "channel", "body" ].includes(e.data.field) &&
              typeof e.data.prompt === "string" &&
              Array.isArray(e.data.choices) &&
              e.data.choices.every(c => c && typeof c.id === "string" &&
-                                       typeof c.label === "string");
+                                       typeof c.label === "string") &&
+             (e.data.field !== "body" || e.data.choices.length === 0);
     if (e.type === "preview")
       return e.state === "preview" && e.data.actionId === e.actionId &&
              typeof e.data.confirmationToken === "string" &&
+             typeof e.data.expiresAt === "string" &&
              e.data.effect === "create_demo_draft" &&
              typeof e.data.effectLabel === "string" &&
-             typeof e.data.body === "string" && e.data.recipient &&
+             typeof e.data.body === "string" && e.data.body.length > 0 &&
+             e.data.body.length <= 2000 && e.data.recipient &&
              typeof e.data.recipient.id === "string" && e.data.channel &&
-             typeof e.data.channel.id === "string" && e.data.provenance &&
+             typeof e.data.recipient.label === "string" &&
+             typeof e.data.recipient.detail === "string" &&
+             typeof e.data.channel.id === "string" &&
+             typeof e.data.channel.label === "string" && e.data.provenance &&
              e.data.provenance.turnId === e.turnId &&
              [ "user-span", "user-edit" ].includes(e.data.provenance.source) &&
              Number.isInteger(e.data.provenance.start) &&
-             Number.isInteger(e.data.provenance.end);
+             e.data.provenance.start >= 0 &&
+             Number.isInteger(e.data.provenance.end) &&
+             e.data.provenance.end > e.data.provenance.start &&
+             (e.data.provenance.source !== "user-edit" ||
+              e.data.provenance.end === e.data.body.length);
     if (e.type === "result")
       return e.state === "completed" &&
              e.data.effect === "demo_draft_created" &&
              e.data.verified === true && e.data.sent === false &&
-             typeof e.data.body === "string" &&
-             typeof e.data.draftId === "string" &&
+             typeof e.data.body === "string" && e.data.body.length > 0 &&
+             e.data.body.length <= 2000 && typeof e.data.draftId === "string" &&
              typeof e.data.recipientId === "string" &&
              typeof e.data.channelId === "string" &&
              e.data.message === "Draft created in the demo. Not sent.";
     if (e.type === "error")
-      return [ "failed", "unknown" ].includes(e.state) &&
-             [ "none", "unknown" ].includes(e.data.effect) &&
-             e.data.retryable === false;
+      return ((e.state === "failed" && e.data.effect === "none") ||
+              (e.state === "unknown" && e.data.effect === "unknown")) &&
+             typeof e.data.code === "string" && e.data.retryable === false;
     return e.type === "cancellation" &&
-           [ "stopped", "unknown" ].includes(e.state) &&
-           [ "none", "unknown" ].includes(e.data.effect);
+           ((e.state === "stopped" && e.data.effect === "none") ||
+            (e.state === "unknown" && e.data.effect === "unknown"));
   }
   function snapshotValid(s) {
     return !!s && s.version === VERSION && typeof s.sessionId === "string" &&
@@ -133,11 +145,14 @@ function create(options = {}) {
       schedule();
       return false;
     }
-    if (snapshot.epoch < epoch)
+    if (snapshot.epoch < epoch ||
+        (snapshot.epoch === epoch && snapshot.cursor < cursor))
+      return false;
+    if (quarantined && snapshot.state !== "unknown")
       return false;
     const incoming =
         snapshot.events.filter(eventValid).sort((a, b) => a.seq - b.seq);
-    let gap = false;
+    let gap = false, newPreview = null;
     for (const event of incoming) {
       if (event.seq <= cursor)
         continue;
@@ -154,9 +169,14 @@ function create(options = {}) {
       if (event.epoch < Math.max(epoch, snapshot.epoch))
         continue;
       data.events.push(event);
+      if (event.type === "preview")
+        newPreview = event;
       epoch = Math.max(epoch, event.epoch);
     }
-    if (gap || snapshot.cursor > cursor && incoming.length === 0) {
+    const tail = data.events.find(e => e.seq === snapshot.cursor);
+    if (gap || snapshot.cursor > cursor ||
+        (snapshot.cursor > 0 && (!tail || tail.epoch !== snapshot.epoch ||
+                                 tail.state !== snapshot.state))) {
       data.connection = "uncertain";
       data.error = "event_gap";
       data.pending = false;
@@ -167,16 +187,15 @@ function create(options = {}) {
     }
     epoch = Math.max(epoch, snapshot.epoch);
     data.snapshot = {...snapshot, events : undefined};
-    data.current =
-        [...data.events ].reverse().find(e => e.epoch === snapshot.epoch &&
-                                              e.state === snapshot.state) ||
-        null;
-    if (data.current?.type === "preview") {
+    data.current = tail || null;
+    if (newPreview && data.current === newPreview) {
       previewRevision++;
       previewAcceptedRevision = previewRevision;
     }
+    if (snapshot.state === "unknown")
+      quarantined = true;
     data.connection = "connected";
-    data.error = null;
+    data.error = quarantined ? "effect_unknown" : null;
     data.pending = ACTIVE.has(snapshot.state);
     data.stopping =
         data.stopping && !["stopped", "unknown"].includes(snapshot.state);
@@ -222,6 +241,7 @@ function create(options = {}) {
                             ? "transport_timeout"
                             : String(error?.message || "transport_error"));
     data.pending = false;
+    data.stopping = false;
     previewRevision++;
     emit();
     schedule();
@@ -235,8 +255,10 @@ function create(options = {}) {
     previewRevision++;
     if (!sessionId)
       data.connection = "disconnected";
-    else if (error.code === "effect_unknown")
+    else if (error.code === "effect_unknown") {
       data.connection = "uncertain";
+      quarantined = true;
+    }
     emit();
     if (data.connection === "uncertain")
       schedule();
@@ -270,8 +292,25 @@ function create(options = {}) {
         })
       },
                                          g);
-      if (g !== generation)
+      if (g !== generation) {
+        if (snapshotValid(snapshot) && data.connection === "disconnected") {
+          try {
+            await jsonRequest("/api/runtime/command", {
+              method : "POST",
+              body : JSON.stringify({
+                version : VERSION,
+                sessionId : snapshot.sessionId,
+                requestId : uuid(),
+                kind : "cancel",
+                payload : {}
+              })
+            },
+                              generation);
+          } catch {
+          }
+        }
         return false;
+      }
       if (!snapshotValid(snapshot))
         throw new Error("invalid_snapshot");
       sessionId = snapshot.sessionId;
@@ -291,7 +330,9 @@ function create(options = {}) {
            !['cancel'].includes(kind);
   }
   async function command(kind, payload = {}) {
-    if (!sessionId || data.connection !== "connected" ||
+    if (!sessionId ||
+        (data.connection !== "connected" &&
+         !(kind === "cancel" && data.connection === "uncertain")) ||
         (data.stopping && kind !== "cancel") || forbidden(kind))
       return false;
     if (!["turn", "clarify", "revise", "confirm", "cancel"].includes(kind))
@@ -328,6 +369,17 @@ function create(options = {}) {
     }
   }
   async function cancel() {
+    if (data.connection === "connecting" && !sessionId) {
+      generation++;
+      stopTimer();
+      abort();
+      data.connection = "disconnected";
+      data.pending = false;
+      data.stopping = false;
+      data.error = null;
+      emit();
+      return true;
+    }
     if (!sessionId)
       return false;
     previewRevision++;
@@ -367,6 +419,7 @@ function create(options = {}) {
     cursor = 0;
     epoch = 0;
     eventIds.clear();
+    quarantined = false;
     data = {
       connection : "disconnected",
       snapshot : null,
