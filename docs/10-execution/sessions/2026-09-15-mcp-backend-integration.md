@@ -14,6 +14,7 @@ agent: Codex backend integration session
 branch: feature/mcp-backend-integration
 next_action: Frontend consumes the agreed runtime; finish adversarial HTTP/provider and browser integration checks.
 changed_paths:
+  - docs/10-execution/messages/2026-09-15-ui-backend-be-005.md
   - docs/01-product/traceability.md
   - docs/03-agent/tool-contracts.md
   - docs/04-architecture/conversation-runtime-contract.md
