@@ -6,7 +6,7 @@
   const state = P.create();
   const $ = id => document.getElementById(id);
   const thread = $('thread'), composerText = $('request');
-  let scheduler, pending = null, dialogReturn = null, menuPanel = '', lastAnnouncement = '', restoreFocus = false;
+  let scheduler, pending = null, dialogReturn = null, menuPanel = '', lastAnnouncement = '', restoreFocus = false, editor = null;
 
   function atBottom() { return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100; }
   function scrollIfReadingEnd(wasAtBottom) { if (wasAtBottom) requestAnimationFrame(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'auto' })); }
@@ -30,21 +30,27 @@
   }
   function preview(task) {
     const slots = task.slots || {}, recipient = slots.recipient || {};
-    const c = card('Check the draft', 'This opens a fictional, unsent draft. It does not send a message.'); c.classList.add('preview');
-    const dl = node('dl'); [['To', recipient.name || 'Not chosen'], ['Which person', recipient.detail || 'Not chosen'], ['Open in', slots.channel || 'Not chosen'], ['What happens', 'A fictional unsent draft opens']].forEach(([a,b]) => { dl.append(node('dt','',a), node('dd','',b)); });
+    const sending = task.effect === 'send-message';
+    const c = card('Check the draft', sending ? 'This is a fictional send scenario. It will simulate sending this exact message.' : 'This opens a fictional, unsent draft. It does not send a message.'); c.classList.add('preview');
+    const dl = node('dl'); [['To', recipient.name || 'Not chosen'], ['Which person', recipient.detail || 'Not chosen'], ['Open in', slots.channel || 'Not chosen'], ['What happens', sending ? 'A fictional message is sent' : 'A fictional unsent draft opens']].forEach(([a,b]) => { dl.append(node('dt','',a), node('dd','',b)); });
     c.append(dl, node('blockquote','',slots.body || 'No message text yet.'));
     return c;
   }
   function editablePreview(task) {
-    const c = preview(task), slots = task.slots || {}, recipient = slots.recipient || {}, F = window.GrannyFixtures || { people:[], channels:[] };
+    const c = preview(task), slots = task.slots || {}, recipient = slots.recipient || {}, F = window.GrannyFixtures || { people:[], channels:[] }, draft = editor || {};
     const fields = node('div', 'editable-fields');
-    const recipientField = node('label','', 'Recipient'); const r = document.createElement('select'); r.setAttribute('aria-label', 'Recipient'); F.people.forEach(person => { const option = node('option','',person.name + ' — ' + person.detail); option.value = person.id; option.selected = person.id === recipient.id; r.append(option); }); recipientField.append(r);
-    const channelField = node('label','', 'Channel'); const ch = document.createElement('select'); ch.setAttribute('aria-label', 'Channel'); F.channels.forEach(channel => { const option = node('option','',channel); option.value = channel; option.selected = channel === slots.channel; ch.append(option); }); channelField.append(ch);
-    const bodyField = node('label','', 'Message'); const body = document.createElement('textarea'); body.rows = 3; body.value = slots.body || ''; body.setAttribute('aria-label', 'Message'); bodyField.append(body);
+    const recipientField = node('label','', 'Recipient'); const r = document.createElement('select'); r.setAttribute('aria-label', 'Recipient'); F.people.forEach(person => { const option = node('option','',person.name + ' — ' + person.detail); option.value = person.id; option.selected = person.id === (draft.recipient || recipient.id); r.append(option); }); recipientField.append(r);
+    const channelField = node('label','', 'Channel'); const ch = document.createElement('select'); ch.setAttribute('aria-label', 'Channel'); F.channels.forEach(channel => { const option = node('option','',channel); option.value = channel; option.selected = channel === (draft.channel ?? slots.channel); ch.append(option); }); channelField.append(ch);
+    const bodyField = node('label','', 'Message'); const body = document.createElement('textarea'); body.rows = 3; body.value = draft.body ?? slots.body ?? ''; body.setAttribute('aria-label', 'Message'); bodyField.append(body);
+    [r, ch, body].forEach(input => input.addEventListener('input', () => { if (editor) Object.assign(editor, { recipient:r.value, channel:ch.value, body:body.value }); }));
     fields.append(recipientField, channelField, bodyField, button('Save changes', () => {
-      dispatch('edit', { recipient:r.value, channel:ch.value, body:body.value });
+      editor = null; dispatch('edit', { recipient:r.value, channel:ch.value, body:body.value });
     }, 'primary'));
     c.append(fields); return c;
+  }
+  function beginEdit(task) {
+    editor = { taskId:task.id, recipient:task.slots.recipient && task.slots.recipient.id, channel:task.slots.channel, body:task.slots.body };
+    dispatch('expire');
   }
   function photoViewer(items, start, source) {
     let index = start;
@@ -60,9 +66,9 @@
   function resultView(task) {
     const result = task.result || {}, c = node('div', 'result-detail');
     if (task.kind === 'photos' && result.photos) {
-      const gallery = node('div', 'photo-gallery'); result.photos.forEach((item, index) => { const b = button(item.title || 'Open fictional photo', () => photoViewer(result.photos, index, b), 'photo-item'); const img = document.createElement('img'); img.src = item.asset || '/assets/garden.svg'; img.alt = item.alt || item.description || 'Fictional illustration'; b.prepend(img); gallery.append(b); }); c.append(gallery); if (result.uncertainDate) c.append(node('p', 'notice', 'The date is uncertain in this fictional example.'));
+      const gallery = node('div', 'photo-gallery'); result.photos.forEach((item, index) => { const b = button(item.title || 'Open fictional photo', () => photoViewer(result.photos, index, b), 'photo-item'); const img = document.createElement('img'); img.src = item.asset || '/assets/garden.svg'; img.alt = item.alt || item.description || 'Fictional illustration'; b.prepend(img); gallery.append(b); }); c.append(gallery); const first = result.photos[0]; if (first) c.append(node('p', 'notice', [first.sender, first.source, first.date].filter(Boolean).join(' · '))); if (result.uncertainDate) c.append(node('p', 'notice', 'The date is uncertain in this fictional example.'));
     } else if (task.kind === 'explain' && result.explanation) {
-      c.append(node('p', '', result.explanation)); const a = node('div','inline-actions'); a.append(button('Explain more simply', () => dispatch('submit','simpler'))); if (result.previousTarget) a.append(button('Return to ' + result.previousTarget, () => dispatch('submit','return'), 'primary')); c.append(a);
+      c.append(node('p', '', result.explanation)); const a = node('div','inline-actions'); a.append(button('Explain more simply', () => dispatch('submit','Explain more simply'))); if (result.screen && result.screen.previousTarget) a.append(button('Return to ' + result.screen.previousTarget, () => dispatch('submit','return'), 'primary')); c.append(a);
     } else if (task.kind === 'media' && result.track) {
       const track = typeof result.track === 'string' ? result.track : [result.track.title, result.track.performer].filter(Boolean).join(' — ');
       c.append(node('p', '', track + (result.playing ? ' is playing in this simulation.' : ' is paused in this simulation.'))); c.append(button(result.playing ? 'Pause' : 'Resume', () => dispatch('playback'), 'primary'));
@@ -76,13 +82,16 @@
     const row = node('div', 'inline-actions'), stage = task.stage;
     if (task.choices && task.choices.length) {
       (task.choices || []).forEach(choice => { const b = button(choice.label, () => dispatch('choose', choice.value), 'choice'); b.dataset.choice = choice.value; row.append(b); });
+    } else if (stage === 'size-preview') {
+      [1,1.15,1.3,1.5].forEach(scale => row.append(button(Math.round(scale * 100) + '%', () => dispatch('setScale', scale), state.previewScale === scale ? 'primary' : '')));
+      const apply = button('Apply this size', () => dispatch('applyScale'), 'primary'); apply.dataset.action = 'apply'; row.append(apply, button('Stop', () => dispatch('stop')));
     } else if (stage === 'clarify-body') {
       const edit = document.createElement('textarea'); edit.rows = 3; edit.value = task.slots && task.slots.body || ''; edit.setAttribute('aria-label','Message words');
       const apply = button('Use these words', () => dispatch('edit', { body:edit.value }), 'primary'); apply.dataset.action = 'apply'; row.append(edit, apply);
     } else if (stage === 'preview') {
       const approval = { taskId:task.id, version:task.version, signature:task.permit && task.permit.signature };
       const label = task.kind === 'photos' ? 'Open this conversation and look for photos' : task.kind === 'message' && task.effect === 'send-message' ? 'Send this fictional message' : task.kind === 'message' ? 'Open this draft' : 'Continue';
-      const approve = button(label, () => dispatch('approve', approval), 'primary', 'approval'), change = task.kind === 'message' ? button('Change', () => render(true)) : button('Change', () => dispatch('stop')), cancel = button('Cancel', () => dispatch('stop')); approve.dataset.action = 'approve'; change.dataset.action = 'change'; cancel.dataset.action = 'cancel'; row.append(approve, change, cancel);
+      const approve = button(label, () => dispatch('approve', approval), 'primary', 'approval'), change = task.kind === 'message' ? button('Change', () => beginEdit(task)) : button('Change', () => dispatch('stop')), cancel = button('Cancel', () => dispatch('stop')); approve.dataset.action = 'approve'; change.dataset.action = 'change'; cancel.dataset.action = 'cancel'; row.append(approve, change, cancel);
     } else if (stage === 'expired') { const renew = button('Review again', () => dispatch('renew'), 'primary', 'approval'), cancel = button('Cancel', () => dispatch('stop')); renew.dataset.action = 'approve'; cancel.dataset.action = 'cancel'; row.append(renew, cancel); }
     else if (stage === 'unknown') row.append(button('Check it yourself', () => dispatch('manual'), 'primary'), button('I understand', () => dispatch('acknowledge')));
     c.append(row);
@@ -93,12 +102,13 @@
     $('welcome').hidden = !!(state.turns && state.turns.length);
     (state.turns || []).forEach(t => thread.append(turn(t.role, t.text)));
     if (state.task) {
-      const task = state.task, c = card('Granny', taskText(task)); c.id = 'current-task'; c.dataset.stage = task.stage; c.dataset.kind = task.kind; c.querySelector('h2').tabIndex = -1;
-      if (task.kind === 'message' && ['preview','expired','acting','waiting','verifying','completed','unknown','stopped','failed'].includes(task.stage)) c.append(editing && task.stage === 'preview' ? editablePreview(task) : preview(task));
+      const task = state.task, editingTask = !!(editor && editor.taskId === task.id), c = card('Granny', taskText(task)); c.id = 'current-task'; c.dataset.stage = task.stage; c.dataset.kind = task.kind; c.querySelector('h2').tabIndex = -1;
+      if (task.kind === 'message' && ['preview','expired','acting','waiting','verifying','completed','unknown','stopped','failed'].includes(task.stage)) c.append(editingTask ? editablePreview(task) : preview(task));
       if (task.kind !== 'message' && task.stage === 'preview') c.append(card('Check this step', task.kind === 'photos' ? 'This fictional conversation may be marked as read while the selected photos are checked.' : 'Nothing will happen until you choose Continue.'));
+      if (task.kind === 'readability' && task.stage === 'size-preview') { const sample = node('p', 'preview-sample', 'This is a preview of Granny text. You can still change your mind.'); sample.style.fontSize = (state.previewScale / state.scale) + 'em'; c.append(sample); }
       if (task.kind !== 'message' && (task.result || ['completed','no-matches'].includes(task.stage))) c.append(resultView(task));
-      controls(task, c); thread.append(c);
-      if (editing) c.querySelector('input, textarea')?.focus();
+      if (!editingTask) controls(task, c); thread.append(c);
+      if (editingTask) c.querySelector('input, textarea')?.focus();
       if (lastAnnouncement !== taskText(task)) { lastAnnouncement = taskText(task); announce(lastAnnouncement); }
     }
     if (menuPanel === 'history') {
