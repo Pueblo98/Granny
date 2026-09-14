@@ -97,7 +97,7 @@ Node 26.8.1; Chromium 151.0.7922.173; no dependency installation.
 | node prototypes/stage-1/browser-check.mjs | 124 assertions passed; no runtime exceptions or external requests | Actual Chromium workflows, keyboard/Escape, aliases/history/reset, failures, protected screen, mark-read, dialog Stop and matched visual treatments |
 | python3 scripts/validate-docs.py | PASS, 0 errors | Local metadata/links/IDs/source integrity; external URLs not fetched |
 | python3 -m unittest discover -s scripts -p 'test_*.py' | 46 passed | Documentation/cockpit/handoff tooling; an expected invalid-ref test prints a Git diagnostic |
-| Cockpit freshness / committed handoff / whitespace | PASS on committed 2653eb6; rerun after publication record | Repository maintenance, not product/device evidence |
+| Cockpit freshness / committed handoff / whitespace | PASS on committed delivery and publication update | Repository maintenance, not product/device evidence |
 
 Full-browser artifacts: /tmp/granny-conversation-review-xmp0eb/ contains results.json, workflow screenshots, responsive layouts and matched message comparisons. Root visually inspected Home, message preview, Open Day photos, Bright Signal, landscape and enlarged text. Tests include 840×1100, 1200×800, 600×960, 360×720 and constrained 360×480; combined 300% also exercises 840×900 and 600×520. A measured-height fallback puts the composer in document flow when a sticky composer would consume too much space.
 
@@ -109,7 +109,7 @@ On 2026-09-15 Simon answered “Continue this direction” after the message che
 
 Preview is running at **http://127.0.0.1:4173/** from **/tmp/granny-conversation-first**, branch **feature/conversation-first**. Reviewer mode: **http://127.0.0.1:4173/?review=1**. From that worktree, start it with: node prototypes/stage-1/serve.mjs 4173. The task-owned server was restarted after exact-allowlist changes; unrelated servers/worktrees were not stopped/deleted.
 
-Published task branch at 2653eb6 with remote SHA independently matched. Authorized [draft PR #6](https://github.com/Pueblo98/Granny/pull/6) is open; main remains unmerged. Initial CI caught a calendar mismatch: Madrid was already 15 September while the UTC runner still saw 14 September. The scoped workflow now uses the documented Europe/Madrid editorial calendar; strict future-date validation remains enabled. Final CI result is recorded below.
+Published task branch at 2653eb6, then 856d428, with remote SHAs independently matched. Authorized [draft PR #6](https://github.com/Pueblo98/Granny/pull/6) is open; main remains unmerged. Initial CI caught a calendar mismatch: Madrid was already 15 September while the UTC runner still saw 14 September. The scoped workflow now uses the documented Europe/Madrid editorial calendar; strict future-date validation remains enabled. [Repository maintenance passed](https://github.com/Pueblo98/Granny/actions/runs/34906239403/job/104183444720) in 9 seconds on 856d428, and GitGuardian Security Checks passed. This final documentation-only evidence update stays on the same draft PR; current head/checks are available there and through file history without a circular self-hash record.
 
 Primary main is 5ffa589 with user-owned docs/Development.canvas and docs/05-safety-privacy/action-policy.md edits excluded from this task. No private Obsidian settings were changed. Unmerged task-branch work is **not visible in the primary docs/ vault**; no post-merge visibility claim is made.
 
