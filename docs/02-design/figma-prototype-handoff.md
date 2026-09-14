@@ -111,5 +111,4 @@ If the free authoring quota remains unavailable, Simon can choose manual Figma e
 
 Confirmed from successful tool returns: three page IDs, overview and Home IDs, 24 wrapper IDs, Home control IDs and screenshot repair. After the quota response there was no final full-canvas readback. No user research, real microphone capture, app control, messages, photos, playback, permissions or persistent memory were exercised.
 
-Repository validation results belong in the task commit/report. Structural documentation checks do not validate Figma interactions or user comprehension.
-
+Repository checks on 2026-09-14: `python3 scripts/validate-docs.py` returned PASS (0 errors): 78 Markdown documents, 1,408 local links, 48 requirements, 42 MVP requirements and four preserved source hashes. External URLs were not fetched by this check. An initial staged whitespace check identified one extra blank line at EOF in this handoff; it was removed before push. Structural documentation checks do not validate Figma interactions or user comprehension.
