@@ -32,6 +32,10 @@ No clarification blocks completing the documentation. Routine reversible choices
 
 T-113 refined execution/journal/Stop and admission contracts without accepting new product decisions. OQ-04/09 still govern durable data placement and retention: [execution protocol](../03-agent/execution-protocol.md) proposes content-free journal fields and explicit missing-history limits; [capability admission](../04-architecture/capability-admission.md) identifies configuration evidence needed for OQ-02/03/11/12. The [task packets](task-packets.md) make these testable; no new vendor/framework/backend is selected.
 
+## Current interaction review — OQ-13
+
+**Confirmed preference, proposed implementation:** Simon rejected the feature-button Home and asked for a minimal conversation-led experience. Review [the replacement plan](../02-design/conversation-first-plan.md): one conversation, visible talk/type input, contextual content and controls, exact approval and stable Stop. Alternative pure voice hides too much; merely removing a few tiles retains the wrong entry model. Choose the proposed composition and in-thread/expanded confirmation before requesting the first message-only browser slice. This does not accept brand values, remove touch access, widen autonomy or pass GATE-05. Evidence of older-adult comprehension remains unrun.
+
 ## Simon's minimum next decision packet
 
 OQ-01 and OQ-02's control posture were accepted together on 2026-09-14; actual route admission remains evidence-gated. Remaining decisions include ADR-0010/0011 and the [name feedback table](../02-design/naming-exploration.md) / [four identity boards](../02-design/identity-review.html). Choosing a direction does not imply accepting name/legal clearance or all token values. Fake contract replay T-103 can proceed in a separately requested coding session without these brand/market choices.

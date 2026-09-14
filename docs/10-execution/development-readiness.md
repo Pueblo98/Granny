@@ -14,6 +14,10 @@ related:
 
 # Development-readiness assessment
 
+## Cockpit and design-review follow-up, 2026-09-14
+
+[Development cockpit](../Cockpit.md) is **Ready with proposed assumptions** for structural/local-note review; Obsidian in-app rendering and Simon's cockpit review remain **Needs evidence**. No plugin install or automatic cross-worktree synchronization is claimed. The browser UI received a revision request from Simon; [conversation-first plan](../02-design/conversation-first-plan.md) awaits his review. GATE-05 remains Needs Simon decision and evidence; no production gate changes.
+
 ## Browser-design follow-up, 2026-09-14
 
 The user-authorized T-102 initial browser design slice is **Ready with proposed assumptions for review**, not MVP implementation-ready. [Browser handoff](../02-design/browser-prototype.md) records actual tests, frame coverage and gaps. Its simulated verification and permit logic are not T-103, independent runtime authority or device evidence. GATE-05 remains Needs Simon decision and evidence; GATE-03/04/06 real-device conditions and GATE-07–09 remain unchanged. Earlier “no implementation” reports below describe their historical missions; no production app/backend/agent has been built.

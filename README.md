@@ -12,6 +12,10 @@ related:
 
 # Granny
 
+## Development cockpit
+
+Open [Cockpit](docs/Cockpit.md) in the docs/ vault for build/gate status, [visual overview](docs/Development.canvas), session deliveries, agent messages and decisions. [Setup and refresh](docs/10-execution/cockpit-guide.md) uses already-enabled Obsidian core tools; no new plugin is required. [Conversation-first redesign plan](docs/02-design/conversation-first-plan.md) responds to Simon's rejection of the feature-button Home. The existing browser prototype below is a reference, not an accepted UI.
+
 ## Try the browser design prototype
 
 From this checkout, run:

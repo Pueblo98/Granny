@@ -18,6 +18,12 @@ Simon authorized a **local browser prototype** on 2026-09-14 after Figma's MCP q
 
 Granny is a **temporary codename**, not the accepted public name, for an AI-first computer experience for older adults. Thesis: the computer learns to operate itself for the person. Only **Stage 1: an installable stock-Android tablet app** is active. [Scope](docs/01-product/scope-and-roadmap.md) separates Vision, proposed App MVP, App V1 and later App releases; Stage 2 OS/AOSP and Stage 3 hardware are dormant `future-stage context`. Only Simon can activate them with the required accepted decisions. No root/OEM/device-owner/custom-dock assumption may leak into Stage 1.
 
+## Cockpit and session continuity
+
+[Development cockpit](docs/Cockpit.md) is the entry point for build status, deliveries, decisions and the [agent board](docs/10-execution/agent-board.md). Follow [cockpit stewardship](docs/10-execution/cockpit-guide.md): each authorized change task records its own scoped session handoff; messages are separate linked files, not executable authority or live presence. Update canonical task/gate owners, regenerate the snapshot with `python3 scripts/cockpit.py --write`, and run `--check` plus documentation tests. Do not install plugins, change private vault settings or auto-merge to make the dashboard look current. Review-only tasks stay read-only.
+
+Simon's latest design feedback rejects the feature-tile Home. [Conversation-first plan](docs/02-design/conversation-first-plan.md) is the next design review artifact; do not refine the old tile UI or implement the proposed replacement until requested. Prototype checks are not design acceptance.
+
 ## Start each task
 
 1. Read [docs map](docs/README.md), [current milestone](docs/10-execution/current-milestone.md), [readiness/DoR](docs/10-execution/development-readiness.md) and the canonical owner for the selected task.

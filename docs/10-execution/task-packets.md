@@ -49,6 +49,8 @@ Then T-104/105/106 test admitted external workflows, T-107 local privacy, and T-
 
 **Current medium and authority:** Simon authorized local browser implementation on 2026-09-14. [Browser handoff](../02-design/browser-prototype.md) and [prototype source](../../prototypes/stage-1/README.md) now execute units A–F. Figma is not required. The browser contains explicit simulations, not the T-103 agent core or a production Android shell; actual user/device acceptance remains open.
 
+**Current review:** Simon rejected the feature-button Home; use the [conversation-first plan](../02-design/conversation-first-plan.md) for discussion. Units below remain outcome/access obligations, not a requirement for separate pages or a feature grid. No redesign implementation was requested in the cockpit/plan turn.
+
 **Question:** Can an adult enter, correct, confirm, stop and understand outcomes without voice, hidden state or technical vocabulary?
 
 **Reads:** J-002/003/006/007; PRD-FR-001–003/011/012/013, ACC-001–004, SAF-002, OUT-002; SCR-001–008/011/014; CMP-001–009; [browser handoff](../02-design/browser-prototype.md), [voice](../02-design/voice-ux.md), [accessibility](../02-design/accessibility.md); EVAL-005/007/012. Optional [Figma](../02-design/figma.md) work remains external and requires separate authorization; a Markdown annotation manifest alone is not a created prototype.

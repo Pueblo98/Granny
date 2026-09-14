@@ -113,6 +113,10 @@ Skills live in the repository's .agents/skills, not a global personal installati
 
 OpenAI's [Build skills documentation](https://learn.chatgpt.com/docs/build-skills), accessed 2026-09-14, documents repo-local discovery, name/description frontmatter and optional UI metadata. Host discovery and realistic agent behavior must still be checked in a fresh session; file validation alone does not establish either. No global settings, scheduled jobs, hooks, plugins or external integrations are installed by this package.
 
+## Cockpit stewardship
+
+Use [Cockpit](../Cockpit.md) and its [guide](cockpit-guide.md) for delivery records and coordination. New authorized change tasks create one session record and read open [agent messages](agent-board.md). Record the difference between code built, checks passed, owner accepted and Git integrated. Link canonical tasks/gates; do not duplicate their editable status in a second tracker. Regenerate/check the derived snapshot before handoff. Cross-worktree records require explicit branch awareness; no live chat, agent wake-up or auto-sync is implied.
+
 ## Documentation maintenance and completion
 
 Keep ownership small: behavior in canonical specs, execution detail in packets, reusable procedures here, evidence in dated records only when collected. Templates are forms, not completed artifacts. Use relative standard Markdown links; keep private Obsidian state ignored. Run the repo checker and its regression tests before committing documentation-tool changes; external links are reviewed by source relevance, not silently declared current by an offline checker.

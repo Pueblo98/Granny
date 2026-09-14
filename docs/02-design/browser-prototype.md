@@ -121,6 +121,10 @@ System sans; base app text 20 CSS pixels, headings 1.8em (1.6em narrow), support
 
 This is a formative review script, not participant-research authorization. T-108 still requires its consent/recruitment/data protocol. Do not upload personal interview notes through the prototype.
 
+## Review outcome and next design artifact
+
+Simon rejected the feature-button interaction direction after reviewing this prototype on 2026-09-14. The [conversation-first redesign plan](conversation-first-plan.md) is now the next review artifact. The old prototype remains intact as fixture/test and failure-path reference. Passing checks below remain valid historical mock evidence, not UI acceptance. Do not polish the tile Home or implement a replacement without the requested plan review.
+
 ## Actual validation and remaining evidence
 
 Final checks on 2026-09-14 used existing Node 26.8.1 and Chromium 151.0.7922.173, with no installed dependencies:

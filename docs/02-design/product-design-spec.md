@@ -16,6 +16,10 @@ related:
 
 **Proposed interaction contract.** Product behavior is owned by the [PRD](../01-product/prd.md); [journeys](../01-product/user-journeys.md) define sequence; [design system](design-system.md) defines component contracts; [brand](brand-and-visual-identity.md) supplies candidate visual values. The [browser prototype](browser-prototype.md) now supplies a self-tested, low-fidelity simulation; Figma is paused. User/device tests remain unrun, and the prototype's explicit gaps do not weaken this contract.
 
+## Current design revision request
+
+Simon rejected the feature-button Home on 2026-09-14 and requested a conversation-led minimal interface. [Conversation-first plan](conversation-first-plan.md) is the proposed replacement for review. The shortcut-heavy Home and multi-page presentation below describe the previous proposal; they are not authorization to perpetuate that layout. Detailed new screen/component definitions will be updated after plan review. Existing permission, exact-confirmation, Stop, privacy and accessibility obligations remain in force; no UI code changed in this planning task.
+
 ## Experience architecture
 
 Granny opens as an ordinary Android application, not a replacement OS. MVP does not require the default launcher role. Home, task, history and settings are app-owned. External apps, Android navigation, permission dialogs, IME, authentication, status/navigation bars and capture selectors remain system/app-owned. Optional launcher role is a separate V1 feasibility choice, not deeper authority.
