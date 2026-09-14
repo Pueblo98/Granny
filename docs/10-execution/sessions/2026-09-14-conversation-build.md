@@ -16,6 +16,8 @@ branch: feature/conversation-first
 artifact_commit: a8d770cb47fe4a9bc60ad7f48968ea169a716d64
 next_action: Simon reviews the integrated conversation and proposed visual treatments; main remains unmerged
 changed_paths:
+  - .github/workflows/repository-maintenance.yml
+  - docs/10-execution/cockpit-guide.md
   - AGENTS.md
   - README.md
   - design-tokens/README.md
@@ -95,7 +97,7 @@ Node 26.8.1; Chromium 151.0.7922.173; no dependency installation.
 | node prototypes/stage-1/browser-check.mjs | 124 assertions passed; no runtime exceptions or external requests | Actual Chromium workflows, keyboard/Escape, aliases/history/reset, failures, protected screen, mark-read, dialog Stop and matched visual treatments |
 | python3 scripts/validate-docs.py | PASS, 0 errors | Local metadata/links/IDs/source integrity; external URLs not fetched |
 | python3 -m unittest discover -s scripts -p 'test_*.py' | 46 passed | Documentation/cockpit/handoff tooling; an expected invalid-ref test prints a Git diagnostic |
-| Cockpit freshness / committed handoff / whitespace | Final checks recorded with publication below | Repository maintenance, not product/device evidence |
+| Cockpit freshness / committed handoff / whitespace | PASS on committed 2653eb6; rerun after publication record | Repository maintenance, not product/device evidence |
 
 Full-browser artifacts: /tmp/granny-conversation-review-xmp0eb/ contains results.json, workflow screenshots, responsive layouts and matched message comparisons. Root visually inspected Home, message preview, Open Day photos, Bright Signal, landscape and enlarged text. Tests include 840×1100, 1200×800, 600×960, 360×720 and constrained 360×480; combined 300% also exercises 840×900 and 600×520. A measured-height fallback puts the composer in document flow when a sticky composer would consume too much space.
 
@@ -107,11 +109,13 @@ On 2026-09-15 Simon answered “Continue this direction” after the message che
 
 Preview is running at **http://127.0.0.1:4173/** from **/tmp/granny-conversation-first**, branch **feature/conversation-first**. Reviewer mode: **http://127.0.0.1:4173/?review=1**. From that worktree, start it with: node prototypes/stage-1/serve.mjs 4173. The task-owned server was restarted after exact-allowlist changes; unrelated servers/worktrees were not stopped/deleted.
 
-Publication checkpoint: task-branch push and authorized draft PR follow maintenance checks; the actual publication result will be appended here. Main remains unmerged.
+Published task branch at 2653eb6 with remote SHA independently matched. Authorized [draft PR #6](https://github.com/Pueblo98/Granny/pull/6) is open; main remains unmerged. Initial CI caught a calendar mismatch: Madrid was already 15 September while the UTC runner still saw 14 September. The scoped workflow now uses the documented Europe/Madrid editorial calendar; strict future-date validation remains enabled. Final CI result is recorded below.
 
 Primary main is 5ffa589 with user-owned docs/Development.canvas and docs/05-safety-privacy/action-policy.md edits excluded from this task. No private Obsidian settings were changed. Unmerged task-branch work is **not visible in the primary docs/ vault**; no post-merge visibility claim is made.
 
 ## Remaining design decisions and evidence
+
+The final read-only primary-checkout inspection also found a new untracked user note, docs/To DO.md. It was left untouched and is not part of this branch. A SHA-256 comparison of the live port-4173 app.js response and the task-worktree file matched exactly.
 
 The modest English grammar, fixed 14 September 2026 fixture clock, local illustrated photos and silent player deliberately limit the experiment. There is no general AI, real permission/account access, device observation, sending, streaming or persistence. Normal messaging ends at an **unsent** draft; hypothetical admitted-send is reviewer-only fiction.
 

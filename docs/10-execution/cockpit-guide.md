@@ -2,7 +2,7 @@
 title: "Cockpit ownership, refresh and session handoffs"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [execution, cockpit, workflow]
 related:
   - ../Cockpit.md
@@ -52,6 +52,8 @@ Record fields: `record_type: session`; `session_state` = active/review/complete/
 New handoffs also list `changed_paths`: exact repository-relative paths covered by that session (including deletions), without globs. The record itself and generated snapshot are implicitly covered. Several changed records may jointly cover a PR. Historical records need no retroactive migration. A final record must not remain `active`; use `review`, `complete`, `blocked` or `revision-requested` honestly.
 
 ## Refresh and check
+
+Editorial dates use **Europe/Madrid**, Simon's working time zone. CI sets this same time zone so a local edit after midnight is not falsely rejected while the UTC runner is still on the previous day. Future-date validation remains strict; this is not a grace period or a check bypass. Run local maintenance in that time zone when working elsewhere.
 
 From the task worktree root:
 
