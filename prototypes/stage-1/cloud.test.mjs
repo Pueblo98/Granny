@@ -407,6 +407,15 @@ test("cursor tail must match authoritative snapshot state", async () => {
   assert.equal(h.runtime.view.connection, "uncertain");
   assert.equal(h.runtime.view.current, null);
 });
+test("empty snapshots cannot invent completed execution", async () => {
+  const h = harness();
+  await connected(h);
+  h.queue.push({body: snap('completed', [], {epoch: 1, cursor: 0})});
+  assert.equal(await h.runtime.command('turn', {text: 'x'}), false);
+  assert.equal(h.runtime.view.error, 'invalid_snapshot');
+  assert.equal(h.runtime.view.current, null);
+  assert.notEqual(h.runtime.view.snapshot.state, 'completed');
+});
 test("cancel attempts backend while connection is uncertain", async () => {
   const h = harness();
   await connected(h);

@@ -130,7 +130,8 @@ function create(options = {}) {
     return !!s && s.version === VERSION && typeof s.sessionId === "string" &&
            [ "demo", "live" ].includes(s.mode) && Number.isInteger(s.epoch) &&
            s.epoch >= 0 && Number.isInteger(s.cursor) && s.cursor >= 0 &&
-           STATES.has(s.state) && Array.isArray(s.events);
+           STATES.has(s.state) && Array.isArray(s.events) &&
+           (s.cursor > 0 || s.state === 'idle');
   }
   function ingest(snapshot, expectedSession, requestGeneration) {
     if (requestGeneration !== generation)

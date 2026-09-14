@@ -20,6 +20,17 @@ changed_paths:
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-002.md
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-003.md
   - prototypes/stage-1/browser-check.mjs
+  - docs/02-design/browser-prototype.md
+  - prototypes/stage-1/README.md
+  - prototypes/stage-1/app.js
+  - prototypes/stage-1/index.html
+  - prototypes/stage-1/styles.css
+  - prototypes/stage-1/serve.mjs
+  - prototypes/stage-1/serve.test.mjs
+  - prototypes/stage-1/browser-driver.mjs
+  - prototypes/stage-1/runtime-browser-check.mjs
+  - prototypes/stage-1/cloud.js
+  - prototypes/stage-1/cloud.test.mjs
 ---
 
 # Frontend runtime coordination
@@ -32,8 +43,14 @@ Simon authorized continuing the existing conversation-first frontend and coordin
 
 Frontend worktree /tmp/granny-conversation-first and branch feature/conversation-first are unchanged; inspected clean at 09fa64d. Backend worktree exists at /tmp/granny-mcp-backend-integration on feature/mcp-backend-integration, initially at 5ffa589 with no peer topic message. Qwen bff087c diverges from the frontend after 387662f; newer frontend files must be preserved.
 
-The kickoff precedes cross-cutting changes. Backend contract is not yet consumed; connected mode is not yet implemented. Prior delivered scripted evidence is linked in the kickoff, not relabeled as integrated evidence. Rollback is a scoped adapter/UI revert, leaving scripted mode available.
+The kickoff preceded cross-cutting changes. FE001 published at 7e919ae; FE002 at 241e20d; technical contract agreement FE003 and six additional browser checks at de942c0. Backend's granny.conversation.v1 contract at aea7f44 is being consumed in an explicit connected-mode extension. Backend retains its contract/runtime and shared canonical documentation; frontend retains browser-prototype.md and prototype README. Prior delivered scripted evidence is not relabeled as integrated evidence. Rollback is a scoped adapter/UI revert, leaving scripted mode available.
 
 ## Validation and publication
 
-Kickoff documentation checks and exact publication reference will be recorded at the next checkpoint. This record is a checkpoint for review while the authorized task continues, not a claim the integrated slice is complete. Messages are written only in the frontend worktree; peer and primary directories are read directly. No polling daemon or automatic integration is installed.
+Kickoff/acknowledgment documentation, cockpit and whitespace checks passed; each checkpoint was committed and published with remote SHA verification. Integrated frontend rerun: 67 model, 7 scheduler, 23 client and 1 static-server test passed; 130 scripted browser assertions passed (Chrome 151.0.7922.173), no exceptions or external requests, artifacts /tmp/granny-conversation-review-Qowc7b. These include unfinished input, selection, scroll and editor/settings retention. Connected frontend wire-fixture browser checks passed 24 assertions; tablet/narrow screenshots inspected at /tmp/granny-conversation-review-UBsXZ7. Wire fixtures are not actual backend integration evidence.
+
+Root separately ran backend-owned runtime.test.mjs at published e783d17: 9/9 real MCP tests passed, including real local write/readback, cancellation/unknown and exact-content cases. This ran from the backend checkout read-only without changing its files/index or starting a second backend implementation. Browser-to-real-MCP combined testing is still pending incorporation of the frontend checkpoint by the backend session. Host sandbox denied loopback listening; browser/static/MCP test commands were rerun with explicit tool permission, no checks bypassed. Documentation/cockpit/handoff/whitespace checks and 46 Python tooling tests passed.
+
+Sol's isolated frontend-client lane owns only cloud.js and cloud.test.mjs. Terra independently reviewed new root-owned UI code read-only. Root found replay/approval and malformed-event gaps in the first adapter review and requested regression fixes before integration; UI review prompted persistent unknown-outcome disclosure and explicit unacknowledged-turn copy. No worker edited shared canonical docs or either peer session's checkout/index.
+
+This record is a checkpoint for review while the authorized task continues, not a claim the integrated slice is complete. Messages are written only in the frontend worktree; peer and primary directories are read directly. No polling daemon or automatic integration is installed. Primary main still has user-owned Canvas/action-policy edits and an untracked note; all are untouched. Branch-only messages are not visible in the normal main Obsidian vault. Existing draft PR6 remains unmerged.
