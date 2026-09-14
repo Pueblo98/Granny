@@ -6,7 +6,7 @@
   const state = P.create();
   const $ = id => document.getElementById(id);
   const thread = $('thread'), composerText = $('request');
-  let scheduler, pending = null, dialogReturn = null, menuPanel = '';
+  let scheduler, pending = null, dialogReturn = null, menuPanel = '', lastAnnouncement = '', restoreFocus = false;
 
   function atBottom() { return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100; }
   function scrollIfReadingEnd(wasAtBottom) { if (wasAtBottom) requestAnimationFrame(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'auto' })); }
@@ -16,7 +16,7 @@
     const wasAtBottom = atBottom();
     if (scheduler && scheduler.elapse) scheduler.elapse();
     const changed = P.dispatch(state, event, value, guard);
-    if (changed) { render(); if (scheduler && scheduler.sync) scheduler.sync(); scrollIfReadingEnd(wasAtBottom); }
+    if (changed) { restoreFocus = true; render(); if (scheduler && scheduler.sync) scheduler.sync(); scrollIfReadingEnd(wasAtBottom); }
     return changed;
   }
   function node(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
@@ -46,9 +46,34 @@
     }, 'primary'));
     c.append(fields); return c;
   }
+  function photoViewer(items, start, source) {
+    let index = start;
+    const dialog = document.createElement('dialog');
+    const draw = () => {
+      const item = items[index], wrap = document.createElement('div');
+      wrap.append(node('h2', '', item.title || 'Fictional photo'), node('p', 'notice', item.description || 'Fictional illustration.'));
+      const image = document.createElement('img'); image.src = 'assets/' + (item.asset || 'garden.svg'); image.alt = item.alt || item.description || 'Fictional illustration'; wrap.append(image);
+      const actions = node('div', 'dialog-actions'); actions.append(button('Previous', () => { index = (index + items.length - 1) % items.length; draw(); }), button('Next', () => { index = (index + 1) % items.length; draw(); }), button('Close', () => dialog.close())); wrap.append(actions); dialog.replaceChildren(wrap);
+    };
+    draw(); document.body.append(dialog); dialog.addEventListener('close', () => { dialog.remove(); source?.focus(); }); dialog.showModal();
+  }
+  function resultView(task) {
+    const result = task.result || {}, c = node('div', 'result-detail');
+    if (task.kind === 'photos' && result.photos) {
+      const gallery = node('div', 'photo-gallery'); result.photos.forEach((item, index) => { const b = button(item.title || 'Open fictional photo', () => photoViewer(result.photos, index, b), 'photo-item'); const img = document.createElement('img'); img.src = 'assets/' + (item.asset || 'garden.svg'); img.alt = item.alt || item.description || 'Fictional illustration'; b.prepend(img); gallery.append(b); }); c.append(gallery); if (result.uncertainDate) c.append(node('p', 'notice', 'The date is uncertain in this fictional example.'));
+    } else if (task.kind === 'explain' && result.explanation) {
+      c.append(node('p', '', result.explanation)); const a = node('div','inline-actions'); a.append(button('Explain more simply', () => dispatch('submit','simpler')), button('Return to the article', () => dispatch('submit','return'), 'primary')); c.append(a);
+    } else if (task.kind === 'media' && result.track) {
+      c.append(node('p', '', result.track + (result.playing ? ' is playing in this simulation.' : ' is paused in this simulation.'))); c.append(button(result.playing ? 'Pause' : 'Resume', () => dispatch('playback'), 'primary'));
+    } else if (task.kind === 'readability' && result.scope) {
+      c.append(node('p', '', result.externalOnly ? 'This setting belongs to another app. I can explain where to change it, but I have not changed it.' : 'Granny text is ' + Math.round((result.scale || state.scale) * 100) + '%.'));
+      if (!result.externalOnly) c.append(button('Restore previous size', () => dispatch('restoreScale')));
+    }
+    return c;
+  }
   function controls(task, c) {
     const row = node('div', 'inline-actions'), stage = task.stage;
-    if (stage === 'clarify-person' || stage === 'clarify-channel') {
+    if (task.choices && task.choices.length) {
       (task.choices || []).forEach(choice => row.append(button(choice.label, () => dispatch('choose', choice.value), 'choice')));
     } else if (stage === 'clarify-body') {
       const edit = document.createElement('textarea'); edit.rows = 3; edit.value = task.slots && task.slots.body || ''; edit.setAttribute('aria-label','Message words');
@@ -57,7 +82,7 @@
       const approval = { taskId:task.id, version:task.version, signature:task.permit && task.permit.signature };
       row.append(button('Open this draft', () => dispatch('approve', approval), 'primary', 'approval'), button('Change', () => render(true)), button('Cancel', () => dispatch('stop')));
     } else if (stage === 'expired') row.append(button('Review again', () => dispatch('renew'), 'primary', 'approval'), button('Cancel', () => dispatch('stop')));
-    else if (stage === 'unknown') row.append(button('Check it yourself', () => dispatch('stop'), 'primary'));
+    else if (stage === 'unknown') row.append(button('Check it yourself', () => dispatch('manual'), 'primary'), button('I understand', () => dispatch('acknowledge')));
     c.append(row);
   }
   function render(editing) {
@@ -66,11 +91,12 @@
     $('welcome').hidden = !!(state.turns && state.turns.length);
     (state.turns || []).forEach(t => thread.append(turn(t.role, t.text)));
     if (state.task) {
-      const task = state.task, c = card('Granny', taskText(task));
+      const task = state.task, c = card('Granny', taskText(task)); c.querySelector('h2').tabIndex = -1;
       if (task.kind === 'message' && ['preview','expired','acting','waiting','verifying','completed','unknown','stopped','failed'].includes(task.stage)) c.append(editing && task.stage === 'preview' ? editablePreview(task) : preview(task));
+      if (task.kind !== 'message' && (task.result || ['completed','no-matches'].includes(task.stage))) c.append(resultView(task));
       controls(task, c); thread.append(c);
       if (editing) c.querySelector('input, textarea')?.focus();
-      announce(taskText(task));
+      if (lastAnnouncement !== taskText(task)) { lastAnnouncement = taskText(task); announce(lastAnnouncement); }
     }
     if (menuPanel === 'history') {
       const history = card('Recent activity', (state.history || []).length ? 'This tab remembers only the kind of task and its outcome.' : 'There is no completed activity in this tab yet.');
@@ -82,10 +108,17 @@
       const settings = card('Text size', 'Choose a comfortable size for this prototype. Other apps are unchanged.');
       const actions = node('div', 'inline-actions'); [1,1.15,1.3,1.5].forEach(scale => actions.append(button(Math.round(scale * 100) + '%', () => { dispatch('setScale', scale); dispatch('applyScale'); }, state.scale === scale ? 'primary' : ''))); settings.append(actions); thread.append(settings);
     }
+    if (menuPanel === 'help') thread.append(card('What you can ask', 'You can ask to find fictional family photos, explain a supplied screen, play a fictional song, make Granny’s text easier to read, or open an unsent fictional message draft.'));
+    if (menuPanel === 'preferences') {
+      const preferences = card('Preferences', 'These choices stay only in this tab.');
+      preferences.append(button(state.settings && state.settings.voice ? 'Talk prompts on' : 'Talk prompts off', () => { state.settings.voice = !(state.settings && state.settings.voice); render(); }));
+      thread.append(preferences);
+    }
     $('stop-button').hidden = !active();
     $('menu-button').setAttribute('aria-expanded', String(!$('menu').hidden));
-    document.documentElement.style.fontSize = (state.scale || 1) * 100 + '%';
-    if (focusKey && !editing) requestAnimationFrame(() => Array.from(thread.querySelectorAll('[data-focus-key]')).find(n => n.dataset.focusKey === focusKey)?.focus());
+    document.documentElement.style.setProperty('--app-scale', String(state.scale || 1));
+    if (focusKey && !editing && restoreFocus) requestAnimationFrame(() => { const target = Array.from(thread.querySelectorAll('[data-focus-key]')).find(n => n.dataset.focusKey === focusKey); (target || thread.querySelector('.task-card h2'))?.focus(); });
+    restoreFocus = false;
   }
   function hasWork() { return !!(state.task && state.task.kind === 'message' && !['completed','unknown','stopped','failed'].includes(state.task.stage)); }
   function ask(title, text, fn, source) { pending = fn; dialogReturn = source || document.activeElement; $('confirm-title').textContent = title; $('confirm-text').textContent = text; $('confirm-dialog').showModal(); }
@@ -116,13 +149,13 @@
   document.querySelectorAll('[data-menu]').forEach(b => b.addEventListener('click', () => {
     const what = b.dataset.menu; $('menu').hidden = true;
     if (what === 'new') { const fn = () => dispatch('reset'); hasWork() ? ask('Start a new conversation?', 'Your unfinished message details will be replaced. The words are not saved anywhere.', fn, b) : fn(); }
-    if (what === 'text' || what === 'history') { menuPanel = menuPanel === what ? '' : what; render(); }
+    if (what === 'text' || what === 'history' || what === 'help' || what === 'preferences') { menuPanel = menuPanel === what ? '' : what; render(); }
   }));
   const review = new URLSearchParams(location.search).get('review') === '1';
   if (review) {
     const panel = node('aside', 'review-panel'); panel.id = 'review-panel'; panel.setAttribute('aria-label', 'Reviewer tools');
-    panel.innerHTML = '<h2>Review tools</h2><label>Delay <select id="review-delay"><option value="0">No delay</option><option value="650" selected>650 ms</option><option value="1500">1.5 seconds</option></select></label><label>Fixture <select id="review-fault"><option value="">None</option><option value="failed">Failure</option><option value="unknown">Unknown outcome</option></select></label><div><button type="button" id="review-expire">Expire preview</button><button type="button" id="review-reset">Reset</button></div>';
-    document.body.append(panel); $('review-delay').addEventListener('change', e => dispatch('reviewer', { delay:Number(e.target.value) })); $('review-fault').addEventListener('change', e => dispatch('fault', e.target.value)); $('review-expire').addEventListener('click', () => dispatch('expire')); $('review-reset').addEventListener('click', () => hasWork() ? ask('Reset this review?', 'Your unfinished message details will be replaced.', () => dispatch('reset'), $('review-reset')) : dispatch('reset'));
+    panel.innerHTML = '<h2>Review tools</h2><label>Delay <select id="review-delay"><option value="0">No delay</option><option value="650" selected>650 ms</option><option value="1500">1.5 seconds</option></select></label><label>Outcome fixture <select id="review-fault"><option value="">None</option><option value="unknown">Unknown outcome</option></select></label><label>Review text scale <select id="review-scale"><option value="1">100%</option><option value="2">200%</option></select></label><div><button type="button" id="review-inject">Inject failure now</button><button type="button" id="review-expire">Expire preview</button><button type="button" id="review-reset">Reset</button></div>';
+    document.body.append(panel); $('review-delay').addEventListener('change', e => dispatch('reviewer', { delay:Number(e.target.value) })); $('review-fault').addEventListener('change', e => dispatch('reviewer', { fault:e.target.value })); $('review-scale').addEventListener('change', e => { document.documentElement.style.setProperty('--review-scale', e.target.value); }); $('review-inject').addEventListener('click', () => dispatch('fault', 'failed')); $('review-expire').addEventListener('click', () => dispatch('expire')); $('review-reset').addEventListener('click', () => hasWork() ? ask('Reset this review?', 'Your unfinished message details will be replaced.', () => dispatch('reset'), $('review-reset')) : dispatch('reset'));
   }
   if (window.GrannyScheduler) scheduler = window.GrannyScheduler.create({ getState:() => state, dispatch:(event,value,guard) => P.dispatch(state,event,value,guard), onChange:() => { render(); }, setTimeout:(...args) => window.setTimeout(...args), clearTimeout:(...args) => window.clearTimeout(...args), now:() => performance.now() });
   render(); if (scheduler && scheduler.sync) scheduler.sync();
