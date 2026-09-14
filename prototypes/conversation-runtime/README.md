@@ -43,9 +43,10 @@ Qwen3.8 Flash is replaceable behind provider.mjs. Prior limits retained: 20/proc
 
 ```bash
 node --test prototypes/conversation-runtime/*.test.mjs
+node prototypes/conversation-runtime/browser-check.mjs
 ```
 
-Tests use a real local stdio server for normal draft effects. Explicit adverse fixtures wrap that port to lose an acknowledgment, delay a dispatched write or corrupt readback; these faults are test-only. Provider HTTP is stubbed in deterministic tests. Browser integration uses the frontend-owned runtime-browser-check script once its committed adapter checkpoint is integrated; see the session for actual commands/results.
+Tests use a real local stdio server for normal draft effects. Explicit adverse fixtures wrap that port to lose an acknowledgment, delay a dispatched write or corrupt readback; these faults are test-only. Provider HTTP is stubbed in deterministic tests. The backend-owned browser-check.mjs drives the committed frontend through the real HTTP/MCP/store path. The frontend-owned runtime-browser-check script separately tests supplied wire fixtures; it is not MCP evidence. The CI workflow runs deterministic tests only and has no provider secret. See the session for actual commands/results.
 
 One separately authorized synthetic live interpretation, **not CI**:
 

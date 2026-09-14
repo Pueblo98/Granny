@@ -1,0 +1,27 @@
+name: Conversation runtime demo
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '26.8.1'
+      - name: Install pinned MCP dependencies without lifecycle scripts
+        working-directory: prototypes/conversation-runtime
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Test runtime and frontend contracts with no live provider
+        run: node --test prototypes/conversation-runtime/*.test.mjs prototypes/stage-1/cloud.test.mjs
+      - name: Test actual browser to local MCP demo
+        env:
+          GRANNY_CHROMIUM: /usr/bin/google-chrome
+        run: node prototypes/conversation-runtime/browser-check.mjs

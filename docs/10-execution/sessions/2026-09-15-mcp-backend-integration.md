@@ -14,7 +14,7 @@ agent: Codex backend integration session
 branch: feature/mcp-backend-integration
 next_action: Frontend consumes the agreed runtime; finish adversarial HTTP/provider and browser integration checks.
 changed_paths:
-  - docs/10-execution/messages/2026-09-15-ui-backend-be-005.md
+  - .github/workflows/conversation-runtime.yml
   - docs/01-product/traceability.md
   - docs/03-agent/tool-contracts.md
   - docs/04-architecture/conversation-runtime-contract.md
@@ -28,9 +28,12 @@ changed_paths:
   - docs/10-execution/messages/2026-09-15-ui-backend-be-002.md
   - docs/10-execution/messages/2026-09-15-ui-backend-be-003.md
   - docs/10-execution/messages/2026-09-15-ui-backend-be-004.md
+  - docs/10-execution/messages/2026-09-15-ui-backend-be-005.md
+  - docs/10-execution/messages/2026-09-15-ui-backend-be-006.md
   - docs/README.md
   - prototypes/conversation-runtime/.gitignore
   - prototypes/conversation-runtime/README.md
+  - prototypes/conversation-runtime/browser-check.mjs
   - prototypes/conversation-runtime/live-smoke.mjs
   - prototypes/conversation-runtime/mcp-host.mjs
   - prototypes/conversation-runtime/mcp-server.mjs
@@ -66,3 +69,7 @@ Actual MCP stdio handshake/discovery/contact read passed outside sandbox; SDK 2.
 - `node --test prototypes/conversation-runtime/runtime.test.mjs prototypes/conversation-runtime/provider.test.mjs prototypes/conversation-runtime/server.test.mjs`: **22 tests passed**, no paid calls. Actual MCP handshake/discovery/draft write/separate readback; explicit fault ports for pending/lost acknowledgment and hostile observations; strict HTTP/provider boundary tests. Exact protocol 2025-11-25 asserted with SDK 2.0.0.
 - `node --env-file=/absolute/private/.env prototypes/conversation-runtime/live-smoke.mjs --live`: **FAIL**, one synthetic provider call, 929 ms; model returned chat instead of structured proposal (`state:idle`, `event:chat`, `exact:false`), zero draft writes. No retry. Text/credentials not logged; cost was not collected, so this is not a reconciled usage bill. Live semantic reliability is unproven; the deterministic complete slice cannot substitute for that evidence.
 - Docs validator and whitespace checks passed during canonical update. Frontend c7cdd82 / ready message ff2f4a8 now published; integrated browser check still pending combination.
+
+## Actual combined browser checkpoint
+
+`node prototypes/conversation-runtime/browser-check.mjs`: 17 assertions passed through actual browser UI, HTTP runtime, MCP stdio and isolated demo files. Includes exact-body edit, ambiguity, explicit confirmation, independent stored read, stable replay IDs and preview Stop. Screenshot inspected. Two initial failures were test readiness/label selector mistakes; corrected only backend-owned test. No frontend implementation changes. `python3 -m unittest discover -s scripts -p 'test_*.py'`: 46 passed. CI workflow added with immutable actions and pinned SDK install, stub-only; hosted run unrun because no PR/main action authorized. Peer requests 8917f56 client correction before final acceptance; pending integration.
