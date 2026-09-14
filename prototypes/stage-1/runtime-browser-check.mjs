@@ -40,7 +40,8 @@ const wire = async () => b.evaluate(`(() => {
     const body = options.body ? JSON.parse(options.body) : null;
     w.requests.push({url, body});
     if (w.fail) throw new TypeError('fixture connection unavailable');
-    if (url.endsWith('/config')) return {ok:true, status:200, json: async () => ({version, available:true, liveAvailable:false, model:'stub',limits:{}})};
+    if (url.endsWith('/config')) return {ok:true, status:200, json: async () => ({version, available:true, liveAvailable:w.liveAvailable === true, model:'stub',limits:{}})};
+    if (url.endsWith('/session') && body?.mode) w.snapshot.mode = body.mode;
     if (body?.kind === 'cancel') w.emit({type:'cancellation', state:w.snapshot.state === 'unknown' ? 'unknown' : 'stopped',
       data:{effect:w.snapshot.state === 'unknown' ? 'unknown' : 'none'}, epoch:w.snapshot.epoch+1});
     if (w.reject && body?.kind === w.reject.kind) {
@@ -146,6 +147,24 @@ try {
   await b.click('#stop-button'); await waitState('stopped');
   check(!await b.evaluate('!!document.querySelector("#review-panel")'), 'reviewer controls absent from connected participant view');
   check(await b.evaluate('localStorage.length === 0 && sessionStorage.length === 0'), 'connected client adds no browser persistence');
+  await b.navigate(); await wire(); await menu('connection');
+  check(!await b.evaluate('[...document.querySelectorAll("button")].some(b=>b.textContent === "Review live conversation consent")'), 'live entry hidden before availability discovery');
+  await button('Check live model availability');
+  await b.waitFor('document.body.innerText.includes("The live model is unavailable")');
+  check(await b.evaluate('window.__wire.requests.every(r=>!r.body?.mode)'), 'availability check creates no session');
+  await b.evaluate('window.__wire.liveAvailable = true');
+  await button('Check live model availability');
+  await b.waitFor('[...document.querySelectorAll("button")].some(b=>b.textContent === "Review live conversation consent")');
+  await button('Review live conversation consent');
+  check((await text()).includes('will go to OpenRouter/Qwen'), 'live mode has separate provider-egress disclosure');
+  check(await b.evaluate('window.__wire.requests.every(r=>!r.body?.mode)'), 'opening consent creates no live session');
+  await b.evaluate("new Promise(resolve => { const dialog = document.querySelector('#confirm-dialog'); dialog.addEventListener('close', resolve, {once:true}); dialog.querySelector('button[value=cancel]').click(); })");
+  check(await b.evaluate('window.__wire.requests.every(r=>!r.body?.mode)'), 'declining consent has no session side effect');
+  await button('Review live conversation consent');
+  await b.click('#confirm-dialog button[value=confirm]'); await waitState('idle');
+  check(await b.evaluate('window.__wire.requests.some(r=>r.body?.mode === "live" && r.body.consent === true)'), 'affirmative consent binds a live session');
+  check((await text()).includes('fictional text goes to OpenRouter'), 'persistent mode label identifies live egress');
+  check(await b.evaluate('window.__wire.requests.every(r=>r.body?.kind !== "turn")'), 'live connection makes no model turn automatically');
   check(b.errors.length === 0, 'no browser exceptions');
   check(b.network.every(url => url.startsWith(b.base) || url === 'about:blank'), 'no external runtime requests');
   console.log(JSON.stringify({checks, evidence:'frontend wire fixtures, not real MCP', screenshots:b.output, errors:b.errors},null,2));

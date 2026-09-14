@@ -35,7 +35,7 @@ Try `Hello`, then `Tell David Brother "Meet at six.  🌱" via Example Messages`
 node --env-file=/absolute/path/to/private/.env prototypes/conversation-runtime/server.mjs --live
 ```
 
-The existing private env defines OPENROUTER_API_KEY; never copy it into the checkout, browser, screenshots or command arguments. --live only makes the route available; explicit UI consent and a live session are still required. No paid request on page load/session creation. Synthetic text only. Latest input plus at most ten bounded prior conversation messages may leave the machine; no MCP output, confirmation, draft result, private file or secret enters model context. No raw transcript logging.
+The existing private env defines OPENROUTER_API_KEY; never copy it into the checkout, browser, screenshots or command arguments. --live only makes the route available; explicit UI consent and a live session are still required. Use Menu → Demo connection → Check live model availability → Review live conversation consent. No paid request on page load/session creation. Synthetic text only. Latest input plus at most ten bounded prior conversation messages may leave the machine; no MCP output, confirmation, draft result, private file or secret enters model context. No raw transcript logging.
 
 Qwen3.8 Flash is replaceable behind provider.mjs. Prior limits retained: 20/process, six/minute, one in flight, 768 output tokens, 25s timeout, required parameter support, collection deny, no fallback, price ceilings $0.15/M input and $0.47/M output. No implicit retry or account-wide billing guarantee. Restart resets process counters, not provider charges. Do not run repeated live sessions to bypass caps.
 
@@ -44,6 +44,7 @@ Qwen3.8 Flash is replaceable behind provider.mjs. Prior limits retained: 20/proc
 ```bash
 node --test prototypes/conversation-runtime/*.test.mjs
 node prototypes/conversation-runtime/browser-check.mjs
+node prototypes/conversation-runtime/live-consent-check.mjs
 ```
 
 Tests use a real local stdio server for normal draft effects. Explicit adverse fixtures wrap that port to lose an acknowledgment, delay a dispatched write or corrupt readback; these faults are test-only. Provider HTTP is stubbed in deterministic tests. The backend-owned browser-check.mjs drives the committed frontend through the real HTTP/MCP/store path. The frontend-owned runtime-browser-check script separately tests supplied wire fixtures; it is not MCP evidence. The CI workflow runs deterministic tests only and has no provider secret. See the session for actual commands/results.

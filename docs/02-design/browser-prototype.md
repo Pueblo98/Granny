@@ -18,6 +18,8 @@ related:
 
 # Conversation-first browser experience
 
+Current connected runtime: [versioned local backend/MCP contract](../04-architecture/conversation-runtime-contract.md). Scripted remains default; local demo uses a stub model with actual MCP/store operations. Explicit live synthetic consent is available only when the backend enables it; the one live proposal check failed, so model reliability is not established.
+
 ## Authority, artifact and limits
 
 Simon authorized the local conversation-first build on 2026-09-14 and asked to continue its working message checkpoint direction on 2026-09-15. The [direction and authority record](conversation-first-plan.md) distinguishes exploration from final interaction/brand acceptance. The [session handoff](../10-execution/sessions/2026-09-14-conversation-build.md) owns actual integrated checks, reviewer findings and publication.
@@ -111,3 +113,10 @@ Final checks on 2026-09-14 used existing Node 26.8.1 and Chromium 151.0.7922.173
 Home at 1200 and confirmation at 360/840 were screenshot-inspected. Generated screenshots and the isolated browser profile remain temporary local review artifacts, not committed product assets. Browser checks can be reproduced from the source; exact temporary paths are printed per run.
 
 Canonical EVAL-001–017, physical Android tests and human studies remain unrun. This is a design-state mock, not an independent action verifier, production authorization core or proof of the product thesis.
+
+
+## Delegated live synthetic conversation entry — 2026-09-15
+
+Under Simon's backend integration mission and frontend's published FE006 file-scoped handoff, Menu → Demo connection now offers **Check live model availability**. Only an explicitly enabled backend with liveAvailable exposes **Review live conversation consent**. Separate consent names synthetic conversation egress to OpenRouter/Qwen; cancel makes no session, and confirming creates a mode-bound session without a model call. Text submission starts interpretation. Default remains scripted; connected demo remains stub-only. Keys never enter the browser. No recording, account access, real sending, new capabilities or increased caps.
+
+Live-mode snapshots must match the explicitly consented mode. Mode labels and privacy text disclose provider egress, while exact draft confirmation and backend verification stay unchanged. Unknown/Stop/replay fences remain in force. Client/wire and actual live-mode HTTP/MCP tests use a stub provider, not paid model evidence. The backend's single live Qwen check failed to propose a structured draft; the mode entry does not imply reliable language interpretation. Existing interaction layout/style/other component behavior is unchanged by this delegated extension.

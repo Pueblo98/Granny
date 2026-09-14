@@ -24,7 +24,7 @@ function create(options = {}) {
   let sessionId = null, cursor = 0, epoch = 0, generation = 0, timer = null,
       polling = false, controller = null, previewRevision = 0,
       previewAcceptedRevision = -1;
-  let quarantined = false;
+  let quarantined = false, requestedMode = "demo";
   const eventIds = new Set();
   let data = {
     connection : "disconnected",
@@ -128,7 +128,7 @@ function create(options = {}) {
   }
   function snapshotValid(s) {
     return !!s && s.version === VERSION && typeof s.sessionId === "string" &&
-           s.mode === 'demo' && Number.isInteger(s.epoch) &&
+           s.mode === requestedMode && Number.isInteger(s.epoch) &&
            s.epoch >= 0 && Number.isInteger(s.cursor) && s.cursor >= 0 &&
            STATES.has(s.state) && Array.isArray(s.events) &&
            s.events.every(e => e && Number.isInteger(e.seq) && e.seq > 0 && e.seq <= s.cursor) &&
@@ -276,9 +276,12 @@ function create(options = {}) {
         recover();
       }, immediate ? 0 : pollMs);
   }
-  async function connect() {
+  async function connect({mode = "demo", consent = false} = {}) {
+    if (!["demo", "live"].includes(mode) || (mode === "live" && consent !== true))
+      return false;
     if (data.connection !== "disconnected")
       return false;
+    requestedMode = mode;
     const g = ++generation;
     data.connection = "connecting";
     data.error = null;
@@ -289,7 +292,7 @@ function create(options = {}) {
         body : JSON.stringify({
           version : VERSION,
           requestId : uuid(),
-          mode : "demo",
+          mode : requestedMode,
           consent : true
         })
       },

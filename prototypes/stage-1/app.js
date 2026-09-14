@@ -12,7 +12,8 @@
   // state/timers are never used to advance or verify a connected request.
   let runtime = null, runtimeMode = false, runtimeView = null,
       runtimeEditor = null, runtimePreview = null, runtimeTurns = [],
-      runtimeQuarantined = false;
+      runtimeQuarantined = false, runtimeProviderMode = "demo",
+      runtimeConfig = null, runtimeConfigPending = false, runtimeConfigError = false;
   let scheduler, pending = null, dialogReturn = null, menuPanel = '',
                  lastAnnouncement = '', restoreFocus = false, editor = null,
                  editingAliasId = null, panelReturn = null, panelScroll = 0,
@@ -213,7 +214,29 @@
     const copy = runtimeCopy();
     if (lastAnnouncement !== copy) { lastAnnouncement = copy; announce(copy); }
   }
-  function connectRuntime() {
+  async function discoverLiveRuntime() {
+    if (runtimeConfigPending) return;
+    runtimeConfigPending = true;
+    runtimeConfigError = false;
+    render();
+    try {
+      const response = await fetch('/api/runtime/config', {signal: AbortSignal.timeout(5000)});
+      const config = await response.json();
+      if (!response.ok || config.version !== window.GrannyRuntime?.VERSION ||
+          config.available !== true || typeof config.liveAvailable !== 'boolean')
+        throw new Error('runtime_unavailable');
+      runtimeConfig = {liveAvailable: config.liveAvailable};
+    } catch { runtimeConfig = null; runtimeConfigError = true; }
+    finally {
+      runtimeConfigPending = false;
+      if (menuPanel === 'connection') {
+        render();
+        announce(runtimeConfig?.liveAvailable ? 'Live synthetic conversation is available. Review the separate consent before connecting.' : 'The live model is unavailable. The local demo remains separate.');
+      }
+    }
+  }
+  function connectRuntime(mode = 'demo') {
+    if (!['demo', 'live'].includes(mode) || (mode === 'live' && !runtimeConfig?.liveAvailable)) return;
     if (runtimeQuarantined) return;
     if (!window.GrannyRuntime) { announce('The connected client is not available in this build.'); return; }
     dispatch('stop');
@@ -223,6 +246,7 @@
     runtimePreview = null;
     runtimeEditor = null;
     runtimeMode = true;
+    runtimeProviderMode = mode;
     const client = window.GrannyRuntime.create({onChange: view => {
       if (runtime !== client || !runtimeMode) return;
       const wasAtBottom = atBottom();
@@ -234,7 +258,7 @@
     }});
     runtime = client;
     runtimeView = client.view;
-    client.connect();
+    client.connect({mode, consent: true});
     render();
     focus(composerText);
   }
@@ -575,7 +599,7 @@
     $('mode-notice').hidden = !runtimeMode && !runtimeQuarantined;
     $('mode-notice').textContent = runtimeQuarantined
       ? 'An earlier connected draft outcome is unknown. No retry or new connected session is available in this tab. Switching views does not undo a draft.'
-      : 'Connected local demo · fictional people · unsent drafts only';
+      : (runtimeProviderMode === 'live' ? 'Live model · fictional text goes to OpenRouter · unsent demo drafts only' : 'Connected local demo · fictional people · unsent drafts only');
     composerText.placeholder = runtimeMode
       ? 'For example: Tell David Brother "Meet at six." via Example Messages'
       : 'For example: Tell David I’ll call after dinner.';
@@ -752,7 +776,7 @@
     if (menuPanel === 'privacy') {
       const privacy = card(
           'Privacy in this prototype',
-          runtimeMode ? 'Connected local demo: fictional requests go to the loopback runtime. Demo drafts are stored by that process, not sent. No microphone or Android access occurs.' : 'Scripted data stays in this tab’s memory. No microphone, account, tracking or background storage is used. Please use fictional details.');
+          runtimeMode ? (runtimeProviderMode === 'live' ? 'Live synthetic conversation: your new text and bounded conversation history go through the local runtime to OpenRouter/Qwen. Only fictional details are permitted. No microphone, screen, real contacts or Android access occurs. Browser reset does not delete provider-held data.' : 'Connected local demo: fictional requests go to the loopback runtime. Demo drafts are stored by that process, not sent. No microphone or Android access occurs.') : 'Scripted data stays in this tab’s memory. No microphone, account, tracking or background storage is used. Please use fictional details.');
       privacy.dataset.panel = 'privacy';
       privacy.append(node(
           'p', '',
@@ -769,7 +793,7 @@
     }
     if (menuPanel === 'connection') {
       const connection = card('Demo connection', runtimeMode
-        ? 'You are using the connected local demo. Its runtime creates and independently reads back a real local demo draft; no message is sent.'
+        ? (runtimeProviderMode === 'live' ? 'You are using live synthetic conversation through OpenRouter/Qwen. Draft creation and verification stay in the local demo; no message is sent.' : 'You are using the connected local demo. Its runtime creates and independently reads back a real local demo draft; no message is sent.')
         : 'The default experience is scripted in this tab. You can separately try the local runtime when its loopback server is running.');
       connection.dataset.panel = 'connection';
       connection.append(node('p', '', 'Use fictional details only. Local demo mode uses a stub interpreter and local MCP tools, not a cloud model. It does not access accounts or control Android. The runtime temporarily stores synthetic drafts; browser reset does not delete them.'));
@@ -780,6 +804,16 @@
         if (hasWork()) ask('Switch to the local demo?', 'This stops the unfinished scripted request. Your entered words and text size stay here.', connectRuntime);
         else connectRuntime();
       }, 'primary'));
+      if (!runtimeMode && !runtimeQuarantined) {
+        const discover = button(runtimeConfigPending ? 'Checking availability…' : 'Check live model availability', discoverLiveRuntime);
+        discover.disabled = runtimeConfigPending;
+        connection.append(discover);
+        if (runtimeConfig?.liveAvailable) connection.append(button('Review live conversation consent', () => ask(
+          'Use live synthetic conversation?',
+          'Use fictional text only. Your new conversation and up to ten earlier messages will go to OpenRouter/Qwen. Model interpretation is experimental and may fail. Creating a draft still needs its own exact confirmation. No recording, real accounts or sending are enabled. Continue starts a fresh conversation; it makes no model call until you submit text.',
+          () => connectRuntime('live'))));
+        else if (runtimeConfig || runtimeConfigError) connection.append(node('p', 'notice', 'The live model is unavailable. You can still try the local demo.'));
+      }
       connection.append(button('Return to conversation', returnToConversation));
       thread.append(connection);
     }

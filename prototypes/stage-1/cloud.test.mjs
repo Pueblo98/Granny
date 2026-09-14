@@ -507,3 +507,23 @@ test("effect_unknown quarantine is sticky across stale preview recovery",
        assert.equal(await h.runtime.command("turn", {text : "retry"}), false);
        assert.equal(h.calls.length, count);
      });
+
+
+test("live requires explicit consent and returned mode remains bound", async () => {
+  const h = harness();
+  assert.equal(await h.runtime.connect({mode:"live"}), false);
+  assert.equal(h.calls.length, 0);
+  h.queue.push({body:{...snap(),mode:"live"}});
+  assert.equal(await h.runtime.connect({mode:"live",consent:true}), true);
+  assert.equal(JSON.parse(h.calls[0].init.body).mode, "live");
+  assert.equal(h.runtime.view.snapshot.mode, "live");
+  const wrong = harness();
+  wrong.queue.push({body:snap()});
+  assert.equal(await wrong.runtime.connect({mode:"live",consent:true}), false);
+  assert.equal(wrong.runtime.view.canConfirm, false);
+});
+test("invalid requested mode has no transport effect", async () => {
+  const h = harness();
+  assert.equal(await h.runtime.connect({mode:"arbitrary",consent:true}), false);
+  assert.equal(h.calls.length, 0);
+});

@@ -24,4 +24,6 @@ jobs:
       - name: Test actual browser to local MCP demo
         env:
           GRANNY_CHROMIUM: /usr/bin/google-chrome
-        run: node prototypes/conversation-runtime/browser-check.mjs
+        run: |
+          node prototypes/conversation-runtime/browser-check.mjs
+          node prototypes/conversation-runtime/live-consent-check.mjs
