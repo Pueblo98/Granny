@@ -100,10 +100,11 @@ Handoff contains: requested task and scope; actual changes; commands and exit/re
 
 ## Repository skills and portability
 
-Four instruction-only skills route to these canonical workflows:
+Five instruction-only skills route to these canonical workflows:
 
 | Skill | Use it for | Do not use it to |
 |---|---|---|
+| [granny-session-lifecycle](../../.agents/skills/granny-session-lifecycle/SKILL.md) | Start/handoff change work, maintain cockpit records, check PR coverage and vault visibility | Edit from review-only requests, auto-merge or modify private vault settings |
 | [granny-spec-change](../../.agents/skills/granny-spec-change/SKILL.md) | Change or review product specs and propagate actual decisions | Approve a proposal, rewrite historical sources or implement from a review request |
 | [granny-task-slice](../../.agents/skills/granny-task-slice/SKILL.md) | Prepare or execute one explicitly requested, gate-bounded engineering slice | Start a broad app build or infer device/network permission |
 | [granny-design-handoff](../../.agents/skills/granny-design-handoff/SKILL.md) | Prepare/review frames, states, components and design evidence | Invent a Figma file or silently finalize identity |

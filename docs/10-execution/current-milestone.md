@@ -17,7 +17,9 @@ related:
 
 Simon's latest instruction is cockpit first, then a redesign plan. [Cockpit](../Cockpit.md), [visual map](../Development.canvas), [session deliveries and agent board](agent-board.md), and [plugin assessment](obsidian-cockpit-plugins.md) now provide development oversight. Bases/Canvas/Bookmarks were already enabled; no community installation or private Obsidian JSON edits occurred. [Maintenance](cockpit-guide.md) makes records and freshness checks part of future change tasks.
 
-The feature-button Home was rejected by Simon, despite passing mock checks. Review the [conversation-first plan](../02-design/conversation-first-plan.md) before a new implementation request. Existing browser code stays unchanged. T-102 remains in review with revision requested; production gates remain unchanged. This branch depends on the unmerged browser commit ff59e84 and does not merge any branch. The original vault only receives these files after reviewed integration or explicit worktree review.
+The feature-button Home was rejected by Simon, despite passing mock checks. Review the [conversation-first plan](../02-design/conversation-first-plan.md) before a new implementation request. Existing browser code stays unchanged. T-102 remains in review with revision requested; production gates remain unchanged. Browser and cockpit were merged through [PR #3](https://github.com/Pueblo98/Granny/pull/3), 70af0db, on 2026-09-14, and the primary docs/ vault checkout was synchronized. The separate Figma branch remains preserved; this is not a claim every branch was merged.
+
+T-115 adds [session lifecycle guidance and automated checks](cockpit-guide.md#automated-maintenance-contract). [Its handoff](sessions/2026-09-14-session-maintenance.md) records actual validation, CI/protection and integration evidence. New change sessions maintain their scoped record and run the freshness/coverage checks. This operational work does not implement the conversation-first redesign or pass product gates.
 
 ## Previous milestone — initial browser interaction prototype
 
@@ -26,6 +28,8 @@ Simon switched the design medium from quota-blocked Figma to a local browser on 
 The task branch starts at origin/main ce3f32f, which already includes Git-workflow PR #2. The earlier Figma task branch remains unmerged and preserved; this task does not merge it. Historical no-prototype/read-only statements below describe previous milestones. No product or release gate is passed by the browser checks.
 
 ## Workflow refinement follow-up
+
+The following paragraphs retain historical delivery evidence. Git-workflow PR #2 and browser/cockpit PR #3 have since been merged; earlier branch-based startup advice is superseded by main and the current operating instructions.
 
 Git workflow validation, 2026-09-14: in the isolated docs/git-workflow worktree, `python3 scripts/validate-docs.py` passed with 0 errors (78 Markdown documents, four skills, 1,403 local links, four preserved source hashes); the 19 documentation-tool unit tests passed; the changed granny-spec-change skill passed its packaging validator; `git diff --check` passed. The readiness/Figma branch was pushed and its remote HEAD independently verified as a4fc05b315494affb51c63eb979ad263ebd40115. No product eval or main merge was performed. The original checkout's user-owned action-policy heading edit remains outside the published commits. These are mechanical/self-review checks, not proof of future-agent compliance.
 

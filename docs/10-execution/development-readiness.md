@@ -16,6 +16,8 @@ related:
 
 ## Cockpit and design-review follow-up, 2026-09-14
 
+Session maintenance T-115 adds a fifth repo-local skill, PR consistency checks and read-only post-merge vault verification. [Current maintenance evidence](sessions/2026-09-14-session-maintenance.md) distinguishes local validation, fresh-context behavior, host discovery, live CI and remote enforcement. None promotes a product gate. Earlier four-skill counts below are historical, not the current skill inventory.
+
 [Development cockpit](../Cockpit.md) is **Ready with proposed assumptions** for structural/local-note review; Obsidian in-app rendering and Simon's cockpit review remain **Needs evidence**. No plugin install or automatic cross-worktree synchronization is claimed. The browser UI received a revision request from Simon; [conversation-first plan](../02-design/conversation-first-plan.md) awaits his review. GATE-05 remains Needs Simon decision and evidence; no production gate changes.
 
 ## Browser-design follow-up, 2026-09-14

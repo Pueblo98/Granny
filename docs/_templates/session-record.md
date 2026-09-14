@@ -19,9 +19,13 @@ record_basis: contemporaneous
 agent: actual session author
 branch: inspected-task-branch
 next_action: precise handoff
+changed_paths:
+  - exact/repository-relative/path
 ```
 
 Do not invent a commit before one exists. Add artifact_commit only for an inspected existing commit (full hash); otherwise branch/file history locates this record's delivery.
+
+At handoff list every scoped changed path except this record and generated cockpit snapshot. Paths are not globs; deleted paths still count. Run the guide's handoff check. Keep exact validation and integration evidence in the sections below, not just a passing status label.
 
 ## Scope and authority
 

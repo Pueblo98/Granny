@@ -1,0 +1,4 @@
+interface:
+  display_name: "Granny Session Lifecycle"
+  short_description: "Maintain cockpit handoffs and verify vault visibility"
+  default_prompt: "Use $granny-session-lifecycle to prepare this task's handoff and check cockpit freshness."

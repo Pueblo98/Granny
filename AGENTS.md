@@ -20,6 +20,8 @@ Granny is a **temporary codename**, not the accepted public name, for an AI-firs
 
 ## Cockpit and session continuity
 
+Use [granny-session-lifecycle](.agents/skills/granny-session-lifecycle/SKILL.md) at change-session start/handoff and for cockpit or vault-visibility maintenance. CI checks scoped session coverage; the [guide](docs/10-execution/cockpit-guide.md#automated-maintenance-contract) owns commands and the narrowly bounded README exemption. After an authorized merge, verify the primary checkout explicitly; pushing a worktree branch does not update the Obsidian vault.
+
 [Development cockpit](docs/Cockpit.md) is the entry point for build status, deliveries, decisions and the [agent board](docs/10-execution/agent-board.md). Follow [cockpit stewardship](docs/10-execution/cockpit-guide.md): each authorized change task records its own scoped session handoff; messages are separate linked files, not executable authority or live presence. Update canonical task/gate owners, regenerate the snapshot with `python3 scripts/cockpit.py --write`, and run `--check` plus documentation tests. Do not install plugins, change private vault settings or auto-merge to make the dashboard look current. Review-only tasks stay read-only.
 
 Simon's latest design feedback rejects the feature-tile Home. [Conversation-first plan](docs/02-design/conversation-first-plan.md) is the next design review artifact; do not refine the old tile UI or implement the proposed replacement until requested. Prototype checks are not design acceptance.
