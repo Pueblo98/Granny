@@ -15,6 +15,8 @@ branch: feature/mcp-backend-integration
 next_action: Agree frontend checkpoint and implement bounded local MCP draft runtime.
 changed_paths:
   - docs/10-execution/messages/2026-09-15-ui-backend-be-001.md
+  - docs/10-execution/messages/2026-09-15-ui-backend-be-002.md
+  - docs/04-architecture/conversation-runtime-contract.md
 ---
 
 # Scope and authority
