@@ -14,6 +14,10 @@ related:
 
 # Development-readiness assessment
 
+## UI/UX skill setup follow-up, 2026-09-14
+
+T-115 installs one Granny-specific interface-craft skill and three pinned, locally guarded Google Android skills. Five changed entrypoints pass the skill-creator packaging validator; repository documentation validation passes with eight skills and 16 bundled reference manuals checked; 28 documentation-tool tests pass. These checks make the package reviewable, but do not prove fresh-session triggering, design quality, Android compatibility, accessibility or user comprehension. No application code, dependency, device action, product decision or gate status changes from this tooling setup.
+
 ## Cockpit and design-review follow-up, 2026-09-14
 
 [Development cockpit](../Cockpit.md) is **Ready with proposed assumptions** for structural/local-note review; Obsidian in-app rendering and Simon's cockpit review remain **Needs evidence**. No plugin install or automatic cross-worktree synchronization is claimed. The browser UI received a revision request from Simon; [conversation-first plan](../02-design/conversation-first-plan.md) awaits his review. GATE-05 remains Needs Simon decision and evidence; no production gate changes.
@@ -47,7 +51,7 @@ The canonical specification package is written and linked. It is **ready for bou
 | Roadmap/gates/DoR/backlog/handoff | This file, [backlog](backlog.md), [milestone](current-milestone.md), [questions](open-questions.md) | Ready with proposed assumptions; not authorization for broader implementation |
 | Instructions/navigation/templates/decisions | [AGENTS](../../AGENTS.md), [docs index](../README.md), [ADRs](../09-decisions/README.md) | Ready as operating map; ADR-0009 accepted 2026-09-14, ADR-0010/0011 proposed, seven earlier accepted records unchanged |
 | Stage 2 OS / Stage 3 hardware | [Accepted stage strategy](../09-decisions/ADR-0007-three-stage-product-strategy.md) | Not applicable to current stage; no development work |
-| Delivery workflows / skills / first task packets | [Workflows](operating-workflows.md), [packets](task-packets.md), [execution protocol](../03-agent/execution-protocol.md), [admission](../04-architecture/capability-admission.md) | Ready with proposed assumptions for bounded preparation/fake implementation; four repo skills structurally checked, fresh-session behavior/discovery not proven |
+| Delivery workflows / skills / first task packets | [Workflows](operating-workflows.md), [UI/UX skill setup](ui-ux-skills.md), [packets](task-packets.md), [execution protocol](../03-agent/execution-protocol.md), [admission](../04-architecture/capability-admission.md) | Ready with proposed assumptions for bounded preparation/fake implementation; eight repo skills and 16 bundled references structurally checked, fresh-session behavior/discovery not proven |
 | Evidence / research execution protocol | [Evidence review](../06-evals/evidence-protocol.md), [research protocols](../08-research/research-protocols.md) | Ready with proposed assumptions as procedures; no device/participant/runtime results |
 
 ## Named gates: evidence, approver, blockers and unlocks

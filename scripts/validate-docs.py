@@ -8,7 +8,7 @@ try:
     import yaml
 except ImportError:
     sys.exit("PyYAML required; do not install without authorization.")
-from doc_checks import markdown_links, skill_errors, split_frontmatter, trace_errors
+from doc_checks import is_skill_markdown_resource, markdown_links, skill_errors, split_frontmatter, trace_errors
 ROOT=Path(__file__).resolve().parents[1]
 errors=[]; counts=collections.Counter()
 def fail(message): errors.append(message)
@@ -51,6 +51,12 @@ for p,text in texts.items():
     name=rel(p)
     if name in preserved:
         counts["preserved_markdown_exempt"]+=1; continue
+    if is_skill_markdown_resource(name):
+        counts["skill_resources"]+=1
+        destinations,unresolved=markdown_links(body(text))
+        for raw in destinations: link(p,raw)
+        for label in unresolved: fail(f"{name}: undefined link reference {label}")
+        continue
     try: meta,_=split_frontmatter(text)
     except ValueError as exc:
         fail(f"{name}: {exc}"); continue

@@ -41,7 +41,7 @@ related:
 | What stock hardware is actually known? | [Reference tablet](07-hardware/reference-hardware.md); exact inventory pending, Stage 3 inactive |
 | What evidence exists and what comes next? | [Source register](08-research/README.md), [Android feasibility](08-research/android-stage-1-feasibility.md), [research program](08-research/research-plan.md) |
 | What is accepted versus proposed? | [ADR index](09-decisions/README.md); eight accepted records including the MVP experiment/control decision, two proposals, one deprecated historical record |
-| How do agents maintain this system? | [AGENTS](../AGENTS.md); [CLAUDE](../CLAUDE.md) delegates to it |
+| How do agents maintain this system? | [AGENTS](../AGENTS.md); [CLAUDE](../CLAUDE.md) delegates to it; [UI/UX skill setup](10-execution/ui-ux-skills.md) records reviewed design/Android skill provenance |
 | How is work isolated and published? | [Git worktrees, push verification and reviewed integration](10-execution/git-workflow.md); standing task-branch push authority, no automatic main merge |
 | How do we move from specs to bounded work? | [Delivery workflows and repo skills](10-execution/operating-workflows.md), [first task packets](10-execution/task-packets.md) |
 | What happens at dispatch, Stop, crash and recovery? | [Execution transaction protocol](03-agent/execution-protocol.md); tool schemas and policy remain their existing owners |

@@ -183,6 +183,16 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Status:** review — files and structural tests delivered; awaiting in-app and owner review. Not a product gate pass.
 - **Excluded:** Live inter-agent transport, GitHub/CI synchronization, plugin downloads, automatic Git operations, UI redesign implementation, Android/agent runtime and Stage 2/3.
 
+<a id="t-115"></a>
+## T-115 — Install reviewed UI/UX and Android skills
+
+- **Scope / authority:** Simon explicitly requested the recommended UI/UX skills be downloaded and set up on 2026-09-14. Repository-local skill/tooling change only.
+- **Trace / owner:** [Skill setup and provenance](ui-ux-skills.md), [delivery workflows](operating-workflows.md), [conversation-first plan](../02-design/conversation-first-plan.md) and repository `AGENTS.md`; no product requirement or gate is implemented by an instruction package.
+- **Deliverables:** `granny-ui-craft` for product-specific structural variation/critique; pinned Google `adaptive`, `edge-to-edge` and `testing-setup` skills with local guardrails, licenses and discovery metadata; exact upstream provenance and update procedure.
+- **Acceptance:** Each skill passes the packaging validators; repository/cockpit/documentation checks and documentation-tool tests pass; only reviewed resources enter Git; no executable third-party launcher/hook, global configuration, dependency install, product UI change or unrelated user edit is included.
+- **Status:** complete — reviewed packages and provenance are committed on the task branch; five changed skill entrypoints, repository documentation and 28 documentation-tool tests pass. This is tooling setup, not design implementation or a gate pass.
+- **Excluded:** Browser redesign implementation, Android scaffold/build/device action, Figma mutation, product or brand acceptance, automatic upstream updates, main integration and Stage 2/3.
+
 ## Session handoff
 
 Each next session selects **one bounded slice**, reads its PRD/UC/J, canonical interface/screen and policy, checks current gates and Git, then writes tests and implementation together. Add actual source/test links to traceability only when they exist. If feasibility changes the intended outcome, amend canonical behavior and gate decision before widening code. Do not turn an unsuccessful integration into silent Stage 2 work.

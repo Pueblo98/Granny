@@ -17,6 +17,8 @@ related:
 
 Simon's latest instruction is cockpit first, then a redesign plan. [Cockpit](../Cockpit.md), [visual map](../Development.canvas), [session deliveries and agent board](agent-board.md), and [plugin assessment](obsidian-cockpit-plugins.md) now provide development oversight. Bases/Canvas/Bookmarks were already enabled; no community installation or private Obsidian JSON edits occurred. [Maintenance](cockpit-guide.md) makes records and freshness checks part of future change tasks.
 
+T-115 adds a reviewed project-local [UI/UX skill package](ui-ux-skills.md): one Granny-specific anti-template craft layer plus Google's pinned adaptive, edge-to-edge and Android testing guidance with local authority guardrails. This improves later design/development instructions only; no browser UI, native app, dependency, device evidence or gate was changed. The conversation-first plan still requires review before redesign implementation.
+
 The feature-button Home was rejected by Simon, despite passing mock checks. Review the [conversation-first plan](../02-design/conversation-first-plan.md) before a new implementation request. Existing browser code stays unchanged. T-102 remains in review with revision requested; production gates remain unchanged. This branch depends on the unmerged browser commit ff59e84 and does not merge any branch. The original vault only receives these files after reviewed integration or explicit worktree review.
 
 ## Previous milestone — initial browser interaction prototype

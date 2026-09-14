@@ -24,13 +24,15 @@ Granny is a **temporary codename**, not the accepted public name, for an AI-firs
 
 Simon's latest design feedback rejects the feature-tile Home. [Conversation-first plan](docs/02-design/conversation-first-plan.md) is the next design review artifact; do not refine the old tile UI or implement the proposed replacement until requested. Prototype checks are not design acceptance.
 
+For authorized UI exploration or critique, use [granny-design-handoff](.agents/skills/granny-design-handoff/SKILL.md) for product/state/accessibility authority, then [granny-ui-craft](.agents/skills/granny-ui-craft/SKILL.md) for structural variation and anti-template review. The vendored Google `adaptive`, `edge-to-edge` and `testing-setup` skills apply only to separately authorized native Compose work; installation does not select a framework, dependency or SDK.
+
 ## Start each task
 
 1. Read [docs map](docs/README.md), [current milestone](docs/10-execution/current-milestone.md), [readiness/DoR](docs/10-execution/development-readiness.md) and the canonical owner for the selected task.
 2. Check [ADRs](docs/09-decisions/README.md), [open questions](docs/10-execution/open-questions.md), applicable nested instructions, and `git status --short --branch`. Preserve unrelated changes.
 3. Repository Markdown is the knowledge base; **docs/ is the Obsidian vault**, repository is the full source of truth. Never create a second notes store or modify/stage ignored `docs/.obsidian/*.json`.
 
-For scoped work, use the [delivery workflows and skill map](docs/10-execution/operating-workflows.md) and selected [task packet](docs/10-execution/task-packets.md). Repository skills in .agents/skills are thin workflow entry points, not independent product authority. Their packaging uses name/description and nested maintenance metadata; canonical docs retain the frontmatter below. Review/prepare/implement are different authorization modes. No skill, goal or passed gate grants permission for unrequested external actions.
+For scoped work, use the [delivery workflows and skill map](docs/10-execution/operating-workflows.md), [UI/UX skill provenance](docs/10-execution/ui-ux-skills.md) when applicable and selected [task packet](docs/10-execution/task-packets.md). Repository skills in .agents/skills are workflow or specialized implementation guidance, not independent product authority. Their packaging uses name/description and nested maintenance metadata; canonical docs retain the frontmatter below. Review/prepare/implement are different authorization modes. No skill, goal or passed gate grants permission for unrequested external actions.
 
 ## Authority and ownership
 
