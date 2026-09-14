@@ -26,7 +26,8 @@ function create() {
       territory : "neutral",
       delay : 650
     },
-    playing : false
+    playing : false,
+    player : null
   };
 }
 function signature(t) {
@@ -129,8 +130,21 @@ function startWork(t, text) {
   t.text = text;
   t.choices = [];
 }
+function sizePreview(s, t) {
+  s.previewScale = t.slots.scale;
+  t.stage = "size-preview";
+  t.prompt = "Preview this Granny text size, then Apply or Stop.";
+  t.text = "This is only a preview. Granny text has not changed yet.";
+  t.choices = [];
+}
 function startPhotos(s, t) {
-  if (t.slots.markRead) {
+  const date =
+      t.slots.date.toLowerCase() === "yesterday" ? "2026-09-13" : t.slots.date;
+  const sourceMayMarkRead =
+      F.photos.some(p => p.detail === t.slots.person.detail &&
+                         p.date === date && p.source === "Example Messages");
+  if (t.slots.markRead || sourceMayMarkRead) {
+    t.effect = "open-source-mark-read";
     t.version++;
     t.stage = "preview";
     t.prompt =
@@ -238,7 +252,7 @@ function createWorkflow(s, p) {
       };
       record(s, t, t.outcome);
     } else
-      startWork(t, "Preparing the Granny text-size change…");
+      sizePreview(s, t);
     return;
   }
   t.kind = "unsupported";
@@ -270,7 +284,10 @@ function replace(s, p) {
       s.turns.push({
         id : `turn-${s.task.id}-assistant`,
         role : "assistant",
-        text : s.task.text
+        text : s.task.text,
+        kind : s.task.kind,
+        result : s.task.result ? JSON.parse(JSON.stringify(s.task.result))
+                               : null
       });
   }
   if (p.kind !== "message") {
@@ -349,6 +366,9 @@ function isFollowup(s, text) {
         x);
   if (t.kind === "media" && t.stage === "completed")
     return /^(?:pause|resume|play)$/i.test(x);
+  if (t.kind === "photos" && [ "completed", "no-matches" ].includes(t.stage))
+    return /^(?:yesterday|12 September|13 September|2026-09-1[23]|Daughter|Book club)$/i
+        .test(x);
   if (t.kind === "message" && t.stage === "completed")
     return /^(?:actually,?\s*)?(?:change (?:the )?message to|make it)\s+.+/i
         .test(x);
@@ -385,7 +405,7 @@ function applyFollowup(s, t, x) {
     if (/simply/i.test(x)) {
       t.result.simple = true;
       t.result.explanation =
-          "This fictional screen shows an article. Nothing was changed.";
+          "This fictional screen shows display settings. Nothing was changed.";
       t.text = t.result.explanation;
       return true;
     }
@@ -398,6 +418,19 @@ function applyFollowup(s, t, x) {
   }
   if (t.kind === "media" && t.stage === "completed")
     return dispatch(s, "playback");
+  if (t.kind === "photos" && [ "completed", "no-matches" ].includes(t.stage)) {
+    invalidate(s, t);
+    const person =
+        F.people.find(p => p.detail.toLowerCase() === x.toLowerCase());
+    if (person)
+      t.slots.person = person;
+    else
+      t.slots.date = /^yesterday$|^13 September$/i.test(x) ? "2026-09-13"
+                     : /^12 September$/i.test(x)           ? "2026-09-12"
+                                                           : x;
+    startPhotos(s, t);
+    return true;
+  }
   if (t.kind === "message" && t.stage === "completed") {
     const f = I.followup(x);
     invalidate(s, t);
@@ -504,7 +537,7 @@ function dispatch(s, e, v, g) {
         };
         record(s, t, t.outcome);
       } else
-        startWork(t, "Preparing the Granny text-size change…");
+        sizePreview(s, t);
       return true;
     }
     if (t.kind === "unsupported" && t.stage === "clarify-intent") {
@@ -584,15 +617,24 @@ function dispatch(s, e, v, g) {
       return false;
     if (t.stage === "planning") {
       t.stage = "acting";
-      t.text = "Opening the fictional draft…";
+      t.text = {
+        message : "Preparing the exact fictional draft…",
+        photos : "Checking the fictional photo index…",
+        explain : "Reading the selected fictional screen…",
+        media : "Opening the silent fictional player…"
+      }[t.kind] ||
+               "Preparing the fictional task…";
     } else if (t.stage === "acting") {
       t.dispatched = t.effect === "send-message";
       t.stage = "waiting";
-      t.text = "Waiting for the example app…";
+      t.text = t.kind === "message" ? "Waiting for the example app…"
+                                    : "Checking the local fixture…";
     } else if (t.stage === "waiting") {
       t.stage = "verifying";
-      t.text = "Checking what happened…";
-    } else if (s.reviewer.fault) {
+      t.text = "Verifying the fictional result…";
+    } else if ([
+                 "unknown", "offline", "auth", "permission", "failed"
+               ].includes(s.reviewer.fault)) {
       if (t.dispatched || s.reviewer.fault === "unknown") {
         t.stage = "unknown";
         t.outcome = "unknown";
@@ -608,15 +650,19 @@ function dispatch(s, e, v, g) {
     } else if (t.kind === "photos") {
       const date = t.slots.date.toLowerCase() === "yesterday" ? "2026-09-13"
                                                               : t.slots.date;
-      const found = F.photos.filter(p => p.detail === t.slots.person.detail &&
-                                         p.date === date);
+      let found = F.photos.filter(p => p.detail === t.slots.person.detail &&
+                                       p.date === date);
+      const uncertain = s.reviewer.fault === "uncertainDate" ||
+                        !/^2026-\d\d-\d\d$/.test(date);
+      if (s.reviewer.fault === "uncertainDate" && !found.length)
+        found = F.photos.filter(p => p.detail === t.slots.person.detail)
+                    .slice(0, 2);
+      if (s.reviewer.fault === "noPhotos")
+        found = [];
       t.stage = found.length ? "completed" : "no-matches";
       t.outcome = found.length ? "matching fictional photos found"
                                : "no matching fictional photos";
-      t.result = {
-        photos : found,
-        uncertainDate : !/^2026-\d\d-\d\d$/.test(date)
-      };
+      t.result = {photos : found, uncertainDate : uncertain};
       t.text =
           found.length
               ? `Found ${found.length} fictional photo${
@@ -641,7 +687,7 @@ function dispatch(s, e, v, g) {
         t.stage = "completed";
         t.outcome = "fictional screen explained";
         t.text =
-            "This fictional article describes a garden. The Share button would open sharing choices; I did not press it.";
+            "This supplied fictional screen shows several display settings with similar names. I did not change any setting.";
         t.result = {
           screen,
           explanation : t.text,
@@ -651,27 +697,21 @@ function dispatch(s, e, v, g) {
       }
       record(s, t, t.outcome);
     } else if (t.kind === "media") {
-      t.stage = "completed";
-      s.playing = true;
-      t.outcome = "playing fictional track";
-      t.result = {track : t.slots.track, playing : true};
-      t.text = `Playing ${t.slots.track.title} by ${
-          t.slots.track.performer} in the silent simulation.`;
-      record(s, t, t.outcome);
-    } else if (t.kind === "readability") {
-      const prior = s.scale;
-      s.previousScale = prior;
-      s.scale = t.slots.scale;
-      s.previewScale = s.scale;
-      t.stage = "completed";
-      t.outcome = "Granny text size changed";
-      t.result = {
-        scope : "granny",
-        scale : s.scale,
-        previousScale : prior,
-        externalOnly : false
-      };
-      t.text = "Granny text size changed. You can restore the previous size.";
+      const blocked =
+          [ "partial", "paywall", "unavailable" ].includes(s.reviewer.fault);
+      t.stage = blocked ? "failed" : "completed";
+      s.playing = !blocked;
+      s.player = t.slots.track;
+      t.outcome = blocked ? s.reviewer.fault : "playing fictional track";
+      t.result = {track : t.slots.track, playing : s.playing};
+      t.text =
+          blocked
+              ? (s.reviewer.fault === "partial"
+                     ? "The fictional music app opened, but playback was not verified."
+                     : `This fictional track is ${
+                           s.reviewer.fault}; nothing is playing.`)
+              : `Playing ${t.slots.track.title} by ${
+                    t.slots.track.performer} in the silent simulation.`;
       record(s, t, t.outcome);
     } else {
       t.stage = "completed";
@@ -695,6 +735,8 @@ function dispatch(s, e, v, g) {
   if (e === "stop" && t &&
       !["completed", "unknown", "stopped", "failed"].includes(t.stage)) {
     s.epoch++;
+    if (t.stage === "size-preview")
+      s.previewScale = s.scale;
     t.permit = null;
     if (t.dispatched || [ "waiting", "verifying" ].includes(t.stage)) {
       t.stage = "unknown";
@@ -716,7 +758,8 @@ function dispatch(s, e, v, g) {
     return true;
   }
   if (e === "fault" && t) {
-    if (!["unknown", "failed", "offline", "permission", "auth", "restricted"]
+    if (!["unknown", "failed", "offline", "permission", "auth", "restricted",
+          "noPhotos", "uncertainDate", "partial", "paywall", "unavailable"]
              .includes(v))
       return false;
     s.reviewer.fault = v;
@@ -730,8 +773,27 @@ function dispatch(s, e, v, g) {
       } else {
         t.stage = "failed";
         t.outcome = v;
-        t.text = `The fictional handoff could not continue (${
-            v}). Nothing was sent.`;
+        const copy = {
+          noPhotos : "No matching fictional photos were available.",
+          uncertainDate :
+              "The date could not be confirmed from the fictional source.",
+          partial :
+              "The example app opened, but the requested result was not verified.",
+          paywall :
+              "The fictional track requires a subscription; nothing is playing.",
+          unavailable :
+              "The fictional item is unavailable; nothing is playing.",
+          offline :
+              "The fictional task is offline. No new external effect was dispatched.",
+          auth :
+              "The fictional account needs sign-in. No new external effect was dispatched.",
+          permission :
+              "Permission is unavailable. No new external effect was dispatched.",
+          failed :
+              "The fictional task failed before a new external effect was dispatched.",
+          restricted : "That action is restricted and did not run."
+        };
+        t.text = copy[v] || "The fictional task could not continue safely.";
       }
       record(s, t, t.outcome);
     }
@@ -741,11 +803,25 @@ function dispatch(s, e, v, g) {
     if (!scales.includes(v))
       return false;
     s.previewScale = v;
+    if (t && t.kind === "readability" && t.stage === "size-preview")
+      t.slots.scale = v;
     return true;
   }
   if (e === "applyScale") {
     s.previousScale = s.scale;
     s.scale = s.previewScale;
+    if (t && t.kind === "readability" && t.stage === "size-preview") {
+      t.stage = "completed";
+      t.outcome = "Granny text size changed";
+      t.result = {
+        scope : "granny",
+        scale : s.scale,
+        previousScale : s.previousScale,
+        externalOnly : false
+      };
+      t.text = "Granny text size changed. You can restore the previous size.";
+      record(s, t, t.outcome);
+    }
     return true;
   }
   if (e === "restoreScale") {
@@ -760,6 +836,8 @@ function dispatch(s, e, v, g) {
     return true;
   }
   if (e === "playback") {
+    if (!s.player)
+      return false;
     s.playing = !s.playing;
     if (t && t.kind === "media" && t.result) {
       t.result.playing = s.playing;

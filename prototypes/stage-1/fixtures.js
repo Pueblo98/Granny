@@ -11,9 +11,9 @@ const channels = [ "Example Messages", "Example Mail" ];
 const photos = [
   {
     id : "garden",
-    title : "Sophie in the garden",
-    description : "Sophie beside yellow flowers.",
-    asset : "assets/garden.svg",
+    title : "An afternoon in the garden",
+    description : "A sunny garden table surrounded by flowers.",
+    asset : "/assets/garden.svg",
     sender : "Sophie",
     detail : "Daughter",
     source : "Example Photos",
@@ -21,9 +21,9 @@ const photos = [
   },
   {
     id : "seaside",
-    title : "At the seaside",
-    description : "Sophie near the water.",
-    asset : "assets/seaside.svg",
+    title : "A walk by the sea",
+    description : "A bay, sailboat, and coastal path.",
+    asset : "/assets/seaside.svg",
     sender : "Sophie",
     detail : "Daughter",
     source : "Example Photos",
@@ -33,7 +33,7 @@ const photos = [
     id : "meal",
     title : "Book club meal",
     description : "A table prepared for dinner.",
-    asset : "assets/meal.svg",
+    asset : "/assets/meal.svg",
     sender : "Sophie",
     detail : "Book club",
     source : "Example Messages",
@@ -42,10 +42,11 @@ const photos = [
 ];
 const screens = [
   {
-    id : "article",
-    title : "Garden article",
-    description : "A fictional article with a share button.",
-    previousTarget : "article"
+    id : "display-settings",
+    title : "Confusing display settings",
+    description :
+        "A fictional display settings page with several similar text controls.",
+    previousTarget : "A garden for every season"
   },
   {
     id : "signin",

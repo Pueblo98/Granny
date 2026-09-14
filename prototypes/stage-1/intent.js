@@ -3,31 +3,38 @@
 "use strict";
 function parse(text) {
   const request = String(text == null ? "" : text).trim();
+  const spoken = request.replace(/[.!?]+$/g, "").trim();
   if (!request)
     return {kind : "empty", request};
   const command = request.match(
       /^(?:please\s+)?(?:tell|message|text|write\s+(?:a\s+)?message\s+to)(?:\s+(.*))?$/i);
   if (!command) {
-    const photoText = request.replace(
+    const photoText = spoken.replace(
         /\s+(?:and\s+)?mark(?:\s+(?:the\s+)?source)?\s+(?:as\s+)?read$/i, "");
     let match = photoText.match(
         /^(?:show|find|look for)\s+(?:me\s+)?(?:the\s+)?photos?(?:\s+(?:from|of)\s+([^,]+?))?(?:\s+(?:from|on)\s+(.+))?$/i);
+    if (!match)
+      match = photoText.match(
+          /^show\s+(?:me\s+)?(.+?)(?:'s|’s)\s+photos?(?:\s+(?:from|on)\s+(.+))?$/i);
+    if (!match)
+      match = photoText.match(
+          /^show\s+(?:me\s+)?(?:the\s+)?photos?\s+(.+?)\s+sent(?:\s+(.+))?$/i);
     if (match)
       return {
         kind : "photos",
         request,
         person : (match[1] || "").trim(),
         date : (match[2] || "").trim(),
-        markRead : photoText !== request
+        markRead : photoText !== spoken
       };
-    match = request.match(
-        /^(?:what(?:'s| is) on|explain)(?:\s+(?:this|the))?\s*screen(?:\s+(.+))?$/i);
+    match = spoken.match(
+        /^(?:what(?:'s| is) on|explain)(?:\s+(?:this|the))?\s*screen(?:\s+(.+))?$|^what\s+am\s+i\s+looking\s+at$/i);
     if (match)
       return {kind : "explain", request, screen : (match[1] || "").trim()};
-    match = request.match(/^(?:play|listen to)\s+(?:some\s+)?(.+)$/i);
+    match = spoken.match(/^(?:play|listen to)\s+(?:some\s+)?(.+)$/i);
     if (match)
       return {kind : "media", request, query : match[1].trim()};
-    match = request.match(
+    match = spoken.match(
         /^(?:make|set|change)\s+(?:(the|granny|external)\s+)?(?:text|words|writing)(?:\s+size)?\s+(?:to\s+)?(larger|largest|smaller|normal)$/i);
     if (match)
       return {
@@ -36,6 +43,9 @@ function parse(text) {
         scope : (match[1] || "").toLowerCase(),
         size : match[2].toLowerCase()
       };
+    match = spoken.match(/^make\s+this\s+(?:easier\s+to\s+read|bigger)$/i);
+    if (match)
+      return {kind : "readability", request, scope : "", size : "larger"};
     return {kind : "unsupported", request};
   }
   const tail = (command[1] || "").trim();

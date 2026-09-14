@@ -255,6 +255,7 @@ test("deleted Sophie alias becomes ambiguous and explicit book club works",
        assert.equal(P.isFollowup(s, "Sophie"), false);
        assert.equal(P.isFollowup(s, "Book club"), true);
        P.dispatch(s, "submit", "Book club");
+       approve(s);
        for (let i = 0; i < 4; i++)
          advance(s);
        assert.equal(s.task.result.photos[0].id, "meal");
@@ -282,7 +283,7 @@ test("mark-read photo route requires exact bound preview", () => {
 });
 test("screen explanation requires supplied selection and handles safe states",
      () => {
-       for (const [id, stage] of [[ "article", "completed" ],
+       for (const [id, stage] of [[ "display-settings", "completed" ],
                                   [ "signin", "failed" ],
                                   [ "unknown", "failed" ]]) {
          const s = P.create();
@@ -297,7 +298,7 @@ test("screen explanation requires supplied selection and handles safe states",
      });
 test("screen explanation simpler and return are contextual", () => {
   const s = P.create();
-  P.dispatch(s, "submit", "Explain screen article");
+  P.dispatch(s, "submit", "Explain screen display-settings");
   for (let i = 0; i < 4; i++)
     advance(s);
   assert.equal(P.isFollowup(s, "explain more simply"), true);
@@ -327,8 +328,9 @@ test("readability changes Granny only and restores; external is guidance",
        P.dispatch(s, "submit", "Make text larger");
        assert.equal(s.task.stage, "clarify-scope");
        P.dispatch(s, "choose", "granny");
-       for (let i = 0; i < 4; i++)
-         advance(s);
+       assert.equal(s.task.stage, "size-preview");
+       assert.equal(s.scale, 1);
+       P.dispatch(s, "applyScale");
        assert.equal(s.scale, 1.3);
        P.dispatch(s, "restoreScale");
        assert.equal(s.scale, 1);
@@ -432,3 +434,101 @@ test("full reset clears changed preferences while preserving monotonic ids",
        P.dispatch(s, "submit", "Tell David hello");
        assert.ok(s.task.id > id);
      });
+test("required participant sample phrases enter intended workflows", () => {
+  const samples = [
+    [ "Show me the photos Sophie sent yesterday.", "photos", "planning" ],
+    [ "Show me Sophie's photos", "photos", "clarify-date" ],
+    [ "What am I looking at?", "explain", "clarify-screen" ],
+    [ "Make this easier to read.", "readability", "clarify-scope" ],
+    [ "make this bigger", "readability", "clarify-scope" ]
+  ];
+  for (const [text, kind, stage] of samples) {
+    const s = P.create();
+    P.dispatch(s, "submit", text);
+    assert.equal(s.task.kind, kind, text);
+    assert.equal(s.task.stage, stage, text);
+  }
+});
+test("sample grammar accepts natural alternate variations", () => {
+  for (const text
+           of ["Show me Sophie’s photos.",
+               "Look for photos of Sophie from yesterday.",
+               "What's on the screen?", "Change Granny text to largest."]) {
+    const s = P.create();
+    P.dispatch(s, "submit", text);
+    assert.notEqual(s.task.kind, "unsupported", text);
+  }
+});
+test("photo metadata matches drawings and uses absolute assets", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "Show me the photos Sophie sent yesterday.");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.equal(s.task.result.photos[0].title, "An afternoon in the garden");
+  assert.match(s.task.result.photos[0].description, /table.*flowers/i);
+  assert.ok(s.task.result.photos.every(p => p.asset.startsWith("/assets/")));
+});
+test("readability Stop cancels preview without changing scale", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "make this bigger");
+  P.dispatch(s, "choose", "granny");
+  assert.equal(s.task.stage, "size-preview");
+  assert.equal(s.previewScale, 1.3);
+  P.dispatch(s, "stop");
+  assert.equal(s.scale, 1);
+  assert.equal(s.previewScale, 1);
+});
+test("uncertain date can show plausible photos with uncertainty", () => {
+  const s = P.create();
+  P.dispatch(s, "reviewer", {fault : "uncertainDate"});
+  P.dispatch(s, "submit", "Show me Sophie's photos from last week");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.equal(s.task.stage, "completed");
+  assert.ok(s.task.result.photos.length);
+  assert.equal(s.task.result.uncertainDate, true);
+});
+test("completed photos accept bounded date correction", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "Show me the photos Sophie sent yesterday.");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.equal(P.isFollowup(s, "12 September"), true);
+  P.dispatch(s, "submit", "12 September");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.equal(s.task.stage, "no-matches");
+});
+test("Example Messages photo source naturally discloses mark-read effect",
+     () => {
+       const s = P.create();
+       P.dispatch(s, "aliasDelete", "sophie");
+       P.dispatch(s, "submit",
+                  "Find photos of Sophie Book club from 2026-09-12");
+       assert.equal(s.task.stage, "preview");
+       assert.match(P.signature(s.task), /open-source-mark-read/);
+     });
+test("media partial paywall and unavailable never claim playing", () => {
+  for (const fault of ["partial", "paywall", "unavailable"]) {
+    const s = P.create();
+    P.dispatch(s, "reviewer", {fault});
+    P.dispatch(s, "submit", "Play Quiet Harbour");
+    for (let i = 0; i < 4; i++)
+      advance(s);
+    assert.equal(s.task.stage, "failed");
+    assert.equal(s.task.result.playing, false);
+    assert.equal(s.playing, false);
+  }
+});
+test("player identity and archived result survive a new task", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "Play Quiet Harbour");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.equal(s.player.id, "quiet-harbour");
+  P.dispatch(s, "submit", "What am I looking at?");
+  assert.equal(s.player.id, "quiet-harbour");
+  const archived = s.turns.find(t => t.kind === "media");
+  assert.equal(archived.result.track.id, "quiet-harbour");
+  assert.equal(archived.permit, undefined);
+});
