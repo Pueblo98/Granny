@@ -13,12 +13,13 @@ session_state: review
 record_basis: contemporaneous
 agent: Frontend Codex session
 branch: feature/conversation-first
-artifact_commit: 09fa64d90becd1089788b75dc02ec090c2890cad
+artifact_commit: c7cdd821f5f214f067a1b8566d9751a4272bb470
 next_action: Coordinate the backend contract and implement its bounded frontend adapter without replacing the delivered conversation UI
 changed_paths:
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-001.md
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-002.md
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-003.md
+  - docs/10-execution/messages/2026-09-15-ui-backend-fe-004.md
   - prototypes/stage-1/browser-check.mjs
   - docs/02-design/browser-prototype.md
   - prototypes/stage-1/README.md
