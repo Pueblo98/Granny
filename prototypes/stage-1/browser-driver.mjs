@@ -66,8 +66,20 @@ export async function browser() {
       throw new Error('Timed out: ' + expression + '\n' + await evaluate('document.body.innerText'));
     };
     const navigate = async (path = '/') => {
+      // An old document can still contain #composer after Page.navigate returns.
+      // Wait for a new execution context and its fully loaded runtime scripts.
+      await evaluate('window.__navigationPending = true');
       await cdp('Page.navigate', { url: base + path });
-      await waitFor("!!document.querySelector('#composer')");
+      const deadline = Date.now() + 7000;
+      while (Date.now() < deadline) {
+        try {
+          if (await evaluate("!window.__navigationPending && document.readyState === 'complete' && !!document.querySelector('#composer')")) return;
+        } catch (error) {
+          if (!/context|navigat/i.test(error.message)) throw error;
+        }
+        await new Promise(resolve => setTimeout(resolve, 40));
+      }
+      throw new Error('Navigation did not finish: ' + path);
     };
     const click = selector => evaluate(`(() => { const el = document.querySelector(${JSON.stringify(selector)}); if (!el || el.disabled) throw Error('Missing or disabled: ' + ${JSON.stringify(selector)}); el.click(); })()`);
     const fill = (selector, value) => evaluate(`(() => { const el = document.querySelector(${JSON.stringify(selector)}); if (!el) throw Error('Missing input'); el.value = ${JSON.stringify(value)}; el.dispatchEvent(new Event('input', {bubbles:true})); })()`);

@@ -1,129 +1,257 @@
-// Browser-only design checks using installed Chromium and Node's built-in CDP transport.
-import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
-import { mkdtemp, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { serve } from "./serve.mjs";
-const output = await mkdtemp(join(tmpdir(),"granny-browser-review-"));
-const server = await serve(0), base = "http://127.0.0.1:" + server.address().port;
-const chrome = spawn(process.env.GRANNY_CHROMIUM || "/usr/bin/chromium", [
-  "--headless", "--disable-gpu", "--no-first-run", "--disable-background-networking",
-  "--remote-debugging-port=0", "--user-data-dir="+join(output,"profile"), "about:blank"
-], {stdio:["ignore","ignore","pipe"]});
-let socket, checks=0, session, seq=0;
-const pending=new Map(), errors=[], network=[];
-function check(value,message) { assert.ok(value,message); checks++; }
+// Integrated browser simulation checks. No native Android or human evidence.
+import assert from 'node:assert/strict';
+import { writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { browser } from './browser-driver.mjs';
+const b = await browser();
+let checks = 0;
+const check = (value, message) => { assert.ok(value, message); checks++; };
+const text = () => b.evaluate("document.querySelector('#thread').innerText");
+const stage = () => b.evaluate("document.querySelector('#current-task')?.dataset.stage");
+const button = (label, within = 'body') => b.evaluate(`(() => {
+  const el = [...document.querySelectorAll(${JSON.stringify(within)} + ' button')].find(x => x.textContent.trim() === ${JSON.stringify(label)});
+  if (!el || el.disabled) throw Error('Missing button: ' + ${JSON.stringify(label)});
+  el.focus(); el.click();
+})()`);
+const select = (selector, value) => b.evaluate(`(() => { const e = document.querySelector(${JSON.stringify(selector)}); e.value = ${JSON.stringify(value)}; e.dispatchEvent(new Event('change',{bubbles:true})); })()`);
+const request = async value => { await b.fill('#request', value); await b.click('#composer button[type=submit]'); };
+const choice = value => b.click('[data-choice="' + value + '"]');
+const waitStage = value => b.waitFor("document.querySelector('#current-task')?.dataset.stage === " + JSON.stringify(value));
+const finish = () => waitStage('completed');
+const menu = async name => { await b.click('#menu-button'); await b.click('[data-menu="' + name + '"]'); };
+const key = async (key, code = key, modifiers = 0) => {
+  const windowsVirtualKeyCode = {Tab:9, Enter:13, Escape:27, ' ':32}[key];
+  await b.cdp('Input.dispatchKeyEvent', {type:'keyDown', key, code, modifiers, windowsVirtualKeyCode, ...(key==='Enter' ? {text:'\r',unmodifiedText:'\r'} : {})});
+  await b.cdp('Input.dispatchKeyEvent', {type:'keyUp', key, code, modifiers, windowsVirtualKeyCode});
+};
+const fresh = async (review = false) => { await b.navigate(review ? '/?review=1' : '/'); if (review) await select('#review-delay', '0'); };
+const message = async (body = 'I’ll call after dinner.') => {
+  await request('Tell David ' + body); await choice('david-family'); await choice('Example Messages');
+};
+const geometry = async label => {
+  const result = await b.evaluate(`({
+    width:innerWidth, scrollWidth:document.documentElement.scrollWidth,
+    small:[...document.querySelectorAll('#app-shell button')].filter(e=>e.getClientRects().length && e.getBoundingClientRect().height < 55.5).map(e=>e.textContent),
+    empty:[...document.querySelectorAll('#app-shell button')].filter(e=>e.getClientRects().length && !e.textContent.trim()).length,
+    primary:[...document.querySelectorAll('#app-shell .primary,#stop-button')].filter(e=>e.getClientRects().length && e.getBoundingClientRect().height < 63.5).map(e=>e.textContent)
+  })`);
+  check(result.scrollWidth <= result.width + 1, label + ' horizontal overflow: ' + JSON.stringify(result));
+  check(!result.small.length && !result.primary.length, label + ' undersized targets: ' + JSON.stringify(result));
+  check(!result.empty, label + ' unlabeled buttons');
+};
 try {
-  const wsURL = await new Promise((resolve,reject)=>{
-    let log=""; const timeout=setTimeout(()=>reject(new Error("Chromium startup timed out: "+log.slice(-600))),20000);
-    chrome.once("error",reject);
-    chrome.stderr.on("data",b=>{log+=b;const m=log.match(/DevTools listening on (ws:\/\/[^\s]+)/);if(m){clearTimeout(timeout);resolve(m[1]);}});
-    chrome.once("exit",code=>{clearTimeout(timeout);reject(new Error("Chromium exited "+code));});
-  });
-  socket=new WebSocket(wsURL);
-  await new Promise((resolve,reject)=>{socket.onopen=resolve;socket.onerror=reject;});
-  socket.onmessage=e=>{
-    const m=JSON.parse(e.data);
-    if(m.id&&pending.has(m.id)){const p=pending.get(m.id);pending.delete(m.id);clearTimeout(p.timer);m.error?p.reject(new Error(JSON.stringify(m.error))):p.resolve(m.result);}
-    if(m.method==="Runtime.exceptionThrown") errors.push(m.params.exceptionDetails.text);
-    if(m.method==="Network.requestWillBeSent") network.push(m.params.request.url);
-  };
-  const cdp=(method,params={},sessionId=session)=>new Promise((resolve,reject)=>{
-    const id=++seq,timer=setTimeout(()=>{pending.delete(id);reject(new Error(method+" timed out"));},12000);
-    pending.set(id,{resolve,reject,timer});socket.send(JSON.stringify({id,method,params,...(sessionId?{sessionId}:{})}));
-  });
-  const target=await cdp("Target.createTarget",{url:"about:blank"});
-  session=(await cdp("Target.attachToTarget",{targetId:target.targetId,flatten:true})).sessionId;
-  await cdp("Runtime.enable");await cdp("Page.enable");await cdp("Network.enable");
-  const evaluate=async expression=>{
-    const r=await cdp("Runtime.evaluate",{expression,returnByValue:true,awaitPromise:true});
-    if(r.exceptionDetails)throw new Error(JSON.stringify(r.exceptionDetails));
-    return r.result.value;
-  };
-  const viewport=async(width,height=1000)=>cdp("Emulation.setDeviceMetricsOverride",{width,height,deviceScaleFactor:1,mobile:false});
-  await viewport(1200);await cdp("Page.navigate",{url:base});
-  for(let i=0;i<60;i++){if(await evaluate("!!document.querySelector('#screen-title')"))break;await new Promise(r=>setTimeout(r,50));}
-  const click=async selector=>evaluate("(()=>{const b=document.querySelector("+JSON.stringify(selector)+");if(!b||b.disabled)throw Error('Missing or disabled control: '+"+JSON.stringify(selector)+");b.click();return true;})()");
-  const action=(event,value)=>click('[data-event="'+event+'"]'+(value===undefined?"":'[data-value="'+value+'"]'));
-  const title=()=>evaluate("document.querySelector('h1').textContent");
-  const text=()=>evaluate("document.querySelector('#screen').innerText");
-  const reset=()=>click("#reset");
-  const finish=()=>click("#finish-sample");
-  const screen=()=>evaluate("document.querySelector('#trace').textContent");
-  const screenshot=async(name)=>{
-    const metrics=await cdp("Page.getLayoutMetrics");
-    const r=await cdp("Page.captureScreenshot",{format:"png",captureBeyondViewport:true,clip:{x:0,y:0,width:metrics.cssContentSize.width,height:Math.min(metrics.cssContentSize.height,6000),scale:1}});
-    await writeFile(join(output,name+".png"),Buffer.from(r.data,"base64"));
-  };
-  const layout=async(label)=>{
-    const v=await evaluate("({w:innerWidth,sw:document.documentElement.scrollWidth,small:[...document.querySelectorAll('#tablet button')].filter(b=>!b.hidden&&b.getBoundingClientRect().height<55).map(b=>b.textContent),blank:[...document.querySelectorAll('#tablet button')].filter(b=>!b.textContent.trim()).length})");
-    check(v.sw<=v.w+1,label+": no horizontal page overflow "+JSON.stringify(v));
-    check(v.small.length===0,label+": targets >=56 CSS pixels "+JSON.stringify(v.small));
-    check(v.blank===0,label+": controls have text labels");
-  };
-  check((await title()).includes("What would"),"Home rendered");
-  await layout("Home 1200");await screenshot("home-1200");
-  check((await evaluate("document.querySelectorAll('.task-card').length"))===5,"five Home shortcuts");
-  await action("route","entry");
-  await evaluate("document.querySelector('#editor').value='<script>alert(1)</script> I’ll call tomorrow.'");
-  await action("heard");await action("useRequest");await action("person","david-garden");await action("channel","Example Mail");
-  check((await text()).includes("Gardening group"),"chosen person visible");
-  check((await text()).includes("I’ll call tomorrow."),"edited words retained");
-  check((await evaluate("document.querySelectorAll('#screen script').length"))===0,"input rendered as text, not markup");
-  check(await evaluate("document.activeElement.id==='screen-title'"),"confirmation focuses heading, not commit");
-  await click("#expire");check((await screen()).endsWith("expired"),"expired preview");
-  check((await text()).includes("I’ll call tomorrow."),"expiry preserves draft");
-  await action("renew");await action("confirm");await finish();
-  check((await title()).includes("Not sent"),"handoff outcome explicitly not sent");
-  await reset();
-  await action("route","listening");await action("edit");check((await screen()).endsWith("request"),"voice touch alternative");
-  await evaluate("document.querySelector('#editor').value='Find some fictional photos'");await action("request");
-  check((await screen()).endsWith("intent"),"generic request preserves explicit task selection");
-  await action("route","photoPerson");check((await screen()).endsWith("photoPerson"),"generic request reaches photos");
-  await reset();await click("#send-review");
-  await action("route","entry");await action("heard");await action("useRequest");await action("person","david-family");await action("channel","Example Messages");await action("confirm");
-  check(await evaluate("document.querySelector('#history').disabled"),"navigation cannot hide active task");
-  await click("#global-stop");check((await screen()).endsWith("unknown"),"Stop after send is unknown");
-  check(!await evaluate("!!document.querySelector('[data-event=confirm]')"),"unknown offers no resend");
-  await action("dismissUnknown");check((await screen()).endsWith("home"),"unknown can be dismissed safely");
-  await reset();await action("route","photoPerson");await action("photoPerson","sophie-book");await action("photoDate","12 September");await action("photoLook");await finish();
-  check((await text()).includes("Book club"),"photo person retained");check((await text()).includes("12 September"),"photo date retained");
-  await action("photoOpen",1);check((await title()).includes("seaside"),"photo detail works");
-  await reset();await action("route","screen");await action("explain");await finish();await action("backArticle");await finish();
-  check((await title()).includes("article"),"screen explanation returns to sample article");
-  await reset();await action("route","music");await action("music","Evening Quartet");await finish();await action("playback");
-  check((await title()).includes("paused"),"music pause state");
-  await reset();await action("route","sizeScope");await action("size");await action("previewScale",1.5);
-  check(await evaluate("getComputedStyle(document.documentElement).getPropertyValue('--app-scale').trim()==='1'"),"preview does not apply");
-  await action("applyScale");await action("home");
-  check(await evaluate("getComputedStyle(document.documentElement).getPropertyValue('--app-scale').trim()==='1.5'"),"size applied across routes");
-  await evaluate("document.querySelector('#review-scale').value='2';document.querySelector('#review-scale').dispatchEvent(new Event('change'))");
-  for(const width of [360,600,840]){await viewport(width);await layout("Home "+width+" at combined 300%");}
-  await screenshot("home-840-300percent");
-  await action("route","entry");await action("heard");await action("useRequest");await action("person","david-family");await action("channel","Example Messages");
-  for(const width of [360,600,840]){await viewport(width);await layout("Confirmation "+width+" at combined 300%");}
-  await screenshot("confirmation-840-300percent");
-  await reset();await viewport(360);await action("route","entry");await action("heard");await action("useRequest");await action("person","david-family");await action("channel","Example Messages");await layout("Confirmation 360");await screenshot("confirmation-360");
-  // Keyboard activation is deliberate on the focused control; Escape cancels pending preview.
-  await cdp("Input.dispatchKeyEvent",{type:"keyDown",key:"Escape",code:"Escape",windowsVirtualKeyCode:27});
-  await cdp("Input.dispatchKeyEvent",{type:"keyUp",key:"Escape",code:"Escape",windowsVirtualKeyCode:27});
-  check((await screen()).endsWith("home"),"Escape leaves confirmation without sending");
-  await reset();await click("#settings");await action("route","setup");await action("setupNext");await action("setupNext");await action("skipMic");await action("setupNext");await action("screenChoice",false);
-  check((await screen()).endsWith("home"),"setup works without permissions");
-  await click("#settings");await action("route","memory");await action("aliasEdit");
-  await evaluate("document.querySelector('#editor').value='Sophie means book club'");await action("aliasSave");
-  check((await text()).includes("Sophie means book club"),"alias correction");await action("deleteAlias");await action("clearAlias");
-  check((await title()).includes("remember"),"alias deletion returns to memory");check((await text()).includes("No remembered"),"alias removed");
-  check(await evaluate("localStorage.length===0&&sessionStorage.length===0"),"no browser storage");
-  check(errors.length===0,"no runtime exceptions: "+errors.join("; "));
-  check(network.every(url=>url.startsWith(base)||url==="about:blank"),"no third-party app requests");
-  check((await fetch(base+"/.git/config")).status===404,"server does not expose repository files");
-  check((await fetch(base+"/model.js",{method:"POST"})).status===404,"server rejects writes");
-  const result={checks,errors,network:[...new Set(network)],screenshots:output,browser:(await cdp("Browser.getVersion",{},undefined)).product};
-  await writeFile(join(output,"results.json"),JSON.stringify(result,null,2));
+  await b.viewport(840, 1100); await fresh();
+  check(await b.evaluate("!document.querySelector('#review-panel')"), 'review tools absent from participant DOM');
+  check(await b.evaluate("![...document.querySelectorAll('[tabindex]')].some(e=>e.tabIndex>0)"), 'natural keyboard order');
+  check(await b.evaluate("document.querySelectorAll('#welcome .task-card').length===0"), 'no feature Home');
+  await geometry('portrait home'); await b.screenshot('home-portrait');
+  await request('Tell David I’ll call after dinner.');
+  check(await stage() === 'clarify-person', 'direct intent, no category selection');
+  await request('Brother'); check(await stage() === 'clarify-channel', 'typed person reply keeps task');
+  await request('Example Mail'); check(await stage() === 'preview', 'typed channel reply reaches preview');
+  check((await text()).includes('I’ll call after dinner.'), 'exact body retained');
+  await button('Change');
+  await b.fill('[aria-label="Message"]', '<script>window.injection=1</script> Dinner at 7?');
+  await select('[aria-label="Recipient"]', 'david-garden');
+  await button('Save changes');
+  check((await text()).includes('Gardening group'), 'recipient change alters resolved person');
+  check((await text()).includes('<script>window.injection=1</script>'), 'message preserved as literal text');
+  check(await b.evaluate("!window.injection&&!document.querySelector('#thread script')"), 'user content never HTML');
+  await b.screenshot('message-preview');
+  await b.click('[data-action=approve]'); check(await b.evaluate("!document.querySelector('#stop-button').hidden"), 'Stop appears during automatic work');
+  await finish();
+  check((await text()).includes('not sent') || (await text()).includes('not been sent'), 'unsent handoff truthful');
+  check(await b.evaluate("!document.querySelector('#current-task [data-action=approve]')"), 'no approval on completed task');
+
+  await request('Show me the photos Sophie sent yesterday.'); await finish();
+  check(await b.evaluate("document.querySelectorAll('#current-task .photo-item').length===2"), 'actual filtered inline collection');
+  check(/Sophie/.test(await text()) && /2026-09-13|13 September/.test(await text()) && /Example/.test(await text()), 'photo provenance visible');
+  await b.screenshot('photos-portrait');
+  const beforePhoto = await b.evaluate('scrollY');
+  await b.evaluate("document.querySelector('.photo-item').focus(); document.querySelector('.photo-item').click()");
+  check(await b.evaluate("!!document.querySelector('dialog[open] img')"), 'image opens');
+  await button('Next', 'dialog[open]'); await button('Previous', 'dialog[open]');
+  await button('Close', 'dialog[open]');
+  await b.waitFor("!document.querySelector('dialog[open]') && document.activeElement.classList.contains('photo-item')");
+  check(await b.evaluate("document.activeElement.classList.contains('photo-item')"), 'photo focus restored');
+  check(Math.abs(await b.evaluate('scrollY') - beforePhoto) < 3, 'photo return retains scroll');
+
+  await request('What am I looking at?'); check(await stage() === 'clarify-screen', 'screen context explicitly supplied');
+  await choice('display-settings'); await finish();
+  await button('Explain more simply');
+  check(await b.evaluate("document.querySelector('#current-task').dataset.kind==='explain'"), 'simpler is contextual');
+  check(/Text size/.test(await text()) && /Display size/.test(await text()), 'visible plain explanation distinguishes the two settings');
+  await b.screenshot('screen-explanation');
+
+  await request('Play some Nina Simone.'); check(await stage() === 'clarify-media', 'ambiguous music resolved inline');
+  await choice('sinnerman'); await finish();
+  check((await text()).includes('Nina Simone'), 'actual performer metadata');
+  await button('Pause'); check((await text()).includes('paused'), 'pause changes state');
+  await menu('text'); await button('Return to conversation');
+  check((await text()).includes('paused'), 'playback survives settings');
+  await button('Resume'); await b.screenshot('media-player');
+  await request('pause'); await request('pause');
+  check((await text()).toLowerCase().includes('paused'), 'repeated typed pause is idempotent');
+
+  await request('Make this easier to read.'); await choice('granny');
+  check(await stage() === 'size-preview', 'readability offers preview before applying');
+  const original = await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)");
+  await button('Apply this size'); check(await stage() === 'completed', 'explicit local size apply');
+  check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)") > original, 'actual text scales');
+  await button('Restore previous size');
+  check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)") === original, 'restore exact previous size');
+
+  await fresh(true); await message('Retain this draft.');
+  await b.evaluate("window.oldApproval=document.querySelector('[data-action=approve]')");
+  await b.click('#review-expire'); check(await stage() === 'expired', 'review expiry works');
+  check((await text()).includes('Retain this draft.'), 'expiry retains exact draft');
+  await button('Review again'); await button('Change');
+  await b.fill('[aria-label="Message"]', 'Changed exact body.'); await button('Save changes');
+  await b.evaluate('window.oldApproval.click()');
+  check(!['planning','acting','waiting','verifying','completed'].includes(await stage()), 'historical button cannot approve current version');
+  if (await stage() === 'expired') await button('Review again');
+  await select('#review-delay', '1500'); await b.click('[data-action=approve]'); await b.click('#stop-button');
+  await b.evaluate('new Promise(resolve=>setTimeout(resolve,1700))');
+  check(await stage() === 'stopped', 'Stop prevents pending completion');
+
+  await fresh(true); await select('#review-fault', 'unknown'); await message(); await b.click('[data-action=approve]');
+  await waitStage('unknown');
+  check(await b.evaluate("!document.querySelector('#current-task [data-action=approve]')"), 'unknown no resend button');
+  await button('I understand');
+  check(await stage() !== 'unknown', 'unknown acknowledgement has real exit');
+  await select('#review-fault','');
+  await message(); await b.click('[data-action=approve]'); await finish();
+  check((await text()).includes('not sent'), 'None clears prior injected outcome');
+
+  for (const failure of ['partial','paywall','unavailable']) {
+    await fresh(true); await select('#review-fault',failure); await request('Play Sinnerman'); await waitStage('failed');
+    check(!await b.evaluate("[...document.querySelectorAll('#current-task button')].some(e=>e.textContent==='Resume')"), failure+' cannot offer unverified playback');
+    check(!(await text()).includes('is paused in this simulation'),failure+' is not mislabeled paused');
+  }
+  for (const failure of ['offline','permission','auth']) {
+    await fresh(true); await select('#review-fault',failure); await request('Show me the photos Sophie sent yesterday'); await waitStage('failed');
+    check(!await b.evaluate("document.querySelector('#current-task .photo-item')"),failure+' cannot expose successful photos');
+  }
+  await fresh(true); await select('#review-screen','signin'); await b.click('#composer button[type=submit]'); await waitStage('failed');
+  check((await text()).includes('protected'),'review screen selection supplies actual protected fixture');
+  check(!await b.evaluate("document.querySelector('input[type=password]')"),'protected context never requests credentials');
+  await select('#review-screen','unknown'); await b.click('#composer button[type=submit]'); await waitStage('failed');
+  check((await text()).includes('can’t identify'),'unknown screen does not fabricate explanation');
+  await fresh(true); await select('#review-fault','noPhotos'); await request('Show me the photos Sophie sent yesterday'); await waitStage('no-matches');
+  await select('#review-fault','uncertainDate'); await request('yesterday'); await finish();
+  check((await text()).includes('possible matches'),'uncertain source date stays explicit');
+  await fresh(true); await request('Find photos from Sophie Book club on 12 September'); await waitStage('preview');
+  check(/Book club/.test(await text()) && /Example Messages/.test(await text()) && /mark it read/.test(await text()),'mark-read exact person/source/consequence preview');
+  await b.click('[data-action=approve]'); await finish();
+  check((await text()).includes('may now be marked read'),'mark-read result reports side effect');
+  await fresh(true); await message(); await select('#review-delay','1500'); await b.click('[data-action=approve]');
+  await b.click('#talk'); await b.click('#talk-stop'); await waitStage('stopped');
+  await b.evaluate('new Promise(resolve=>setTimeout(resolve,1700))'); check(await stage()==='stopped','Talk Stop cancels pending progression');
+  await fresh(true); await select('#review-delay','1500'); await request('Show me the photos Sophie sent yesterday'); await menu('new');
+  check(await b.evaluate("!!document.querySelector('#confirm-dialog[open]')"),'all-task unfinished protection');
+  await b.click('#confirm-dialog button[value=confirm]'); await b.waitFor("!document.querySelector('#current-task')");
+  await b.evaluate('new Promise(resolve=>setTimeout(resolve,1700))'); check(!await stage(),'new conversation prevents stale lookup callback');
+  await b.fill('#request','Keep this input'); await menu('new'); await key('Escape');
+  await b.waitFor("!document.querySelector('#confirm-dialog[open]')");
+  check(await b.evaluate("document.querySelector('#request').value==='Keep this input'"),'Escape cannot replay prior dialog consent');
+  await fresh(true); await message(); await b.click('[data-action=approve]'); await finish();
+
+  await menu('preferences');
+  await b.fill('#alias-label','Garden friend'); await select('#alias-person','david-garden'); await b.click('#alias-save');
+  check((await text()).includes('Garden friend'), 'explicit alias saves locally');
+  const editAlias = await b.evaluate("[...document.querySelectorAll('[id^=alias-edit-]')].find(e=>e.textContent.includes('Garden friend'))?.id");
+  await b.click('#'+editAlias); await select('#alias-person','david-family'); await b.click('#alias-save');
+  await button('Return to conversation'); await request('Tell Garden friend See you soon via Example Mail'); await waitStage('preview');
+  check(/Brother/.test(await text()) && /See you soon/.test(await text()),'alias correction changes actual recipient routing');
+  await button('Cancel','#current-task'); await menu('preferences');
+  const aliasButton = await b.evaluate("[...document.querySelectorAll('[id^=alias-delete-]')].find(e=>e.textContent.includes('Garden friend'))?.id");
+  check(!!aliasButton, 'new alias can be deleted'); await b.click('#' + aliasButton); await b.click('#confirm-dialog button[value=confirm]');
+  await b.waitFor("!document.getElementById(" + JSON.stringify(aliasButton) + ")");
+  check(await b.evaluate("!document.querySelector('[data-panel=preferences]').innerText.includes('Garden friend')"), 'alias deletion removes saved mapping without rewriting earlier conversation');
+  await button('Return to conversation'); await menu('history');
+  check(await b.evaluate("!!document.querySelector('[data-panel=history]')"), 'history discoverable');
+  await button('Clear recent activity'); await b.click('#confirm-dialog button[value=confirm]');
+  await b.waitFor("!document.querySelector('#confirm-dialog[open]') && ![...document.querySelectorAll('[data-panel=history] button')].some(e=>e.textContent==='Clear recent activity')");
+  check((await text()).includes('no completed activity') || (await text()).includes('No recent'), 'history deletion takes effect');
+  await button('Return to conversation');
+
+  for (const [width,height] of [[1200,800],[600,960],[360,720],[360,480]]) {
+    await b.viewport(width,height); await geometry(width+'x'+height);
+    await b.screenshot('layout-'+width+'x'+height);
+  }
+  await b.viewport(840,900); await menu('text'); await button('150%'); await button('Apply this size');
+  await button('Return to conversation'); await select('#review-scale','2');
+  check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===60"), 'combined 300% text genuinely applies');
+  for (const [width,height] of [[840,900],[360,720],[600,520],[360,480]]) {
+    await b.viewport(width,height); await geometry('300% '+width); await b.screenshot('large-text-'+width);
+    for (const selector of ['#request','#talk','#composer button[type=submit]']) {
+      const reachable = await b.evaluate(`(() => { const e=document.querySelector(${JSON.stringify(selector)}); e.scrollIntoView({block:'center'}); const r=e.getBoundingClientRect(); const y=Math.max(0,Math.min(innerHeight-1,(r.top+r.bottom)/2)); return r.left>=0 && r.right<=innerWidth && e.contains(document.elementFromPoint((r.left+r.right)/2,y)); })()`);
+      check(reachable,'300% '+width+'x'+height+' composer control reachable: '+selector);
+    }
+  }
+  await message('Keep Stop visible.'); await select('#review-delay','1500'); await b.click('[data-action=approve]');
+  for (const [width,height] of [[360,480],[840,900]]) {
+    await b.viewport(width,height);
+    for (const where of ['0','document.documentElement.scrollHeight']) {
+      const visible = await b.evaluate(`(() => { scrollTo(0,${where}); const e=document.querySelector('#stop-button'),r=e.getBoundingClientRect(); return r.top>=0 && r.bottom<=innerHeight && e.contains(document.elementFromPoint((r.left+r.right)/2,(r.top+r.bottom)/2)); })()`);
+      check(visible,'300% Stop immediately reachable '+width+' at '+where);
+    }
+  }
+  await b.click('#stop-button');
+  await select('#review-scale','1'); await b.viewport(840,1100);
+  for (const territory of ['open-day','bright-signal']) { await select('#review-territory',territory); await b.screenshot(territory); }
+
+  await fresh();
+  await b.click('#talk'); check(await b.evaluate("!!document.querySelector('#talk-dialog[open]')"), 'simulated Talk opens');
+  const decline = await b.evaluate("[...document.querySelectorAll('#talk-dialog button')].find(x=>/touch|type|decline/i.test(x.textContent))?.textContent.trim()");
+  check(!!decline,'no-microphone path offered'); await button(decline,'#talk-dialog');
+  await b.fill('#request','Unfinished words');
+  await menu('new');
+  check(await b.evaluate("!!document.querySelector('#confirm-dialog[open]')"), 'new conversation guards unfinished composer');
+  await b.click('#confirm-dialog button[value=cancel]');
+  await b.waitFor("!document.querySelector('#confirm-dialog[open]')");
+  check(await b.evaluate("document.querySelector('#request').value==='Unfinished words'"), 'cancel preserves unfinished input');
+  await fresh();
+  await b.fill('#request','Tell David I will call.');
+  await b.evaluate("document.querySelector('#request').focus()");
+  await key('Tab'); check(await b.evaluate("document.activeElement.id==='talk'"), 'keyboard reaches Talk after input');
+  await key('Tab'); check(await b.evaluate("document.activeElement.matches('#composer button[type=submit]')"), 'keyboard reaches typed submission');
+  await key('Enter'); await waitStage('clarify-person');
+  await b.evaluate("document.querySelector('[data-choice=david-family]').focus()"); await key('Enter'); await waitStage('clarify-channel');
+  await b.evaluate("document.querySelector('[data-choice]').focus()"); await key('Enter'); await waitStage('preview');
+  check(await stage()==='preview','keyboard-only activation reaches exact preview');
+  await b.click('#talk'); await key('Escape');
+  await b.waitFor("!document.querySelector('#talk-dialog[open]') && document.activeElement.id==='talk'");
+  check(await b.evaluate("document.activeElement.id==='talk'"),'Escape returns dialog focus');
+  await menu('privacy'); await button('Reset everything'); await b.click('#confirm-dialog button[value=confirm]');
+  await b.waitFor("!document.querySelector('#current-task') && document.querySelector('#request').value===''");
+  check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===20"),'privacy reset restores local baseline');
+  await fresh(true); await select('#review-delay','1500'); await request('Show me the photos Sophie sent yesterday'); await menu('new');
+  check(await b.evaluate("!document.querySelector('#confirm-stop').hidden"),'active interruption dialog keeps Stop available');
+  await b.click('#confirm-stop'); await waitStage('stopped'); await b.waitFor("!document.querySelector('#confirm-dialog[open]')");
+  await fresh(); await request('constructor'); await waitStage('clarify-intent');
+  await request('Play Sinnerman'); await finish();
+  check(!await b.evaluate("document.querySelector('#confirm-dialog[open]')"),'unknown input accepts a supported correction without replacement friction');
+  await b.viewport(840,1100); await fresh(true); await message();
+  const colors=[];
+  for (const territory of ['neutral','open-day','bright-signal']) {
+    await select('#review-territory',territory);
+    colors.push(await b.evaluate("getComputedStyle(document.body).backgroundColor"));
+    await b.evaluate("document.querySelector('#current-task').scrollIntoView({block:'start'})");
+    await b.screenshot('comparison-message-'+territory);
+  }
+  check(new Set(colors).size===3,'three proposed treatments actually differ on identical interaction');
+  await fresh(true); await select('#review-territory','open-day'); await request('Show me the photos Sophie sent yesterday'); await finish();
+  await b.evaluate('scrollTo(0,0)'); await b.screenshot('walkthrough-photos-open-day');
+  check(await b.evaluate("localStorage.length===0 && sessionStorage.length===0"), 'no persistent web storage');
+  check(await b.evaluate("(async()=>!(await indexedDB.databases()).length)()"), 'no IndexedDB');
+  check(await b.evaluate("(async()=>!(await navigator.serviceWorker.getRegistrations()).length)()"), 'no service worker');
+  check(await b.evaluate("(async()=>!(await caches.keys()).length)()"), 'no CacheStorage');
+  check(!b.errors.length, 'no runtime exceptions: '+JSON.stringify(b.errors));
+  check(b.network.every(url=>url.startsWith(b.base+'/')||url==='about:blank'), 'no external runtime requests');
+  const result = {checks, errors:b.errors, network:[...new Set(b.network)], screenshots:b.output, browser:(await b.cdp('Browser.getVersion')).product};
+  await writeFile(join(b.output,'results.json'),JSON.stringify(result,null,2));
   console.log(JSON.stringify(result,null,2));
-} finally {
-  if(socket)socket.close();
-  chrome.kill("SIGTERM");server.close();
-}
+} catch (error) {
+  await b.screenshot('failure'); console.error('Browser artifacts: '+b.output); throw error;
+} finally {await b.close();}
