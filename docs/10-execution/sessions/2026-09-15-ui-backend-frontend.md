@@ -18,6 +18,8 @@ next_action: Coordinate the backend contract and implement its bounded frontend 
 changed_paths:
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-001.md
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-002.md
+  - docs/10-execution/messages/2026-09-15-ui-backend-fe-003.md
+  - prototypes/stage-1/browser-check.mjs
 ---
 
 # Frontend runtime coordination

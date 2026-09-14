@@ -232,6 +232,21 @@ try {
   await fresh(); await request('constructor'); await waitStage('clarify-intent');
   await request('Play Sinnerman'); await finish();
   check(!await b.evaluate("document.querySelector('#confirm-dialog[open]')"),'unknown input accepts a supported correction without replacement friction');
+  await fresh(true); await select('#review-delay','650'); await message(); await b.click('[data-action=approve]');
+  await b.fill('#request','Keep these unfinished words while you work.');
+  await b.evaluate("scrollTo(0,0); document.querySelector('#request').focus({preventScroll:true}); document.querySelector('#request').setSelectionRange(5,10)");
+  const readingPosition=await b.evaluate('scrollY');
+  await finish();
+  check(await b.evaluate("document.activeElement.id==='request' && document.querySelector('#request').value==='Keep these unfinished words while you work.'"),'progress preserves composer focus and unfinished words');
+  check(await b.evaluate("document.querySelector('#request').selectionStart===5 && document.querySelector('#request').selectionEnd===10"),'progress retains composer selection');
+  check(Math.abs(await b.evaluate('scrollY')-readingPosition)<3,'progress does not scroll a reader away from the top');
+  await fresh(true); await message('Original exact words.'); await button('Change');
+  await b.fill('[aria-label=Message]','Uncommitted edit stays here.');
+  await menu('text'); await button('115%','[data-panel=text]'); await button('Apply this size','[data-panel=text]'); await button('Return to conversation','[data-panel=text]');
+  check(await b.evaluate("document.querySelector('[aria-label=Message]').value==='Uncommitted edit stays here.'"),'text settings retain unsaved draft editor');
+  await button('Cancel editing');
+  check((await text()).includes('Original exact words.') && !(await text()).includes('Uncommitted edit stays here.'),'cancel editing restores original exact draft');
+  check(await stage()==='expired','cancel editing does not restore old approval authority');
   await b.viewport(840,1100); await fresh(true); await message();
   const colors=[];
   for (const territory of ['neutral','open-day','bright-signal']) {
