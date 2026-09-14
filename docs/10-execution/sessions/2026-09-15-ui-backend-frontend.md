@@ -20,6 +20,7 @@ changed_paths:
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-002.md
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-003.md
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-004.md
+  - docs/10-execution/messages/2026-09-15-ui-backend-fe-005.md
   - prototypes/stage-1/browser-check.mjs
   - docs/02-design/browser-prototype.md
   - prototypes/stage-1/README.md

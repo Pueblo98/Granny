@@ -21,7 +21,7 @@ try {
   await b.click('#menu-button'); await b.click('[data-menu=connection]');
   await button('Connect to local demo'); await stage('idle');
   await request('Tell David "Original, punctuation!"'); await stage('clarifying');
-  check(await b.evaluate('document.body.innerText.includes("Garden club")'), 'backend differentiates fictional people');
+  check(await b.evaluate('document.body.innerText.includes("Gardening group") && document.body.innerText.includes("Brother")'), 'backend differentiates fictional people');
   await b.click('[data-choice=david-garden]');
   await b.waitFor('!!document.querySelector("[data-choice=example-mail]")');
   await b.click('[data-choice=example-mail]'); await stage('preview');
