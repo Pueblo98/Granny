@@ -41,7 +41,8 @@ const wire = async () => b.evaluate(`(() => {
     w.requests.push({url, body});
     if (w.fail) throw new TypeError('fixture connection unavailable');
     if (url.endsWith('/config')) return {ok:true, status:200, json: async () => ({version, available:true, liveAvailable:false, model:'stub',limits:{}})};
-    if (body?.kind === 'cancel') w.emit({type:'cancellation', state:'stopped', data:{effect:'none'}, epoch:w.snapshot.epoch+1});
+    if (body?.kind === 'cancel') w.emit({type:'cancellation', state:w.snapshot.state === 'unknown' ? 'unknown' : 'stopped',
+      data:{effect:w.snapshot.state === 'unknown' ? 'unknown' : 'none'}, epoch:w.snapshot.epoch+1});
     if (w.reject && body?.kind === w.reject.kind) {
       const code = w.reject.code; w.reject = null;
       return {ok:false,status:409,json:async()=>({version,error:{code}})};
@@ -96,6 +97,7 @@ try {
     body:'<b>Keep these exact words</b>', effect:'demo_draft_created',verified:true,sent:false,message:'Draft created in the demo. Not sent.'}, 2);
   await waitState('completed');
   check((await text()).includes('created and checked. It has not been sent.'), 'only verified backend result claims completion');
+  check((await text()).includes('Your unsent demo draft'), 'completed card uses result wording, not a new preparation prompt');
   check(await b.evaluate('document.querySelector("#request").value === "Do not lose this unfinished input"'), 'completion preserves unfinished composer');
   await b.viewport(360, 480);
   await emit('progress', 'interpreting', {phase:'interpreting'}, 3);
@@ -123,6 +125,25 @@ try {
   await command('Tell David Try again');
   check(await b.evaluate('document.querySelector("#request").value === "Tell David Try again"'), 'unknown prevents new consequential task and retains input');
   check(confirms === await b.evaluate('window.__wire.requests.filter(r=>r.body?.kind === "confirm").length'), 'recovery never resends confirmation');
+  await menu('privacy');
+  await button('Reset everything');
+  await b.click('#confirm-dialog button[value=confirm]');
+  await b.waitFor('!document.querySelector("#current-task")');
+  check(await b.evaluate('!document.querySelector("#mode-notice").hidden && document.querySelector("#mode-notice").textContent.includes("unknown")'), 'reset retains unknown-outcome warning');
+  await menu('connection');
+  check(!await b.evaluate('[...document.querySelectorAll("button")].some(b=>b.textContent === "Connect to local demo")'), 'reset cannot create a new connected session after unknown');
+  await b.navigate(); await wire(); await menu('connection'); await button('Connect to local demo'); await waitState('idle');
+  await emit('preview', 'preview', preview('Keep the expired words.'));
+  await command('Tell David Keep the expired words.'); await waitState('preview');
+  await b.evaluate('window.__wire.reject = {kind:"confirm",code:"confirmation_stale"}');
+  await button('Create this unsent demo draft');
+  await b.waitFor('!!document.querySelector("[data-action=runtime-renew]")');
+  check((await text()).includes('Keep the expired words.'), 'expired server approval leaves draft readable');
+  await emit('preview','preview',preview('Keep the expired words.','00000000-0000-4000-8000-000000000009'),2);
+  await button('Review again');
+  await b.waitFor('!!document.querySelector("[data-action=runtime-confirm]")');
+  check(await b.evaluate('window.__wire.requests.filter(r=>r.body?.kind === "confirm").length === 1 && window.__wire.requests.some(r=>r.body?.kind === "revise")'), 'renewal revises, never retries consequential confirmation');
+  await b.click('#stop-button'); await waitState('stopped');
   check(!await b.evaluate('!!document.querySelector("#review-panel")'), 'reviewer controls absent from connected participant view');
   check(await b.evaluate('localStorage.length === 0 && sessionStorage.length === 0'), 'connected client adds no browser persistence');
   check(b.errors.length === 0, 'no browser exceptions');
