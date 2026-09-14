@@ -2,7 +2,7 @@
 title: "Stage 1 Accessibility Specification"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [design, accessibility]
 related:
   - product-design-spec.md
@@ -14,7 +14,7 @@ related:
 
 ## Browser design evidence, not native conformance
 
-The [browser prototype checks](browser-prototype.md) exercise HTML controls, Home/confirmation reflow at 360/600/840 CSS pixels including combined 300% review/app text scaling, heading focus and keyboard Escape. CSS pixels are not Android dp. Only the named browser configurations and assertions were checked; no TalkBack, switch, physical dexterity, native system font scaling or participant test is passed. The earlier evidence paragraph below describes the specification milestone. Return-focus restoration, all-screen scale coverage and human comprehension remain outstanding.
+The [browser prototype checks](browser-prototype.md) now exercise conversation workflows, photo/dialog focus return, keyboard activation/Escape, constrained-height reflow and actual combined 300% review/app text scaling. Independent review measured Stop at the top and bottom of 360×480 and 840×900 viewports with computed 60px body text and center hit tests, catching and fixing an overlapping hidden skip link. [Session evidence](../10-execution/sessions/2026-09-14-conversation-build.md) distinguishes final checks from earlier failed revisions. CSS pixels are not Android dp/sp. TalkBack, switch, physical dexterity, native font/IME behavior and representative-user comprehension remain unrun. This is not an accessibility-conformance claim.
 
 Proposed internal baseline for PRD-ACC-001–004 and every [screen](product-design-spec.md). Support is profile-specific and requires device and human evidence. No medical condition is inferred from preferences.
 
@@ -49,4 +49,4 @@ Test independent dimensions: enlarged text/low vision; TalkBack; hearing without
 
 Prototype metrics target ≥90% completion of supported flows for each supported profile, with zero inaccessible Stop or confirmation controls. Small usability samples cannot establish population rates; report counts and observed obstacles. A profile failing Stop/consent is a release blocker, not averaged away. External Android/app UI limitations must be documented and tested; Granny cannot claim to restyle or repair them.
 
-**Current evidence:** contrast arithmetic for candidate identity pairs only. No physical tablet, assistive-tech, usability or accessibility-conformance test has run. RES-06 / EVAL-007 / GATE-05 and GATE-09 own the next evidence.
+**Current evidence:** candidate identity contrast arithmetic plus bounded local Chromium interaction/geometry/focus checks in the linked prototype handoff. No physical tablet, assistive-tech, usability or accessibility-conformance test has run. RES-06 / EVAL-007 / GATE-05 and GATE-09 own the next evidence.

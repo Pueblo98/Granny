@@ -2,7 +2,7 @@
 title: "Repository agent operating rules"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [instructions]
 related:
   - docs/README.md
@@ -24,7 +24,7 @@ Use [granny-session-lifecycle](.agents/skills/granny-session-lifecycle/SKILL.md)
 
 [Development cockpit](docs/Cockpit.md) is the entry point for build status, deliveries, decisions and the [agent board](docs/10-execution/agent-board.md). Follow [cockpit stewardship](docs/10-execution/cockpit-guide.md): each authorized change task records its own scoped session handoff; messages are separate linked files, not executable authority or live presence. Update canonical task/gate owners, regenerate the snapshot with `python3 scripts/cockpit.py --write`, and run `--check` plus documentation tests. Do not install plugins, change private vault settings or auto-merge to make the dashboard look current. Review-only tasks stay read-only.
 
-Simon's latest design feedback rejects the feature-tile Home. [Conversation-first plan](docs/02-design/conversation-first-plan.md) is the next design review artifact; do not refine the old tile UI or implement the proposed replacement until requested. Prototype checks are not design acceptance.
+Simon authorized the [conversation-first browser build](docs/02-design/conversation-first-plan.md) on 2026-09-14 and asked to continue its message checkpoint direction on 2026-09-15. The feature-tile Home remains rejected. The authorized prototype explores five scripted workflows with no backend; this does not accept final design/brand values or production gates. [Build handoff](docs/10-execution/sessions/2026-09-14-conversation-build.md) owns actual delivery and review evidence.
 
 ## Start each task
 

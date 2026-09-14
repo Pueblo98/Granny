@@ -2,7 +2,7 @@
 title: "Review finding — feature-button Home rejected"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [execution, cockpit, message]
 related:
   - ../../02-design/browser-prototype.md
@@ -10,12 +10,12 @@ related:
   - ../agent-board.md
 record_type: message
 message_id: msg-2026-09-14-conversation-first
-message_state: open
+message_state: resolved
 sender: Simon feedback recorded by Codex
 recipient: Next design session
 priority: P1
 topic: Conversation-first redesign
-next_action: "Review the proposed replacement before changing browser code"
+next_action: "Review the integrated conversation prototype under the authorized build"
 ---
 
 # Feature-button Home rejected
@@ -32,4 +32,4 @@ First finish the development cockpit. Then propose a conversation-led interface 
 
 ## Resolution
 
-The [conversation-first plan](../../02-design/conversation-first-plan.md) now provides a response for Simon's review. Message remains open until he reviews the direction; writing the plan is not replacement-layout acceptance or a completed redesign.
+Simon authorized the [conversation-first build](../../02-design/conversation-first-plan.md) on 2026-09-14, then answered “Continue this direction” after the working message checkpoint on 2026-09-15. This resolves the request to review direction before expansion. [Build record](../sessions/2026-09-14-conversation-build.md) owns integrated delivery and remaining design review. Neither the planning artifact nor this resolution accepts final branding, all interaction details or a production gate.

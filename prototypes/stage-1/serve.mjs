@@ -2,10 +2,15 @@ import http from "node:http";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 const types = { "/": ["index.html","text/html"], "/index.html": ["index.html","text/html"],
-  "/styles.css": ["styles.css","text/css"], "/model.js": ["model.js","text/javascript"], "/app.js": ["app.js","text/javascript"] };
+  "/styles.css": ["styles.css","text/css"], "/model.js": ["model.js","text/javascript"], "/app.js": ["app.js","text/javascript"],
+  "/fixtures.js": ["fixtures.js","text/javascript"], "/intent.js": ["intent.js","text/javascript"],
+  "/scheduler.js": ["scheduler.js","text/javascript"],
+  "/assets/garden.svg": ["assets/garden.svg","image/svg+xml"],
+  "/assets/seaside.svg": ["assets/seaside.svg","image/svg+xml"],
+  "/assets/meal.svg": ["assets/meal.svg","image/svg+xml"] };
 export function serve(port = 4173) {
   const server = http.createServer(async (req,res) => {
-    const path = new URL(req.url, "http://127.0.0.1").pathname, item = types[path];
+    const path = new URL(req.url, "http://127.0.0.1").pathname, item = Object.hasOwn(types, path) ? types[path] : null;
     if (!item || !["GET","HEAD"].includes(req.method)) { res.writeHead(404); res.end("Not found"); return; }
     try {
       const bytes = await readFile(new URL(item[0], import.meta.url));

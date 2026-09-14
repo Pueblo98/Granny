@@ -2,7 +2,7 @@
 title: "Stage 1 documentation map"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [navigation]
 related:
   - 10-execution/current-milestone.md
@@ -13,7 +13,7 @@ related:
 
 # Documentation map
 
-**Start here for development oversight:** [Cockpit](Cockpit.md) · [visual map](Development.canvas) · [session/message views](10-execution/cockpit.base) · [agent board](10-execution/agent-board.md). [Cockpit guide](10-execution/cockpit-guide.md) owns update/refresh rules. [Conversation-first redesign plan](02-design/conversation-first-plan.md) is pending review; no new app implementation in the cockpit task.
+**Start here for development oversight:** [Cockpit](Cockpit.md) · [visual map](Development.canvas) · [session/message views](10-execution/cockpit.base) · [agent board](10-execution/agent-board.md). [Cockpit guide](10-execution/cockpit-guide.md) owns update/refresh rules. [Conversation-first build](02-design/conversation-first-plan.md) is the active browser experience revision; [its record](10-execution/sessions/2026-09-14-conversation-build.md) separates implemented simulation, review and production evidence.
 
 **Stage 1 stock-Android tablet app only.** Granny is a temporary codename. Vision, App MVP, App V1, later App, future Stage 2 OS and future Stage 3 hardware are separate scopes in [product scope](01-product/scope-and-roadmap.md). docs/ is the Obsidian vault; the whole Git repository is the project source of truth. Ignored Obsidian JSON is private local user state.
 
