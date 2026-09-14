@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">Fictional garden afternoon</title><desc id="desc">An original illustration of a sunny garden table, terracotta pots and flowering plants. No personal photograph.</desc>
+  <rect width="960" height="640" fill="#e9eee1"/><rect y="440" width="960" height="200" fill="#d6b895"/>
+  <path d="M0 460V145Q70 80 140 160V460M960 470V100Q850 30 790 170V470" fill="#476e52"/>
+  <path d="M160 455V212a220 220 0 0 1 440 0v243" fill="#e1d2b8"/>
+  <path d="M210 454V220a170 170 0 0 1 340 0v234" fill="#abc4a1"/>
+  <circle cx="415" cy="157" r="48" fill="#fff3bc"/>
+  <path d="M210 353q80-120 170-15t170-20v136H210" fill="#718d69"/>
+  <path d="M330 305v203m400-188v180" stroke="#305c41" stroke-width="12"/>
+  <path d="M330 380q-105-100-105-13 0 50 105 45m0-57q98-110 95-33-2 65-95 66m400 8q-95-95-100-31 0 50 100 58m0-100q85-92 93-31 0 59-93 62" fill="#487e53"/>
+  <g fill="#d47c72"><circle cx="313" cy="298" r="29"/><circle cx="353" cy="291" r="29"/><circle cx="337" cy="331" r="29"/><circle cx="714" cy="310" r="25"/><circle cx="749" cy="308" r="25"/><circle cx="733" cy="341" r="25"/></g>
+  <g fill="#efc964"><circle cx="333" cy="311" r="16"/><circle cx="733" cy="322" r="14"/></g>
+  <path d="M255 450h151l-18 120H277zM672 466h123l-15 105h-92z" fill="#b86949"/>
+  <path d="M249 452h164m253 15h135" stroke="#8b503b" stroke-width="17"/>
+  <ellipse cx="525" cy="570" rx="230" ry="37" fill="#976e4e"/><path d="M408 570v70m235-70v70" stroke="#725a43" stroke-width="15"/>
+  <ellipse cx="530" cy="556" rx="69" ry="19" fill="#ece3cd"/><path d="M508 509h43v42q-21 25-43 0z" fill="#faf6e9"/><path d="M551 517q33-4 18 24h-18" fill="none" stroke="#faf6e9" stroke-width="10"/>
+</svg>

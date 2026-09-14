@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">Fictional Sunday lunch</title><desc id="desc">An original illustration of a table set with a bowl of lemons, plates, bread and flowers. No personal photograph.</desc>
+  <rect width="960" height="640" fill="#eee2cc"/><rect x="630" y="48" width="257" height="293" rx="4" fill="#809f88"/>
+  <path d="M630 271l80-78 87 40 90-82v190H630" fill="#567962"/><path d="M759 48v293M630 176h257" stroke="#fff8e8" stroke-width="14"/>
+  <path d="M0 384l960-42v298H0z" fill="#b97959"/><path d="M232 363l446-14 119 291H95z" fill="#f6eedb"/>
+  <path d="M314 362l-69 278m156-281l-14 281m105-284l42 284m54-288l100 288" stroke="#dbc9ac" stroke-width="3"/>
+  <ellipse cx="269" cy="494" rx="131" ry="63" fill="#fdfbf1"/><ellipse cx="269" cy="494" rx="94" ry="41" fill="#d4dfcc"/>
+  <ellipse cx="731" cy="472" rx="122" ry="58" fill="#fdfbf1"/><ellipse cx="731" cy="472" rx="88" ry="37" fill="#d4dfcc"/>
+  <path d="M376 478q107 31 202 0l-25 81q-80 40-152-3z" fill="#45675b"/><ellipse cx="477" cy="478" rx="101" ry="34" fill="#6c8e79"/>
+  <g fill="#e9be4f"><ellipse cx="432" cy="476" rx="33" ry="23" transform="rotate(-18 432 476)"/><ellipse cx="492" cy="470" rx="34" ry="25"/><ellipse cx="536" cy="485" rx="31" ry="21"/></g>
+  <path d="M122 415v-147m-2 69l-45-43m45 14l40-36" fill="none" stroke="#52765c" stroke-width="9"/>
+  <g fill="#b97179"><circle cx="122" cy="251" r="23"/><circle cx="78" cy="287" r="22"/><circle cx="167" cy="267" r="24"/></g>
+  <path d="M88 348h69l-7 77q-31 21-56 0z" fill="#677f8a"/>
+  <path d="M627 570q78-55 185 9l-12 48H635z" fill="#d7a363"/><path d="M666 579l-8 30m57-31l-7 30m58-17l-7 26" stroke="#946941" stroke-width="6"/>
+</svg>
