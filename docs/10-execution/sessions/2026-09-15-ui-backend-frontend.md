@@ -17,6 +17,7 @@ artifact_commit: 09fa64d90becd1089788b75dc02ec090c2890cad
 next_action: Coordinate the backend contract and implement its bounded frontend adapter without replacing the delivered conversation UI
 changed_paths:
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-001.md
+  - docs/10-execution/messages/2026-09-15-ui-backend-fe-002.md
 ---
 
 # Frontend runtime coordination
