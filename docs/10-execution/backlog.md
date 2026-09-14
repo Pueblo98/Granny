@@ -45,12 +45,12 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 ## T-102 — Prototype neutral Home/input/permission and access interaction
 
 - **Priority / discipline:** P0 / Design/Android; Simon owns acceptance.
-- **Dependencies / entry:** Contract portion can start now; device shell requires DoR and T-101 environment; no final brand needed. Official remote Figma MCP authentication was verified 2026-09-14, but exact file creation/canvas mutation still requires current authority. Confirm live seat/tool-call limits before execution.
+- **Dependencies / entry:** Contract portion can start now; device shell requires DoR and T-101 environment; no final brand needed. Simon authorized the local browser prototype on 2026-09-14; Figma quota no longer blocks design. Native Android shell and device integration remain separately gated.
 - **Trace / contract:** PRD-FR-001/002/003/011; ACC-001–003; OUT-002; UC-007/013/014/022, J-006/007; SCR-001–004/011; CMP-002/007/008/009; EVAL-005/007.
 - **Bounded deliverable:** First low-fi frames including denied mic and typed path; next bounded own-app shell, transcript fixture and reversible text preview, no external automation.
 - **Acceptance / evidence:** 100/130/200% reflow and local semantics tests; explicit scope labels; design review then device accessibility evidence.
 - **Excluded / rollback:** No real model, mic/background capture without separate task, or global settings mutation. Neutral tokens proposed. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
-- **Status:** planned; MCP connection verified read-only, no Figma file created, and no code, test result or assigned staffed team claimed.
+- **Status:** review — initial browser interaction slice implemented and self-tested after Simon's medium change. Five MVP workflows, setup and safety variants exist; [coverage and remaining gaps](../02-design/browser-prototype.md) include assistive-tech/return-focus/full-state review. Figma is paused; no Android shell or GATE-05 pass claimed.
 
 <a id="t-103"></a>
 ## T-103 — Build offline authorization/cancellation/verification contract replay
@@ -114,7 +114,7 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Priority / discipline:** P0 research / P1 integrated / Design/research/brand; Simon owns acceptance.
 - **Dependencies / entry:** RES-01/03 consent/protocol; low-fi T-102 before territory preference; Simon iteration kit before finalist expansion.
 - **Trace / contract:** PRD-OUT-002/003/ACC-004; UC-016/019 and five signatures; EVAL-007/012; RES-03/06/09.
-- **Bounded deliverable:** Build exact Figma package when external write authorized; test consequence/Stop/partial understanding and access; compare four territories and spoken finalists; incorporate Simon love/interesting/neutral/dislike/never responses.
+- **Bounded deliverable:** Use the browser prototype and its coverage manifest; optional Figma writes require separate authority; test consequence/Stop/partial understanding and access; compare four territories and spoken finalists; incorporate Simon love/interesting/neutral/dislike/never responses.
 - **Acceptance / evidence:** Document actual n, comprehension/error observations and revisions; GATE-05 decision/evidence explicitly separated. Trademark/language reviews before public name.
 - **Excluded / rollback:** No fake Figma URL, final logo promotion, fabricated participants or age-stereotype preference. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
 - **Status:** planned; no code, test result or assigned staffed team claimed.

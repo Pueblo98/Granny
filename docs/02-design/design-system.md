@@ -13,6 +13,8 @@ related:
 
 # Design-system contract
 
+Current composition is implemented as native HTML controls in the [browser prototype](browser-prototype.md). Reusable rendering helpers map to CMP contracts; semantic CSS custom properties are provisional grayscale review values, not accepted production tokens. Figma instances are no longer the required current handoff. Prototype discrepancies remain named gaps, not new component requirements.
+
 This file owns semantic roles and reusable behavior. [Product design](product-design-spec.md) owns screens/states; [brand territories](brand-and-visual-identity.md) own candidate color/font identity values. Everything below is proposed. No final public name, logo, palette or typeface is accepted.
 
 ## Token roles and provisional dimensions
@@ -84,7 +86,7 @@ Toast/snackbar: optional nonessential acknowledgement only, never sole failure/c
 
 ## Identity-to-token workflow
 
-Brand foundation → four territories → Simon review + accessibility/user evidence → selected proposed direction → validated semantic values and logo assets → Figma components/prototypes → accepted Git-backed tokens and Android.
+Brand foundation → four territories → Simon review + accessibility/user evidence → selected proposed direction → validated semantic values and logo assets → browser components/prototypes (Figma optional) → accepted Git-backed tokens and Android.
 
 The local [identity review board](identity-review.html) is an exploratory artifact, not production tokens. Candidate values and calculated color-pair contrast live in the brand document; no device/user measurement is implied. Feasibility screens use the [neutral token fixture](../../design-tokens/README.md) and system sans with proposed dimensions; label them provisional in engineering/design metadata, not as a product warning in every UI.
 

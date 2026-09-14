@@ -12,6 +12,16 @@ related:
 
 # Granny
 
+## Try the browser design prototype
+
+From this checkout, run:
+
+```bash
+node prototypes/stage-1/serve.mjs
+```
+
+Open **http://127.0.0.1:4173** on the same computer. No dependencies need installing. This is a clickable, fictional-data design sandbox for the five MVP workflows, not the Android app. Nothing records or sends. [Run, review and test instructions](prototypes/stage-1/README.md); [design handoff and remaining gaps](docs/02-design/browser-prototype.md).
+
 Granny is a temporary project codename for an AI-first computer experience for older adults. The thesis: **the user should not need to learn to operate the computer; the computer should learn to operate itself for the user.**
 
 Only **Stage 1, an installable stock-Android tablet app**, is active. Stage 2 OS/AOSP and Stage 3 custom hardware are dormant vision context. No final public name, visual identity, vendor, launch market/date or price is accepted.
@@ -26,13 +36,13 @@ Accepted experiment scope ([ADR-0009](docs/09-decisions/ADR-0009-mvp-and-control
 
 ## Review and next work
 
-Change sessions use an isolated task worktree, validate and commit scoped work, then push and verify the GitHub branch under Simon's standing authorization. Read the [Git delivery workflow](docs/10-execution/git-workflow.md); main merges remain separately authorized. Until integration, start sessions needing this package from docs/git-workflow, not the older main.
+Change sessions use an isolated task worktree, validate and commit scoped work, then push and verify the GitHub branch under Simon's standing authorization. Read the [Git delivery workflow](docs/10-execution/git-workflow.md); main merges remain separately authorized. The workflow was integrated into main at ce3f32f; start new independent tasks from current origin/main.
 
 [Delivery workflows and four repository skills](docs/10-execution/operating-workflows.md) explain how to refine specs, prepare design, implement bounded slices and review evidence. [First task packets](docs/10-execution/task-packets.md) give concrete inputs, outputs, adverse cases and stop boundaries for T-101/102/103/108. No global skills/plugins, scheduled jobs or external workflows are installed.
 
-[Brand territories](docs/02-design/brand-and-visual-identity.md), [81-name exploration](docs/02-design/naming-exploration.md) and [local static identity boards](docs/02-design/identity-review.html) provide concrete choices. Open Day is the proposed visual direction; Daykind, Handspan and Clearfold are uncleared naming finalists. No Figma file has been created; [the execution brief](docs/02-design/figma.md) specifies it.
+[Brand territories](docs/02-design/brand-and-visual-identity.md), [81-name exploration](docs/02-design/naming-exploration.md) and [local static identity boards](docs/02-design/identity-review.html) provide concrete choices. Open Day is the proposed visual direction; Daykind, Handspan and Clearfold are uncleared naming finalists. A partial Figma file exists but is paused. The [browser prototype](docs/02-design/browser-prototype.md) is now the active interaction artifact; final identity is still undecided.
 
-[Backlog T-103](docs/10-execution/backlog.md#t-103) is the first safe coding slice: offline fake-adapter confirmation/cancel/verify replay, no device permission or personal data. Reference inventory and route evidence T-101 can proceed independently with device access. MVP implementation and a real-user pilot remain gated. This package contains no application/runtime/backend implementation.
+[Backlog T-103](docs/10-execution/backlog.md#t-103) is the first safe agent-contract coding slice: offline fake-adapter confirmation/cancel/verify replay, no device permission or personal data. Reference inventory and route evidence T-101 can proceed independently with device access. MVP implementation and a real-user pilot remain gated. The browser prototype is design-only code; no production Android app, agent runtime or backend is implemented.
 
 ## Repository and Obsidian
 

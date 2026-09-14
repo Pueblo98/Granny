@@ -13,6 +13,8 @@ related:
 
 # Delivery operating system
 
+Current design medium: local browser prototype, explicitly authorized by Simon on 2026-09-14. Build native HTML/CSS interactions in prototypes/stage-1, keep reviewer controls separate, use only fictional fixtures and preserve the no-capture/no-egress boundary. Do not re-enter Figma merely because a skill or historical frame inventory mentions it. The [browser handoff](../02-design/browser-prototype.md) owns run/check/review instructions; this is not authorization for a web product, Android actuation or production agent code.
+
 This document owns **how work moves**, not what the product does. [AGENTS](../../AGENTS.md) owns agent instructions; [readiness](development-readiness.md) owns gate status and Definition of Ready; [backlog](backlog.md) owns T-ID status. The accepted experiment scope is ADR-0009. Detailed contracts remain proposed until specifically accepted; no workflow auto-approves a product choice or external action.
 
 ## Choose the work lane
@@ -53,7 +55,7 @@ Exit: changed behavior has testable criteria, known safety disposition and desig
 
 ### WF-02 — Design handoff and critique
 
-Use the [Figma contract](../02-design/figma.md) and the T-102/108 [packet](task-packets.md). Fix interaction flow before territory styling. Review negative paths on the same copy/layout; test voice and touch separately. Annotate Android-owned UI and unproven Stop surfaces rather than making them look guaranteed.
+Use the [browser-first design contract](../02-design/browser-prototype.md) and the T-102/108 [packet](task-packets.md). The Figma contract applies only when separate Figma work is requested. Fix interaction flow before territory styling. Review negative paths on the same copy/layout; test voice and touch separately. Annotate Android-owned UI and unproven Stop surfaces rather than making them look guaranteed.
 
 Exit: designer can enumerate required frames/components and the engineer can identify which values are neutral, proposed or accepted. A visual preference does not change confirmation class, timing semantics or recipient preview. Capture missing coverage as a specific frame or contract issue, not “make it simpler”.
 

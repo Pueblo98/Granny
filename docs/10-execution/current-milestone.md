@@ -13,6 +13,12 @@ related:
 
 # Current milestone — Stage 1 development-readiness package
 
+## Active milestone — review the browser interaction prototype
+
+Simon switched the design medium from quota-blocked Figma to a local browser on 2026-09-14. [Run the prototype](../../prototypes/stage-1/README.md); [coverage, authority and review checklist](../02-design/browser-prototype.md). T-102's initial design slice now contains five clickable MVP workflows, onboarding, editable drafts/aliases, reversible text scale, and explicit Stop/expiry/failure/unknown scenarios. It uses fictional data, no AI/device capture or real sends. Review and refine this artifact next; T-103 and physical Android work remain separate.
+
+The task branch starts at origin/main ce3f32f, which already includes Git-workflow PR #2. The earlier Figma task branch remains unmerged and preserved; this task does not merge it. Historical no-prototype/read-only statements below describe previous milestones. No product or release gate is passed by the browser checks.
+
 ## Workflow refinement follow-up
 
 Git workflow validation, 2026-09-14: in the isolated docs/git-workflow worktree, `python3 scripts/validate-docs.py` passed with 0 errors (78 Markdown documents, four skills, 1,403 local links, four preserved source hashes); the 19 documentation-tool unit tests passed; the changed granny-spec-change skill passed its packaging validator; `git diff --check` passed. The readiness/Figma branch was pushed and its remote HEAD independently verified as a4fc05b315494affb51c63eb979ad263ebd40115. No product eval or main merge was performed. The original checkout's user-owned action-policy heading edit remains outside the published commits. These are mechanical/self-review checks, not proof of future-agent compliance.
@@ -39,7 +45,7 @@ Current official Play policy does not permit a general-assistant AccessibilitySe
 
 Evidence-led foundation: MVP/control review T-100 is complete; next inventory device and policy routes (T-101), or build offline policy/Stop/verification replay only (T-103) in a separately requested coding session. Produce/test low-fi interaction and iterate naming/identity (T-102/108) within their authorization and evidence boundaries. Do not begin broad MVP implementation or personal-data automation.
 
-Naming recommendation: Daykind / Handspan / Clearfold, all uncleared with documented concerns. Identity recommendation: Open Day tested against challengers. Neither is accepted. Figma has a precise brief, not an existing file.
+Naming recommendation: Daykind / Handspan / Clearfold, all uncleared with documented concerns. Identity recommendation: test Open Day against challengers. Neither is accepted. Current browser styling is deliberately provisional grayscale; Figma remains a partial paused artifact.
 
 ## Completion versus remaining authority
 

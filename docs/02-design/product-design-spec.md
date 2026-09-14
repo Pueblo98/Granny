@@ -14,7 +14,7 @@ related:
 
 # Stage 1 product design specification
 
-**Proposed interaction contract.** Product behavior is owned by the [PRD](../01-product/prd.md); [journeys](../01-product/user-journeys.md) define sequence; [design system](design-system.md) defines component contracts; [brand](brand-and-visual-identity.md) supplies candidate visual values. No Figma file or tested prototype exists yet.
+**Proposed interaction contract.** Product behavior is owned by the [PRD](../01-product/prd.md); [journeys](../01-product/user-journeys.md) define sequence; [design system](design-system.md) defines component contracts; [brand](brand-and-visual-identity.md) supplies candidate visual values. The [browser prototype](browser-prototype.md) now supplies a self-tested, low-fidelity simulation; Figma is paused. User/device tests remain unrun, and the prototype's explicit gaps do not weaken this contract.
 
 ## Experience architecture
 
@@ -58,7 +58,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Title → purpose → limits → Continue → Try by touch; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Reading rhythm; avoid age-coded welcome imagery.
+**Design review question:** Reading rhythm; avoid age-coded welcome imagery.
 
 <a id="scr-002"></a>
 ### SCR-002 — Permission education and OS handoff
@@ -72,7 +72,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Heading → data/purpose → consequence → grant action → Skip; announce actual grant change; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Separate microphone, accessibility, capture and cloud consent variants.
+**Design review question:** Separate microphone, accessibility, capture and cloud consent variants.
 
 <a id="scr-003"></a>
 ### SCR-003 — Home
@@ -86,7 +86,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Title → Talk → Type → shortcuts row order → History → Settings; no automatic tile movement; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Compare single-column and two-column shortcuts at large text.
+**Design review question:** Compare single-column and two-column shortcuts at large text.
 
 <a id="scr-004"></a>
 ### SCR-004 — Listening, transcript and interpretation
@@ -100,7 +100,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Mic status → transcript → Done/Edit → Use → Cancel; do not announce every partial token; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Partial/final transcript distinction without low contrast.
+**Design review question:** Partial/final transcript distinction without low contrast.
 
 <a id="scr-005"></a>
 ### SCR-005 — Task activity and stop surface
@@ -114,7 +114,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Goal → status → Stop → Take over; Stop always reachable and never disabled; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** External stop surface is conditional on device proof; cannot promise universal overlay.
+**Design review question:** External stop surface is conditional on device proof; cannot promise universal overlay.
 
 <a id="scr-006"></a>
 ### SCR-006 — Clarification / entity choice
@@ -128,7 +128,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Question → options → None → Edit → Cancel; rows single semantic targets; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Distinguish people without relying only on avatar/color.
+**Design review question:** Distinguish people without relying only on avatar/color.
 
 <a id="scr-007"></a>
 ### SCR-007 — Action confirmation
@@ -142,7 +142,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Heading/recipient → consequence → full preview → Change → Cancel → action; no commit autofocus or generic Enter-to-send; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Full-screen confirmation preferred; enough content visible before scroll action.
+**Design review question:** Full-screen confirmation preferred; enough content visible before scroll action.
 
 <a id="scr-008"></a>
 ### SCR-008 — Result and recovery
@@ -156,7 +156,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Outcome → evidence → unresolved part → next step → Done; announce once; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Use text and icon; partial must not look like full success.
+**Design review question:** Use text and icon; partial must not look like full success.
 
 <a id="scr-009"></a>
 ### SCR-009 — Task history
@@ -170,7 +170,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Heading → rows newest first → Clear history → Back; row label includes outcome; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Readable unknown/stopped status; no surveillance dashboard.
+**Design review question:** Readable unknown/stopped status; no surveillance dashboard.
 
 <a id="scr-010"></a>
 ### SCR-010 — Memory and people
@@ -184,7 +184,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Title → items → source/scope → Edit/Delete → Back; editable fields labeled; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Avoid database language; source is understandable without technical confidence scores.
+**Design review question:** Avoid database language; source is understandable without technical confidence scores.
 
 <a id="scr-011"></a>
 ### SCR-011 — Accessibility and voice settings
@@ -198,7 +198,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Title → preview → each control/value → Apply/Restore → Back; sliders also have +/− buttons; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Large-text screenshots and narrow layout; no dense control grid.
+**Design review question:** Large-text screenshots and narrow layout; no dense control grid.
 
 <a id="scr-012"></a>
 ### SCR-012 — Privacy, data and helper boundaries
@@ -212,7 +212,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Heading → collection states → retained data → controls → destructive preview → Back; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Separate reversible switches from whole-data deletion.
+**Design review question:** Separate reversible switches from whole-data deletion.
 
 <a id="scr-013"></a>
 ### SCR-013 — Helper invitations and proposal review
@@ -226,7 +226,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Identity → scope → diff → Reject → Approve → Revoke/Back; no helper auto-consent; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Deferred remote-help frames visually marked and excluded from MVP prototype.
+**Design review question:** Deferred remote-help frames visually marked and excluded from MVP prototype.
 
 <a id="scr-014"></a>
 ### SCR-014 — Offline / permission / authentication / restricted
@@ -240,7 +240,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Obstacle → known status → safe option → Home/Cancel; announce reason once; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Different causes share structure but use distinct plain-language labels.
+**Design review question:** Different causes share structure but use distinct plain-language labels.
 
 <a id="scr-015"></a>
 ### SCR-015 — Help, feedback and diagnostics
@@ -254,7 +254,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Help → next step → optional note → preview → export → Back; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Figma question:** Support copy should not demand model/API vocabulary.
+**Design review question:** Support copy should not demand model/API vocabulary.
 
 ## Authoritative interaction-state model
 
@@ -290,6 +290,6 @@ SCR-007 uses [CMP-003](design-system.md#cmp-003), not a transient toast. Name pe
 
 Success/result components distinguish attempted, prepared, opened, sent, delivered, uncertain and stopped. A green check is reserved for verified claimed outcome and always accompanies text. “Done” alone is insufficient for a consequential action.
 
-## Figma and implementation handoff
+## Browser-first design and implementation handoff
 
-[First Figma package](figma.md) names frames and prototype scenarios. Low-fidelity interaction review precedes comparison of four concrete identity territories on identical Home and confirmation structures. All numerical design values remain proposed until Simon's decision and device/accessibility evidence. Local feasibility UI may use provisional neutral tokens; production styling requires GATE-05. Screen IDs and state names survive changes in visual style.
+[Browser design/handoff](browser-prototype.md) names current views, controls, test scenarios and limitations. The [Figma package](figma.md) remains optional historical execution guidance. Low-fidelity interaction review precedes comparison of four concrete identity territories on identical Home and confirmation structures. All numerical design values remain proposed until Simon's decision and device/accessibility evidence. Local feasibility UI may use provisional neutral tokens; production styling requires GATE-05. Screen IDs and state names survive changes in visual style.
