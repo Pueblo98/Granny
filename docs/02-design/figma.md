@@ -13,12 +13,12 @@ related:
 
 # Figma execution and handoff contract
 
-No Figma file has been created by this specification mission. The [local identity board](identity-review.html) is an exploratory repository artifact, not an interactive product prototype or final asset. [Product design](product-design-spec.md) owns behavior; [identity](brand-and-visual-identity.md) owns candidate styling; [naming](naming-exploration.md) owns candidate words.
+The specification mission did not create a Figma file. Simon subsequently supplied and authorized an existing file: [actual prototype handoff and resume point](figma-prototype-handoff.md). Three pages, an overview, Home and 24 empty wrappers were authored before the Starter MCP quota stopped work on 2026-09-14. Prototype connections and remaining screens are unfinished. The [local identity board](identity-review.html) remains an exploratory repository artifact, not a final asset. [Product design](product-design-spec.md) owns behavior; [identity](brand-and-visual-identity.md) owns candidate styling; [naming](naming-exploration.md) owns candidate words.
 
 ## Official Figma MCP connection
 
 The official remote Figma MCP connection was verified from Codex on
-2026-09-14. Authentication succeeded; no Figma file was created or changed.
+2026-09-14. That initial check was read-only; subsequent authorized authoring succeeded until the server explicitly returned the Starter-plan MCP tool-call limit. The file being open does not resolve this quota. The handoff records actual mutations and the incomplete state.
 Account identifiers and OAuth credentials are deliberately not stored in the
 repository. The current authenticated seat reports Starter/View. Figma's
 current documentation says Starter and View/Collab seats on paid plans can be
@@ -120,7 +120,7 @@ version references in this document and promote the corresponding Git tokens.
 
 ## First package: interaction before styling
 
-Create one Stage 1 design file only after authorization to write to Figma. Owner Simon; designer maintains components. File description links this repository and source commit. Pages in order:
+Use Simon's authorized existing Stage 1 file. Owner Simon; designer maintains components. The free-plan implementation groups the logical sections below into three pages: Overview & foundations, MVP interactive flows, and State & accessibility review. These rows are content groups, not a requirement to create nine Figma pages. Identity production remains a separate later package. The overview links the source baseline; exact node references are in the handoff.
 
 | Page / sections | Exact deliverable | Gate |
 |---|---|---|

@@ -50,7 +50,7 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Bounded deliverable:** First low-fi frames including denied mic and typed path; next bounded own-app shell, transcript fixture and reversible text preview, no external automation.
 - **Acceptance / evidence:** 100/130/200% reflow and local semantics tests; explicit scope labels; design review then device accessibility evidence.
 - **Excluded / rollback:** No real model, mic/background capture without separate task, or global settings mutation. Neutral tokens proposed. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
-- **Status:** planned; MCP connection verified read-only, no Figma file created, and no code, test result or assigned staffed team claimed.
+- **Status:** in progress; authorized Figma authoring blocked by Starter MCP quota on 2026-09-14. Overview/Home and 24 empty wrappers exist; no prototype navigation or complete journey exists. [Actual handoff](../02-design/figma-prototype-handoff.md) records IDs, known fixes and next batch. No app code or product-test pass claimed.
 
 <a id="t-103"></a>
 ## T-103 — Build offline authorization/cancellation/verification contract replay

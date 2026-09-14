@@ -13,6 +13,10 @@ related:
 
 # Current milestone — Stage 1 development-readiness package
 
+## Current design execution — partial, quota-blocked
+
+Simon authorized building the low-fi MVP in his existing Figma file and confirmed using three pages. The [T-102 handoff](../02-design/figma-prototype-handoff.md) records the overview, Home and 24 empty wrappers actually created. The Starter MCP quota blocked further authoring on 2026-09-14; connections, remaining flows and accessibility variants are unfinished. No complete clickable prototype or GATE-05 pass is claimed. Preserve and resume those nodes when access permits; switching tools or paying is Simon's choice. Earlier read-only setup statements below describe that historical task, not this later authorized write.
+
 ## Workflow refinement follow-up
 
 Simon's 2026-09-14 follow-up requests a holistic documentation/skills/workflow system **before actual design and development**. T-113 supplies [delivery workflows and four repository skills](operating-workflows.md), [first task packets](task-packets.md), [transaction protocol](../03-agent/execution-protocol.md), [capability admission](../04-architecture/capability-admission.md), [evidence review](../06-evals/evidence-protocol.md) and [research execution protocols](../08-research/research-protocols.md). Documentation-tool regression tests are executable; T-103's 20 product-contract cases remain unrun. No application code, external Figma file or participant/device study was created. The official remote Figma MCP connection was verified read-only on 2026-09-14; no canvas mutation or credential/config file was added to the repository.
@@ -35,7 +39,7 @@ Current official Play policy does not permit a general-assistant AccessibilitySe
 
 Evidence-led foundation: MVP/control review T-100 is complete; next inventory device and policy routes (T-101), or build offline policy/Stop/verification replay only (T-103) in a separately requested coding session. Produce/test low-fi interaction and iterate naming/identity (T-102/108) within their authorization and evidence boundaries. Do not begin broad MVP implementation or personal-data automation.
 
-Naming recommendation: Daykind / Handspan / Clearfold, all uncleared with documented concerns. Identity recommendation: Open Day tested against challengers. Neither is accepted. Figma has a precise brief, not an existing file.
+Naming recommendation: Daykind / Handspan / Clearfold, all uncleared with documented concerns. Identity recommendation: test Open Day against challengers. Neither is accepted. Figma now has a partial neutral build; see the current design execution record above.
 
 ## Completion versus remaining authority
 
