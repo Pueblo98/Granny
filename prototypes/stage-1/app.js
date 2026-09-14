@@ -8,6 +8,11 @@
   const state = P.create();
   const $ = id => document.getElementById(id);
   const thread = $('thread'), composerText = $('request');
+  // Connected execution belongs exclusively to the backend. Scripted task
+  // state/timers are never used to advance or verify a connected request.
+  let runtime = null, runtimeMode = false, runtimeView = null,
+      runtimeEditor = null, runtimePreview = null, runtimeTurns = [],
+      runtimeQuarantined = false;
   let scheduler, pending = null, dialogReturn = null, menuPanel = '',
                  lastAnnouncement = '', restoreFocus = false, editor = null,
                  editingAliasId = null, panelReturn = null, panelScroll = 0,
@@ -27,6 +32,10 @@
       }));
   }
   function active() {
+    if (runtimeMode)
+      return !!(runtimeView?.connection === 'connecting' || runtimeView?.pending || runtimeView?.stopping ||
+        ['interpreting', 'resolving', 'creating', 'verifying', 'preview', 'clarifying']
+          .includes(runtimeView?.snapshot?.state));
     return !!(state.task && (P.ACTIVE || [
                               'planning', 'acting', 'waiting', 'verifying'
                             ]).includes(state.task.stage));
@@ -36,6 +45,10 @@
     requestAnimationFrame(() => { $('announcement').textContent = text; });
   }
   function dispatch(event, value, guard) {
+    if (runtimeMode && event === 'stop') {
+      runtime?.cancel();
+      return true;
+    }
     const wasAtBottom = atBottom();
     if (scheduler && scheduler.elapse)
       scheduler.elapse();
@@ -77,6 +90,170 @@
     if (text)
       c.append(node('p', '', text));
     return c;
+  }
+  function runtimeCopy() {
+    const v = runtimeView;
+    if (!v) return 'Connecting to the local demo…';
+    if (v.stopping) return 'Stopping. Waiting for the local demo to confirm what happened…';
+    if (v.connection === 'uncertain')
+      return 'The connection was interrupted. I can’t yet confirm what happened. No action will be retried.';
+    if (v.connection === 'connecting') return 'Connecting to the local demo…';
+    if (v.connection === 'disconnected') return 'The local demo is not connected. Your words are still here.';
+    if (v.snapshot?.state === 'unknown' || v.error === 'effect_unknown')
+      return 'I can’t confirm whether the demo draft was created. Do not try creating it again.';
+    if (v.error === 'confirmation_stale') return 'This approval has expired or changed. Your draft is still here; review it again.';
+    if (v.error) return 'The local demo could not accept that step. Your draft has not been retried.';
+    if (v.pending && !['interpreting', 'resolving', 'creating', 'verifying'].includes(v.snapshot?.state))
+      return 'Waiting for the local demo…';
+    return ({idle: 'What would you like your fictional message to say?',
+      interpreting: 'Reading your request…', resolving: 'Looking up the fictional person…',
+      clarifying: v.current?.data?.prompt || 'Which fictional person do you mean?',
+      preview: 'Check the person, destination and words before creating this draft.',
+      creating: 'Creating the unsent draft in the local demo…',
+      verifying: 'Checking the saved demo draft…',
+      completed: 'The local demo draft was created and checked. It has not been sent.',
+      stopped: 'Stopped. No draft was created by this request.',
+      failed: 'This request failed safely. No draft creation was verified.',
+      unknown: 'I can’t confirm whether the demo draft was created. Do not try creating it again.'
+    })[v.snapshot?.state] || 'Waiting for the local demo…';
+  }
+  function runtimeDraft(data) {
+    const c = card('Check the draft', 'This creates an unsent draft in the local demo. No message is sent and no Android app is opened.');
+    c.classList.add('preview');
+    const dl = node('dl');
+    [['To', data.recipient.label], ['Which person', data.recipient.detail],
+     ['Destination', data.channel.label], ['What happens', data.effectLabel]]
+      .forEach(([label, value]) => dl.append(node('dt', '', label), node('dd', '', value)));
+    c.append(dl, node('blockquote', '', data.body));
+    return c;
+  }
+  async function runtimeCommand(kind, payload) {
+    if (!runtime || !runtimeMode) return false;
+    return runtime.command(kind, payload);
+  }
+  function runtimeRevise(data, body) {
+    runtimeEditor = null;
+    return runtimeCommand('revise', {actionId: data.actionId,
+      recipientId: data.recipient.id, channelId: data.channel.id, body});
+  }
+  function renderRuntime() {
+    const v = runtimeView, event = v?.current;
+    runtimeTurns.forEach(t => thread.append(turn(t.role, t.text)));
+    const c = card('Granny', runtimeCopy());
+    c.id = 'current-task';
+    c.dataset.kind = 'runtime-message';
+    c.dataset.stage = v?.snapshot?.state || 'connecting';
+    c.querySelector('h2').tabIndex = -1;
+    if (event?.type === 'chat') {
+      c.append(node('p', '', event.data.text), node('p', 'notice',
+        'Assistant text, not a verified action result.'));
+    }
+    if (runtimePreview) {
+      const draft = runtimeDraft(runtimePreview);
+      if (runtimeEditor) {
+        const label = node('label', '', 'Message');
+        const input = node('textarea');
+        input.rows = 3;
+        input.maxLength = 2000;
+        input.value = runtimeEditor.body;
+        input.setAttribute('aria-label', 'Message');
+        input.dataset.focusKey = 'runtime-edit-body';
+        input.addEventListener('input', () => { runtimeEditor.body = input.value; });
+        label.append(input);
+        const save = button('Review changes', () => {
+          if (!input.value.trim()) { input.focus(); return; }
+          runtimeRevise(runtimePreview, input.value);
+        }, 'primary');
+        save.disabled = v?.pending || v?.connection !== 'connected';
+        draft.append(label, save, button('Cancel editing', () => {
+          runtimeEditor = null;
+          render();
+        }));
+      }
+      c.append(draft);
+    }
+    const actions = node('div', 'inline-actions');
+    const available = v?.connection === 'connected' && !v.pending && !v.stopping;
+    if (event?.type === 'clarification' && available) {
+      event.data.choices.forEach(choice => {
+        const b = button(choice.label + (choice.detail ? ' — ' + choice.detail : ''),
+          () => runtimeCommand('clarify', {turnId: event.turnId, choiceId: choice.id}), 'choice');
+        b.dataset.choice = choice.id;
+        actions.append(b);
+      });
+      if (!event.data.choices.length)
+        actions.append(button('Type your message', () => focus(composerText)));
+    }
+    if (event?.type === 'preview' && available && !runtimeEditor) {
+      const data = event.data;
+      const confirm = button(v.canConfirm ? 'Create this unsent demo draft' : 'Review again',
+        () => v.canConfirm
+          ? runtimeCommand('confirm', {actionId: data.actionId, confirmationToken: data.confirmationToken})
+          : runtimeRevise(data, data.body), 'primary', 'runtime-approval');
+      confirm.dataset.action = v.canConfirm ? 'runtime-confirm' : 'runtime-renew';
+      actions.append(confirm, button('Change message', () => {
+        runtimeEditor = {body: data.body};
+        runtime.invalidatePreview();
+        render();
+        focus(thread.querySelector('[aria-label="Message"]'));
+      }), button('Change person or destination', () => {
+        runtime.invalidatePreview();
+        announce('Type a new request with the person or destination you want.');
+        focus(composerText);
+      }), button('Cancel draft', () => runtime.cancel()));
+    }
+    if (v?.connection === 'uncertain')
+      actions.append(button('Check connection', () => runtime.recover(), 'primary'));
+    if (v?.snapshot?.state === 'unknown')
+      c.append(node('p', 'notice', 'No retry is offered. This session cannot create another draft. The destination is fictional; no message was sent.'));
+    c.append(actions);
+    thread.append(c);
+    const copy = runtimeCopy();
+    if (lastAnnouncement !== copy) { lastAnnouncement = copy; announce(copy); }
+  }
+  function connectRuntime() {
+    if (runtimeQuarantined) return;
+    if (!window.GrannyRuntime) { announce('The connected client is not available in this build.'); return; }
+    dispatch('stop');
+    editor = null;
+    menuPanel = '';
+    runtimeTurns = [];
+    runtimePreview = null;
+    runtimeEditor = null;
+    runtimeMode = true;
+    const client = window.GrannyRuntime.create({onChange: view => {
+      if (runtime !== client || !runtimeMode) return;
+      const wasAtBottom = atBottom();
+      runtimeView = view;
+      if (!view.pending && view.current?.type === 'preview') runtimePreview = view.current.data;
+      if (view.snapshot?.state === 'unknown' || view.error === 'effect_unknown') runtimeQuarantined = true;
+      render();
+      scrollIfReadingEnd(wasAtBottom);
+    }});
+    runtime = client;
+    runtimeView = client.view;
+    client.connect();
+    render();
+    focus(composerText);
+  }
+  async function leaveRuntime(after) {
+    if (runtimeView?.snapshot && !['completed', 'stopped', 'failed', 'idle'].includes(runtimeView.snapshot.state))
+      await runtime.cancel();
+    if (runtimeView?.snapshot && (runtimeView?.connection === 'uncertain' || runtimeView?.stopping || runtimeView?.pending)) {
+      menuPanel = 'connection';
+      render();
+      return;
+    }
+    runtime.disconnect();
+    runtimeMode = false;
+    runtimeView = null;
+    runtimeTurns = [];
+    runtimePreview = null;
+    runtimeEditor = null;
+    menuPanel = '';
+    render();
+    if (after) after();
+    focus(composerText);
   }
   function taskText(task) {
     if (task.text)
@@ -392,14 +569,22 @@
                           : null;
     const position = scrollY;
     thread.replaceChildren();
-    $('welcome').hidden = !!(state.turns && state.turns.length);
-    (state.turns || []).forEach(t => {
+    $('welcome').hidden = runtimeMode || !!(state.turns && state.turns.length);
+    $('mode-notice').hidden = !runtimeMode && !runtimeQuarantined;
+    $('mode-notice').textContent = runtimeQuarantined
+      ? 'An earlier connected draft outcome is unknown. No retry or new connected session is available in this tab. Switching views does not undo a draft.'
+      : 'Connected local demo · fictional people · unsent drafts only';
+    composerText.placeholder = runtimeMode
+      ? 'For example: Tell David Brother "Meet at six." via Example Messages'
+      : 'For example: Tell David I’ll call after dinner.';
+    if (runtimeMode) renderRuntime();
+    (!runtimeMode ? state.turns || [] : []).forEach(t => {
       const article = turn(t.role, t.text);
       if (t.result && t.kind !== 'message')
         article.append(resultView(t, true));
       thread.append(article);
     });
-    if (state.task) {
+    if (state.task && !runtimeMode) {
       const task = state.task,
             editingTask = !!(editor && editor.taskId === task.id),
             c = card('Granny', taskText(task));
@@ -439,9 +624,10 @@
       const history =
           card('Recent activity',
                (state.history || []).length
-                   ? 'This tab remembers only the kind of task and its outcome.'
+                   ? 'Scripted activity: this tab remembers only the kind of task and its outcome.'
                    : 'There is no completed activity in this tab yet.');
       history.dataset.panel = 'history';
+      if (runtimeMode) history.append(node('p', 'notice', 'Connected results remain in this temporary conversation, not in the scripted activity list.'));
       (state.history || [])
           .forEach(item => history.append(
                        node('p', 'notice', item.job + ' — ' + item.outcome)));
@@ -482,6 +668,7 @@
           'What you can ask',
           'You can ask to find fictional family photos, explain a supplied screen, play a fictional song, make Granny’s text easier to read, or open an unsent fictional message draft.');
       help.dataset.panel = 'help';
+      if (runtimeMode) help.append(node('p', 'notice', 'Connected mode currently prepares unsent drafts for fictional contacts only. The other four workflows are in the separate scripted demo.'));
       help.append(button('Return to conversation', returnToConversation));
       thread.append(help);
     }
@@ -489,6 +676,7 @@
       const preferences =
           card('Preferences', 'These choices stay only in this tab.');
       preferences.dataset.panel = 'preferences';
+      if (runtimeMode) preferences.append(node('p', 'notice', 'Saved names and Talk preferences below belong to the scripted demo; they are not shared with the connected runtime. Text size applies to both views.'));
       preferences.append(button(
           state.settings && state.settings.voice ? 'Talk prompts on'
                                                  : 'Talk prompts off',
@@ -562,11 +750,11 @@
     if (menuPanel === 'privacy') {
       const privacy = card(
           'Privacy in this prototype',
-          'Everything stays in this tab’s memory. No microphone, account, tracking or background storage is used. Please use fictional details.');
+          runtimeMode ? 'Connected local demo: fictional requests go to the loopback runtime. Demo drafts are stored by that process, not sent. No microphone or Android access occurs.' : 'Scripted data stays in this tab’s memory. No microphone, account, tracking or background storage is used. Please use fictional details.');
       privacy.dataset.panel = 'privacy';
       privacy.append(node(
           'p', '',
-          'Recent activity keeps up to 20 task/outcome summaries, without message words or people. Your visible conversation is temporary. Reloading clears it all.'));
+          runtimeMode ? 'Reset clears this browser view, not saved demo drafts or the backend session. The runtime keeps synthetic drafts for its process lifetime; restarting it creates a new demo store. A lost connection is not proof an action stopped.' : 'Recent activity keeps up to 20 task/outcome summaries, without message words or people. Your visible conversation is temporary. Reloading clears the scripted state.'));
       privacy.append(button(
           'Reset everything',
           () => ask(
@@ -577,7 +765,23 @@
       privacy.append(button('Return to conversation', returnToConversation));
       thread.append(privacy);
     }
-    if (state.player &&
+    if (menuPanel === 'connection') {
+      const connection = card('Demo connection', runtimeMode
+        ? 'You are using the connected local demo. Its runtime creates and independently reads back a real local demo draft; no message is sent.'
+        : 'The default experience is scripted in this tab. You can separately try the local runtime when its loopback server is running.');
+      connection.dataset.panel = 'connection';
+      connection.append(node('p', '', 'Use fictional details only. Local demo mode uses a stub interpreter and local MCP tools, not a cloud model. It does not access accounts or control Android. The runtime temporarily stores synthetic drafts; browser reset does not delete them.'));
+      if (runtimeQuarantined) connection.append(node('p', 'notice', 'A draft outcome in this tab is unknown. Creating another connected session is disabled to avoid a blind retry.'));
+      if (runtimeMode) connection.append(button('Return to scripted demo', () => ask(
+        'Leave the connected demo?', 'I will request Stop before leaving unfinished work. An unknown draft outcome will remain uncertain; leaving does not undo a draft.', () => leaveRuntime())));
+      else if (!runtimeQuarantined) connection.append(button('Connect to local demo', () => {
+        if (hasWork()) ask('Switch to the local demo?', 'This stops the unfinished scripted request. Your entered words and text size stay here.', connectRuntime);
+        else connectRuntime();
+      }, 'primary'));
+      connection.append(button('Return to conversation', returnToConversation));
+      thread.append(connection);
+    }
+    if (!runtimeMode && state.player &&
         !(state.task?.kind === 'media' && state.task.stage === 'completed' &&
           state.task.result?.track?.id === state.player.id)) {
       const player = card('Your music',
@@ -614,6 +818,7 @@
     restoreFocus = false;
   }
   function hasWork() {
+    if (runtimeMode) return active() || !!runtimeEditor;
     return !!(
         state.task && state.task.kind !== 'unsupported' &&
         !['completed', 'unknown', 'stopped', 'failed', 'no-matches'].includes(
@@ -635,6 +840,7 @@
     window.scrollTo(0, panelScroll);
   }
   function fullReset() {
+    if (runtimeMode) { leaveRuntime(fullReset); return; }
     clearLocalView();
     dispatch('reset');
     document.body.dataset.territory = 'neutral';
@@ -672,6 +878,33 @@
   function newRequest(text) {
     if (!text.trim())
       return;
+    if (runtimeMode) {
+      if (runtimeQuarantined || runtimeView?.connection !== 'connected' || runtimeView?.stopping) {
+        announce('Keep your words here until the connection and draft outcome are known.');
+        return;
+      }
+      const send = async () => {
+        if (runtimeView?.snapshot?.state === 'unknown') return;
+        if (runtimeTurns.length && runtimeView?.current)
+          runtimeTurns.push({role: 'assistant', text: runtimeCopy()});
+        const submitted = {role: 'user', text};
+        runtimeTurns.push(submitted);
+        runtimePreview = null;
+        runtimeEditor = null;
+        composerText.value = '';
+        menuPanel = '';
+        const accepted = await runtimeCommand('turn', {text});
+        if (!accepted) {
+          submitted.text = text + '\nNot accepted or not yet acknowledged by the local demo.';
+          if (!composerText.value) composerText.value = text;
+          render();
+        }
+      };
+      if (hasWork() && runtimeView?.snapshot?.state !== 'clarifying')
+        ask('Replace this request?', 'The local runtime will stop preparation of the earlier request. If a draft may already have been created, it will refuse a new draft until that outcome is known.', send, composerText);
+      else send();
+      return;
+    }
     const navigationRequests = {
       'settings' : 'preferences',
       'preferences' : 'preferences',
@@ -781,6 +1014,7 @@
         }
         if (what === 'new') {
           const fn = () => {
+            if (runtimeMode) { leaveRuntime(() => { clearLocalView(); dispatch('clearSession'); }); return; }
             clearLocalView();
             dispatch('clearSession');
             focus(composerText);
@@ -792,7 +1026,7 @@
                     fn, b)
               : fn();
         }
-        if ([ 'text', 'history', 'help', 'preferences', 'privacy' ].includes(
+        if ([ 'text', 'history', 'help', 'preferences', 'privacy', 'connection' ].includes(
                 what)) {
           menuPanel = what;
           render();

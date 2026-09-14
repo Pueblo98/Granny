@@ -25,3 +25,5 @@ body[data-compact-composer=true] .composer-wrap { position:static; }
 .screen-source dd { margin:0 0 12px; }
 .photo-gallery { grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); }
 .introduction h2 { font-size:1em; }
+/* Same shell, visibly separate execution mode; no permanent capability panel. */
+.mode-notice { margin: 0; padding: .7em 1.2em; border-bottom: 1px solid var(--border, #d1d1ce); }
