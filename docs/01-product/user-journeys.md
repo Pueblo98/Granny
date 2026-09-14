@@ -12,11 +12,13 @@ related:
 
 # Signature journeys and variants
 
+[Current browser coverage and review routes](../02-design/browser-prototype.md) map the five MVP journeys and onboarding to actual source/views. Sequences below remain the behavior owner; manually selected fixture outcomes are not device evidence.
+
 These proposed journeys use the [screen/state contract](../02-design/product-design-spec.md), [voice copy](../02-design/voice-ux.md), [policy](../05-safety-privacy/action-policy.md) and [eval fixtures](../06-evals/canonical-tasks.md). J-001–004 retain their historical identities. J-001/002/003/005/006 are the five MVP signature workflows; J-007 is cross-cutting onboarding; J-008 is V1; J-004 is later App and has no MVP remote-help implementation.
 
 ## Shared journey contract
 
-Entry is Talk, typed intent or named shortcut. Voice and touch reach the same preview and policy; reading aloud is optional for private content. Each sequence below is the exact screen order for Figma; external app screens are annotated placeholders, not restyled Android. Every frame includes stable screen/state IDs, requirement IDs, focus/reading order and Stop availability.
+Entry is Talk, typed intent or named shortcut. Voice and touch reach the same preview and policy; reading aloud is optional for private content. Each sequence below is the design screen order, now prototyped in the browser; Figma is optional. External app screens are annotated placeholders, not restyled Android. Every frame includes stable screen/state IDs, requirement IDs, focus/reading order and Stop availability.
 
 **Interrupt:** Stop immediately latches cancellation locally; no queued action is dispatched. Take over leaves the real app at its current state. Direct touch in Granny invalidates pending approval; external user-interaction detection must be proven per adapter. If it cannot be proven, cross-app automation is unavailable. Stop cannot undo an external effect already dispatched. “I stopped. The message may already have been sent; I'll check its status” is a reconciliation state, not a promise to unsend.
 
@@ -41,10 +43,10 @@ Start on SCR-003 with approved communication route and seeded Sophie/day metadat
 
 No photos → “I found Sophie's conversation, but no photos for that date” with Change date. Date/attachment metadata missing → “I found these photos, but I can't verify when Sophie sent them”; partial, not success. Offline cached result names cache; untrusted message telling agent to send data is ignored. Permission/login/app-change follow shared branches. Visual image recognition alone cannot establish sender. No save/share/delete follows from viewing.
 
-**Figma:** J-001/SCR-003-idle, 004-heard, 006-duplicate-person, 005-searching, 008-photos, 008-empty, 008-uncertain-date, 014-offline, 014-auth, 008-interrupted.
+**Prototype view inventory:** J-001/SCR-003-idle, 004-heard, 006-duplicate-person, 005-searching, 008-photos, 008-empty, 008-uncertain-date, 014-offline, 014-auth, 008-interrupted.
 If opening the conversation marks it read, insert SCR-007 before that navigation: “Opening this conversation may show that you have read it. Open it?” Bind the recipient/channel and read-state effect; refusal leaves it unopened and offers manual access. An adapter unable to declare/verify the effect is not admitted.
 
-**Evidence:** EVAL-001 matches synthetic person/channel/day/attachments and checks zero unauthorized effects, including the mark-read variant; human asks whether found images are useful and whether provenance is understood. Add Figma frame 007-mark-read-confirmation.
+**Evidence:** EVAL-001 matches synthetic person/channel/day/attachments and checks zero unauthorized effects, including the mark-read variant; human asks whether found images are useful and whether provenance is understood. Add prototype view 007-mark-read-confirmation.
 
 <a id="j-002"></a>
 ## J-002 — Explain and recover from a confusing screen
@@ -61,7 +63,7 @@ Start at a supported external app's benign settings page with a same-session kno
 No known prior context → explain current screen only; do not fabricate browsing history. Unsaved edit warning → stop and let user decide; neither discard nor save automatically. Login/permission/security dialog → stop observation and hand off. Unreadable tree → selected screenshot explanation if separately consented; no coordinate recovery in MVP. App/no-effect loop → fail safely by action budget. Stop/touch and offline use shared branches.
 
 Voice asks one question at a time; touch choices use descriptive labels rather than technical routes. TalkBack reads explanation before choices and returns focus to invoking Help control after close.
-**Figma:** 004-request, 005-observe, 008-explanation, 005-returning, 008-recovered, 008-unknown-target, 014-secure, 008-unsaved-work, 008-stopped.
+**Prototype view inventory:** 004-request, 005-observe, 008-explanation, 005-returning, 008-recovered, 008-unknown-target, 014-secure, 008-unsaved-work, 008-stopped.
 **Evidence:** EVAL-002 checks correct explanation, offered/authorized navigation and target; EVAL-006/009/010 inject stop/outage/prompt instructions; EVAL-015 covers V1 document variant.
 
 <a id="j-003"></a>
@@ -80,7 +82,7 @@ Start on Home; request “Tell David I'll call after dinner.” No specific hour
 
 Cancellation before dispatch leaves draft local and unsent. Cancellation after dispatch → stop further work and reconcile; no unsend claim. Lost network during commit → “I can't confirm whether it sent. Check the conversation before trying again.” Duplicate message IDs/receipts do not trigger retry. Auth or wrong app/channel → invalidate permit and hand off; resume requires new preview. No content read aloud automatically when privacy speech is off.
 
-**Figma:** 004-heard, 006-person, 006-channel, 007-draft-handoff, 007-draft-send, 007-edit, 007-expired, 005-verifying, 008-opened, 008-sent, 008-unknown, 008-cancelled.
+**Prototype view inventory:** 004-heard, 006-person, 006-channel, 007-draft-handoff, 007-draft-send, 007-edit, 007-expired, 005-verifying, 008-opened, 008-sent, 008-unknown, 008-cancelled.
 **Evidence:** EVAL-003 plus EVAL-010 require exact recipient/body, single consequence, no ambiguous/stale approval; scripted observer and independent target account verify outcome. Comprehension asks “Has it been sent yet?” at preview, handoff and result.
 
 <a id="j-004"></a>
@@ -95,7 +97,7 @@ Later remote-help path: user asks for help → SCR-013 identifies helper, exact 
 
 Connection loss ends access, not pauses authorization. Permission/login/private app transition obscures view and ends control before sensitive content. Wrong helper/ambiguous identity stops invitation. Reconnection needs fresh approval. Voice/touch consent equivalent; screen reader explains scope before decision. Unknown revocation server status cannot leave local stream active. Coercion remains residual risk and requires separate research.
 
-**Figma:** V1 012-no-helper, 013-invite, 013-scope, 013-pending-diff, 013-revoke; later remote frames clearly marked deferred: consent, active, private-screen-block, ended.
+**Prototype view inventory:** V1 012-no-helper, 013-invite, 013-scope, 013-pending-diff, 013-revoke; later remote frames clearly marked deferred: consent, active, private-screen-block, ended.
 **Evidence:** EVAL-016 denies all remote access in MVP/V1; V1 proposals require exact scope/revocation tests. No remote flow is implemented or tested.
 
 <a id="j-005"></a>
@@ -108,7 +110,7 @@ Playing is reversible, but query does not authorize purchases, sign-up, advertis
 
 User touches another song: automation stops; never fight their selection. Offline cached media may play only with known metadata and admission; no guaranteed catalog. TalkBack title and playing/paused state, captions where content supports them, and silent textual status are required. Login/network/app update use shared branches.
 
-**Figma:** Home, request, service-choice, searching, now-playing, paused, paywall, app-open-only, offline, stopped.
+**Prototype view inventory:** Home, request, service-choice, searching, now-playing, paused, paywall, app-open-only, offline, stopped.
 **Evidence:** EVAL-004 checks matching metadata and independently observed playback/pause; no purchase, wrong content, or launch-only success.
 
 <a id="j-006"></a>
@@ -119,7 +121,7 @@ SCR-003 “Make this bigger” → SCR-011 text-size preview showing current and
 
 When outside Granny, SCR-006 asks “Granny's text or this app's text?” External adjustment uses SCR-014 user-owned system/app settings handoff and says what cannot be changed. Do not use accessibility to bypass permission/security settings. Orientation changes reflow and preserve current preview/old value. If larger scale clips essential content, fail layout test instead of shrinking font. Offline works. Stop before Apply restores preview state; after Apply, Restore is a new explicit local action. No health inference is saved.
 
-**Figma:** 011-default, 011-large-preview, 011-200-percent, 011-landscape, 011-narrow, 008-applied, 006-scope, 014-system-handoff.
+**Prototype view inventory:** 011-default, 011-large-preview, 011-200-percent, 011-landscape, 011-narrow, 008-applied, 006-scope, 014-system-handoff.
 **Evidence:** EVAL-007 measures scale, target/contrast/focus, persistence, reversal and touch-only completion; human reading preference is separate from numeric pass.
 
 <a id="j-007"></a>
@@ -136,7 +138,7 @@ When outside Granny, SCR-006 asks “Granny's text or this app's text?” Extern
 
 Denied grant: relevant tile explains limited mode; never a repeated nag. Restricted installation: describe need for trusted installation route and stop setup until resolved through authorized user action. Process death: reopen at last safe setup step, not pending grant acceptance. Auth belongs in provider app; do not collect passwords. Offline: touch practice and local settings available. Privacy deletion confirmation lists exact categories and what external app data remains; no false remote deletion claim.
 
-**Figma:** 001-value, 011-preferences, 002-mic-disclosure, 002-cloud-disclosure, 002-screen-disclosure, Android placeholders, 002-denied, 003-touch-home, 005-practice, 008-stopped, 010-empty/saved/delete, 009-empty/history, 012-privacy/delete, 015-support/export.
+**Prototype view inventory:** 001-value, 011-preferences, 002-mic-disclosure, 002-cloud-disclosure, 002-screen-disclosure, Android placeholders, 002-denied, 003-touch-home, 005-practice, 008-stopped, 010-empty/saved/delete, 009-empty/history, 012-privacy/delete, 015-support/export.
 **Evidence:** EVAL-005 installation/permissions; EVAL-007 access; EVAL-008 privacy/memory; EVAL-012 comprehension. No user onboarding study has run.
 
 <a id="j-008"></a>
@@ -147,5 +149,5 @@ Home → People shortcut or spoken call intent → SCR-006 person/channel → SC
 
 No telephony/SIM is assumed: route is a tested calling application or supported dialer handoff. A dialer opened with number is a prepared outcome, not a call. Busy/declined/no answer are terminal factual states; do not auto-redial. Contacts and endpoint must match exact confirmation; no guessed family relationship. Stop after initiation may require external End call control; say whether ending was verified. App update/auth/permission/offline use shared contract. Never record audio. Emergency/premium routes remain restricted.
 
-**Figma:** person-choice, route-choice, confirmation, initiating, dialer-handoff, ringing, busy, unknown, cancelled; linked SCR-006/007/005/008/014.
+**Prototype view inventory:** person-choice, route-choice, confirmation, initiating, dialer-handoff, ringing, busy, unknown, cancelled; linked SCR-006/007/005/008/014.
 **Evidence:** EVAL-013 verifies endpoint and ring/connection separately using synthetic accounts; no real family contacts.

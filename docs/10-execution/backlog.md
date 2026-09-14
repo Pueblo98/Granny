@@ -45,12 +45,12 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 ## T-102 — Prototype neutral Home/input/permission and access interaction
 
 - **Priority / discipline:** P0 / Design/Android; Simon owns acceptance.
-- **Dependencies / entry:** Contract portion can start now; device shell requires DoR and T-101 environment; no final brand needed. Official remote Figma MCP authentication was verified 2026-09-14, but exact file creation/canvas mutation still requires current authority. Confirm live seat/tool-call limits before execution.
+- **Dependencies / entry:** Contract portion can start now; device shell requires DoR and T-101 environment; no final brand needed. Simon authorized the local browser prototype on 2026-09-14; Figma quota no longer blocks design. Native Android shell and device integration remain separately gated.
 - **Trace / contract:** PRD-FR-001/002/003/011; ACC-001–003; OUT-002; UC-007/013/014/022, J-006/007; SCR-001–004/011; CMP-002/007/008/009; EVAL-005/007.
 - **Bounded deliverable:** First low-fi frames including denied mic and typed path; next bounded own-app shell, transcript fixture and reversible text preview, no external automation.
 - **Acceptance / evidence:** 100/130/200% reflow and local semantics tests; explicit scope labels; design review then device accessibility evidence.
 - **Excluded / rollback:** No real model, mic/background capture without separate task, or global settings mutation. Neutral tokens proposed. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
-- **Status:** planned; MCP connection verified read-only, no Figma file created, and no code, test result or assigned staffed team claimed.
+- **Status:** review — revision requested by Simon: feature-button Home rejected on 2026-09-14. [Conversation-first plan](../02-design/conversation-first-plan.md) awaits review before new UI code. Existing mock source/checks remain intact; [coverage gaps](../02-design/browser-prototype.md) include assistive-tech/return-focus/full-state review. No Android shell or GATE-05 pass claimed.
 
 <a id="t-103"></a>
 ## T-103 — Build offline authorization/cancellation/verification contract replay
@@ -114,7 +114,7 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Priority / discipline:** P0 research / P1 integrated / Design/research/brand; Simon owns acceptance.
 - **Dependencies / entry:** RES-01/03 consent/protocol; low-fi T-102 before territory preference; Simon iteration kit before finalist expansion.
 - **Trace / contract:** PRD-OUT-002/003/ACC-004; UC-016/019 and five signatures; EVAL-007/012; RES-03/06/09.
-- **Bounded deliverable:** Build exact Figma package when external write authorized; test consequence/Stop/partial understanding and access; compare four territories and spoken finalists; incorporate Simon love/interesting/neutral/dislike/never responses.
+- **Bounded deliverable:** Use the browser prototype and its coverage manifest; optional Figma writes require separate authority; test consequence/Stop/partial understanding and access; compare four territories and spoken finalists; incorporate Simon love/interesting/neutral/dislike/never responses.
 - **Acceptance / evidence:** Document actual n, comprehension/error observations and revisions; GATE-05 decision/evidence explicitly separated. Trademark/language reviews before public name.
 - **Excluded / rollback:** No fake Figma URL, final logo promotion, fabricated participants or age-stereotype preference. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
 - **Status:** planned; no code, test result or assigned staffed team claimed.
@@ -172,6 +172,16 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Acceptance:** Canonical links/status/IDs and skills validate; documentation-tool tests pass; no source/private Obsidian/unrelated edit included; accepted scope intact; remaining design/device/runtime evidence explicit. EVAL-006/008/009/010 coverage refined but remains unrun.
 - **Status:** complete — documentation and four skills written, 19 documentation-tool tests and structural validation passed on 2026-09-14; see readiness validation. This does not complete T-103 or pass a runtime gate.
 - **Excluded:** App/backend/runtime implementation, participant contact, Figma mutation, global installs/config, external publication and Stage 2/3.
+
+<a id="t-114"></a>
+## T-114 — Build development cockpit and session review board
+
+- **Scope / authority:** Simon requested a development cockpit before a UI redesign plan on 2026-09-14. Developer tooling only, not the older adult's product UI.
+- **Trace / owner:** [Cockpit](../Cockpit.md), [guide](cockpit-guide.md), [agent board](agent-board.md); operational visibility supports PRD-NFR-005's documentation/support preparation, not a new product requirement.
+- **Deliverable:** Native Obsidian Bases/Canvas views, canonical-derived backlog/gate snapshot, evidence-linked session records, asynchronous message protocol, plugin assessment and regression checks.
+- **Acceptance:** Local links/metadata and source integrity pass; snapshot freshness and asset structure pass; no fabricated session timing/live presence, automatic merge, private settings edit or plugin installation. Obsidian in-app render and Simon's layout review remain pending.
+- **Status:** review — files and structural tests delivered; awaiting in-app and owner review. Not a product gate pass.
+- **Excluded:** Live inter-agent transport, GitHub/CI synchronization, plugin downloads, automatic Git operations, UI redesign implementation, Android/agent runtime and Stage 2/3.
 
 ## Session handoff
 

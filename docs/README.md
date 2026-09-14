@@ -13,6 +13,8 @@ related:
 
 # Documentation map
 
+**Start here for development oversight:** [Cockpit](Cockpit.md) · [visual map](Development.canvas) · [session/message views](10-execution/cockpit.base) · [agent board](10-execution/agent-board.md). [Cockpit guide](10-execution/cockpit-guide.md) owns update/refresh rules. [Conversation-first redesign plan](02-design/conversation-first-plan.md) is pending review; no new app implementation in the cockpit task.
+
 **Stage 1 stock-Android tablet app only.** Granny is a temporary codename. Vision, App MVP, App V1, later App, future Stage 2 OS and future Stage 3 hardware are separate scopes in [product scope](01-product/scope-and-roadmap.md). docs/ is the Obsidian vault; the whole Git repository is the project source of truth. Ignored Obsidian JSON is private local user state.
 
 ## First read / current state
@@ -29,7 +31,7 @@ related:
 | What does the user see/control in every state? | [Product design spec](02-design/product-design-spec.md), [semantic components](02-design/design-system.md) |
 | How does it speak and remain accessible? | [Voice/content](02-design/voice-ux.md), [accessibility](02-design/accessibility.md) |
 | What is the brand and name option space? | [Brand/4 identities](02-design/brand-and-visual-identity.md), [naming/screening/iteration](02-design/naming-exploration.md), [local boards](02-design/identity-review.html) |
-| What exactly goes into Figma and tokens? | [Figma MCP/execution brief](02-design/figma.md), [token handoff](../design-tokens/README.md); remote MCP connection verified, but no Figma file or accepted final identity yet |
+| Where do we design and review the app now? | [Browser design/handoff](02-design/browser-prototype.md), [run the prototype](../prototypes/stage-1/README.md), [token handoff](../design-tokens/README.md); [Figma](02-design/figma.md) is paused, final identity unaccepted |
 | How does the agent interpret, plan and recover? | [Behavior](03-agent/agent-behavior.md), [autonomy integration](03-agent/autonomy-model.md), [device control](03-agent/device-control.md) |
 | What typed capabilities and memory interfaces exist? | [Tools](03-agent/tool-contracts.md), [memory contract](03-agent/memory-system.md) |
 | Where are component/data/trust boundaries? | [Root map](../ARCHITECTURE.md), [system contract](04-architecture/system-overview.md) |

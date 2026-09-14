@@ -12,6 +12,10 @@ related:
 
 # Accessibility specification
 
+## Browser design evidence, not native conformance
+
+The [browser prototype checks](browser-prototype.md) exercise HTML controls, Home/confirmation reflow at 360/600/840 CSS pixels including combined 300% review/app text scaling, heading focus and keyboard Escape. CSS pixels are not Android dp. Only the named browser configurations and assertions were checked; no TalkBack, switch, physical dexterity, native system font scaling or participant test is passed. The earlier evidence paragraph below describes the specification milestone. Return-focus restoration, all-screen scale coverage and human comprehension remain outstanding.
+
 Proposed internal baseline for PRD-ACC-001–004 and every [screen](product-design-spec.md). Support is profile-specific and requires device and human evidence. No medical condition is inferred from preferences.
 
 ## External evidence, checked 2026-09-13

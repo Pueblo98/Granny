@@ -1,0 +1,56 @@
+filters:
+  and:
+    - 'file.ext == "md"'
+    - 'file.inFolder("10-execution/sessions") || file.inFolder("10-execution/messages")'
+properties:
+  file.name:
+    displayName: Record
+  note.session_state:
+    displayName: Delivery state
+  note.message_state:
+    displayName: Message state
+  note.next_action:
+    displayName: Next action
+views:
+  - type: table
+    name: Session deliveries
+    filters:
+      and:
+        - 'record_type == "session"'
+    groupBy:
+      property: note.session_state
+      direction: ASC
+    order:
+      - file.name
+      - note.session_state
+      - note.last_updated
+      - note.agent
+      - note.branch
+      - note.next_action
+  - type: table
+    name: Open messages
+    filters:
+      and:
+        - 'record_type == "message"'
+        - 'message_state != "resolved" && message_state != "superseded"'
+    groupBy:
+      property: note.priority
+      direction: ASC
+    order:
+      - file.name
+      - note.message_state
+      - note.sender
+      - note.recipient
+      - note.next_action
+  - type: table
+    name: All messages
+    filters:
+      and:
+        - 'record_type == "message"'
+    order:
+      - file.name
+      - note.message_state
+      - note.topic
+      - note.sender
+      - note.recipient
+      - note.last_updated

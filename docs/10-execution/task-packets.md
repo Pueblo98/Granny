@@ -47,9 +47,13 @@ Then T-104/105/106 test admitted external workflows, T-107 local privacy, and T-
 <a id="t-102-packet"></a>
 ## T-102 packet — Low-fidelity interaction foundation
 
+**Current medium and authority:** Simon authorized local browser implementation on 2026-09-14. [Browser handoff](../02-design/browser-prototype.md) and [prototype source](../../prototypes/stage-1/README.md) now execute units A–F. Figma is not required. The browser contains explicit simulations, not the T-103 agent core or a production Android shell; actual user/device acceptance remains open.
+
+**Current review:** Simon rejected the feature-button Home; use the [conversation-first plan](../02-design/conversation-first-plan.md) for discussion. Units below remain outcome/access obligations, not a requirement for separate pages or a feature grid. No redesign implementation was requested in the cockpit/plan turn.
+
 **Question:** Can an adult enter, correct, confirm, stop and understand outcomes without voice, hidden state or technical vocabulary?
 
-**Reads:** J-002/003/006/007; PRD-FR-001–003/011/012/013, ACC-001–004, SAF-002, OUT-002; SCR-001–008/011/014; CMP-001–009; [Figma](../02-design/figma.md), [voice](../02-design/voice-ux.md), [accessibility](../02-design/accessibility.md); EVAL-005/007/012. Figma remains external and requires authorization; a Markdown annotation manifest is a valid preparation output, not a created prototype.
+**Reads:** J-002/003/006/007; PRD-FR-001–003/011/012/013, ACC-001–004, SAF-002, OUT-002; SCR-001–008/011/014; CMP-001–009; [browser handoff](../02-design/browser-prototype.md), [voice](../02-design/voice-ux.md), [accessibility](../02-design/accessibility.md); EVAL-005/007/012. Optional [Figma](../02-design/figma.md) work remains external and requires separate authorization; a Markdown annotation manifest alone is not a created prototype.
 
 **Work units:**
 
@@ -157,13 +161,13 @@ Read RES-01/03/06/09, EVAL-012, J-001/002/003/005/006/007; [research protocols](
 4. Compare name pronunciation/recall separately from marks; compare territory screens with identical behavior/copy/layout. No trademark or language clearance from preference.
 5. Produce deidentified finding/action records, linked frame/requirement/eval and limits. Simon chooses direction; designers update canonical tokens only for explicitly accepted values.
 
-**Deliverable:** Exact prototype manifest plus approved protocol before collection; after actual sessions, deidentified results with sample and negative cases. If no participants or Figma access exist, deliver the preparation artifacts and leave evidence unrun. No speculative participant quotes.
+**Deliverable:** Exact prototype manifest plus approved protocol before collection; after actual sessions, deidentified results with sample and negative cases. If participant access is absent, deliver the browser preparation artifacts and leave human evidence unrun. Missing Figma access is no longer a blocker. No speculative participant quotes.
 
 ## Restart prompts
 
 These are scoped examples, not standing authorization:
 
 - “Use $granny-task-slice to implement T-103 offline with fake adapters only. Read its packet, inspect available tools, add deterministic tests, and stop before Android/network integration.”
-- “Use $granny-design-handoff to prepare T-102 units A–F as a reviewable frame manifest. Do not write to Figma yet.”
+- “Use $granny-design-handoff to refine T-102 browser views and their annotation manifest, run the browser checks, and stop before device or provider integration.”
 - “Use $granny-evidence-review to assess whether this supplied run supports a named gate. Keep review read-only and distinguish fixture from device evidence.”
 - “Use $granny-spec-change to update a named requirement and affected trace/contracts; keep consequential choices proposed unless I explicitly approve them.”

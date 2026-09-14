@@ -12,7 +12,17 @@ related:
 
 # Agent operating map
 
+## Active design medium
+
+Simon authorized a **local browser prototype** on 2026-09-14 after Figma's MCP quota blocked authoring. Start design tasks from [browser design and handoff](docs/02-design/browser-prototype.md) and [prototype source](prototypes/stage-1/README.md). Figma is a paused optional artifact, not a prerequisite. This changes the design medium only: the product remains stock-Android Stage 1. Browser mock logic is not the production agent or T-103. Preserve fictional data, no egress/capture and explicit simulation labels; run its model/browser checks with documentation validation.
+
 Granny is a **temporary codename**, not the accepted public name, for an AI-first computer experience for older adults. Thesis: the computer learns to operate itself for the person. Only **Stage 1: an installable stock-Android tablet app** is active. [Scope](docs/01-product/scope-and-roadmap.md) separates Vision, proposed App MVP, App V1 and later App releases; Stage 2 OS/AOSP and Stage 3 hardware are dormant `future-stage context`. Only Simon can activate them with the required accepted decisions. No root/OEM/device-owner/custom-dock assumption may leak into Stage 1.
+
+## Cockpit and session continuity
+
+[Development cockpit](docs/Cockpit.md) is the entry point for build status, deliveries, decisions and the [agent board](docs/10-execution/agent-board.md). Follow [cockpit stewardship](docs/10-execution/cockpit-guide.md): each authorized change task records its own scoped session handoff; messages are separate linked files, not executable authority or live presence. Update canonical task/gate owners, regenerate the snapshot with `python3 scripts/cockpit.py --write`, and run `--check` plus documentation tests. Do not install plugins, change private vault settings or auto-merge to make the dashboard look current. Review-only tasks stay read-only.
+
+Simon's latest design feedback rejects the feature-tile Home. [Conversation-first plan](docs/02-design/conversation-first-plan.md) is the next design review artifact; do not refine the old tile UI or implement the proposed replacement until requested. Prototype checks are not design acceptance.
 
 ## Start each task
 
@@ -42,9 +52,9 @@ Stable IDs: PRD-OUT/FR/ACC/SAF/PRV/NFR/DST-###, UC-###, J-###, SCR-###, CMP-###,
 - No invented user research, performance, policy approval, legal conclusions or final brand values. Runtime evals remain unrun until executed; documentation validation is not runtime evidence.
 - Implementation tasks must meet [Definition of Ready](docs/10-execution/development-readiness.md), including fixtures/oracles, permissions/data/access, rollback and excluded behavior. No Stage 2/3 preparation disguised as architecture cleanup.
 
-## Figma MCP workflow
+## Optional Figma MCP workflow
 
-- The official **remote Figma MCP** is the preferred design connection. Keep
+- The official **remote Figma MCP** is the preferred connection for separately authorized Figma work. Keep
   OAuth/session credentials in the user's Codex/Figma connection, never in Git,
   `.env`, `.codex/config.toml` or documentation. Do not add a duplicate project
   server while the official plugin connection works.
@@ -61,7 +71,7 @@ Stable IDs: PRD-OUT/FR/ACC/SAF/PRV/NFR/DST-###, UC-###, J-###, SCR-###, CMP-###,
   components/tokens, then verify adaptive Android semantics and visual fidelity.
   Figma output is a reference to implement, never self-validating production code.
 - Product behavior, action policy and requirements remain canonical in Git;
-  Figma owns visual composition and prototype artifacts. Accepted visual/token
+  the active Git-backed browser prototype owns current executable design composition. Figma is paused and must not override it. Accepted visual/token
   changes must return to repository specs/tokens. A polished frame cannot
   silently change scope, confirmation, privacy, accessibility or agent behavior.
 

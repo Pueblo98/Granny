@@ -13,7 +13,13 @@ related:
 
 # Figma execution and handoff contract
 
-No Figma file has been created by this specification mission. The [local identity board](identity-review.html) is an exploratory repository artifact, not an interactive product prototype or final asset. [Product design](product-design-spec.md) owns behavior; [identity](brand-and-visual-identity.md) owns candidate styling; [naming](naming-exploration.md) owns candidate words.
+## Paused medium — browser-first from 2026-09-14
+
+**Confirmed direction from Simon:** continue designing in a local browser prototype and update the documentation. [Browser design/handoff](browser-prototype.md) supersedes this file as the active execution contract. This change does not select a web product architecture or accept brand values. The detailed Figma package below is retained for optional future use, not a prerequisite, current backlog instruction or request to reconnect/upgrade.
+
+The existing [Stage 1 exploration file](https://www.figma.com/design/ZNT7zmXHjiPhXaCfafjM4g/Granny-Stage-1-Exploration) contains an overview, Home and 24 confirmed empty wrappers across three pages. Its last authoring run stopped at the Starter MCP quota. [Historical exact-node handoff](https://github.com/Pueblo98/Granny/blob/docs/figma-mvp-prototype/docs/02-design/figma-prototype-handoff.md) is preserved on the earlier branch. No complete Figma prototype or synchronization with the browser is claimed. No Figma edits were made during the browser task.
+
+The original specification mission created no Figma file; subsequent partial authoring is recorded above. The [local identity board](identity-review.html) is an exploratory repository artifact, not an interactive product prototype or final asset. [Product design](product-design-spec.md) owns behavior; [identity](brand-and-visual-identity.md) owns candidate styling; [naming](naming-exploration.md) owns candidate words.
 
 ## Official Figma MCP connection
 
