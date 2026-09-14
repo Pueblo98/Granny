@@ -99,7 +99,7 @@ The earlier Qwen branch also had tone/punctuation failures and route outages; it
 
 ## Publication, primary vault and next bounded work
 
-Worktree: /tmp/granny-mcp-backend-integration; branch feature/mcp-backend-integration. Milestones: kickoff 70256e4; contract aea7f44; first backend e783d17; expanded evidence 2ee0d61; integrated demo 49cde23/4d175f6; actual browser test 658eaea; safety hardening b9806e6; final frontend handoff merge a262452. Final source/record commit is located through this file's publication history and BE007; avoid circular self-hashes. Task-branch push remains authorized; no PR/main action performed by this session.
+Worktree: /tmp/granny-mcp-backend-integration; branch feature/mcp-backend-integration. Milestones: kickoff 70256e4; contract aea7f44; first backend e783d17; expanded evidence 2ee0d61; integrated demo 49cde23/4d175f6; actual browser test 658eaea; safety hardening b9806e6; final frontend handoff merge a262452. Final tested source commit: 0591b94516c4bf595cedbb02b41f3798be6e1529. BE007 names its immutable source link; final board-only publication follows without source changes. Task-branch push remains authorized; no PR/main action performed by this session.
 
 Read-only fetch/PR inspection observed an **external merge of PR #8 at earlier backend e783d17**, origin/main 0343792. Latest integrated frontend/safety/consent work remains newer task-branch work. The primary checkout stays at 5ffa589 with original action-policy/Canvas edits and untracked To DO preserved. No stash/reset/private env/Obsidian edits or claimed main-vault synchronization. Hosted CI for this final workflow remains unrun; config has immutable actions, pinned dependencies and no live-provider secret.
 
