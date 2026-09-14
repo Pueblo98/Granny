@@ -92,6 +92,8 @@
   function contextualReply(text) {
     const task = state.task, reply = text.trim().toLowerCase();
     if (!task || task.kind !== 'message') return false;
+    // The model owns contextual-language rules, including safe preview corrections.
+    if (typeof P.isFollowup === 'function' && P.isFollowup(state, text)) return dispatch('submit', text);
     if (task.stage === 'clarify-body') return dispatch('submit', text);
     if (task.stage === 'clarify-person' || task.stage === 'clarify-channel') {
       const choice = (task.choices || []).find(c => c.value.toLowerCase() === reply || c.label.toLowerCase() === reply || c.label.toLowerCase().includes(reply));
