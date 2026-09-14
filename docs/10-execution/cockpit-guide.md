@@ -20,7 +20,7 @@ The vault is the repository's **docs/** directory. Open [Cockpit](../Cockpit.md)
 
 Suggested layout: Cockpit in the main pane, [agent board](agent-board.md) on the right, local graph/backlinks in the sidebar. Bookmark Cockpit. Optionally enable the built-in Workspaces plugin yourself and save this arrangement as “Granny cockpit”. [Plugin assessment and instructions](obsidian-cockpit-plugins.md) explains the tradeoffs.
 
-This task is based on browser commit ff59e842920260724f787e2a3c8cafbea861b6d5, not current main. The original vault checkout will not show these new files until reviewed integration. Do not copy a second dashboard into it, overwrite dirty files, auto-merge, or open the whole repository as a vault. For pre-merge review, inspect this worktree's docs/ as a temporary view of the same Git-backed knowledge base; local app configuration remains private and optional. After integration use the normal docs/ vault.
+The browser and cockpit were integrated through [PR #3](https://github.com/Pueblo98/Granny/pull/3), merge 70af0dbffaad52c259b173ccad4d72f722521fe5, on 2026-09-14. The primary checkout was fast-forwarded and switched to main with existing user edits preserved. Use its normal docs/ vault. Later task branches remain invisible there until separately reviewed integration and local synchronization; do not copy notes between worktrees or create a second knowledge store.
 
 ## One owner per fact
 
@@ -49,6 +49,8 @@ This task is based on browser commit ff59e842920260724f787e2a3c8cafbea861b6d5, n
 
 Record fields: `record_type: session`; `session_state` = active/review/complete/blocked/revision-requested; `record_basis` = contemporaneous/reconstructed; `agent` is the actual author label, not an invented staffed role; `branch`; optional `artifact_commit` for an already-existing commit; `next_action`; standard editorial frontmatter. Historical deliveries reconstructed from Git must say session boundaries/timing were not reconstructed.
 
+New handoffs also list `changed_paths`: exact repository-relative paths covered by that session (including deletions), without globs. The record itself and generated snapshot are implicitly covered. Several changed records may jointly cover a PR. Historical records need no retroactive migration. A final record must not remain `active`; use `review`, `complete`, `blocked` or `revision-requested` honestly.
+
 ## Refresh and check
 
 From the task worktree root:
@@ -64,7 +66,37 @@ git diff --check
 
 The generator mechanically rewrites **only** cockpit-snapshot.md, deriving content from backlog/readiness and session/message records. It does not read .obsidian, chat logs, credentials or network services. `--check` fails on stale output or malformed cockpit assets. `--git-status` is read-only and reports recorded commits against locally fetched origin/main and each task branch; it does not fetch, push or merge. Fetch only under the existing Git workflow before claiming current remote state. Missing refs are unknown, not merged.
 
-Bases indexes property changes without regeneration. Plain Markdown snapshot refresh is explicit, not background automation; no scheduler/hook is installed. A source fingerprint makes stale snapshots detectable by the check, not by merely opening the note. GitHub issues/CI are not synchronized. The canonical backlog remains the work tracker.
+Bases indexes property changes without regeneration. Plain Markdown snapshot refresh is explicit, not background automation; no scheduler/hook is installed. A source fingerprint makes stale snapshots detectable by the check, not by merely opening the note. The PR workflow checks consistency but does not synchronize GitHub issues or CI results into the vault. The canonical backlog remains the work tracker.
+
+## Automated maintenance contract
+
+[Session lifecycle skill](../../.agents/skills/granny-session-lifecycle/SKILL.md) routes new sessions here. [Repository maintenance workflow](../../.github/workflows/repository-maintenance.yml) runs docs validation, cockpit freshness, tooling tests and [handoff coverage](../../scripts/check_handoff.py) on every PR and push to main. It has read-only repository permissions, no secrets, immutable action references and full history for the existing source baseline. It installs pinned PyYAML only in its disposable runner; no local installation or background task is implied.
+
+Before committing, after a separately authorized fetch:
+
+```bash
+python3 scripts/check_handoff.py --base origin/main
+```
+
+This includes staged, unstaged and untracked nonignored files. After committing, repeat with `--head HEAD`. CI uses the event's base SHA and checked-out commit, not mutable branch text or executable PR descriptions. The comparison starts at merge-base, so unrelated work added to main does not need a new handoff. All changed nongenerated paths need coverage by records changed in the same PR. This prevents omission, not dishonesty: a reviewer must still verify scope, meaningful evidence and canonical updates. Proposed changes to check scripts/workflows themselves require particular scrutiny.
+
+**Small-change exemption:** only README.md and/or docs/README.md, at most 20 total added/deleted lines, may omit a session record when a commit in the change range contains `Handoff-Exempt: meaningful reason` (at least ten characters). Use only for spelling/navigation corrections, not changed product or operating rules. The check verifies paths/size/reason, while human review verifies triviality. Code, policies, workflow/skill changes and all other docs require a record. A failed check is fixed or transparently reviewed, never disabled just to merge.
+
+An existing workflow is not a required merge gate until GitHub branch protection is configured and read back. GitHub permits required status checks; see [protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches). The chosen [PR event](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request) tests the PR merge reference and avoids privileged pull_request_target execution. Sources: GitHub, accessed 2026-09-14; these establish platform behavior, not proof this repository is protected. Require the exact job name `Repository maintenance` only after a successful live run, preserving existing rules and obtaining current authority for settings changes. Record actual remote configuration in the session handoff.
+
+## Verify post-merge vault visibility
+
+After an authorized merge and safe fast-forward of the primary checkout, run from a worktree containing the script, substituting the inspected merge SHA:
+
+```bash
+python3 scripts/check_vault.py --checkout /home/lgtw/Work/granny --expected-commit MERGE_SHA --path docs/10-execution/cockpit-guide.md
+```
+
+[The verifier](../../scripts/check_vault.py) requires the expected repository origin, main branch, HEAD equal to locally fetched origin/main, ancestry containing the expected merge, and tracked dashboard artifacts plus explicit delivered paths. It does not fetch, switch, pull, stash, copy files, read private .obsidian files, or write anything. Ref freshness needs a separate fetch. Missing refs/files, altered target artifacts, unexpected checkout or divergence fail closed. Unrelated dirty files are permitted and preserved. A user-edited Canvas yields `NEEDS REVIEW`, not permission to discard their layout; inspect it and report merged ancestry separately. Passing filesystem checks does not prove Obsidian rendered or selected the right vault. Ask Simon to open Cockpit if in-app visibility remains uncertain.
+
+## Fresh-session acceptance and maintenance owner
+
+Simon owns workflow direction; each change session owns its handoff and scope. When lifecycle instructions or checks change, validate packaging plus the regression suite and repeat a fresh-context read-only scenario: a new session should find the current task, distinguish review from implementation, locate handoff/check commands, preserve dirty/private state and distinguish pushed/merged/vault-visible. Record inputs, observed behavior and limits in that task's session record. Do not equate reading an explicit skill path with host auto-discovery; test discovery in a new Codex session separately if it is absent. The [official skill guide](https://learn.chatgpt.com/docs/build-skills) documents repository-local skills (OpenAI, accessed 2026-09-14); another host can follow AGENTS and the linked file manually.
 
 ## Agent board and concurrent work
 

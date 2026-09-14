@@ -183,6 +183,16 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Status:** review — files and structural tests delivered; awaiting in-app and owner review. Not a product gate pass.
 - **Excluded:** Live inter-agent transport, GitHub/CI synchronization, plugin downloads, automatic Git operations, UI redesign implementation, Android/agent runtime and Stage 2/3.
 
+<a id="t-115"></a>
+## T-115 — Enforce session handoffs and verify cockpit integration
+
+- **Scope / authority:** Simon approved lifecycle skill, maintenance checks, vault visibility verification and fresh-session testing on 2026-09-14. Repository tooling only; PR/merge and remote protection changes require current authority.
+- **Dependencies / owner:** T-114 artifacts integrated through PR #3; [cockpit stewardship](cockpit-guide.md), [Git workflow](git-workflow.md), [session evidence](sessions/2026-09-14-session-maintenance.md). Operational support of PRD-NFR-005, no product behavior change or runtime EVAL claim.
+- **Deliverables:** Fifth repo-local skill, read-only coverage/visibility scripts, adverse regression cases, least-privilege CI and updated routing/template.
+- **Acceptance:** Missing/unrelated handoffs and stale snapshots rejected; explicit small README exemption constrained; wrong/stale/dirty vault artifacts reported without writes; fresh-context navigation evaluated; actual CI/protection/integration state distinguished from local checks.
+- **Status:** complete — tooling validated with 46 passing tests, successful live CI and verified required-check enforcement; PR #4 owns final integration state. No product gate passed.
+- **Excluded / rollback:** No app redesign, Android work, plugin/private-state changes, auto-merge or scheduled supervisor. Revert scoped tooling through reviewed Git change if needed; preserve session history and user-owned Canvas layout.
+
 ## Session handoff
 
-Each next session selects **one bounded slice**, reads its PRD/UC/J, canonical interface/screen and policy, checks current gates and Git, then writes tests and implementation together. Add actual source/test links to traceability only when they exist. If feasibility changes the intended outcome, amend canonical behavior and gate decision before widening code. Do not turn an unsuccessful integration into silent Stage 2 work.
+Each implementation session selects **one bounded slice**, reads its PRD/UC/J, canonical interface/screen and policy, checks current gates and Git, then writes tests and implementation together. Review-only sessions remain read-only. Add actual source/test links to traceability only when they exist. If feasibility changes the intended outcome, amend canonical behavior and gate decision before widening code. Do not turn an unsuccessful integration into silent Stage 2 work.
