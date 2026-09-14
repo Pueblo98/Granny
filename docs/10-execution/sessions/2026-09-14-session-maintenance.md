@@ -8,11 +8,11 @@ related:
   - ../cockpit-guide.md
   - ../backlog.md
 record_type: session
-session_state: review
+session_state: complete
 record_basis: contemporaneous
 agent: Codex
 branch: chore/session-maintenance
-next_action: Authorize the maintenance PR/integration and required check, then review the conversation-first design plan.
+next_action: Review the conversation-first design plan; PR 4 owns the final integration result.
 changed_paths:
   - AGENTS.md
   - .agents/skills/granny-session-lifecycle/SKILL.md
@@ -51,8 +51,16 @@ Fresh-context read-only smoke test: an independent agent with no conversation hi
 
 The actual primary-vault verifier against PR #3's 70af0db returned `NEEDS REVIEW`: expected ancestry and local origin/main matched, but Simon's Canvas layout is modified. The fresh-context reviewer also confirmed this task's session record is absent from the primary vault before integration. No file was repaired or discarded to make this check green. Obsidian rendering remains human evidence.
 
-PR #3 is merged at 70af0db; this task starts there in an isolated worktree. GitHub inspection on 2026-09-14 found main unprotected and no repository rulesets; a workflow file alone does not establish required enforcement. New live CI and protection remain unverified until explicitly recorded. Approval was requested separately for this maintenance PR/merge/primary update and for a required check; unanswered suggestions are not treated as approval.
+PR #3 is merged at 70af0db; this task starts there in an isolated worktree. Initial GitHub inspection on 2026-09-14 found main unprotected and no repository rulesets. Simon subsequently explicitly approved this task's PR/merge after passing checks, primary-checkout update, and making the maintenance check required while preserving existing rules.
+
+## Live CI and enforcement — 2026-09-14
+
+[PR #4](https://github.com/Pueblo98/Granny/pull/4) integrates this task. Its [first GitHub Actions run](https://github.com/Pueblo98/Granny/actions/runs/34896799161) passed all maintenance steps on head 6e1e278db9954e2f827d667e298efcf4bfad1f5a; GitGuardian also passed. Local validation was repeated: 46 tooling tests, zero documentation errors, fresh cockpit, handoff coverage and whitespace checks all passed. This evidence update triggers another CI run; the merge must use the latest passing head, not rely on the earlier run alone.
+
+GitHub protection was enabled and read back through the API: main requires `Repository maintenance`, bound to GitHub Actions app 15368; strict up-to-date checks and administrator enforcement are enabled; force pushes and branch deletion are disallowed. There were no existing protections/rulesets to replace. No reviewer-count rule or bypass was added. The first API attempt rejected an incompatible contexts-plus-checks payload (422, no mutation); the checks-only retry succeeded and GET confirmed the exact setting. Live settings can later change; re-inspect before relying on them.
+
+The tooling task is complete; PR #4 is the authoritative merge-state/commit record. At this pre-merge checkpoint, local vault synchronization is still to be performed after the final checks and authorized merge. This record does not manufacture a future merge hash or claim that filesystem checks prove Obsidian rendering.
 
 ## Handoff
 
-Worktree: /home/lgtw/Work/granny-worktrees/session-maintenance; branch chore/session-maintenance; base 70af0dbffaad52c259b173ccad4d72f722521fe5. Primary checkout contains user edits to action-policy.md and Development.canvas; private Obsidian JSON also remains outside this task. Do not overwrite them. No merge, branch protection change, global skill/plugin installation or automatic vault synchronization is claimed. The record's own commit is discoverable through Git history; publication is reported only after remote SHA verification. Product work next remains review of the conversation-first plan, not another documentation-expansion pass.
+Worktree: /home/lgtw/Work/granny-worktrees/session-maintenance; branch chore/session-maintenance; base 70af0dbffaad52c259b173ccad4d72f722521fe5. Initial publication was verified at remote SHA 6e1e278db9954e2f827d667e298efcf4bfad1f5a; this evidence follow-up is located through file/PR history. Primary checkout contains user edits to action-policy.md and Development.canvas; private Obsidian JSON also remains outside this task. Preserve them and the separate UI-skills/Figma worktrees. No global skill/plugin installation or automatic synchronization is introduced. Product work next remains review of the conversation-first plan, not another documentation-expansion pass.

@@ -19,7 +19,7 @@ Simon's latest instruction is cockpit first, then a redesign plan. [Cockpit](../
 
 The feature-button Home was rejected by Simon, despite passing mock checks. Review the [conversation-first plan](../02-design/conversation-first-plan.md) before a new implementation request. Existing browser code stays unchanged. T-102 remains in review with revision requested; production gates remain unchanged. Browser and cockpit were merged through [PR #3](https://github.com/Pueblo98/Granny/pull/3), 70af0db, on 2026-09-14, and the primary docs/ vault checkout was synchronized. The separate Figma branch remains preserved; this is not a claim every branch was merged.
 
-T-115 adds [session lifecycle guidance and automated checks](cockpit-guide.md#automated-maintenance-contract). [Its handoff](sessions/2026-09-14-session-maintenance.md) records actual validation, CI/protection and integration evidence. New change sessions maintain their scoped record and run the freshness/coverage checks. This operational work does not implement the conversation-first redesign or pass product gates.
+T-115 delivered [session lifecycle guidance and automated checks](cockpit-guide.md#automated-maintenance-contract), with successful live CI and GitHub-required maintenance enforcement on main. [Its handoff](sessions/2026-09-14-session-maintenance.md) records the inspected settings and validation; [PR #4](https://github.com/Pueblo98/Granny/pull/4) owns final integration state. New change sessions maintain their scoped record and run freshness/coverage checks. This operational work does not implement the conversation-first redesign or pass product gates.
 
 ## Previous milestone — initial browser interaction prototype
 
