@@ -2,7 +2,16 @@ import { Client } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
 import { fileURLToPath } from 'node:url';
 import { tools, people, parse, SafeError } from './schema.mjs';
-export async function connectDemo({timeout=5000}={}) {
+export function validateToolOutput(name,result){
+  if(!Object.hasOwn(tools,name))throw new SafeError('tool_denied');
+  if(result.isError || (result.content?.length ?? 0)>0)throw new SafeError('mcp_malformed');
+  const output=parse(tools[name].output,result.structuredContent);
+  if(name==='demo_contacts_resolve' && output.people.some(p=>!people.some(known=>JSON.stringify(known)===JSON.stringify(p))))throw new SafeError('mcp_malformed');
+  return output;
+}
+export async function connectDemo(options={}) {
+  if(Object.keys(options).some(k=>k!=='timeout'))throw new SafeError('server_denied');
+  const {timeout=5000}=options;
   const transport=new StdioClientTransport({command:process.execPath,args:[fileURLToPath(new URL('./mcp-server.mjs',import.meta.url))],env:{PATH:process.env.PATH || '/usr/bin'},stderr:'pipe'});
   // Never forward untrusted child stderr to logs or browser.
   transport.stderr?.on('data',()=>{});
@@ -27,10 +36,7 @@ export async function connectDemo({timeout=5000}={}) {
       if(signal?.aborted)throw new SafeError('cancelled');
       try {
         const result=await client.callTool({name,arguments:clean},{timeout,signal});
-        if(result.isError || (result.content?.length ?? 0)>0)throw new Error('untrusted_result');
-        const output=parse(schema.output,result.structuredContent);
-        if(name==='demo_contacts_resolve' && output.people.some(p=>!people.some(known=>JSON.stringify(known)===JSON.stringify(p))))throw new Error('wrong_person');
-        return output;
+        return validateToolOutput(name,result);
       } catch {throw new SafeError(signal?.aborted?'cancelled':'mcp_failure',502);}
     },
     async close(){closed=true;await client.close();}

@@ -1,0 +1,64 @@
+---
+title: "Local conversation runtime — real MCP, fictional drafts"
+status: review
+owner: Simon
+last_updated: 2026-09-15
+tags: [prototype, backend, mcp]
+related:
+  - ../../docs/04-architecture/conversation-runtime-contract.md
+  - ../../docs/10-execution/sessions/2026-09-15-mcp-backend-integration.md
+  - ../stage-1/README.md
+---
+
+# Local conversation runtime
+
+One bounded slice: conversation → fictional contact resolution → exact preview → explicit confirmation → actual isolated local draft write → separate stored-record readback. Success means **“Draft created in the demo. Not sent.”** No real messaging account, Android integration or arbitrary MCP installation.
+
+## Start
+
+Tested with Node 26.8.1. Official MCP client/server 2.0.0, Zod 4.6.5 and transitive packages pinned in package-lock.json. Dependencies were explicitly approved for this isolated experiment. A fresh checkout installs that exact lockfile:
+
+```bash
+cd prototypes/conversation-runtime
+npm ci --ignore-scripts --no-audit --no-fund
+cd ../..
+node prototypes/conversation-runtime/server.mjs
+```
+
+Open http://127.0.0.1:4180. Optional numeric port argument. The backend serves the sibling conversation-first UI and same-origin API; use its explicit connected demo entry. Scripted UI remains separate. Stub model is deterministic; MCP initialization, JSON-RPC stdio, tool discovery/calls, temporary files and independent readback are real. Only the three allowlisted demo tools are exposed. MCP wire protocol **2025-11-25** is observed during initialization and required, using SDK 2.0.0's maintained legacy handshake support.
+
+Try `Hello`, then `Tell David Brother "Meet at six.  🌱" via Example Messages`. Ambiguity example: `Tell David "Meet at six."`. The unquoted fixture `Tell David Brother I will call after dinner. via Example Messages` also works. Demo grammar is deliberately deterministic for testing; Qwen performs live semantic interpretation. Review exact recipient/channel/body, optionally edit, then explicitly create the unsent demo draft. Stop remains local and bounded. Unknown effects cannot be retried in that session.
+
+## Optional live interpretation
+
+```bash
+node --env-file=/absolute/path/to/private/.env prototypes/conversation-runtime/server.mjs --live
+```
+
+The existing private env defines OPENROUTER_API_KEY; never copy it into the checkout, browser, screenshots or command arguments. --live only makes the route available; explicit UI consent and a live session are still required. No paid request on page load/session creation. Synthetic text only. Latest input plus at most ten bounded prior conversation messages may leave the machine; no MCP output, confirmation, draft result, private file or secret enters model context. No raw transcript logging.
+
+Qwen3.8 Flash is replaceable behind provider.mjs. Prior limits retained: 20/process, six/minute, one in flight, 768 output tokens, 25s timeout, required parameter support, collection deny, no fallback, price ceilings $0.15/M input and $0.47/M output. No implicit retry or account-wide billing guarantee. Restart resets process counters, not provider charges. Do not run repeated live sessions to bypass caps.
+
+## Tests and evidence
+
+```bash
+node --test prototypes/conversation-runtime/*.test.mjs
+```
+
+Tests use a real local stdio server for normal draft effects. Explicit adverse fixtures wrap that port to lose an acknowledgment, delay a dispatched write or corrupt readback; these faults are test-only. Provider HTTP is stubbed in deterministic tests. Browser integration uses the frontend-owned runtime-browser-check script once its committed adapter checkpoint is integrated; see the session for actual commands/results.
+
+One separately authorized synthetic live interpretation, **not CI**:
+
+```bash
+node --env-file=/absolute/path/to/private/.env prototypes/conversation-runtime/live-smoke.mjs --live
+```
+
+Exactly one provider request, no retry, no draft write; reports only state/code/timing/exact-match evidence. Failure is retained, not relabeled a pass. Deterministic success does not establish live language reliability or native Android capability.
+
+## Lifecycle and scope
+
+Ctrl+C shuts down HTTP and the MCP child and removes its temporary synthetic draft directory. The server creates its own directory; neither model nor browser can choose a path. Crash remnants can remain in the OS temporary directory, containing synthetic drafts only. Restart creates a new store and restores no permits or pending work. Each session expires after 30 minutes; eight sessions/process, 64 commands/session, bounded event history. Stop remains available at budget exhaustion.
+
+The trusted local UI is the confirmation source. This developer loopback service is not authenticated multi-user infrastructure and must not be exposed through LAN/tunnel/public hosting. Host/Origin/body validation blocks ordinary browser cross-origin access. Server-side policy protects against model/tool output, not malicious software already running as the same OS user.
+
+[Wire contract](../../docs/04-architecture/conversation-runtime-contract.md) owns all request/event/state semantics. [Session evidence](../../docs/10-execution/sessions/2026-09-15-mcp-backend-integration.md) distinguishes implemented, tested, published, frontend-reviewed, live and unavailable capabilities. Production gates remain unchanged.

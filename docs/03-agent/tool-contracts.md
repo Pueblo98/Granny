@@ -2,7 +2,7 @@
 title: "Stage 1 Typed Capability Contracts"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [agent, interfaces]
 related:
   - device-control.md
@@ -13,6 +13,10 @@ related:
 # Typed capability contracts
 
 Specification only; no runtime exists. These vendor-neutral interfaces define the proposed MVP. [Policy](../05-safety-privacy/action-policy.md) owns grants/consequence/permit rules; [device control](device-control.md) owns budgets/freshness and [execution protocol](execution-protocol.md) owns transaction/event/journal semantics. [Capability admission](../04-architecture/capability-admission.md) owns build/configuration support. There is no generic shell, arbitrary HTTP, raw credential, unbounded tap or model-defined script capability.
+
+## Local prototype implementation exception
+
+The [conversation runtime](../04-architecture/conversation-runtime-contract.md) now implements a narrowly authorized local demo interpretation of CAP-05/07/12: real MCP calls against fictional contacts and an isolated unsent store. Those prototype tool names do not admit CAP-08/09, Android automation or real sending. The generic vendor-neutral production contracts below remain proposed; T-103 and canonical device evals are not completed by this experiment.
 
 ## Common types and trust
 

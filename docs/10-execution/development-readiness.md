@@ -14,6 +14,10 @@ related:
 
 # Development-readiness assessment
 
+## Local backend/MCP experiment — 2026-09-15
+
+Simon explicitly authorized [T-117](backlog.md#t-117), a bounded conversation-first browser/backend/MCP slice with fictional contacts, specific confirmation and verified unsent demo-store writes. [Runtime contract](../04-architecture/conversation-runtime-contract.md) and [session evidence](sessions/2026-09-15-mcp-backend-integration.md) own its actual implementation/test state. Backend and frontend coordinate through published board checkpoints. Dependency installation for the official MCP SDK was explicitly approved. This is an exception to earlier no-backend prototype statements, not T-103 completion, Android integration or promotion of GATE-03/04/06/07–09. Live synthetic Qwen calls retain prior caps and consent; broader data/release gates remain open.
+
 ## Conversation-first implementation exception, 2026-09-15
 
 Simon's 2026-09-14 build mission authorizes the local five-workflow conversation prototype and reversible proposed styling; his 2026-09-15 checkpoint feedback continues that direction. [Scope and readiness contract](../02-design/conversation-first-plan.md) and [build evidence](sessions/2026-09-14-conversation-build.md) distinguish implementation authority from final design acceptance. This resolves the earlier wait for a prototype implementation request. GATE-05 still needs final decisions and human/access evidence; T-103 and Android/backend/production gates are unchanged.

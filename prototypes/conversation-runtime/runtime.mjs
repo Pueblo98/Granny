@@ -42,8 +42,11 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
     preview(s,requestId);
   }
   async function interpret(s,text,requestId,epoch){
-    const proposal=parse(proposalSchema,await (s.mode==='live'?provider:stub).interpret(text,s.controller.signal));
+    const proposal=parse(proposalSchema,await (s.mode==='live'?provider:stub).interpret(text,s.controller.signal,s.history));
     if(!active(s,epoch))return;
+    s.history.push({role:'user',content:text});
+    if(proposal.kind==='chat')s.history.push({role:'assistant',content:proposal.text});
+    while(s.history.length>10||s.history.reduce((n,m)=>n+m.content.length,0)>10000)s.history.shift();
     if(proposal.kind==='chat'){emit(s,'chat','idle',{text:proposal.text,source:s.mode==='live'?'live-model':'stub-model',verified:false},requestId);return;}
     const {bodyStart:start,bodyEnd:end}=proposal;
     if(end<=start||end>text.length||!text.slice(start,end).trim()) {clarify(s,'body',[],requestId);return;}
@@ -68,7 +71,7 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
       if(previous){if(!isDeepStrictEqual(previous.input,value))reject('request_conflict');return snapshot(get(previous.sessionId));}
       if(sessions.size>=8)reject('session_limit',429);
       if(value.mode==='live'&&!provider?.available)reject('provider_unavailable',503);
-      const s={id:id(),mode:value.mode,epoch:0,state:'idle',events:[],requests:new Map(),turnId:null,preview:null,controller:new AbortController(),operations:0,dispatched:false,quarantine:false,expires:now()+sessionTTL};
+      const s={id:id(),mode:value.mode,history:[],epoch:0,state:'idle',events:[],requests:new Map(),turnId:null,preview:null,controller:new AbortController(),operations:0,dispatched:false,quarantine:false,expires:now()+sessionTTL};
       sessions.set(s.id,s);creations.set(value.requestId,{input:value,sessionId:s.id});return snapshot(s);
     },
     events(sessionId,after){return snapshot(get(sessionId),after);},

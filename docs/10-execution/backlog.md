@@ -193,6 +193,16 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Status:** complete — tooling validated with 46 passing tests, successful live CI and verified required-check enforcement; PR #4 owns final integration state. No product gate passed.
 - **Excluded / rollback:** No app redesign, Android work, plugin/private-state changes, auto-merge or scheduled supervisor. Revert scoped tooling through reviewed Git change if needed; preserve session history and user-owned Canvas layout.
 
+<a id="t-117"></a>
+## T-117 — Connect conversation UI to bounded local backend and MCP
+
+- **Scope / authority:** Simon requested one complete implementation slice on 2026-09-15: natural conversation to specifically confirmed unsent demo draft, with actual MCP transport/store/readback. Separate from the Qwen proposal-only experiment, T-103 and Android actuation.
+- **Owner / dependencies:** Backend owns [runtime contract](../04-architecture/conversation-runtime-contract.md), provider/policy/MCP/runtime/tests; frontend owns presentation/transport. Published frontend checkpoint 7e919ae integrated with both histories preserved; older Qwen UI is not transplanted. Board topic ui-backend-integration records agreement. SDK dependency installation explicitly approved.
+- **Trace / DoR:** PRD-FR-002/003/008/013, PRD-SAF-001/002/003, PRD-PRV-001; UC-006/J-003; SCR-003/007, CMP-001/003; EVAL-003/006/008/009/010 themes. Input/output/fixture/oracle/budgets/Stop/privacy/rollback defined in the runtime contract and tests before broader integration. Real file readback is independent of the write acknowledgment.
+- **Deliverable / acceptance:** [Source/startup](../../prototypes/conversation-runtime/README.md), three allowlisted MCP tools, exact-content preview binding and expiry, clarification, cancellation/unknown fencing, deterministic backend/provider/HTTP and integrated browser tests. Live Qwen evidence separately bounded; no paid CI calls.
+- **Status:** in progress — runtime/MCP and initial adverse tests pass; frontend adapter integration/review, final evidence and canonical validation underway. [Session](sessions/2026-09-15-mcp-backend-integration.md) owns exact checks and limitations. No product gate promotion.
+- **Excluded / rollback:** No external send/account, personal files/data, Android, root, remote server install, shell/network tool or broad capability expansion. Stop server to disable; graceful shutdown removes its synthetic temporary store; no pending action restored on restart. Revert scoped branch through normal reviewed Git if needed.
+
 ## Session handoff
 
 Each implementation session selects **one bounded slice**, reads its PRD/UC/J, canonical interface/screen and policy, checks current gates and Git, then writes tests and implementation together. Review-only sessions remain read-only. Add actual source/test links to traceability only when they exist. If feasibility changes the intended outcome, amend canonical behavior and gate decision before widening code. Do not turn an unsuccessful integration into silent Stage 2 work.
