@@ -2,7 +2,7 @@
 title: "First design and engineering task packets"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [execution, handoff]
 related:
   - backlog.md
@@ -49,7 +49,7 @@ Then T-104/105/106 test admitted external workflows, T-107 local privacy, and T-
 
 **Current medium and authority:** Simon authorized local browser implementation on 2026-09-14. [Browser handoff](../02-design/browser-prototype.md) and [prototype source](../../prototypes/stage-1/README.md) now execute units A–F. Figma is not required. The browser contains explicit simulations, not the T-103 agent core or a production Android shell; actual user/device acceptance remains open.
 
-**Current review:** Simon rejected the feature-button Home; use the [conversation-first plan](../02-design/conversation-first-plan.md) for discussion. Units below remain outcome/access obligations, not a requirement for separate pages or a feature grid. No redesign implementation was requested in the cockpit/plan turn.
+**Current implementation:** Simon's 2026-09-14 mission authorizes the [conversation-first build](../02-design/conversation-first-plan.md); on 2026-09-15 he continued the working message checkpoint direction. Units below remain outcome/access obligations, expressed through the shared conversation. [Execution record](sessions/2026-09-14-conversation-build.md) supplies the bounded build sequence, fixture/test contract and actual review evidence. No production Android or backend implementation follows.
 
 **Question:** Can an adult enter, correct, confirm, stop and understand outcomes without voice, hidden state or technical vocabulary?
 

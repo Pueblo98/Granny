@@ -2,7 +2,7 @@
 title: "Stage 1 decision queue and evidence unknowns"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [execution]
 related:
   - development-readiness.md
@@ -34,7 +34,7 @@ T-113 refined execution/journal/Stop and admission contracts without accepting n
 
 ## Current interaction review — OQ-13
 
-**Confirmed preference, proposed implementation:** Simon rejected the feature-button Home and asked for a minimal conversation-led experience. Review [the replacement plan](../02-design/conversation-first-plan.md): one conversation, visible talk/type input, contextual content and controls, exact approval and stable Stop. Alternative pure voice hides too much; merely removing a few tiles retains the wrong entry model. Choose the proposed composition and in-thread/expanded confirmation before requesting the first message-only browser slice. This does not accept brand values, remove touch access, widen autonomy or pass GATE-05. Evidence of older-adult comprehension remains unrun.
+**Confirmed direction and implementation authority; final design open:** Simon authorized the [conversation-first build](../02-design/conversation-first-plan.md) on 2026-09-14 and asked to continue its working message checkpoint direction on 2026-09-15. One conversation, talk/type input, contextual content, exact inline/expanded approval and stable Stop are being explored across five simulations. Next assess the integrated experience and proposed Open Day/Bright Signal comparison. This does not accept final brand values, widen autonomy or pass GATE-05. Evidence of older-adult comprehension remains unrun.
 
 ## Simon's minimum next decision packet
 

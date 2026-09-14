@@ -2,7 +2,7 @@
 title: "Conversation-first redesign plan"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [design, interaction, review]
 related:
   - product-design-spec.md
@@ -17,7 +17,13 @@ related:
 
 ## Direction and authority
 
-**Confirmed direction:** Simon rejected the feature-button browser Home on 2026-09-14 and requested a minimal chatbot-like experience with less visible interface and more functionality inside the conversation. **Requested sequence:** development cockpit first, then this plan for discussion. No UI code changes in this task.
+**Confirmed direction:** Simon rejected the feature-button browser Home on 2026-09-14 and requested a minimal chatbot-like experience with less visible interface and more functionality inside the conversation. The cockpit-first planning task is complete.
+
+**Implementation authority, Simon, 2026-09-14:** the Conversation-First Experience Build mission explicitly authorizes implementing this proposed interaction in the existing local browser prototype. Build the message slice first, surface a working checkpoint, then expand the shared interaction to the other four MVP workflows and supporting local settings/recovery. Continue independent reversible work while feedback is pending; adjust before expanding if Simon rejects the checkpoint. This supersedes this document's earlier implementation-wait language. It authorizes exploration, including inline exact previews and neutral then Open Day/Bright Signal comparisons, not final design/brand acceptance or any production gate. [Current execution record](../10-execution/sessions/2026-09-14-conversation-build.md) records scope, tests and handoff.
+
+All data is fictional and in memory. No backend/model calls, audio/capture, real external actions, device automation, dependencies, public/LAN deployment, private Obsidian edits or main merge is authorized by this scope. Task-branch publication is authorized; PR/main integration retains separate authority.
+
+**Checkpoint feedback, Simon, 2026-09-15:** “Continue this direction” after the working message slice and screenshot. He separately authorized creating a draft PR after integrated checks. Main remains unmerged. The feedback supports expanding the interaction and does not imply final design acceptance.
 
 **Proposed solution:** one calm conversation surface that can talk, show content, ask a necessary question and present a specific action for approval. The person describes the goal; the software handles the workflow. This is a revision of the interaction model, not just removal of borders or smaller buttons.
 
@@ -46,11 +52,11 @@ For example: “Show me Sophie's photos.”
 [ Type a request…                                  Ask ]
 ```
 
-The wireframe is a layout proposal, not a final visual identity. “Ask” means submit an intent to Granny, never send a message to someone else. It appears only when there is text to submit; input is always visibly available without granting a microphone permission. Talk uses a large labeled control, not an unlabeled microphone icon.
+The wireframe is a layout proposal, not a final visual identity. The implemented browser uses a persistent **Continue** control for typed intent submission, never external approval; empty submission does nothing. Input is always visibly available without granting a microphone permission. Talk uses a large labeled control, not an unlabeled microphone icon.
 
 After an intent, the initial invitation collapses into a conversation. Latest request and response are primary; no permanent feature grid, left chat-history sidebar, top navigation bar of tasks or suggested-prompt chip wall. A quiet labeled Menu reveals history/settings/help and an optional “What can I ask?” guide. Returning from it restores context/focus, never resumes an external task silently. Settings/privacy access must remain discoverable, including by a typed request.
 
-A concise text status stays beside the current turn. During work, a stable touch **Stop** is visible without scrolling, independent of voice and the model. System navigation and external-app handoff remain honest Android boundaries.
+A concise text status stays beside the current turn. The browser keeps Stop in a top-of-document sticky dock ahead of scalable headers, and allows the composer to enter normal document flow when a narrow/short or enlarged-text viewport cannot accommodate a sticky composer. During work, a stable touch **Stop** is visible without scrolling, independent of voice and the model. System navigation and external-app handoff remain honest Android boundaries.
 
 ### How the five workflows appear
 
@@ -84,7 +90,7 @@ These preserve J-001/002/003/005/006 and their existing task outcomes. “Built-
 7. User continues naturally: “Actually, make it tomorrow.” Edit creates a new version/preview and revokes old authority. It cannot silently edit an already-sent external message.
 8. On unknown outcome: “I can't confirm whether it sent. Check the conversation before trying again.” No new Send/Retry button for a blind retry.
 
-The preview should feel like part of the conversation but remain a structured safety component. It expands into an accessible full-screen reading view when required by length/scale. This proposes changing CMP-003's default presentation, **not** its enforcement, semantics or exact-content requirement. Resolve that proposal before implementation.
+The preview should feel like part of the conversation but remain a structured safety component. In the browser, it reflows into a full-width, vertically scrollable reading/editing surface for long content or large text; it never truncates the exact consequence. CMP-003's inline presentation is now authorized for browser exploration, preserving its enforcement, semantics and exact-content requirement. This is not acceptance of a final production design.
 
 ## Interaction rules to review
 
@@ -123,7 +129,7 @@ First review the interaction in neutral styling; then compare the existing ident
 | Conversation plus contextual task controls | Intent-led entry, integrated outcomes, strong touch and safety path | Requires careful conversation state/focus and discoverability testing | Recommended |
 | Free-form model-designed screens on every turn | Very adaptive in theory | Unstable layout, safety/semantic enforcement and testing complexity | Not this MVP |
 
-## Bounded execution after Simon reviews the plan
+## Authorized bounded execution
 
 1. **Revise the owned interaction contract.** Update SCR-003/004/005/006/007/008, CMP-001–007, voice wording and affected J flows; retain stable IDs. Confirm inline-versus-expanded preview and transcript friction decisions. No changes to accepted five-workflow scope.
 2. **Build one conversation slice first:** Home/composer → message clarification → exact draft preview → handoff/unknown/Stop. Reuse current fictional model fixtures; remove mandatory category selection. Prototype routing uses an explicit documented fixture grammar/sample set, not fake general NLU or live AI. Unmatched input asks a truthful clarification instead of routing arbitrarily.
@@ -146,4 +152,4 @@ No production AI calls, live mic capture, external message sends, package instal
 
 Pass criteria for the first browser revision: no five-feature tile Home; no post-input category picker for supported samples; visible talk/type paths; exact active approval and Stop; no lost draft on expiry; correct focus/scroll behavior; simulator controls absent from the participant view; no regression in safety tests. A target like fewer visible controls is not substituted for user comprehension.
 
-**Decision for Simon now:** Does the one-conversation + contextual controls direction match the intent? If yes, the next requested implementation should be only the message slice above, followed by review—not another five-workflow rewrite in one go.
+**Next design review:** Try the working message checkpoint, then the integrated five-workflow experience. Review whether the conversation makes the next action and its consequence clear. Browser test results do not replace Simon's design judgment or participant/device evidence.

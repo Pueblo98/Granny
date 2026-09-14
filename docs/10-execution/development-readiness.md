@@ -2,7 +2,7 @@
 title: "Stage 1 development-readiness gates and handoff"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [execution]
 related:
   - current-milestone.md
@@ -14,11 +14,15 @@ related:
 
 # Development-readiness assessment
 
+## Conversation-first implementation exception, 2026-09-15
+
+Simon's 2026-09-14 build mission authorizes the local five-workflow conversation prototype and reversible proposed styling; his 2026-09-15 checkpoint feedback continues that direction. [Scope and readiness contract](../02-design/conversation-first-plan.md) and [build evidence](sessions/2026-09-14-conversation-build.md) distinguish implementation authority from final design acceptance. This resolves the earlier wait for a prototype implementation request. GATE-05 still needs final decisions and human/access evidence; T-103 and Android/backend/production gates are unchanged.
+
 ## Cockpit and design-review follow-up, 2026-09-14
 
 Session maintenance T-115 adds a fifth repo-local skill, PR consistency checks and read-only post-merge vault verification. [Current maintenance evidence](sessions/2026-09-14-session-maintenance.md) distinguishes local validation, fresh-context behavior, host discovery, live CI and remote enforcement. None promotes a product gate. Earlier four-skill counts below are historical, not the current skill inventory.
 
-[Development cockpit](../Cockpit.md) is **Ready** for Simon's development oversight: he explicitly approved it and requested T-114 complete on 2026-09-14. This is owner-reported visual acceptance, not a formal usability study or automated rendering test. No plugin install or automatic cross-worktree synchronization is claimed. The browser UI received a revision request from Simon; [conversation-first plan](../02-design/conversation-first-plan.md) awaits his review. GATE-05 remains Needs Simon decision and evidence; no production gate changes.
+[Development cockpit](../Cockpit.md) is **Ready** for Simon's development oversight: he explicitly approved it and requested T-114 complete on 2026-09-14. This is owner-reported visual acceptance, not a formal usability study or automated rendering test. No plugin install or automatic cross-worktree synchronization is claimed. The rejected browser UI is now under the separately authorized [conversation-first revision](../02-design/conversation-first-plan.md). GATE-05 remains Needs Simon decision and evidence; no production gate changes.
 
 ## Browser-design follow-up, 2026-09-14
 

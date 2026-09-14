@@ -2,7 +2,7 @@
 title: "Stage 1 Signature Journeys"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [product, journeys]
 related:
   - use-cases.md
@@ -18,7 +18,7 @@ These proposed journeys use the [screen/state contract](../02-design/product-des
 
 ## Shared journey contract
 
-Entry is Talk, typed intent or named shortcut. Voice and touch reach the same preview and policy; reading aloud is optional for private content. Each sequence below is the design screen order, now prototyped in the browser; Figma is optional. External app screens are annotated placeholders, not restyled Android. Every frame includes stable screen/state IDs, requirement IDs, focus/reading order and Stop availability.
+Entry is Talk or typed intent in one conversation; secondary Help examples remain discoverable through Menu. Voice and touch reach the same preview and policy; reading aloud is optional for private content. Each sequence below names logical screen states within the [conversation-first composition](../02-design/conversation-first-plan.md), rather than requiring separate mini-app pages. External app screens are annotated placeholders, not restyled Android. Every state retains its stable screen ID, focus/reading order and Stop availability.
 
 **Interrupt:** Stop immediately latches cancellation locally; no queued action is dispatched. Take over leaves the real app at its current state. Direct touch in Granny invalidates pending approval; external user-interaction detection must be proven per adapter. If it cannot be proven, cross-app automation is unavailable. Stop cannot undo an external effect already dispatched. “I stopped. The message may already have been sent; I'll check its status” is a reconciliation state, not a promise to unsend.
 
@@ -72,7 +72,7 @@ Voice asks one question at a time; touch choices use descriptive labels rather t
 **UC-006/015/016; PRD-FR-007/008/009, PRD-SAF-001/002; MVP.**
 Start on Home; request “Tell David I'll call after dinner.” No specific hour or new commitment is inferred.
 
-1. SCR-004 shows exact heard text. Touch: Message → choose person → type/dictate body.
+1. SCR-004 accepts a typed request directly or shows an editable simulated transcript. Preserve the supplied body; no category selection follows supported input. Touch choices resolve only missing person/channel/body details.
 2. SCR-006 resolves David and channel. Candidate labels use only approved contact context; choosing one binds a stable endpoint, not display name alone.
 3. SCR-007 shows “To David [differentiator] · [channel]”, exact text “I'll call after dinner”, and consequence. Fresh approval controls are **Open this draft in [app]**, **Change it**, **Cancel** for handoff mode; **Send to David**, **Change it**, **Cancel** only when a verified send integration is admitted.
 4. User reviews or requests Repeat; no default focus on commit. Editing recipient/content invalidates prior approval. Voice approval must be an unambiguous response to this active preview; silence or background speech does nothing.

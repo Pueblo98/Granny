@@ -2,7 +2,7 @@
 title: "Stage 1 Design System Contracts"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [design, tokens]
 related:
   - product-design-spec.md
@@ -46,7 +46,7 @@ Talk starts explicit capture; label becomes Listening and control Done listening
 <a id="cmp-003"></a>
 ### CMP-003 — Consequence / deletion preview
 
-Full-page content with target, channel, exact body/diff, effect, reversibility and approval controls. Approval label is specific; Change and Cancel are equally reachable. No preselection, timed auto-approval, swipe-to-send, double-tap shortcut or generic keyboard Enter submit. Repeat reads exact preview without minting approval. Expiry offers Renew preview; material edits invalidate digest. Delete local data names categories and external limits; destructive color plus text/icon. Screen reader focus starts at heading and reads effect before controls. EVAL-003/010/012.
+Persistent structured content within the conversation, expandable for long reading, with target, channel, exact body/diff, effect, reversibility and approval controls. This proposed composition is authorized for the browser exploration by the [conversation-first direction](conversation-first-plan.md). Approval label is specific; Change and Cancel are equally reachable. No preselection, timed auto-approval, swipe-to-send, double-tap shortcut or generic keyboard Enter submit. Repeat reads exact preview without minting approval. Expiry offers Renew preview; material edits invalidate digest and preserve unsaved local edits. Historical turns cannot approve a later task. Delete local data names categories and external limits; destructive color plus text/icon. Focus reads effect before controls and never automatically selects approval. EVAL-003/010/012.
 
 Native assistive activation of the deliberately focused approval button (including TalkBack double tap or keyboard Enter/Space) remains valid; the prohibition is a custom shortcut bypassing preview/focus, not an accessibility gesture ban.
 

@@ -2,7 +2,7 @@
 title: "Stage 1 Voice and Content Contract"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [design, voice]
 related:
   - product-design-spec.md
@@ -15,6 +15,8 @@ related:
 Proposed behavior for [screen states](product-design-spec.md) and PRD-FR-001/004/007/009/016, PRD-ACC-003/004. Warm, specific adult language; identify as software, do not pretend human emotions, kinship, medical authority or a need for continued conversation.
 
 ## Activation, transcription and interruption
+
+In the authorized [conversation browser prototype](browser-prototype.md), Talk presents a deliberately simulated listening/transcript path, never browser speech or microphone capture. Typed supported intents progress directly without a mandatory confirmation of interpretation or category picker. Explicit transcript submission and chat submission request interpretation only; exact external consequences still use their dedicated active preview control. Incidental “yes” is not approval. All live audio/native behavior below remains a production proposal and unrun evidence.
 
 MVP is tap-to-talk, not wake-word or ambient listening. Talk changes to Listening with words/icon and optional short cue; Done listening ends capture. Proposed cap 30s, with gentle no-speech prompt at 10s and typed alternative. Partial text is provisional; final text can be edited. No hidden capture after app exits, lock, Stop or revoked permission. Speaker mute and microphone off are distinct.
 

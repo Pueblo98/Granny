@@ -2,7 +2,7 @@
 title: "Stage 1 requirements traceability"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [traceability]
 related:
   - prd.md
@@ -17,6 +17,8 @@ related:
 ## Executable design artifact
 
 [T-102 browser coverage](../02-design/browser-prototype.md#journey-and-component-coverage) maps J-001/002/003/005/006/007, their UC/PRD IDs, view keys and planned EVALs to [actual source](../../prototypes/stage-1/README.md). [Model checks](../../prototypes/stage-1/model.test.mjs) and [browser checks](../../prototypes/stage-1/browser-check.mjs) test the design simulation only. They do not change any EVAL row to passed or demonstrate two external delegated jobs.
+
+The [authorized conversation revision](../02-design/conversation-first-plan.md) implements intent/slot handling in [intent.js](../../prototypes/stage-1/intent.js), bounded in-memory transitions in [model.js](../../prototypes/stage-1/model.js), automatic cancellable demonstration timing in [scheduler.js](../../prototypes/stage-1/scheduler.js), and shared content/control rendering in [app.js](../../prototypes/stage-1/app.js). [Scheduler cases](../../prototypes/stage-1/scheduler.test.mjs) cover late callbacks/expiry; [server cases](../../prototypes/stage-1/serve.test.mjs) cover the loopback allowlist. [Session evidence](../10-execution/sessions/2026-09-14-conversation-build.md) distinguishes executed browser/fixture tests from the unchanged unrun canonical EVALs below.
 
 This is the **mapping owner**, not a duplicate requirement definition. [PRD](prd.md) owns the 48 requirements; [personas/jobs](personas.md) owns problems/jobs; [use cases](use-cases.md), [journeys](user-journeys.md), [screens](../02-design/product-design-spec.md) and [components](../02-design/design-system.md) own behavior. Every row provides a primary destination; shared contracts apply across workflows. Production implementation and every canonical runtime/human eval remain **unrun/not started**. T-102 now has an executable browser design simulation with separate prototype checks; it does not implement the agent/runtime contracts.
 
