@@ -117,12 +117,14 @@
       unknown: 'I can’t confirm whether the demo draft was created. Do not try creating it again.'
     })[v.snapshot?.state] || 'Waiting for the local demo…';
   }
-  function runtimeDraft(data) {
-    const c = card('Check the draft', 'This creates an unsent draft in the local demo. No message is sent and no Android app is opened.');
+  function runtimeDraft(data, completed = false) {
+    const c = card(completed ? 'Your unsent demo draft' : 'Check the draft', completed
+      ? 'These are the details of the checked local demo draft. No message was sent and no Android app was opened.'
+      : 'This creates an unsent draft in the local demo. No message is sent and no Android app is opened.');
     c.classList.add('preview');
     const dl = node('dl');
     [['To', data.recipient.label], ['Which person', data.recipient.detail],
-     ['Destination', data.channel.label], ['What happens', data.effectLabel]]
+     ['Destination', data.channel.label], [completed ? 'Result' : 'What happens', completed ? 'Created an unsent draft in the local demo' : data.effectLabel]]
       .forEach(([label, value]) => dl.append(node('dt', '', label), node('dd', '', value)));
     c.append(dl, node('blockquote', '', data.body));
     return c;
@@ -149,7 +151,7 @@
         'Assistant text, not a verified action result.'));
     }
     if (runtimePreview) {
-      const draft = runtimeDraft(runtimePreview);
+      const draft = runtimeDraft(runtimePreview, v?.snapshot?.state === 'completed');
       if (runtimeEditor) {
         const label = node('label', '', 'Message');
         const input = node('textarea');

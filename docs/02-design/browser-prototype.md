@@ -70,6 +70,8 @@ Only backend events can advance connected work. The frontend fences version/sess
 
 The [run guide](../../prototypes/stage-1/README.md) distinguishes static and connected serving and frontend wire-fixture tests from actual backend/MCP evidence. No live-provider selector, browser key, actual messaging, account action or Android control is added by this frontend slice.
 
+Actual combined browser review on 2026-09-15 passed 13 assertions against backend checkpoint 4d175f6 at loopback 4181: selected identity/channel, exact revised words, verified unsent local demo draft, chat and Stop, with no browser egress/persistence. The frontend separately ran all 22 backend/provider/HTTP tests. Exact source/test/screenshot records and remaining scope are in the frontend session; these are local demo/MCP observations, not production or live-model evidence.
+
 Focus remains with the reader/composer on status changes. Dialogs contain keyboard focus and restore the invoking control; returning from a photo restores position. Status updates do not force scrolling away from older content. Controls have visible labels/focus, large targets and no audio/color-only meaning. Browser CSS geometry is an approximation, not native dp/sp or assistive-tech evidence.
 
 ## Proposed visual comparison

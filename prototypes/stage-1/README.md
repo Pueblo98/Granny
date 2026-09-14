@@ -84,6 +84,8 @@ cloud.test.mjs and runtime-browser-check.mjs use fake-fetch/wire fixtures: they 
 
 Against a combined frontend/backend checkout already served by its owner, run `node prototypes/stage-1/runtime-integration-check.mjs http://127.0.0.1:4180` (substitute its verified port). This creates one fictional local demo draft through the browser and real runtime/MCP, checks exact edits, clarification, unsent verification, chat, Stop, layout and egress, then closes only its isolated browser. It neither starts nor stops the supplied server. Check the session record for the actual served commit/port and results.
 
+Observed combined review endpoint: **http://127.0.0.1:4181/**, served from /tmp/granny-mcp-backend-integration at combined checkpoint 4d175f6. Start there with `node prototypes/conversation-runtime/server.mjs 4181`; do not replace an occupied preview process. Frontend's real integration check passed 13 assertions there; the backend's 22 runtime/provider/HTTP tests also passed. Latest integrated source and server availability are checkpoints, not a background-service guarantee. The static 4173 preview still cannot create a real demo draft.
+
 ## Source ownership
 
 | File | Role |

@@ -13,14 +13,15 @@ session_state: review
 record_basis: contemporaneous
 agent: Frontend Codex session
 branch: feature/conversation-first
-artifact_commit: c7cdd821f5f214f067a1b8566d9751a4272bb470
-next_action: Coordinate the backend contract and implement its bounded frontend adapter without replacing the delivered conversation UI
+artifact_commit: ae9656c1defa32d330ea5c1c0963712e8ed96740
+next_action: Review the connected demo with Simon and hand off only the agreed live-consent entry paths to the backend session
 changed_paths:
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-001.md
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-002.md
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-003.md
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-004.md
   - docs/10-execution/messages/2026-09-15-ui-backend-fe-005.md
+  - docs/10-execution/messages/2026-09-15-ui-backend-fe-006.md
   - prototypes/stage-1/browser-check.mjs
   - docs/02-design/browser-prototype.md
   - prototypes/stage-1/README.md
@@ -57,5 +58,21 @@ Root separately ran backend-owned runtime.test.mjs at published e783d17: 9/9 rea
 Sol's isolated frontend-client lane owns only cloud.js and cloud.test.mjs. Terra independently reviewed new root-owned UI code read-only. Root found replay/approval and malformed-event gaps in the first adapter review and requested regression fixes before integration; UI review prompted persistent unknown-outcome disclosure and explicit unacknowledged-turn copy. No worker edited shared canonical docs or either peer session's checkout/index.
 
 Independent Sol review found one additional malformed-snapshot gap: an event beyond the declared cursor could advance internal replay position. Root fixed it, added a regression, and bound the initial consent to mode demo. Client suite now passes 25 tests. The real-runtime browser driver script is added for the peer's combined loopback checkpoint; until executed its presence is not integration evidence.
+
+## Combined browser evidence
+
+Root executed **node prototypes/stage-1/runtime-integration-check.mjs http://127.0.0.1:4181** against backend-owned combined checkpoint **4d175f6b80a97baeac380a98a5e2e043a63c325e** (code combine 49cde23, UI c7cdd82). **13 assertions passed**, no browser exceptions or external requests. The test created one fictional local unsent draft through actual HTTP/runtime/MCP, with selected David Gardening group / Example Mail, exact edited whitespace/newline/emoji, separate verified result, chat and Stop. Screenshots /tmp/granny-conversation-review-1KuSUp were inspected in tablet portrait and landscape. First attempt failed because the test expected Garden club instead of the canonical Gardening group differentiator; only the test was corrected. A sandbox Chromium launch was rerun with permission, not by weakening browser checks.
+
+Root also ran **node --test prototypes/conversation-runtime/runtime.test.mjs prototypes/conversation-runtime/provider.test.mjs prototypes/conversation-runtime/server.test.mjs** from the peer checkout at 4d175f6: **22/22 passed**, real MCP plus deterministic provider/HTTP fixtures. No live provider call was made by this frontend session. Peer reports one failed live proposal (chat rather than structured draft); that is not repaired or contradicted by deterministic success.
+
+Static preview http://127.0.0.1:4173 serves /tmp/granny-conversation-first (node prototypes/stage-1/serve.mjs); only this task's own server was restarted for cloud.js allowlisting. Combined preview http://127.0.0.1:4181 is owned by the backend session, started there with node prototypes/conversation-runtime/server.mjs 4181. Port 4180 is unrelated/occupied and was not stopped. The frontend fixture suite additionally checks unknown warning/quarantine across full reset and expired-preview renewal without retry. Final counts and immutable ownership handoff are in the next frontend message.
+
+Remaining: config-gated live consent entry requested by BE006 has separate backend-session authority and needs a narrow file-ownership handoff after this frontend checkpoint. No live quality, Android, screen-reader, representative-human or final branding claim. Main remains unmerged; primary user edits/private state are preserved. PR6 was observed open and non-draft on 2026-09-15; this frontend session did not change its draft status or merge it.
+
+## Final checkpoint and subsequent remote observation
+
+Frontend source **ae9656c** is published. Final counts: 67 model / 7 scheduler / 25 client / 1 static test; 130 scripted browser assertions; 29 frontend wire-browser assertions; 13 real combined browser/MCP assertions; 22 backend/provider/HTTP tests; 46 Python tests, all passed with the evidence distinctions above. FE006 explicitly transfers only BE006's six named live-entry source/test/doc paths after this commit; no active frontend writes remain in them. Backend uses its own current Simon authority and must return exact completion/ownership references. All broader frontend ownership stays here.
+
+Final fetch observed **origin/main 0343792**, an external PR8 merge of earlier backend e783d17; it does not include this latest connected frontend. This supersedes the earlier main-unmerged observation, not history. PR6 is open/non-draft/conflicting; latest observed remote maintenance success is de942c0, while current local maintenance passes. No main merge or conflict resolution performed by this session, and no required check waived. Primary checkout/user edits remain untouched; latest frontend work is not claimed visible in the main vault. See FE006 for exact peer/source references and the next bounded integration action.
 
 This record is a checkpoint for review while the authorized task continues, not a claim the integrated slice is complete. Messages are written only in the frontend worktree; peer and primary directories are read directly. No polling daemon or automatic integration is installed. Primary main still has user-owned Canvas/action-policy edits and an untracked note; all are untouched. Branch-only messages are not visible in the normal main Obsidian vault. Existing draft PR6 remains unmerged.
