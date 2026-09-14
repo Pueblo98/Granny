@@ -255,6 +255,15 @@ function createWorkflow(s, p) {
       sizePreview(s, t);
     return;
   }
+  if (p.kind === "restricted") {
+    t.kind = "unsupported";
+    t.stage = "failed";
+    t.outcome = "restricted";
+    t.text = `I can’t perform ${
+        p.reason}. Use the trusted service or device controls yourself; nothing was opened or sent.`;
+    record(s, t, t.outcome);
+    return;
+  }
   t.kind = "unsupported";
   t.stage = "clarify-intent";
   t.prompt =
@@ -320,15 +329,17 @@ function replace(s, p) {
         "I’m not sure how to help with that yet. Nothing was opened or sent.";
     return;
   }
-  const c = choices(p.recipient);
+  const resolved = peopleFor(s, p.recipient);
+  const c =
+      resolved.map(x => ({value : x.id, label : `${x.name} — ${x.detail}`}));
   const detailed = p.detail && c.find(x => {
     const person = F.people.find(y => y.id === x.value);
     return person && person.detail.toLowerCase() === p.detail.toLowerCase();
   });
   if (detailed)
     t.slots.recipient = F.people.find(x => x.id === detailed.value);
-  else if (c.length === 1)
-    t.slots.recipient = F.people.find(x => x.id === c[0].value);
+  else if (resolved.length === 1)
+    t.slots.recipient = resolved[0];
   if (t.slots.recipient)
     prepare(s, t);
   else
@@ -346,6 +357,33 @@ function guarded(s, g) {
 function record(s, t, o) {
   s.history.unshift({job : t.kind, outcome : o});
   s.history = s.history.slice(0, 20);
+}
+function externalEffect(effect) {
+  return [
+    "send-message", "open-unsent-draft", "open-source-mark-read"
+  ].includes(effect);
+}
+function parseForState(s, text) {
+  const parsed = I.parse(text);
+  const command =
+      String(text).match(/^(?:please\s+)?(?:tell|message|text)\s+(.+)$/i);
+  if (!command)
+    return parsed;
+  const tail = command[1];
+  const alias = [...s.aliases ]
+                    .sort((a, b) => b.label.length - a.label.length)
+                    .find(a => tail.toLowerCase().startsWith(
+                              `${a.label.toLowerCase()} `));
+  if (!alias)
+    return parsed;
+  return {
+    kind : "message",
+    request : String(text).trim(),
+    recipient : alias.label,
+    detail : "",
+    channel : "",
+    body : tail.slice(alias.label.length + 1)
+  };
 }
 function isFollowup(s, text) {
   const t = s && s.task, x = String(text == null ? "" : text).trim();
@@ -410,14 +448,14 @@ function applyFollowup(s, t, x) {
       return true;
     }
     if (t.result.screen.previousTarget) {
-      t.text = `Returned to ${t.result.screen.title}.`;
+      t.text = `Returned to ${t.result.screen.previousTarget}.`;
       t.result.next = "returned";
       return true;
     }
     return false;
   }
   if (t.kind === "media" && t.stage === "completed")
-    return dispatch(s, "playback");
+    return dispatch(s, "playback", !/^pause$/i.test(x));
   if (t.kind === "photos" && [ "completed", "no-matches" ].includes(t.stage)) {
     invalidate(s, t);
     const person =
@@ -475,7 +513,9 @@ function dispatch(s, e, v, g) {
       t.permit = null;
       t.stage = "expired";
       t.text =
-          "This approval expired. Your exact draft is still here to review.";
+          t.kind === "photos"
+              ? "This approval expired. The exact source and possible mark-read effect are still here to review."
+              : "This approval expired. Your exact message is still here to review.";
     }
     return true;
   }
@@ -485,7 +525,7 @@ function dispatch(s, e, v, g) {
       return false;
     if (isFollowup(s, x))
       return applyFollowup(s, t, x);
-    replace(s, I.parse(x));
+    replace(s, parseForState(s, x));
     return true;
   }
   if (e === "choose" && t && t.kind !== "message") {
@@ -595,12 +635,17 @@ function dispatch(s, e, v, g) {
         t.permit.signature !== signature(t) || s.clock >= t.permit.expires) {
       t.permit = null;
       t.stage = "expired";
-      t.text = "That approval is no longer current. Review this draft again.";
+      t.text =
+          t.kind === "photos"
+              ? "That approval is no longer current. Review the exact source and mark-read effect again."
+              : "That approval is no longer current. Review this exact message again.";
       return false;
     }
     t.permit = null;
     t.stage = "planning";
-    t.text = "Preparing the fictional draft handoff…";
+    t.text = t.kind === "photos"
+                 ? "Preparing the exact fictional source handoff…"
+                 : "Preparing the exact fictional message handoff…";
     return true;
   }
   if (e === "renew" && t && t.stage === "expired") {
@@ -625,7 +670,7 @@ function dispatch(s, e, v, g) {
       }[t.kind] ||
                "Preparing the fictional task…";
     } else if (t.stage === "acting") {
-      t.dispatched = t.effect === "send-message";
+      t.dispatched = externalEffect(t.effect);
       t.stage = "waiting";
       t.text = t.kind === "message" ? "Waiting for the example app…"
                                     : "Checking the local fixture…";
@@ -663,10 +708,19 @@ function dispatch(s, e, v, g) {
       t.outcome = found.length ? "matching fictional photos found"
                                : "no matching fictional photos";
       t.result = {photos : found, uncertainDate : uncertain};
+      t.dispatched = false;
       t.text =
           found.length
-              ? `Found ${found.length} fictional photo${
-                    found.length === 1 ? "" : "s"}.`
+              ? (uncertain
+                     ? `The date is unverified; these ${
+                           found.length} fictional photo${
+                           found.length === 1 ? " is a possible match"
+                                              : "s are possible matches"}.`
+                     : `Found ${found.length} fictional photo${
+                           found.length === 1 ? "" : "s"}.${
+                           t.effect === "open-source-mark-read"
+                               ? " The simulated source was opened and may now be marked read."
+                               : ""}`)
               : "I found no matching fictional photos. Try another person or date.";
       record(s, t, t.outcome);
     } else if (t.kind === "explain") {
@@ -700,16 +754,18 @@ function dispatch(s, e, v, g) {
       const blocked =
           [ "partial", "paywall", "unavailable" ].includes(s.reviewer.fault);
       t.stage = blocked ? "failed" : "completed";
-      s.playing = !blocked;
-      s.player = t.slots.track;
+      if (!blocked) {
+        s.playing = true;
+        s.player = t.slots.track;
+      }
       t.outcome = blocked ? s.reviewer.fault : "playing fictional track";
-      t.result = {track : t.slots.track, playing : s.playing};
+      t.result = {track : t.slots.track, playing : blocked ? false : true};
       t.text =
           blocked
               ? (s.reviewer.fault === "partial"
                      ? "The fictional music app opened, but playback was not verified."
-                     : `This fictional track is ${
-                           s.reviewer.fault}; nothing is playing.`)
+                     : `This requested fictional track is ${
+                           s.reviewer.fault}; it is not playing.`)
               : `Playing ${t.slots.track.title} by ${
                     t.slots.track.performer} in the silent simulation.`;
       record(s, t, t.outcome);
@@ -754,7 +810,10 @@ function dispatch(s, e, v, g) {
   if (e === "expire" && t && t.stage === "preview") {
     t.permit = null;
     t.stage = "expired";
-    t.text = "This approval expired. Your exact draft is still here to review.";
+    t.text =
+        t.kind === "photos"
+            ? "This approval expired. The exact source and possible mark-read effect are still here to review."
+            : "This approval expired. Your exact message is still here to review.";
     return true;
   }
   if (e === "fault" && t) {
@@ -838,7 +897,7 @@ function dispatch(s, e, v, g) {
   if (e === "playback") {
     if (!s.player)
       return false;
-    s.playing = !s.playing;
+    s.playing = typeof v === "boolean" ? v : !s.playing;
     if (t && t.kind === "media" && t.result) {
       t.result.playing = s.playing;
       t.text = s.playing

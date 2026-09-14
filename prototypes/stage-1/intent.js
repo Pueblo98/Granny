@@ -9,6 +9,17 @@ function parse(text) {
   const command = request.match(
       /^(?:please\s+)?(?:tell|message|text|write\s+(?:a\s+)?message\s+to)(?:\s+(.*))?$/i);
   if (!command) {
+    const restricted = spoken.match(
+        /^(?:pay|purchase|buy|recover (?:my )?password|reset (?:my )?password|call emergency services|contact emergency services|let (?:a )?remote helper|start remote assistance)\b/i);
+    if (restricted)
+      return {
+        kind : "restricted",
+        request,
+        reason : /password/i.test(spoken)    ? "password recovery"
+                 : /emergency/i.test(spoken) ? "emergency services"
+                 : /remote/i.test(spoken)    ? "remote assistance"
+                                             : "payments or purchases"
+      };
     const photoText = spoken.replace(
         /\s+(?:and\s+)?mark(?:\s+(?:the\s+)?source)?\s+(?:as\s+)?read$/i, "");
     let match = photoText.match(
@@ -80,8 +91,18 @@ function parse(text) {
       content.match(
           /^(David|Sophie)(?:\s+(Brother|Gardening group|Daughter|Book club))?(?:\s+that)?(?:\s*[:,])?\s+(.+)$/i) ||
       tail.match(/^([^,:]+)\s*[:,]\s*(.+)$/);
-  if (!match)
+  const aliasMatch = !match && content.match(/^(\S+)\s+(.+)$/);
+  if (!match && !aliasMatch)
     return {kind : "unsupported", request};
+  if (aliasMatch)
+    return {
+      kind : "message",
+      request,
+      recipient : aliasMatch[1],
+      detail : "",
+      channel,
+      body : aliasMatch[2]
+    };
   const recipient = match[1].trim();
   const detail = match.length > 3 ? (match[2] || "").trim() : "";
   const body = match.length > 3 ? match[3] : match[2];

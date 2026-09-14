@@ -532,3 +532,111 @@ test("player identity and archived result survive a new task", () => {
   assert.equal(archived.result.track.id, "quiet-harbour");
   assert.equal(archived.permit, undefined);
 });
+test("every external handoff becomes unknown after dispatch fault or Stop",
+     () => {
+       for (const make of [() => preview(), () => {
+              const s = P.create();
+              P.dispatch(s, "aliasDelete", "sophie");
+              P.dispatch(s, "submit",
+                         "Find photos of Sophie Book club from 2026-09-12");
+              return s;
+            }]) {
+         for (const event of ["fault", "stop"]) {
+           const s = make();
+           approve(s);
+           advance(s);
+           advance(s);
+           assert.equal(s.task.dispatched, true);
+           if (event === "fault")
+             P.dispatch(s, "fault", "offline");
+           else
+             P.dispatch(s, "stop");
+           assert.equal(s.task.stage, "unknown");
+           assert.match(s.task.text, /won’t|will not/i);
+         }
+       }
+     });
+test("media controls require verified player and pause is idempotent", () => {
+  const s = P.create();
+  assert.equal(P.dispatch(s, "playback", true), false);
+  assert.equal(s.playing, false);
+  P.dispatch(s, "submit", "Play Quiet Harbour");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  P.dispatch(s, "submit", "pause");
+  P.dispatch(s, "submit", "pause");
+  assert.equal(s.playing, false);
+});
+test("unusable media never replaces prior verified player", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "Play Quiet Harbour");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  const prior = s.player;
+  P.dispatch(s, "reviewer", {fault : "paywall"});
+  P.dispatch(s, "submit", "Play Sinnerman");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.equal(s.player, prior);
+  assert.equal(s.task.result.playing, false);
+});
+test("custom message alias resolves, edits, and deletes without resurrection",
+     () => {
+       const s = P.create();
+       P.dispatch(
+           s, "aliasSave",
+           {id : "aunt", label : "Aunt May", personId : "sophie-family"});
+       P.dispatch(s, "submit", "Tell Aunt May Tea at four");
+       assert.equal(s.task.slots.recipient.id, "sophie-family");
+       P.dispatch(s, "aliasSave",
+                  {id : "aunt", label : "Aunt May", personId : "sophie-book"});
+       P.dispatch(s, "submit", "Tell Aunt May Bring the book");
+       assert.equal(s.task.slots.recipient.id, "sophie-book");
+       P.dispatch(s, "aliasDelete", "aunt");
+       P.dispatch(s, "submit", "Tell Aunt May Hello");
+       assert.equal(s.task.stage, "clarify-person");
+     });
+test("uncertain photo result says possible and date unverified", () => {
+  const s = P.create();
+  P.dispatch(s, "reviewer", {fault : "uncertainDate"});
+  P.dispatch(s, "submit", "Show me Sophie's photos from sometime");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.match(s.task.text, /date is unverified/i);
+  assert.match(s.task.text, /possible match/i);
+  assert.ok(s.task.result.photos.every(p => p.date !== "sometime"));
+});
+test("approval and expiry copy name the exact mark-read effect", () => {
+  const s = P.create();
+  P.dispatch(s, "aliasDelete", "sophie");
+  P.dispatch(s, "submit", "Find photos of Sophie Book club from 2026-09-12");
+  const bad = {taskId : s.task.id, version : s.task.version, signature : "bad"};
+  P.dispatch(s, "approve", bad);
+  assert.match(s.task.text, /mark-read effect/i);
+  P.dispatch(s, "renew");
+  P.dispatch(s, "expire");
+  assert.match(s.task.text, /mark-read effect/i);
+});
+test("screen return names known previous target", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "What am I looking at?");
+  P.dispatch(s, "choose", "display-settings");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  P.dispatch(s, "submit", "return");
+  assert.match(s.task.text, /A garden for every season/);
+});
+test("restricted requests fail closed without catching message bodies", () => {
+  for (const text
+           of ["Pay this bill", "Buy a subscription", "Reset my password",
+               "Call emergency services", "Start remote assistance"]) {
+    const s = P.create();
+    P.dispatch(s, "submit", text);
+    assert.equal(s.task.kind, "unsupported");
+    assert.equal(s.task.stage, "failed");
+    assert.equal(s.task.outcome, "restricted");
+  }
+  const message = P.create();
+  P.dispatch(message, "submit", "Tell David buy bread");
+  assert.equal(message.task.kind, "message");
+});
