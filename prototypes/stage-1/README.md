@@ -82,6 +82,8 @@ The model test can also run under node --test, but this environment's runner sum
 
 cloud.test.mjs and runtime-browser-check.mjs use fake-fetch/wire fixtures: they test the frontend, **not real MCP or server-side enforcement**. Actual integrated backend tests must run separately. The browser driver accepts an optional exact existing loopback origin via browser({baseURL}); it never starts or terminates someone else's server in that mode.
 
+Against a combined frontend/backend checkout already served by its owner, run `node prototypes/stage-1/runtime-integration-check.mjs http://127.0.0.1:4180` (substitute its verified port). This creates one fictional local demo draft through the browser and real runtime/MCP, checks exact edits, clarification, unsent verification, chat, Stop, layout and egress, then closes only its isolated browser. It neither starts nor stops the supplied server. Check the session record for the actual served commit/port and results.
+
 ## Source ownership
 
 | File | Role |
@@ -101,6 +103,7 @@ cloud.test.mjs and runtime-browser-check.mjs use fake-fetch/wire fixtures: they 
 | [serve.test.mjs](serve.test.mjs) | Exact allowlist, methods, traversal and response-header checks |
 | [browser-check.mjs](browser-check.mjs) | Real browser clicks, layout, focus, storage and request checks |
 | [runtime-browser-check.mjs](runtime-browser-check.mjs) | Connected rendering with explicit wire fixtures; not MCP integration evidence |
+| [runtime-integration-check.mjs](runtime-integration-check.mjs) | Real browser-to-local-runtime draft path against an explicitly supplied loopback server |
 | [browser-driver.mjs](browser-driver.mjs) | Test-only CDP helper; importing/running the helper alone is not a test |
 
 Do not copy this simplified state model into the product runtime as a safety implementation. Production authority, verification and permission boundaries belong in the canonical agent/architecture/safety docs. No package manager, framework or vendor has been selected for the product.

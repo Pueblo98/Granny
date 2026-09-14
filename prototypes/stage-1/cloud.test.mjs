@@ -416,6 +416,25 @@ test("empty snapshots cannot invent completed execution", async () => {
   assert.equal(h.runtime.view.current, null);
   assert.notEqual(h.runtime.view.snapshot.state, 'completed');
 });
+test("events cannot advance beyond the authoritative snapshot cursor", async () => {
+  for (const cursor of [0, 1]) {
+    const h = harness();
+    await connected(h);
+    const progress = event(cursor + 1, 'progress', 'interpreting', {phase: 'interpreting'}, {epoch: 1});
+    h.queue.push({body: snap(cursor ? 'interpreting' : 'idle', [progress], {epoch: 1, cursor})});
+    assert.equal(await h.runtime.command('turn', {text: 'x'}), false);
+    assert.equal(h.runtime.view.error, 'invalid_snapshot');
+    assert.equal(h.runtime.view.events.length, 0);
+    assert.equal(h.runtime.view.current, null);
+  }
+});
+test("demo consent cannot activate an unexpected live session", async () => {
+  const h = harness();
+  h.queue.push({body: {...snap(), mode: 'live'}});
+  assert.equal(await h.runtime.connect(), false);
+  assert.equal(h.runtime.view.canConfirm, false);
+  assert.equal(h.runtime.view.snapshot, null);
+});
 test("cancel attempts backend while connection is uncertain", async () => {
   const h = harness();
   await connected(h);

@@ -128,10 +128,11 @@ function create(options = {}) {
   }
   function snapshotValid(s) {
     return !!s && s.version === VERSION && typeof s.sessionId === "string" &&
-           [ "demo", "live" ].includes(s.mode) && Number.isInteger(s.epoch) &&
+           s.mode === 'demo' && Number.isInteger(s.epoch) &&
            s.epoch >= 0 && Number.isInteger(s.cursor) && s.cursor >= 0 &&
            STATES.has(s.state) && Array.isArray(s.events) &&
-           (s.cursor > 0 || s.state === 'idle');
+           s.events.every(e => e && Number.isInteger(e.seq) && e.seq > 0 && e.seq <= s.cursor) &&
+           (s.cursor > 0 || (s.state === 'idle' && s.epoch === 0 && s.events.length === 0));
   }
   function ingest(snapshot, expectedSession, requestGeneration) {
     if (requestGeneration !== generation)
