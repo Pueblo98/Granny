@@ -130,6 +130,29 @@ function startWork(t, text) {
   t.text = text;
   t.choices = [];
 }
+function resolveDate(value) {
+  const x = String(value || "").trim().toLowerCase().replace(/\s+/g, " ");
+  if ([ "yesterday", "13 september", "2026-09-13" ].includes(x))
+    return "2026-09-13";
+  if ([ "today", "14 september", "2026-09-14" ].includes(x))
+    return "2026-09-14";
+  if ([ "12 september", "2026-09-12" ].includes(x))
+    return "2026-09-12";
+  return null;
+}
+function askPhotoDate(t, unknown) {
+  t.stage = "clarify-date";
+  t.prompt = unknown
+                 ? `I can’t match “${
+                       unknown}” to a safe exact date. Which date should I use?`
+                 : "Which date should I use?";
+  t.text = t.prompt;
+  t.choices = [
+    {value : "2026-09-14", label : "Today — 14 September"},
+    {value : "2026-09-13", label : "Yesterday — 13 September"},
+    {value : "2026-09-12", label : "12 September"}
+  ];
+}
 function sizePreview(s, t) {
   s.previewScale = t.slots.scale;
   t.stage = "size-preview";
@@ -162,7 +185,11 @@ function createWorkflow(s, p) {
   s.task = t;
   s.turns.push({id : `turn-${t.id}-user`, role : "user", text : p.request});
   if (p.kind === "photos") {
-    t.slots = {person : null, date : p.date || "", markRead : !!p.markRead};
+    t.slots = {
+      person : null,
+      date : resolveDate(p.date) || "",
+      markRead : !!p.markRead
+    };
     t.effect = t.slots.markRead ? "open-source-mark-read" : "view-local-photos";
     const matches = peopleFor(s, p.person);
     if (matches.length === 1)
@@ -175,15 +202,9 @@ function createWorkflow(s, p) {
       t.choices =
           (matches.length ? matches : F.people.filter(x => x.name === "Sophie"))
               .map(x => ({value : x.id, label : `${x.name} — ${x.detail}`}));
-    } else if (!t.slots.date) {
-      t.stage = "clarify-date";
-      t.prompt = "Which date should I use?";
-      t.text = t.prompt;
-      t.choices = [
-        {value : "2026-09-13", label : "Yesterday — 13 September"},
-        {value : "2026-09-12", label : "12 September"}
-      ];
-    } else
+    } else if (!t.slots.date)
+      askPhotoDate(t, p.date || "");
+    else
       startPhotos(s, t);
     return;
   }
@@ -415,7 +436,7 @@ function isFollowup(s, text) {
   if (t.kind === "media" && t.stage === "completed")
     return /^(?:pause|resume|play)$/i.test(x);
   if (t.kind === "photos" && [ "completed", "no-matches" ].includes(t.stage))
-    return /^(?:yesterday|12 September|13 September|2026-09-1[23]|Daughter|Book club)$/i
+    return /^(?:today|yesterday|12 September|13 September|14 September|2026-09-1[234]|Daughter|Book club)$/i
         .test(x);
   if (t.kind === "message" && t.stage === "completed")
     return /^(?:actually,?\s*)?(?:change (?:the )?message to|make it)\s+.+/i
@@ -453,7 +474,7 @@ function applyFollowup(s, t, x) {
     if (/simply/i.test(x)) {
       t.result.simple = true;
       t.result.explanation =
-          "This fictional screen shows display settings. Nothing was changed.";
+          "Text size makes words larger. Display size makes words, buttons, and other items larger. Nothing was changed.";
       t.text = t.result.explanation;
       return true;
     }
@@ -473,9 +494,7 @@ function applyFollowup(s, t, x) {
     if (person)
       t.slots.person = person;
     else
-      t.slots.date = /^yesterday$|^13 September$/i.test(x) ? "2026-09-13"
-                     : /^12 September$/i.test(x)           ? "2026-09-12"
-                                                           : x;
+      t.slots.date = resolveDate(x);
     startPhotos(s, t);
     return true;
   }
@@ -545,20 +564,14 @@ function dispatch(s, e, v, g) {
     invalidate(s, t);
     if (t.kind === "photos" && t.stage === "clarify-person") {
       t.slots.person = F.people.find(p => p.id === v);
-      if (!t.slots.date) {
-        t.stage = "clarify-date";
-        t.prompt = "Which date should I use?";
-        t.text = t.prompt;
-        t.choices = [
-          {value : "2026-09-13", label : "Yesterday — 13 September"},
-          {value : "2026-09-12", label : "12 September"}
-        ];
-      } else
+      if (!t.slots.date)
+        askPhotoDate(t, "");
+      else
         startPhotos(s, t);
       return true;
     }
     if (t.kind === "photos" && t.stage === "clarify-date") {
-      t.slots.date = v;
+      t.slots.date = resolveDate(v);
       startPhotos(s, t);
       return true;
     }
@@ -698,8 +711,17 @@ function dispatch(s, e, v, g) {
       } else {
         t.stage = "failed";
         t.outcome = s.reviewer.fault;
-        t.text = `The fictional task could not continue (${
-            s.reviewer.fault}). No external effect was dispatched.`;
+        const copy = {
+          offline :
+              "The fictional source is offline. Check the connection, then start a new request; nothing was dispatched.",
+          permission :
+              "Permission is not available for this fictional source. You can choose another task or review access in the trusted app; nothing was dispatched.",
+          auth :
+              "The fictional source needs sign-in. Open its trusted sign-in screen yourself; I won’t ask for or inspect credentials.",
+          failed :
+              "The fictional task did not finish. Nothing was dispatched; start a new request if you want to try a different route."
+        };
+        t.text = copy[s.reviewer.fault];
       }
       record(s, t, t.outcome);
     } else if (t.kind === "photos") {
@@ -739,7 +761,7 @@ function dispatch(s, e, v, g) {
         t.stage = "failed";
         t.outcome = "protected";
         t.text =
-            "This fictional screen is protected. I can’t inspect or explain private sign-in details.";
+            "This fictional sign-in screen is protected. I can explain its purpose, but I won’t inspect credentials. Use the account’s trusted recovery route if needed.";
         t.result = {screen, explanation : t.text, simple : false, next : null};
       } else if (screen.unknown) {
         t.stage = "failed";
@@ -751,7 +773,7 @@ function dispatch(s, e, v, g) {
         t.stage = "completed";
         t.outcome = "fictional screen explained";
         t.text =
-            "This supplied fictional screen shows several display settings with similar names. I did not change any setting.";
+            "Text size changes how large words appear. Display size changes words, buttons, and other items. Choose Text size for larger reading text; I did not change anything.";
         t.result = {
           screen,
           explanation : t.text,
@@ -804,7 +826,7 @@ function dispatch(s, e, v, g) {
     if (t.stage === "size-preview")
       s.previewScale = s.scale;
     t.permit = null;
-    if (t.dispatched || [ "waiting", "verifying" ].includes(t.stage)) {
+    if (t.dispatched) {
       t.stage = "unknown";
       t.outcome = "unknown";
       t.text =
@@ -812,7 +834,7 @@ function dispatch(s, e, v, g) {
     } else {
       t.stage = "stopped";
       t.outcome = "stopped";
-      t.text = "Stopped. Nothing was sent.";
+      t.text = "Stopped before any external effect. No result was claimed.";
     }
     record(s, t, t.outcome);
     return true;

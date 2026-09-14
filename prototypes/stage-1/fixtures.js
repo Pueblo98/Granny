@@ -46,7 +46,19 @@ const screens = [
     title : "Confusing display settings",
     description :
         "A fictional display settings page with several similar text controls.",
-    previousTarget : "A garden for every season"
+    previousTarget : "A garden for every season",
+    fields : [
+      {
+        label : "Text size",
+        value : "Standard",
+        description : "Changes how large words appear."
+      },
+      {
+        label : "Display size",
+        value : "Standard",
+        description : "Changes words, buttons, and other items."
+      }
+    ]
   },
   {
     id : "signin",

@@ -174,6 +174,73 @@ test(
       assert.equal(s.task.slots.body, "tomorrow.");
       assert.equal(P.isFollowup(s, "yes"), false);
     });
+test("direct Book club 12 September resolves exact mark-read photo preview",
+     () => {
+       const s = P.create();
+       P.dispatch(s, "aliasDelete", "sophie");
+       P.dispatch(s, "submit",
+                  "Find photos from Sophie Book club on 12 September");
+       assert.equal(s.task.slots.date, "2026-09-12");
+       assert.equal(s.task.stage, "preview");
+       assert.match(P.signature(s.task), /open-source-mark-read/);
+       approve(s);
+       for (let i = 0; i < 4; i++)
+         advance(s);
+       assert.equal(s.task.result.photos.length, 1);
+       assert.equal(s.task.result.photos[0].id, "meal");
+       assert.equal(s.task.result.uncertainDate, false);
+     });
+test("date resolver is shared by request choice and followup", () => {
+  for (const [phrase, iso] of [
+           [ "today", "2026-09-14" ], [ "yesterday", "2026-09-13" ],
+           [ "13 September", "2026-09-13" ], [ "2026-09-12", "2026-09-12" ]]) {
+    const s = P.create();
+    P.dispatch(s, "submit", `Find photos of Sophie Daughter from ${phrase}`);
+    assert.equal(s.task.slots.date, iso);
+  }
+  const x = P.create();
+  P.dispatch(x, "submit", "Show me Sophie's photos");
+  P.dispatch(x, "choose", "2026-09-14");
+  assert.equal(x.task.slots.date, "2026-09-14");
+});
+test("display explanation distinguishes controls and gives next step", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "What am I looking at?");
+  P.dispatch(s, "choose", "display-settings");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.match(s.task.text, /Text size changes how large words appear/i);
+  assert.match(s.task.text, /Display size changes words, buttons/i);
+  assert.match(s.task.text, /Choose Text size/i);
+  assert.equal(s.task.result.screen.fields[0].label, "Text size");
+  P.dispatch(s, "submit", "explain more simply");
+  assert.match(s.task.text, /words larger.*buttons.*items larger/i);
+});
+test("protected sign-in guidance never asks for credentials", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "What am I looking at?");
+  P.dispatch(s, "choose", "signin");
+  for (let i = 0; i < 4; i++)
+    advance(s);
+  assert.match(s.task.text, /trusted recovery route/i);
+  assert.match(s.task.text, /won’t inspect credentials/i);
+});
+test("known configured failures use plain guidance", () => {
+  for (const [fault, copy] of [[ "offline", /check the connection/i ],
+                               [ "permission", /review access/i ],
+                               [ "auth", /trusted sign-in.*won’t ask/i ],
+                               [ "failed", /start a new request/i ]]) {
+    const s = P.create();
+    P.dispatch(s, "reviewer", {fault});
+    P.dispatch(s, "submit", "Play Quiet Harbour");
+    for (let i = 0; i < 4; i++)
+      advance(s);
+    assert.equal(s.task.stage, "failed");
+    assert.match(s.task.text, copy);
+    assert.doesNotMatch(s.task.text,
+                        /\(offline\)|\(permission\)|\(auth\)|\(failed\)/);
+  }
+});
 
 test("full differentiator and optional channel resolve directly", () => {
   const s = P.create();
@@ -260,13 +327,13 @@ test("deleted Sophie alias becomes ambiguous and explicit book club works",
          advance(s);
        assert.equal(s.task.result.photos[0].id, "meal");
      });
-test("photo no-match and uncertain-date variants stay truthful", () => {
+test("photo no-match with resolved date stays truthful", () => {
   const s = P.create();
-  P.dispatch(s, "submit", "Find photos of Sophie Daughter from last week");
+  P.dispatch(s, "submit", "Find photos of Sophie Daughter from today");
   for (let i = 0; i < 4; i++)
     advance(s);
   assert.equal(s.task.stage, "no-matches");
-  assert.equal(s.task.result.uncertainDate, true);
+  assert.equal(s.task.result.uncertainDate, false);
 });
 test("mark-read photo route requires exact bound preview", () => {
   const s = P.create();
@@ -481,7 +548,7 @@ test("readability Stop cancels preview without changing scale", () => {
 test("uncertain date can show plausible photos with uncertainty", () => {
   const s = P.create();
   P.dispatch(s, "reviewer", {fault : "uncertainDate"});
-  P.dispatch(s, "submit", "Show me Sophie's photos from last week");
+  P.dispatch(s, "submit", "Show me Sophie's photos from yesterday");
   for (let i = 0; i < 4; i++)
     advance(s);
   assert.equal(s.task.stage, "completed");
@@ -596,15 +663,12 @@ test("custom message alias resolves, edits, and deletes without resurrection",
        P.dispatch(s, "submit", "Tell Aunt May Hello");
        assert.equal(s.task.stage, "clarify-person");
      });
-test("uncertain photo result says possible and date unverified", () => {
+test("unknown photo date asks rather than silently returning empty", () => {
   const s = P.create();
-  P.dispatch(s, "reviewer", {fault : "uncertainDate"});
   P.dispatch(s, "submit", "Show me Sophie's photos from sometime");
-  for (let i = 0; i < 4; i++)
-    advance(s);
-  assert.match(s.task.text, /date is unverified/i);
-  assert.match(s.task.text, /possible match/i);
-  assert.ok(s.task.result.photos.every(p => p.date !== "sometime"));
+  assert.equal(s.task.stage, "clarify-date");
+  assert.match(s.task.text, /can’t match.*sometime/i);
+  assert.equal(s.task.result, null);
 });
 test("approval and expiry copy name the exact mark-read effect", () => {
   const s = P.create();
@@ -719,3 +783,25 @@ test(
       assert.equal(s.task.stage, "clarify-screen");
       assert.equal(s.task.slots.screen, null);
     });
+test("Stop while local photo work waits is known stopped", () => {
+  const s = P.create();
+  P.dispatch(s, "submit", "Show me the photos Sophie sent yesterday.");
+  advance(s);
+  advance(s);
+  assert.equal(s.task.stage, "waiting");
+  assert.equal(s.task.dispatched, false);
+  P.dispatch(s, "stop");
+  assert.equal(s.task.stage, "stopped");
+  assert.match(s.task.text, /No result was claimed/i);
+});
+test("Stop while message handoff waits remains unknown", () => {
+  const s = preview();
+  approve(s);
+  advance(s);
+  advance(s);
+  assert.equal(s.task.stage, "waiting");
+  assert.equal(s.task.dispatched, true);
+  P.dispatch(s, "stop");
+  assert.equal(s.task.stage, "unknown");
+  assert.match(s.task.text, /won’t retry/i);
+});
