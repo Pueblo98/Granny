@@ -2,7 +2,7 @@
 title: "Stage 1 Product Design Specification"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [design, interaction]
 related:
   - design-system.md
@@ -16,22 +16,20 @@ related:
 
 **Proposed interaction contract.** Product behavior is owned by the [PRD](../01-product/prd.md); [journeys](../01-product/user-journeys.md) define sequence; [design system](design-system.md) defines component contracts; [brand](brand-and-visual-identity.md) supplies candidate visual values. The [browser prototype](browser-prototype.md) now supplies a self-tested, low-fidelity simulation; Figma is paused. User/device tests remain unrun, and the prototype's explicit gaps do not weaken this contract.
 
-## Current design revision request
+## Current conversation composition
 
-Simon rejected the feature-button Home on 2026-09-14 and requested a conversation-led minimal interface. [Conversation-first plan](conversation-first-plan.md) is the proposed replacement for review. The shortcut-heavy Home and multi-page presentation below describe the previous proposal; they are not authorization to perpetuate that layout. Detailed new screen/component definitions will be updated after plan review. Existing permission, exact-confirmation, Stop, privacy and accessibility obligations remain in force; no UI code changed in this planning task.
+Simon authorized implementation of the [conversation-first plan](conversation-first-plan.md) on 2026-09-14 and continued the message checkpoint direction on 2026-09-15. The proposed screen IDs below now describe logical surfaces within one conversation, with secondary settings/dialogs where useful. Exact confirmation, Stop, privacy and accessibility obligations remain. This browser exploration does not accept production interaction/identity or prove Android capability.
 
 ## Experience architecture
 
 Granny opens as an ordinary Android application, not a replacement OS. MVP does not require the default launcher role. Home, task, history and settings are app-owned. External apps, Android navigation, permission dialogs, IME, authentication, status/navigation bars and capture selectors remain system/app-owned. Optional launcher role is a separate V1 feasibility choice, not deeper authority.
 
-Home has fixed Talk / Type entry plus five workflow shortcuts. History and Settings remain labeled destinations; Settings contains Accessibility & voice, Memory & people, Privacy & permissions, and Help. No engagement feed, forced login, automatic personal suggestions or surprise rearrangement.
+Home has one invitation, a persistent labeled text composer, labeled Talk and quiet Menu. Supported typed requests resolve directly through a documented prototype grammar. Clarification asks one question only for unresolved slots; content/results and exact previews appear inline. Menu exposes History, Settings, Privacy, People and Help; typed secondary requests reach the same local functions. No capability grid or mandatory category picker.
 
 ```text
-Home ─ request → Transcript → Clarify (if needed) → Activity
- │                                              ├→ Confirmation → Activity
- │                                              └→ Result / Recovery
- ├─ History → task summary
- └─ Settings → Accessibility & voice / Memory & people / Privacy / Help
+Conversation: request → clarify if needed → inline exact preview → activity → result
+                   └→ inline photos / screen explanation / media / text preview
+Menu → local settings / people / privacy / history / help → same conversation
 ```
 
 **Back** moves one app navigation level; from a pending confirmation it cancels that approval and preserves local draft. **Granny Home** cancels automation then goes to SCR-003; it is distinct from Android Home. **Android Home/Recents** retain ordinary Android behavior; returning never resumes automation silently. **Stop** latches task cancellation, including pending speech/capture, and reconciles already-dispatched effects. **Take over** performs Stop and leaves external app state intact. **Cancel** exits an uncommitted preview or input. **Stop speaking** only mutes output and is explicitly labeled; it does not mean microphone off.
@@ -40,7 +38,7 @@ During external actions a visible stop/return surface must be demonstrated on ea
 
 ## Adaptive layout and shared screen rules
 
-Proposed test widths 360, 600 and 840dp; portrait/landscape; 200% font and supported display-size settings. At ≥840dp, optional two panes: content 2/3, task/status 1/3, with reading order content then controls; below that, one column. At large text any pane collapses before truncation. IME resizes/scrolls content; Stop and confirmation escape remain reachable. Respect insets, TalkBack and switch focus. No forced orientation or gesture precision.
+Proposed native test widths remain 360, 600 and 840dp; portrait/landscape; 200% font and supported display-size settings. The browser uses one bounded reading column and CSS-pixel fixtures at tablet/narrow widths; there is no permanent task sidebar. Content reflows before truncation. IME resizes/scrolls content; Stop and confirmation escape remain reachable. Respect insets, TalkBack and switch focus. No forced orientation or gesture precision. Browser geometry is not native dp/sp evidence.
 
 Every screen below inherits: title/heading semantics; normal visual reading order = accessibility traversal; native button/switch/text-field roles; text labels on icons; decorative images excluded; keyboard Tab/Shift-Tab traversal, Enter/Space on focused action only, Escape/Back as escape; switch traversal covers all actions. Destructive/consequential action is never default autofocus. On entry focus title, on return restore invoking control, on state update announce once without stealing focus. Captions remain visible when speech off. Shared minimum targets, contrast, typography and timing are in [accessibility](accessibility.md).
 
@@ -62,6 +60,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Title → purpose → limits → Continue → Try by touch; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
+**Browser realization:** A short skippable introduction sits with the opening invitation; typing works immediately. Menu can reopen it. The Talk transcript is fictional and editable; declining microphone use leaves the touch path usable. No device setup, grant or persistence is simulated as real.
 **Design review question:** Reading rhythm; avoid age-coded welcome imagery.
 
 <a id="scr-002"></a>
@@ -82,15 +81,15 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 ### SCR-003 — Home
 
 **Purpose/links:** J-007 / PRD-FR-001/002.
-**Entry/exit:** Setup complete/skip, Home/return → request or named shortcut.
-**Hierarchy/content:** Stable headline, Talk, Type a request, Photos, Message, Music, Make text larger, Help; History/Settings.
-**Controls:** Talk; Type a request; shortcuts; History; Settings. Primary is the next goal-specific action; Back/Cancel are escape, and delete/revoke are destructive actions with named previews.
+**Entry/exit:** Setup complete/skip or return → current conversation; a fresh conversation first resolves unfinished work.
+**Hierarchy/content:** Welcome invitation, readable thread, persistent labeled composer and Talk, quiet Menu. Content appears for the current request.
+**Controls:** Talk; Type a request; submit intent; Menu with secondary history/settings/privacy/help. Submit requests interpretation, never approval of a consequence.
 **Data/sensitivity:** No unsolicited private preview; local preferences only.
-**Loading/empty/disabled/error/interrupted:** No history: unchanged Home; unavailable tile explains why; offline status not modal; active-task return shows resumable summary. Remaining states inherit shared rules; no hidden background work on exit.
-**Focus, semantics, keyboard/switch and speech:** Title → Talk → Type → shortcuts row order → History → Settings; no automatic tile movement; shared native-role and silent-equivalent rules apply.
+**Loading/empty/disabled/error/interrupted:** No history leaves the invitation available; offline status names usable local functions; interrupted work retains its truthful result and has no automatic resumption.
+**Focus, semantics, keyboard/switch and speech:** Stable Stop when active → Header/Menu → thread content → composer/Talk/submit. Updates preserve reading position and input focus; new task controls never autofocus approval.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Design review question:** Compare single-column and two-column shortcuts at large text.
+**Design review question:** Can the person express a goal and find the next useful action without learning a feature taxonomy?
 
 <a id="scr-004"></a>
 ### SCR-004 — Listening, transcript and interpretation
@@ -98,7 +97,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Purpose/links:** J-001/003/007 / PRD-FR-001.
 **Entry/exit:** User activates input → transcript; Done → planning; Edit → heard; Cancel → cancelled.
 **Hierarchy/content:** Microphone state in words+icon, partial text styled provisional, final editable intent, scope hint.
-**Controls:** Done listening; Edit request; Use this request; Cancel; Repeat. Primary is the next goal-specific action; Back/Cancel are escape, and delete/revoke are destructive actions with named previews.
+**Controls:** Done listening; editable transcript; submit transcript; Cancel/Stop; typed alternative. Sufficient typed requests progress without an extra Use/category step. In the browser Talk is explicitly simulated and never captures audio.
 **Data/sensitivity:** Ephemeral audio/text; mark private speech option.
 **Loading/empty/disabled/error/interrupted:** No speech: prompt Type or Try again; ASR fail preserves typed route; revoked mic stops capture; changed draft cancels old plan. Remaining states inherit shared rules; no hidden background work on exit.
 **Focus, semantics, keyboard/switch and speech:** Mic status → transcript → Done/Edit → Use → Cancel; do not announce every partial token; shared native-role and silent-equivalent rules apply.
@@ -146,7 +145,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Heading/recipient → consequence → full preview → Change → Cancel → action; no commit autofocus or generic Enter-to-send; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Design review question:** Full-screen confirmation preferred; enough content visible before scroll action.
+**Design review question:** Inline exact preview is the proposed default; long content can expand into a focused reading surface. The full recipient/channel/body/effect remains inspectable at maximum scale, with Change/Cancel and specific approval.
 
 <a id="scr-008"></a>
 ### SCR-008 — Result and recovery
@@ -266,9 +265,9 @@ The local session coordinator owns state; the model cannot assign completed. Thi
 
 | State | Seen/heard | Allowed work | User controls | Timeout | Legal next states |
 |---|---|---|---|---|---|
-| idle | Ready; microphone off | No observation outside chosen scope | Talk, Type, shortcuts | No automatic timeout | listening, heard, offline/degraded |
+| idle | Ready; microphone off | No observation outside chosen scope | Talk, Type, Menu | No automatic timeout | listening, heard, offline/degraded |
 | listening | Listening + text; optional start cue | Capture only visible user-started session | Done listening, Cancel; typed alternative | 30s capture cap; at 10s silence offer Done/Type; never auto-consent | heard, cancelled, permission lost, offline/degraded |
-| heard | This is what I heard; editable transcript | Resolve request; no consequence | Use request, Edit, Cancel | Preview remains; raw context idle expiry follows privacy schedule | needs clarification, planning, cancelled |
+| heard | Editable transcript or submitted typed request | Resolve sufficient intent directly; no external consequence | Edit, Cancel; submit simulated transcript | Preview remains; raw context idle expiry follows privacy schedule | needs clarification, planning, cancelled |
 | needs clarification | One concrete question + choices | Read minimum approved candidates | Select, Edit, Cancel, Repeat | No forced response; session expiry clears raw context and asks re-entry | heard, planning, ready to confirm, cancelled |
 | planning | Goal + Preparing next step | Propose typed plan; policy validates | Stop, Take over | 5s progress; 15s manual option; machine deadline applies | acting, needs clarification, ready to confirm, unsupported/restricted, recovering, interrupted |
 | ready to confirm | Exact target/content/effect + action label | No commit until independent fresh permit | Approve, Change, Cancel, Repeat | Permit TTL policy; preview stays; Renew preview after expiry | acting, heard, cancelled, interrupted, permission lost |
