@@ -2,13 +2,14 @@
 title: "Research and source register"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-17
 tags: [research]
 related:
   - research-plan.md
   - android-stage-1-feasibility.md
   - source-material/initialization-handoff.md
   - source-material/planning-conversation.md
+  - source-material/2026-09-17-class-brainstorming.md
 ---
 
 # Research and source register
@@ -27,6 +28,7 @@ Workflow-tool source, accessed 2026-09-14: OpenAI [Build skills](https://learn.c
 | [Dream Book TeX](../00-vision/dream-book.tex) | Long-term vision, mixed stages; not Stage 1 requirements | SHA-256 6e6623afdfa857e997ed2e7cb5e8cafb66e49fd4632002c7ef800026dac373cf |
 | [Dream Book PDF](../00-vision/dream-book.pdf) | Rendered vision; future-stage context separated by canonical specs | SHA-256 6524a06676c0926e78853769bc7fd6dd595bdd1fdf0d86a2683f52f23dbae7f4 |
 | [Planning conversation](source-material/planning-conversation.md) | Captured historical proposals, not approval/research results | SHA-256 d1d4edd3419123df3a3470720d2fda1932c68ba38fdd40df62c9a8aa003106d5 |
+| [Simon's class brainstorming](source-material/2026-09-17-class-brainstorming.md) | Structured capture of Simon-authored ideas and proposed P1–P9 sequence; source note records the original supplied-file hash; conflicts require a current decision | SHA-256 93ca1ef2e43610771588b3642a27693d9433e1c63555babf8509022566ee1f35 |
 
 ## Current primary-source desk evidence — accessed 2026-09-13
 

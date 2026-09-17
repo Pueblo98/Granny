@@ -2,7 +2,7 @@
 title: "Conversation-first redesign plan"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [design, interaction, review]
 related:
   - product-design-spec.md
@@ -11,6 +11,7 @@ related:
   - accessibility.md
   - browser-prototype.md
   - ../10-execution/messages/2026-09-14-conversation-first.md
+  - ../10-execution/brainstorming-alignment.md
 ---
 
 # Conversation-first redesign plan
@@ -119,6 +120,10 @@ This plan does not authorize storing full chat history, screenshots, audio or in
 Aim for a generous reading area, strong readable type, calm spacing and a single stable input region. Use subtle conversational grouping, not dozens of cards or alternating colored bubble rows. Essential controls remain large and labeled. Results can be richer—photos, a music player, a message preview—without turning Home into a dashboard.
 
 First review the interaction in neutral styling; then compare the existing identity territories on this same composition. No new logo, public name, palette or typeface is selected. A chat-like visual convention is inspiration, not a claim that ChatGPT's full UI is appropriate for this audience.
+
+Simon's 2026-09-17 class brainstorm adds two compatible explorations. First, a person may explicitly choose a calm background or visual atmosphere, with a neutral accessible default and no inferred taste; content and controls must retain contrast, legibility and focus clarity. Second, computer-use guidance may use predefined arrows, highlights or importance markers tied to a freshly resolved semantic element or supplied screen region. Guidance names the observable goal, current step and reason, with detail on request. It does not reveal model reasoning, authorize coordinate-only action, cover protected/authentication screens or imply that a universal Android overlay already works.
+
+Contextual result components may feel like modules—a photo strip, playback control, exact draft, guidance panel or preference preview—while remaining part of the current conversation. This does not accept a persistent widget dashboard, arbitrary model-created controls or automatic module rearrangement; those choices remain in [OQ-14](../10-execution/open-questions.md#brainstorming-alignment-review--oq-14).
 
 ## Options and recommendation
 
