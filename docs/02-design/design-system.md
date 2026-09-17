@@ -13,11 +13,11 @@ related:
 
 # Design-system contract
 
-**Design review update, Simon, 2026-09-17:** the browser UI has too many buttons and a generic AI appearance; its visual composition is not accepted. Use the [Claude Code system-construction brief](claude-code-design-system-handoff.md) to build brand guidance, tokens and reusable specimens before /design-sync. The separate [Claude Design app brief](claude-design-handoff.md) consumes that system after the Home choice is settled, preserving [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md)'s accepted bounded composition. The catalog below does not prescribe displaying all controls at once. Historical Figma authoring remains quota-blocked; it is not a dependency of the Claude Code route.
+**Design review update, Simon, 2026-09-17:** the browser UI has too many buttons and a generic AI appearance; its visual composition is not accepted. Use the [Claude Code system-construction brief](claude-code-design-system-handoff.md) to build brand guidance, tokens and reusable specimens before /design-sync. The separate [Claude Design app brief](claude-design-handoff.md) consumes that system under [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md)'s accepted bounded composition and [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md)'s stable Home rule. The catalog below does not prescribe displaying all controls at once. Historical Figma authoring remains quota-blocked; it is not a dependency of the Claude Code route.
 
 Current composition is implemented as native HTML controls in the [browser prototype](browser-prototype.md). Reusable rendering helpers map to CMP contracts; semantic CSS custom properties are provisional grayscale review values, not accepted production tokens. Figma instances are no longer the required current handoff. Prototype discrepancies remain named gaps, not new component requirements.
 
-This file owns semantic roles and reusable behavior. [Product design](product-design-spec.md) owns screens/states; [brand territories](brand-and-visual-identity.md) own candidate color/font identity values. Everything below is proposed. No final public name, logo, palette or typeface is accepted.
+This file owns semantic roles and reusable behavior. [Product design](product-design-spec.md) owns screens/states; [brand territories](brand-and-visual-identity.md) own candidate color/font identity values. Accepted ADR boundaries and confirmed requirements apply where linked; remaining component details are proposed. No final public name, logo, palette or typeface is accepted.
 
 ## Token roles and provisional dimensions
 
@@ -39,7 +39,7 @@ All components have stable IDs and share enabled/focused/pressed/selected/loadin
 
 The model may emit only a typed composition plan referencing registered CMP IDs, versioned variants, typed content slots and allowed action references. The app renderer validates the whole plan, supplies native semantics and owns focus/source order. Unknown IDs/variants/slots, invalid nesting, duplicate consequential controls, hidden required fields, unsafe order or content beyond component bounds reject the plan and use a known fallback.
 
-Composition can choose which relevant components appear and how nonconsequential content flows within the current task. It cannot create executable code/event handlers, rename a registered consequence, bypass preview/confirmation, remove Stop, move stable Talk/Type/Menu anchors or convert observed content into a control. At large text/narrow width, renderer-owned reflow overrides model ordering when required for reading/focus. Temporary task components may appear automatically; persistent Home placement remains an open OQ-14 choice.
+Composition can choose which relevant components appear and how nonconsequential content flows within the current task. It cannot create executable code/event handlers, rename a registered consequence, bypass preview/confirmation, remove Stop, move stable Talk/Type/Menu anchors or convert observed content into a control. At large text/narrow width, renderer-owned reflow overrides model ordering when required for reading/focus. Temporary task components may appear automatically. Home permits only CMP-010 as its single optional persistent context region.
 
 <a id="cmp-001"></a>
 ### CMP-001 — Stop / Cancel / Take over
@@ -87,6 +87,11 @@ Inline explanation for recoverable obstacles; full-screen decision for grants/da
 ### CMP-009 — Lists, media and settings
 
 Rows show descriptive labels and state; cards group related content without making the whole surface ambiguously tappable. Media includes metadata and labeled play/pause/next controls; no autoplay previews. Lists preserve position and focus on return. History rows contain no message body. Settings apply previews explicitly where layout changes; local reversible switches may apply immediately and show restore.
+
+<a id="cmp-010"></a>
+### CMP-010 — Home context panel
+
+One large semantic region for a single verified, timely or explicitly kept item. Allowed content is a short descriptive heading, state/source when needed, one clear next action, and secondary Keep here or Hide controls; Reset Home stays in Menu. The panel contains a registered content component, never model-defined actions, and never stacks multiple cards, paginates or auto-rotates. Sensitive details stay hidden until explicit open. Absent is a complete normal state. Expiry or invalid evidence removes the panel without moving the fixed Talk/Type/Menu anchors or stealing focus. Renderer-owned reflow places the whole panel after the input region at large text/narrow widths.
 
 ## Transient surfaces
 

@@ -24,7 +24,7 @@ Simon authorized implementation of the [conversation-first plan](conversation-fi
 
 Granny opens as an ordinary Android application, not a replacement OS. MVP does not require the default launcher role. Home, task, history and settings are app-owned. External apps, Android navigation, permission dialogs, IME, authentication, status/navigation bars and capture selectors remain system/app-owned. Optional launcher role is a separate V1 feasibility choice, not deeper authority.
 
-Home has one invitation, a persistent labeled text composer, labeled Talk and quiet Menu. Supported typed requests resolve directly through a documented prototype grammar. Clarification asks one question only for unresolved slots; content/results and exact previews appear inline. Menu exposes History, Settings, Privacy, People and Help; typed secondary requests reach the same local functions. No capability grid or mandatory category picker.
+Home has one invitation, a persistent labeled text composer, labeled Talk and quiet Menu. It may show zero or one optional context panel under [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md), without moving the core anchors. Supported typed requests resolve directly through a documented prototype grammar. Clarification asks one question only for unresolved slots; content/results and exact previews appear inline. Menu exposes Today, History, Settings, Privacy, People and Help; typed secondary requests reach the same local functions. No capability grid, carousel, widget stack or mandatory category picker.
 
 ```text
 Conversation: request → clarify if needed → inline exact preview → activity → result
@@ -82,14 +82,14 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 
 **Purpose/links:** J-007 / PRD-FR-001/002.
 **Entry/exit:** Setup complete/skip or return → current conversation; a fresh conversation first resolves unfinished work.
-**Hierarchy/content:** Welcome invitation, readable thread, persistent labeled composer and Talk, quiet Menu. Content appears for the current request.
-**Controls:** Talk; Type a request; submit intent; Menu with secondary history/settings/privacy/help. Submit requests interpretation, never approval of a consequence.
-**Data/sensitivity:** No unsolicited private preview; local preferences only.
-**Loading/empty/disabled/error/interrupted:** No history leaves the invitation available; offline status names usable local functions; interrupted work retains its truthful result and has no automatic resumption.
-**Focus, semantics, keyboard/switch and speech:** Stable Stop when active → Header/Menu → thread content → composer/Talk/submit. Updates preserve reading position and input focus; new task controls never autofocus approval.
-**Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
+**Hierarchy/content:** Welcome invitation, readable thread, persistent labeled composer and Talk, quiet Menu; then zero or one CMP-010 context panel when an eligible item earns the space. The panel prioritizes unresolved work requiring attention, then a release-admitted timely reminder, recent artifact or explicitly kept item. Content appears for the current request.
+**Controls:** Talk; Type a request; submit intent; Menu with secondary Today/history/settings/privacy/help. An optional panel has one primary next action plus Keep here or Hide as applicable; Reset Home lives in Menu. Submit requests interpretation, never approval of a consequence.
+**Data/sensitivity:** No unsolicited private preview. A sensitive item uses a generic label and explicit open action; panel content comes only from already admitted local data/capabilities.
+**Loading/empty/disabled/error/interrupted:** No eligible item leaves the panel absent and invitation available; stale/unverified items disappear rather than speculate; offline status names usable local functions; interrupted work retains its truthful result and has no automatic resumption.
+**Focus, semantics, keyboard/switch and speech:** Stable Stop when active → Header/Menu → thread/invitation → composer/Talk/submit → optional context panel. Updates preserve reading position and input focus; the panel does not insert ahead of current focus, announce repeatedly or autofocus any action.
+**Orientation/window:** shared reflow; core anchors do not move while Home is open. At narrow width or large text the panel follows the input region as one vertical block; content scrolls before controls shrink.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Design review question:** Can the person express a goal and find the next useful action without learning a feature taxonomy?
+**Design review question:** Can the person express a goal and understand or dismiss the single contextual item without learning a feature taxonomy or mistaking it for required work?
 
 <a id="scr-004"></a>
 ### SCR-004 — Listening, transcript and interpretation
