@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Edge to Edge"
+  short_description: "Implement safe Compose system-bar and IME insets"
+  default_prompt: "Use $edge-to-edge to review the authorized Compose surface for system-bar and IME inset problems."

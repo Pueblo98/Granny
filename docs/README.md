@@ -2,7 +2,7 @@
 title: "Stage 1 documentation map"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [navigation]
 related:
   - 10-execution/current-milestone.md
@@ -43,7 +43,7 @@ Local backend/MCP experiment: [versioned runtime contract](04-architecture/conve
 | What stock hardware is actually known? | [Reference tablet](07-hardware/reference-hardware.md); exact inventory pending, Stage 3 inactive |
 | What evidence exists and what comes next? | [Source register](08-research/README.md), [Android feasibility](08-research/android-stage-1-feasibility.md), [research program](08-research/research-plan.md) |
 | What is accepted versus proposed? | [ADR index](09-decisions/README.md); eight accepted records including the MVP experiment/control decision, two proposals, one deprecated historical record |
-| How do agents maintain this system? | [AGENTS](../AGENTS.md), [session lifecycle skill](../.agents/skills/granny-session-lifecycle/SKILL.md), [automated maintenance and visibility checks](10-execution/cockpit-guide.md#automated-maintenance-contract); [CLAUDE](../CLAUDE.md) delegates to AGENTS |
+| How do agents maintain this system? | [AGENTS](../AGENTS.md), [session lifecycle skill](../.agents/skills/granny-session-lifecycle/SKILL.md), [automated maintenance and visibility checks](10-execution/cockpit-guide.md#automated-maintenance-contract), and [UI/UX skill provenance](10-execution/ui-ux-skills.md); [CLAUDE](../CLAUDE.md) delegates to AGENTS |
 | How is work isolated and published? | [Git worktrees, push verification and reviewed integration](10-execution/git-workflow.md); standing task-branch push authority, no automatic main merge |
 | How do we move from specs to bounded work? | [Delivery workflows and repo skills](10-execution/operating-workflows.md), [first task packets](10-execution/task-packets.md) |
 | What happens at dispatch, Stop, crash and recovery? | [Execution transaction protocol](03-agent/execution-protocol.md); tool schemas and policy remain their existing owners |

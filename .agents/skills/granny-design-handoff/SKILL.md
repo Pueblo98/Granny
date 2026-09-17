@@ -13,6 +13,8 @@ Read [AGENTS](../../../AGENTS.md), [milestone](../../../docs/10-execution/curren
 
 Confirm artifact and fidelity: interaction manifest, low-fi prototype, identity comparison or implementation handoff. Preparing/reviewing a manifest does not authorize creating/editing an external Figma file. If an authorized design tool is available, inspect the target before mutation and stay within the requested file/frames; otherwise provide an honest preparation artifact, not a fabricated Figma link.
 
+For a new composition, anti-repetition exploration, simplification or visual/UX critique, use [granny-ui-craft](../granny-ui-craft/SKILL.md) after loading this product-specific handoff context. Hold behavior, copy, safety, accessibility and fixtures constant while comparing directions; the craft layer cannot override their canonical owners.
+
 When the official Figma MCP is available, use its workflow skills rather than
 improvising tool sequences. For design-to-code, load
 `skill://figma/figma-design-to-code/SKILL.md`, use exact file/node links, and

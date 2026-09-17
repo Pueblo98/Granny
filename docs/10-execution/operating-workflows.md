@@ -2,7 +2,7 @@
 title: "Stage 1 delivery workflows and documentation stewardship"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-17
 tags: [execution, workflow]
 related:
   - development-readiness.md
@@ -100,7 +100,7 @@ Handoff contains: requested task and scope; actual changes; commands and exit/re
 
 ## Repository skills and portability
 
-Five instruction-only skills route to these canonical workflows:
+Six Granny instruction-only skills route to these canonical workflows:
 
 | Skill | Use it for | Do not use it to |
 |---|---|---|
@@ -108,7 +108,10 @@ Five instruction-only skills route to these canonical workflows:
 | [granny-spec-change](../../.agents/skills/granny-spec-change/SKILL.md) | Change or review product specs and propagate actual decisions | Approve a proposal, rewrite historical sources or implement from a review request |
 | [granny-task-slice](../../.agents/skills/granny-task-slice/SKILL.md) | Prepare or execute one explicitly requested, gate-bounded engineering slice | Start a broad app build or infer device/network permission |
 | [granny-design-handoff](../../.agents/skills/granny-design-handoff/SKILL.md) | Prepare/review frames, states, components and design evidence | Invent a Figma file or silently finalize identity |
+| [granny-ui-craft](../../.agents/skills/granny-ui-craft/SKILL.md) | Shape, vary, distill, critique and harden product-specific conversation-first UI | Override behavior/safety/access owners, implement from a review or create a second design-system authority |
 | [granny-evidence-review](../../.agents/skills/granny-evidence-review/SKILL.md) | Design an eval/evidence packet or review a claimed result | Treat a fixture as device proof or a review as approval |
+
+Three modified upstream Google skills provide narrow native implementation guidance: [adaptive](../../.agents/skills/adaptive/SKILL.md), [edge-to-edge](../../.agents/skills/edge-to-edge/SKILL.md) and [testing-setup](../../.agents/skills/testing-setup/SKILL.md). They are dormant until a matching authorized Compose task exists and remain subordinate to DoR, dependency authority and evidence rules. [Setup/provenance](ui-ux-skills.md) records pinned sources, local changes and the manual update procedure.
 
 Skills live in the repository's .agents/skills, not a global personal installation. Product knowledge stays in docs/. SKILL.md uses the required name/description schema with maintenance metadata under metadata; this is a packaging exception to canonical document frontmatter, not another product source. Claude or other tools can read the linked SKILL.md manually if automatic discovery is unavailable; no host-specific installation is assumed.
 

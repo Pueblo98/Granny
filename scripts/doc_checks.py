@@ -116,6 +116,11 @@ def skill_errors(meta, folder_name, ui, today=None):
     return errors
 
 
+def is_skill_markdown_resource(name):
+    """Return true for bundled skill Markdown other than its SKILL.md entrypoint."""
+    return name.startswith(".agents/skills/") and not name.endswith("/SKILL.md")
+
+
 def trace_errors(prd, trace, definitions):
     """Check concrete reference IDs and duplicated release/status projections."""
     errors = []

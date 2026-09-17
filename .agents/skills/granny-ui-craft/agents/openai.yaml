@@ -1,0 +1,4 @@
+interface:
+  display_name: "Granny UI Craft"
+  short_description: "Create distinctive accessible Stage 1 interfaces"
+  default_prompt: "Use $granny-ui-craft to shape three distinct conversation-first interface directions before implementation."

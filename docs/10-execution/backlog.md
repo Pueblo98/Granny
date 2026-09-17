@@ -2,7 +2,7 @@
 title: "Stage 1 dependency-ordered backlog"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [execution]
 related:
   - development-readiness.md
@@ -202,6 +202,16 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Deliverable / acceptance:** [Source/startup](../../prototypes/conversation-runtime/README.md), three allowlisted MCP tools, exact-content preview binding and expiry, clarification, cancellation/unknown fencing, deterministic backend/provider/HTTP and integrated browser tests. Live Qwen evidence separately bounded; no paid CI calls.
 - **Status:** review — complete local demo slice and live-consent wiring implemented; 127 deterministic tests, 17 actual browser/MCP assertions, 10 live-mode/stub-provider assertions, 37 wire-browser and 130 scripted-browser assertions passed. One paid Qwen proposal check failed (chat instead of fields), so live model quality remains unproven. [Session](sessions/2026-09-15-mcp-backend-integration.md) owns exact checks and limitations. No product gate promotion.
 - **Excluded / rollback:** No external send/account, personal files/data, Android, root, remote server install, shell/network tool or broad capability expansion. Stop server to disable; graceful shutdown removes its synthetic temporary store; no pending action restored on restart. Revert scoped branch through normal reviewed Git if needed.
+
+<a id="t-118"></a>
+## T-118 — Install reviewed UI/UX and Android skills
+
+- **Scope / authority:** Simon explicitly requested the recommended UI/UX skills be downloaded and set up on 2026-09-14. Repository-local skill/tooling change only.
+- **Trace / owner:** [Skill setup and provenance](ui-ux-skills.md), [delivery workflows](operating-workflows.md), [conversation-first plan](../02-design/conversation-first-plan.md) and repository `AGENTS.md`; no product requirement or gate is implemented by an instruction package.
+- **Deliverables:** `granny-ui-craft` for product-specific structural variation/critique; pinned Google `adaptive`, `edge-to-edge` and `testing-setup` skills with local guardrails, licenses and discovery metadata; exact upstream provenance and update procedure.
+- **Acceptance:** Each skill passes the packaging validators; repository/cockpit/documentation checks and documentation-tool tests pass; only reviewed resources enter Git; no executable third-party launcher/hook, global configuration, dependency install, product UI change or unrelated user edit is included.
+- **Status:** complete — reviewed packages and provenance are integrated; five changed skill entrypoints and repository documentation validate. Current documentation-tool regressions pass after integration. This is tooling setup, not design implementation or a gate pass.
+- **Excluded:** Browser redesign implementation, Android scaffold/build/device action, Figma mutation, product or brand acceptance, automatic upstream updates, main integration and Stage 2/3.
 
 ## Session handoff
 

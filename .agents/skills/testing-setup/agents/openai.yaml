@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Testing Setup"
+  short_description: "Plan bounded native Android test infrastructure"
+  default_prompt: "Use $testing-setup to assess the current Android test stack read-only and propose the smallest task-scoped additions."
