@@ -17,6 +17,8 @@ related:
 
 ## Assignment
 
+**Selected visual input, 2026-09-17:** Simon accepted [Round conversation](brand-and-visual-identity.md#accepted-shape-direction--round-conversation) as the composer shape moving forward, including compact/normal/expanded use and a favicon direction. Use the embedded exact reference for composer specimens; do not substitute cushion, tucked-tail, ticket or ribbon. Palette/type and finished icon assets remain separate refinements.
+
 Create a reusable, reviewable design system from this repository's brand vision and semantic contracts, then import it using `/design-sync` in Claude Code. Deliver brand guidance, color and typography foundations, machine-readable tokens, reusable component specimens and a verified synced system. This is a design-system construction session. App screen layouts, Home/navigation decisions and end-to-end product design belong to a separate later session.
 
 Read this file in Claude Code with the Granny repository available. Do not require the separate app-design handoff or a combined archive. Current request authorizes preparing this brief; the build/sync instructions below are the assignment for the future Claude Code session when Simon starts it. No system has been built or synced by writing this specification.
