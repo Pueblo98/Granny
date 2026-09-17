@@ -14,6 +14,45 @@ record_basis: contemporaneous
 agent: Codex
 branch: chore/ui-ux-skills
 next_action: "Review the published skill package and integrate the task branch only if accepted"
+changed_paths:
+  - .agents/skills/adaptive/LICENSE.txt
+  - .agents/skills/adaptive/SKILL.md
+  - .agents/skills/adaptive/agents/openai.yaml
+  - .agents/skills/adaptive/references/android/develop/ui/compose/layouts/adaptive/flexbox/container-behavior.md
+  - .agents/skills/adaptive/references/android/develop/ui/compose/layouts/adaptive/flexbox/get-started.md
+  - .agents/skills/adaptive/references/android/develop/ui/compose/layouts/adaptive/flexbox/index.md
+  - .agents/skills/adaptive/references/android/develop/ui/compose/layouts/adaptive/flexbox/item-behavior.md
+  - .agents/skills/adaptive/references/android/develop/ui/compose/layouts/adaptive/grid/container-properties.md
+  - .agents/skills/adaptive/references/android/develop/ui/compose/layouts/adaptive/grid/get-started.md
+  - .agents/skills/adaptive/references/android/develop/ui/compose/layouts/adaptive/grid/index.md
+  - .agents/skills/adaptive/references/android/develop/ui/compose/layouts/adaptive/grid/item-properties.md
+  - .agents/skills/adaptive/references/android/develop/ui/compose/layouts/adaptive/mediaquery/index.md
+  - .agents/skills/adaptive/references/android/develop/ui/compose/tooling/debug.md
+  - .agents/skills/adaptive/references/android/guide/navigation/navigation-3/recipes/material-listdetail.md
+  - .agents/skills/edge-to-edge/LICENSE.txt
+  - .agents/skills/edge-to-edge/SKILL.md
+  - .agents/skills/edge-to-edge/agents/openai.yaml
+  - .agents/skills/granny-design-handoff/SKILL.md
+  - .agents/skills/granny-ui-craft/SKILL.md
+  - .agents/skills/granny-ui-craft/agents/openai.yaml
+  - .agents/skills/granny-ui-craft/references/critique-and-hardening.md
+  - .agents/skills/granny-ui-craft/references/direction-and-variation.md
+  - .agents/skills/testing-setup/LICENSE.txt
+  - .agents/skills/testing-setup/SKILL.md
+  - .agents/skills/testing-setup/agents/openai.yaml
+  - .agents/skills/testing-setup/references/android/develop/ui/compose/testing/common-patterns.md
+  - .agents/skills/testing-setup/references/android/studio/preview/compose-screenshot-testing.md
+  - .agents/skills/testing-setup/references/android/training/dependency-injection/hilt-testing.md
+  - AGENTS.md
+  - docs/10-execution/backlog.md
+  - docs/10-execution/current-milestone.md
+  - docs/10-execution/development-readiness.md
+  - docs/10-execution/operating-workflows.md
+  - docs/10-execution/ui-ux-skills.md
+  - docs/README.md
+  - scripts/doc_checks.py
+  - scripts/test_doc_checks.py
+  - scripts/validate-docs.py
 ---
 
 # Install reviewed UI/UX skills
