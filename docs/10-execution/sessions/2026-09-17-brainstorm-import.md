@@ -13,7 +13,7 @@ session_state: review
 record_basis: contemporaneous
 agent: Codex brainstorming import session
 branch: docs/brainstorm-import-2026-09-17
-next_action: Simon chooses the six OQ-14 conflict directions before any conflicting canonical behavior is changed.
+next_action: Simon reviews the expanded Home and generated-interface choices; four other OQ-14 rows were decided on 2026-09-17 and are propagated in a follow-up session.
 changed_paths:
   - docs/02-design/conversation-first-plan.md
   - docs/03-agent/agent-behavior.md

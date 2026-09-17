@@ -2,7 +2,7 @@
 title: "Stage 1 Use Cases"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-17
 tags: [product, use-cases]
 related:
   - prd.md
@@ -156,11 +156,11 @@ POL-00 = scoped observe, POL-01 = reversible navigation, POL-02 = local preparat
 
 **Release / priority / actor / job:** MVP / Must / P-01 / JOB-05.
 **Request / touch:** “What do you remember about Sophie?” / Settings → Memory → People.
-**Start and preconditions:** saved explicit alias/preference; V1 adds dates.
-**Data and permissions:** local items/source/scope; no private transcript search.
-**Expected behavior:** List exact items → select → edit or delete with review → verify removal/update.
+**Start and preconditions:** MVP saved explicit alias/preference; App V1 may add automatically captured allowed important facts and bounded communication adjustments.
+**Data and permissions:** local items/source/policy class/scope; no private transcript search.
+**Expected behavior:** App V1 quietly receipts an admitted automatic fact with Undo → Memory lists exact items and communication baseline/adaptation state → select → edit, pause/reset or delete with review → verify removal/update.
 **Autonomy:** POL-02; apply each step's class independently.
-**Ambiguity and accessibility:** Two aliases or inferred content: source visible; never invent a memory.
+**Ambiguity and accessibility:** Two aliases or conflicting facts: keep the existing value and expose the source; never invent or silently overwrite memory. Receipt/Undo and controls work without audio.
 **Failure and recovery:** Empty: say none saved; deletion failure stays pending; no resurrection.
 **Privacy/safety:** Sensitive relationship sharing and derived caches.
 **Success evidence:** Corrected value used; deleted value absent from store/index/export.

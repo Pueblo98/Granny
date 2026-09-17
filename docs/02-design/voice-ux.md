@@ -2,7 +2,7 @@
 title: "Stage 1 Voice and Content Contract"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [design, voice]
 related:
   - product-design-spec.md
@@ -31,6 +31,10 @@ Default progress/result: one or two short sentences, one next step. Explain deta
 Use “I found…”, “The app reports…”, “I couldn't verify…” according to evidence. Never “Done” for launch-only success. Distinguish no result from insufficient access. Replace “You did it wrong” with description of current state and recovery. No pet names, “good girl/boy”, faux nurse voice, dementia assumptions or exaggerated praise for ordinary actions.
 
 Names: show original spelling, ask pronunciation if user corrects it, store phonetic preference only with explicit Save choice. Name pronunciation is not identity resolution; a familiar sound cannot choose between two contacts. English is a proposed prototype language only; locale/market selection precedes release copy and language promises.
+
+App V1 communication starts from the person's setup choice, then may quietly tune brevity, pacing, formatting, explanation depth, question frequency and light humor. Adaptation should reduce effort, not announce itself repeatedly. Direct requests such as “be shorter” take effect immediately and outrank learned behavior. Voice/gender presentation, language and access settings do not change silently. Settings exposes the current baseline plus Pause and Reset.
+
+An admitted automatic fact uses a compact, non-blocking receipt such as “Remembered: Rosa is your daughter. Undo.” Do not ask “Should I remember this?” for every allowed fact. Do not display the receipt for a rejected, duplicated or uncertain candidate, and never turn the receipt into action authority.
 
 ## Journey copy bank
 

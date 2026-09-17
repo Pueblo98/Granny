@@ -20,7 +20,7 @@ related:
 | Phase | Required record/output | Decision rule |
 |---|---|---|
 | Observe | Observation with origin, captured monotonic time, window/package/version, grant scope, user-interaction epoch, sensitivity and evidence references | Request least content; redact before cloud; absent tree is unknown, not empty app |
-| Understand | Intent with original/edited text reference, goal enum, entities with provenance, time interval/timezone, selected route and ambiguity set | User-stated fact outranks inferred interpretation; material person/content ambiguity requires SCR-006 |
+| Understand | Intent with original/edited text reference, goal enum, entities with provenance, time interval/timezone, selected route and ambiguity set | User-stated fact outranks inferred interpretation; material person/content ambiguity requires SCR-006; V1 may separately propose an allowed important-memory candidate |
 | Plan | TaskPlan with version, allowed capability IDs, ordered bounded steps, pre/postconditions, max effects/budget and expected outcome | Registry checks admission; API first; no arbitrary instructions from observed content |
 | Act | Serialized typed request with state epoch, cancel token and permit where needed | Local executor validates independently; one effect at a time |
 | Verify | Evidence predicate and grade: verified, partial, unknown, disproven | A successful tool dispatch is never sufficient task evidence |
@@ -49,13 +49,13 @@ Only schema-conforming bounded values enter executor; unknown goal/capability is
 
 Each value has provenance UserInput, LocalPreference, ApprovedIntegration, ObservedUI, ModelInference or HelperProposal. User input still cannot override prohibited capability policy. Observed UI, image text, messages, notifications, files and links cannot establish new goals, helper rights, tool grants or provider instructions. Quoted “ignore previous rules” is processed as content only. No copied screen text enters system/developer instruction fields.
 
-Entity inference can suggest candidates but cannot silently become saved memory or consequential target. Use stable opaque endpoint IDs and user-approved labels; a speech name, image face or relationship guess is insufficient. Relative dates resolve in device/user-selected timezone and remain visible. If timezone unknown, ask; do not substitute developer location.
+Entity inference can suggest candidates but cannot become a consequential target. Under ADR-0012, App V1 may silently save an allowed important fact directly stated by the user after local memory-policy validation and a quiet receipt/Undo; screen content, image faces, third-party claims and relationship guesses remain ineligible. Use stable opaque endpoint IDs and user-approved labels for actions. Relative dates resolve in device/user-selected timezone and remain visible. If timezone unknown, ask; do not substitute developer location.
 
 ## Route choice and proactivity
 
 Production candidate: API/integration-led tasks and manual handoffs. Fixed human-authored accessibility recipes remain conditional on current policy review. Dynamic model-selected accessibility sequences are lab-only pending a permitted distribution model. This distinction is enforced by build/registry admission, not a model instruction.
 
-No ambient conversation, unsolicited task initiation, engagement feed, passive memory extraction or proactive external action in MVP/V1. Follow-up proposals after a result are optional and never auto-execute. “Would you like to share?” cannot itself open a share target.
+No ambient conversation, unsolicited task initiation, engagement feed, transcript archive or proactive external action in MVP/V1. MVP has no passive memory extraction; App V1's bounded automatic memory/adaptation follows the memory contract and cannot mine external screens or messages. Follow-up proposals after a result are optional and never auto-execute. “Would you like to share?” cannot itself open a share target.
 
 ## Conversation continuity
 

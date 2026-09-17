@@ -2,7 +2,7 @@
 title: "ADR-0010 — Propose local execution authority and explicit data ownership"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-17
 tags: [adr]
 related:
   - README.md
@@ -27,7 +27,7 @@ A model may misunderstand or be manipulated by visible content. Remote dependenc
 
 ## Proposed decision
 
-Third option. Local typed policy and executor own admission, cancellation latch, confirmation binding, dispatch journal and postcondition checks. Planner only proposes; UI displays locally owned state. Screen content is untrusted data. Local memory stores explicit MVP settings/aliases only; no passive transcript archive, inferred facts, cloud sync or helper backend. V1 facts/helpers require separate evidence and consent, not implicit architecture activation.
+Third option. Local typed policy and executor own admission, cancellation latch, confirmation binding, dispatch journal and postcondition checks. Planner only proposes; UI displays locally owned state. Screen content is untrusted data. Local memory stores explicit MVP settings/aliases only; no passive transcript archive, cloud sync or helper backend. [Accepted ADR-0012](ADR-0012-automatic-memory-and-adaptive-communication.md) separately establishes automatic typed important-fact memory and adaptive communication as App V1 behavior. This ADR still leaves exact local placement, provider/backend and helper architecture proposed and evidence-gated.
 
 [System map](../04-architecture/system-overview.md) owns component contracts; [privacy policy](../05-safety-privacy/safety-and-privacy.md) owns retention/deletion; [action policy](../05-safety-privacy/action-policy.md) owns effect classification. Cloud egress is separately consented, minimized and blocked for real data pending provider terms. Content-free local audit must not become surveillance. User corrections/deletion remove derivatives; tombstones prevent resurrection where restore/sync later exists. No provider/database/framework is selected.
 

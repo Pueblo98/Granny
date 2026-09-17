@@ -15,7 +15,7 @@ related:
 
 ## Simon class brainstorming input — 2026-09-17
 
-[Simon's class brainstorming session](../08-research/source-material/2026-09-17-class-brainstorming.md) is now preserved as an attributed planning input. Compatible conversation, contextual-module, guidance/annotation, Android-target and orchestration ideas refine existing proposals without changing scope or gates. [OQ-14](open-questions.md#brainstorming-alignment-review--oq-14) holds the conflicting dashboard, action-first, automatic-memory, adaptive-personality, generated-UI and Stage 1 completion choices for Simon; none is silently adopted.
+[Simon's class brainstorming session](../08-research/source-material/2026-09-17-class-brainstorming.md) is preserved as an attributed planning input. Compatible conversation, contextual-module, guidance/annotation, Android-target and orchestration ideas refine existing proposals without changing gates. On 2026-09-17 Simon retained consequence-based approval and the MVP/App V1/later split, and accepted [automatic important-fact memory plus bounded adaptive communication](../09-decisions/ADR-0012-automatic-memory-and-adaptive-communication.md) for App V1. [OQ-14](open-questions.md#brainstorming-alignment-review--oq-14) keeps the coupled Home and generated-interface choices open for discussion.
 
 ## Local backend/MCP experiment — 2026-09-15
 

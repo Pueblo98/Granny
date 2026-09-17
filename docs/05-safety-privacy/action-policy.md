@@ -2,7 +2,7 @@
 title: "Stage 1 Action and Confirmation Policy"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [safety, policy]
 related:
   - safety-and-privacy.md
@@ -24,7 +24,7 @@ Simon requested a real local backend/MCP prototype for fictional unsent messages
 |---|---|---|---|---|
 | POL-00 Observe | Read minimum user-approved scope for active request | OS grant plus purpose consent; separate cloud consent; unlocked active session | Visible reading/capture state; Stop ends collection; read aloud can expose content and follows speech preference | Snapshot ≤2s old for action decisions; no background observation; audit scope ID/count/code, no raw content |
 | POL-01 Navigate/reversible | Execute admitted low-consequence step for current intent | No repetitive confirmation; unlocked session and actual grant check | Visible task + Stop; no undo claim for navigation with discarded work; detect unsaved edits first | [Shared operation/time budget](../03-agent/device-control.md); one proven-no-effect retry; postcondition must verify; unknown surface denied |
-| POL-02 Prepare/local preference | Prepare without external consequence; local reversible settings/explicit alias edits | User request/explicit local Save; no external approval inferred | Preview and edit; Cancel before effect; Restore if prior value known | Content/context versions tracked; local read-back; draft expires with session; audit operation type only |
+| POL-02 Prepare/local preference | Prepare without external consequence; local reversible settings/memory edits | User request/explicit local Save; App V1 automatic memory only under ADR-0012's active local setting and typed admission; no external approval inferred | Preview/edit for requested work; automatic fact gets quiet receipt/Undo; restore/reset/delete available | Content/context versions tracked; local read-back; draft expires with session; audit operation type only |
 | POL-03 Consequential | Fresh specific approval, single exact effect | Local user preview → affirmative touch or unambiguous active-session speech; owning app authenticates if required; unlocked is necessary but not identity proof | Target/content/channel/effect visible; Stop effective before dispatch; in-flight reconciled; external undo only if supported and separately authorized | Proposed permit 60s from approval, one use, task/plan/user/device epoch bound; fresh observation; outcome journal; no automatic retry of unknown effect |
 | POL-04 Delegated routine | Explicit bounded recurring grant, **disabled MVP/V1** | Future ADR must define actor/scope/time/frequency/limits and authentication | Persistent inspect/revoke and understandable activity; no silent scope growth | No implementation authority now; new evals before admission |
 | POL-R Restricted | Explain limit; user-operated manual route only | Neither generic yes nor helper permission enables tool | No protected observation/operation; user retains ordinary Android access | Denial reason, no credential/content logging; no alternate-tool workaround |
@@ -56,7 +56,7 @@ Each row inherits **all** fields of its class above; row-specific limitations ov
 | Purchases/finance/legal assent — Stage 1 | No protected account inspection | Explain limitation | No | Cannot unlock restricted tools | No | POL-R regardless of apparent low amount or UI simplicity |
 | Location/emergency/medical — Stage 1 | No background location or health inference | Explain product limitation; ordinary user-owned route | No | Cannot authorize emergency dispatch/medical decision | No | POL-R; no emergency-service promise, no silent location sharing |
 | Explicit aliases/preferences — MVP | User's local items POL-00 | POL-02 | Save explicit local value POL-02 | Delete-all/export data uses POL-03 | No | Provenance and derivative deletion verified; no automatic inference persistence |
-| Explicit dates/relationships — V1 | POL-00 private | POL-02 proposed entry | No automatic extracted saves | POL-03 confirm new personal fact/share/export | No | Keep uncertain/source label; no diagnosis |
+| Important facts/adaptive communication — V1 | POL-00 private | Model proposes; local typed policy admits direct-user fact or bounded preference | POL-02 automatic local save/tuning; quiet receipt/Undo for fact | POL-03 remains required for share/export/delete-all; no per-fact save confirmation | No external action authority | Source/revision visible; no transcript mining, diagnosis, credentials, protected-trait inference or silent conflict overwrite |
 | History/diagnostics/data deletion — MVP | Own local summaries | POL-02 exact export/delete preview | Local bounded expiry per disclosed schedule | POL-03 user-triggered export/delete-all | No | Export preview exactly matches output; no raw audit content, no silent support upload |
 | Co-present helper — MVP | Only what adult chooses to show | Adult-controlled setup | No extra helper power | Adult makes each consent decision | No | POL-R remote access; buyer relationship is not authorization |
 | Helper config proposals — V1 | Explicit configuration scope only | Propose diff | No automatic apply | POL-03 adult local approval / invitation; revoke available immediately | No | No messages/memory/screens/history; old grant cannot approve new scope |

@@ -113,7 +113,7 @@ The preview should feel like part of the conversation but remain a structured sa
 
 Use a short-lived in-memory working conversation for the next mock. Completed tasks can collapse into readable summaries without losing current context. Scroll position stays under user control: new status must not pull someone away from a preview they are reading. Announce meaningful changes once; do not refocus the whole screen on every token.
 
-This plan does not authorize storing full chat history, screenshots, audio or inferred personal memories. Existing minimal task history and explicit memory rules remain. A long-lived ChatGPT-style sidebar/history is specifically not implied. A new request while acting offers/executes the existing safe interruption semantics before changing goals; it never quietly queues a second consequential action.
+This plan does not authorize storing full chat history, screenshots or audio. MVP keeps minimal task history and explicit aliases/preferences. App V1 may use ADR-0012's typed automatic important-fact memory and adaptive communication, without a transcript archive or external-content mining. A long-lived ChatGPT-style sidebar/history is specifically not implied. A new request while acting offers/executes the existing safe interruption semantics before changing goals; it never quietly queues a second consequential action.
 
 ## Visual direction, still proposed
 

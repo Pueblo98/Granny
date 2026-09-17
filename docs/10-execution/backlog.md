@@ -147,9 +147,9 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Priority / discipline:** P3 conditional / Product/Android/privacy; Simon owns acceptance.
 - **Dependencies / entry:** MVP/pilot learning; explicit V1 scope and updated route/privacy decisions.
 - **Trace / contract:** PRD-FR-018/019/020; PRV-003/005; UC-001/008/010/023/024; J-008/007/004 subset; EVAL-013–017.
-- **Bounded deliverable:** Separate bounded call, reminder, document, explicit fact-rights and helper-config proposal tasks; each gets adapter/screen/failure/detail and DoR before code.
-- **Acceptance / evidence:** Per-extension independent success/rights/access evidence; no remote screen/control inheritance; V1 decision based on actual MVP learning.
-- **Excluded / rollback:** Not ready as one large implementation task; no medical reminders promise or passive personal memory. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
+- **Bounded deliverable:** Separate bounded call, reminder, document, automatic important-fact/adaptive-communication and helper-config proposal tasks; each gets adapter/screen/failure/detail and DoR before code. The memory slice implements ADR-0012's typed local admission, quiet receipt/Undo, setup baseline, pause/reset and durable rights without per-fact confirmation.
+- **Acceptance / evidence:** Per-extension independent success/rights/access evidence; EVAL-017 covers capture precision, prohibited-source denial, later recall, correction/deletion and style drift; no remote screen/control inheritance; V1 decision based on actual MVP learning.
+- **Excluded / rollback:** Not ready as one large implementation task; no medical reminders promise, transcript archive, external-content mining or cloud memory sync. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
 - **Status:** planned; no code, test result or assigned staffed team claimed.
 
 <a id="t-112"></a>

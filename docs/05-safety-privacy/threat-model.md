@@ -2,7 +2,7 @@
 title: "Stage 1 Threat Model"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-17
 tags: [safety, threats]
 related:
   - action-policy.md
@@ -27,7 +27,7 @@ All mitigations below are specified, **unimplemented/unrun**. Gate numbers link 
 | THR-07 | Repeat/unknown commit — Network/callback loss after external acceptance | Duplicate message/call/reminder | [Execution protocol](../03-agent/execution-protocol.md): content-free journal, unknown quarantine, no blind retry, one permitted status reconciliation | EVAL-003/008/010/014 dropped receipt, crash around journal/entry, history deletion and canary export | External service lacks reliable status; no exactly-once guarantee across deleted/expired local history | executor | GATE-07 |
 | THR-08 | Capture/transcript leakage — Broad tree, screenshot, microphone or logs outlive task | Private content disclosed | Scoped activation; protected-screen exclusion; redaction before egress; in-memory raw data; no content logs | EVAL-008/010 canary secrets/expiry | Redaction false negatives, shoulder surfing | privacy + Android | GATE-06 |
 | THR-09 | Provider or support leakage — Remote retention, diagnostics or model output exposes private text | Unauthorized secondary processing | Separate consent; provider terms/residency review; previewed redacted support export; no production data in Git | EVAL-008/009; RES-08 terms review | Provider operations outside local enforcement | privacy + backend | GATE-09 |
-| THR-10 | Memory poisoning/resurrection — Untrusted content/helper suggests facts; restored backup revives deletion | Wrong future action or sensitive inference | Explicit save/source; revision checks; derived deletion/tombstones; backup exclusions | EVAL-008/017 | User-confirmed erroneous facts | memory + privacy | GATE-06 |
+| THR-10 | Memory poisoning/resurrection/drift — Untrusted content/helper suggests facts, importance classifier saves a wrong fact, communication adaptation drifts, or restored backup revives deletion | Wrong future context/action, intrusive profile or unwanted interaction style | Direct-user provenance + typed local admission; quiet receipt/Undo; baseline/pause/reset; conflict hold; revision checks; derived deletion/tombstones; backup exclusions | EVAL-008/017 | User-stated but inaccurate fact; subtle unwanted adaptation | memory + privacy | GATE-06 |
 | THR-11 | Helper coercion/overreach — Buyer/relative pressures adult or exceeds granted scope | Surveillance, lost agency | No remote MVP; optional separate identity; local diff approval; private decline and immediate revoke | EVAL-016; RES-08 separate interviews | Co-present coercion cannot be reliably detected | product + safeguarding reviewer | GATE-09 |
 | THR-12 | Stolen unlocked device/account — Attacker has physical device or authenticated helper session | Impersonation and private data exposure | OS lock boundary; no lock bypass; protected local store; helper fresh auth/grants; no secrets in agent | EVAL-010 lock/restart; EVAL-016 revoked session | Unlocked physical access and coerced unlock | security + Android | GATE-09 |
 | THR-13 | Permission/service/process loss — Android revokes/kills service or provider is offline | Invisible continuation, unresponsive Stop, false success | Local latch/state/journal; actual pre-dispatch checks; watchdog disables executor; no restart continuation | EVAL-005/006/009/010 | Already-dispatched effect cannot be recalled | Android + executor | GATE-07 |
@@ -37,6 +37,6 @@ All mitigations below are specified, **unimplemented/unrun**. Gate numbers link 
 
 ## Abuse-case acceptance
 
-No untrusted input can expand scope, invoke a restricted tool, choose an unconfirmed person, save inferred memory, mint/reuse consent or enable private helper access. Detection must use canary values, action receipts and deny events, not trust the model's own explanation. Red-team transcripts use synthetic content only.
+No untrusted input can expand scope, invoke a restricted tool, choose an unconfirmed person, persist a disallowed/third-party memory candidate, mint/reuse consent or enable private helper access. Detection must use canary values, action receipts and deny events, not trust the model's own explanation. Red-team transcripts use synthetic content only.
 
 A severe authorization/privacy failure blocks promotion regardless of task success rate. Record preconditions, effect, evidence, fixed failure mode, updated eval and residual risk. Safety reviewer signs unresolved residual-risk decision explicitly; Simon cannot infer a pass from an average metric. Before pilot, add incident/withdrawal/support contacts and provider/market-specific privacy review. No legal/medical assurance is claimed.

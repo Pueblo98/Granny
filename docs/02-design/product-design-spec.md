@@ -2,7 +2,7 @@
 title: "Stage 1 Product Design Specification"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [design, interaction]
 related:
   - design-system.md
@@ -179,11 +179,11 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 ### SCR-010 — Memory and people
 
 **Purpose/links:** J-007 / PRD-PRV-002/003.
-**Entry/exit:** Settings → saved items; save/correct/delete → verify store → list.
-**Hierarchy/content:** Item, value, source/date, explicit vs inferred (inferred saving unavailable), private scope.
-**Controls:** Add alias; Edit; Delete item; Export (V1 personal memory); Back. Primary is the next goal-specific action; Back/Cancel are escape, and delete/revoke are destructive actions with named previews.
-**Data/sensitivity:** Explicit preferences/aliases MVP; dates V1; local/private.
-**Loading/empty/disabled/error/interrupted:** Empty: Nothing saved here; delete preview names item/derivatives; failed write keeps old value; interruption cannot claim success. Remaining states inherit shared rules; no hidden background work on exit.
+**Entry/exit:** Settings → saved items; V1 quiet “Remembered [fact]” receipt → Undo or continue; review/correct/delete → verify store → list.
+**Hierarchy/content:** Item, value, understandable source/date, automatic or user-added label, private scope; communication baseline and adaptation state appear separately from personal facts.
+**Controls:** Add alias; Edit; Undo latest automatic fact; Pause/resume learning; Reset communication style; Delete item; Export (V1 personal memory); Back. Primary is the next goal-specific action; Back/Cancel are escape, and delete/revoke are destructive actions with named previews.
+**Data/sensitivity:** Explicit preferences/aliases MVP; allowed direct-user important facts and bounded communication adaptation V1; local/private; no transcript archive.
+**Loading/empty/disabled/error/interrupted:** Empty: Nothing saved here; automatic save receipt does not interrupt the conversation; duplicate collapses to one revision; conflict preserves existing value; delete preview names item/derivatives; failed write keeps old value; interruption cannot claim success. Remaining states inherit shared rules; no hidden background work on exit.
 **Focus, semantics, keyboard/switch and speech:** Title → items → source/scope → Edit/Delete → Back; editable fields labeled; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
@@ -194,9 +194,9 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 
 **Purpose/links:** J-006/007 / PRD-ACC-001/003.
 **Entry/exit:** Settings or Make text larger → preview/apply → return.
-**Hierarchy/content:** Text-size preview, contrast preference, speech speed/sample, spoken-content choice, captions, reduced motion.
-**Controls:** Adjust labeled setting; Hear sample; Apply; Restore previous size; Back. Primary is the next goal-specific action; Back/Cancel are escape, and delete/revoke are destructive actions with named previews.
-**Data/sensitivity:** Local preferences, no inferred disability.
+**Hierarchy/content:** Text-size preview, contrast preference, speech speed/sample, spoken-content choice, captions, reduced motion and a plain-language communication starting style; App V1 explains that bounded style may adapt quietly over time.
+**Controls:** Adjust labeled setting; choose communication baseline; Hear sample; Apply; Restore previous size; App V1 Pause adaptation/Reset to setup choice; Back. Primary is the next goal-specific action; Back/Cancel are escape, and delete/revoke are destructive actions with named previews.
+**Data/sensitivity:** Local preferences and bounded interaction adjustments, no inferred disability/protected identity.
 **Loading/empty/disabled/error/interrupted:** Works offline; missing voice pack offers text; unsupported setting explains; rotation retains preview; revert failure honest. Remaining states inherit shared rules; no hidden background work on exit.
 **Focus, semantics, keyboard/switch and speech:** Title → preview → each control/value → Apply/Restore → Back; sliders also have +/− buttons; shared native-role and silent-equivalent rules apply.
 **Orientation/window:** shared reflow; content scrolls before controls shrink. Confirmation/actions stack vertically in narrow or large-text mode.
