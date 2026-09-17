@@ -2,7 +2,7 @@
 title: "Granny development cockpit"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [execution, cockpit]
 related:
   - 10-execution/cockpit-guide.md
@@ -11,6 +11,9 @@ related:
 ---
 
 # Development cockpit
+
+> [!important] Latest review — 2026-09-17
+> Simon rejected the browser UI as too button-heavy and generically AI-styled. Settle Home/interface choices, then use the [Claude design handoff](02-design/claude-design-handoff.md). Figma connection works; authoring is blocked by MCP quota. Integrated runtime checks remain synthetic evidence, not design acceptance or Android readiness.
 
 > [!important] Stage 1 · Android tablet app
 > This is **Simon's development workspace**, not Granny's customer interface. Stage 2 OS and Stage 3 hardware are dormant.
