@@ -2,7 +2,7 @@
 title: "Current milestone — conversation-first browser experience"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [execution]
 related:
   - development-readiness.md
@@ -12,6 +12,10 @@ related:
 ---
 
 # Current milestone — conversation-first browser experience
+
+## Local backend/MCP experiment — 2026-09-15
+
+Simon explicitly authorized [T-117](backlog.md#t-117), a bounded conversation-first browser/backend/MCP slice with fictional contacts, specific confirmation and verified unsent demo-store writes. [Runtime contract](../04-architecture/conversation-runtime-contract.md) and [session evidence](sessions/2026-09-15-mcp-backend-integration.md) own its actual implementation/test state. Backend and frontend coordinate through published board checkpoints. Dependency installation for the official MCP SDK was explicitly approved. This is an exception to earlier no-backend prototype statements, not T-103 completion, Android integration or promotion of GATE-03/04/06/07–09. Live synthetic Qwen calls retain prior caps and consent; broader data/release gates remain open.
 
 ## Active milestone — review the conversation-first browser experience
 
@@ -28,6 +32,8 @@ At that previous milestone, Simon's instruction was cockpit first, then a redesi
 The feature-button Home was rejected by Simon, despite passing mock checks. The [conversation-first plan](../02-design/conversation-first-plan.md) was prepared before the newly authorized implementation above. Browser and cockpit were merged through [PR #3](https://github.com/Pueblo98/Granny/pull/3), 70af0db, on 2026-09-14, and the primary docs/ vault checkout was synchronized. The separate Figma branch remains preserved; this is not a claim every branch was merged.
 
 T-115 delivered [session lifecycle guidance and automated checks](cockpit-guide.md#automated-maintenance-contract), with successful live CI and GitHub-required maintenance enforcement on main. [Its handoff](sessions/2026-09-14-session-maintenance.md) records the inspected settings and validation; [PR #4](https://github.com/Pueblo98/Granny/pull/4) owns final integration state. New change sessions maintain their scoped record and run freshness/coverage checks. This operational work does not implement the conversation-first redesign or pass product gates.
+
+T-118 adds a reviewed project-local [UI/UX skill package](ui-ux-skills.md): one Granny-specific interface-craft layer plus Google's pinned adaptive, edge-to-edge and Android testing guidance with local authority guardrails. This improves later design/development instructions only; no product behavior, native app, device evidence or gate changed.
 
 ## Previous milestone — initial browser interaction prototype
 

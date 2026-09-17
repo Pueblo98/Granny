@@ -6,7 +6,7 @@ test('loopback server exposes exactly the intended runtime assets and no write r
   const server = await serve(0), base = 'http://127.0.0.1:' + server.address().port;
   try {
     assert.equal(server.address().address, '127.0.0.1');
-    const paths = ['/', '/index.html', '/styles.css', '/fixtures.js', '/intent.js', '/model.js', '/scheduler.js', '/app.js',
+    const paths = ['/', '/index.html', '/styles.css', '/fixtures.js', '/intent.js', '/model.js', '/scheduler.js', '/cloud.js', '/app.js',
       '/assets/garden.svg', '/assets/seaside.svg', '/assets/meal.svg'];
     for (const path of paths) {
       const response = await fetch(base + path);
@@ -19,6 +19,7 @@ test('loopback server exposes exactly the intended runtime assets and no write r
       assert.equal(head.status, 200); assert.equal(await head.text(), '');
     }
     for (const path of ['/.git/config', '/README.md', '/browser-driver.mjs', '/browser-check.mjs', '/model.test.mjs',
+      '/cloud.test.mjs', '/runtime-browser-check.mjs', '/api/runtime/config', '/api/runtime/session',
       '/serve.mjs', '/docs/05-safety-privacy/action-policy.md', '/assets/../../AGENTS.md',
       '/assets/%2e%2e/%2e%2e/AGENTS.md', '/%2e%2e%2fAGENTS.md', '/__proto__', '/constructor', '/toString']) {
       assert.equal((await fetch(base + path)).status, 404, path);

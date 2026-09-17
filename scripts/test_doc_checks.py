@@ -2,7 +2,7 @@
 import datetime
 import unittest
 
-from doc_checks import markdown_links, skill_errors, split_frontmatter, trace_errors
+from doc_checks import is_skill_markdown_resource, markdown_links, skill_errors, split_frontmatter, trace_errors
 
 
 class FrontmatterTests(unittest.TestCase):
@@ -60,6 +60,11 @@ class SkillTests(unittest.TestCase):
     def test_nested_wrong_types_do_not_crash(self):
         self.meta["metadata"] = []
         self.assertTrue(skill_errors(self.meta, "granny-test", {"interface": []}))
+
+    def test_skill_reference_is_not_a_canonical_document(self):
+        self.assertTrue(is_skill_markdown_resource(".agents/skills/adaptive/references/android.md"))
+        self.assertFalse(is_skill_markdown_resource(".agents/skills/adaptive/SKILL.md"))
+        self.assertFalse(is_skill_markdown_resource("docs/02-design/accessibility.md"))
 
 
 class TraceTests(unittest.TestCase):

@@ -2,7 +2,7 @@
 title: "Stage 1 Action and Confirmation Policy"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [safety, policy]
 related:
   - safety-and-privacy.md
@@ -13,6 +13,10 @@ related:
 # Action policy — single enforcement authority
 
 **Proposed mechanics; confirmed principles:** consequence-specific approval, visible control, user primacy, no untrusted-screen authority and stock-Android limits come from current direction and [accepted ADRs](../09-decisions/README.md). Product scope is the [PRD](../01-product/prd.md). Agent descriptions must link here, not create competing action classifications. Stricter platform/distribution restrictions always deny an otherwise product-allowed action.
+
+## Authorized local demo — 2026-09-15
+
+Simon requested a real local backend/MCP prototype for fictional unsent messages. [Runtime contract](../04-architecture/conversation-runtime-contract.md) enforces POL-02 local preparation/save with an explicit exact preview and single-use confirmation binding for this experiment. It does not reclassify a demo write as external sending or admit POL-03 account/device effects. Contact/tool output is untrusted; only independent readback permits a created-draft result. Stop after dispatch yields unknown and no automatic duplicate. Production policy and gates below remain unchanged.
 
 ## Classes and common enforcement
 

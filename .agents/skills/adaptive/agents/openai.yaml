@@ -1,0 +1,4 @@
+interface:
+  display_name: "Adaptive Android UI"
+  short_description: "Adapt Compose layouts across Android window sizes"
+  default_prompt: "Use $adaptive to review this authorized Compose surface across compact, medium and expanded windows without changing dependencies."

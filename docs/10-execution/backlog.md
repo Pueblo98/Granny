@@ -2,7 +2,7 @@
 title: "Stage 1 dependency-ordered backlog"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [execution]
 related:
   - development-readiness.md
@@ -192,6 +192,26 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Acceptance:** Missing/unrelated handoffs and stale snapshots rejected; explicit small README exemption constrained; wrong/stale/dirty vault artifacts reported without writes; fresh-context navigation evaluated; actual CI/protection/integration state distinguished from local checks.
 - **Status:** complete — tooling validated with 46 passing tests, successful live CI and verified required-check enforcement; PR #4 owns final integration state. No product gate passed.
 - **Excluded / rollback:** No app redesign, Android work, plugin/private-state changes, auto-merge or scheduled supervisor. Revert scoped tooling through reviewed Git change if needed; preserve session history and user-owned Canvas layout.
+
+<a id="t-117"></a>
+## T-117 — Connect conversation UI to bounded local backend and MCP
+
+- **Scope / authority:** Simon requested one complete implementation slice on 2026-09-15: natural conversation to specifically confirmed unsent demo draft, with actual MCP transport/store/readback. Separate from the Qwen proposal-only experiment, T-103 and Android actuation.
+- **Owner / dependencies:** Backend owns [runtime contract](../04-architecture/conversation-runtime-contract.md), provider/policy/MCP/runtime/tests; frontend owns presentation/transport. Published frontend checkpoint 7e919ae integrated with both histories preserved; older Qwen UI is not transplanted. Board topic ui-backend-integration records agreement. SDK dependency installation explicitly approved.
+- **Trace / DoR:** PRD-FR-002/003/008/013, PRD-SAF-001/002/003, PRD-PRV-001; UC-006/J-003; SCR-003/007, CMP-001/003; EVAL-003/006/008/009/010 themes. Input/output/fixture/oracle/budgets/Stop/privacy/rollback defined in the runtime contract and tests before broader integration. Real file readback is independent of the write acknowledgment.
+- **Deliverable / acceptance:** [Source/startup](../../prototypes/conversation-runtime/README.md), three allowlisted MCP tools, exact-content preview binding and expiry, clarification, cancellation/unknown fencing, deterministic backend/provider/HTTP and integrated browser tests. Live Qwen evidence separately bounded; no paid CI calls.
+- **Status:** review — complete local demo slice and live-consent wiring implemented; 127 deterministic tests, 17 actual browser/MCP assertions, 10 live-mode/stub-provider assertions, 37 wire-browser and 130 scripted-browser assertions passed. One paid Qwen proposal check failed (chat instead of fields), so live model quality remains unproven. [Session](sessions/2026-09-15-mcp-backend-integration.md) owns exact checks and limitations. No product gate promotion.
+- **Excluded / rollback:** No external send/account, personal files/data, Android, root, remote server install, shell/network tool or broad capability expansion. Stop server to disable; graceful shutdown removes its synthetic temporary store; no pending action restored on restart. Revert scoped branch through normal reviewed Git if needed.
+
+<a id="t-118"></a>
+## T-118 — Install reviewed UI/UX and Android skills
+
+- **Scope / authority:** Simon explicitly requested the recommended UI/UX skills be downloaded and set up on 2026-09-14. Repository-local skill/tooling change only.
+- **Trace / owner:** [Skill setup and provenance](ui-ux-skills.md), [delivery workflows](operating-workflows.md), [conversation-first plan](../02-design/conversation-first-plan.md) and repository `AGENTS.md`; no product requirement or gate is implemented by an instruction package.
+- **Deliverables:** `granny-ui-craft` for product-specific structural variation/critique; pinned Google `adaptive`, `edge-to-edge` and `testing-setup` skills with local guardrails, licenses and discovery metadata; exact upstream provenance and update procedure.
+- **Acceptance:** Each skill passes the packaging validators; repository/cockpit/documentation checks and documentation-tool tests pass; only reviewed resources enter Git; no executable third-party launcher/hook, global configuration, dependency install, product UI change or unrelated user edit is included.
+- **Status:** complete — reviewed packages and provenance are integrated; five changed skill entrypoints and repository documentation validate. Current documentation-tool regressions pass after integration. This is tooling setup, not design implementation or a gate pass.
+- **Excluded:** Browser redesign implementation, Android scaffold/build/device action, Figma mutation, product or brand acceptance, automatic upstream updates, main integration and Stage 2/3.
 
 ## Session handoff
 

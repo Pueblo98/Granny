@@ -2,7 +2,7 @@
 title: "Stage 1 Privacy and Data Policy"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [privacy, safety]
 related:
   - action-policy.md
@@ -13,6 +13,12 @@ related:
 # Privacy, data and user authority
 
 Proposed operational policy for PRD-PRV-001–006; confirmed boundary: family support must not become surveillance. [Action policy](action-policy.md) owns consequence rules; [threat model](threat-model.md) owns abuse cases. This is product specification, not a statement of legal compliance, medical classification or approved vendor terms.
+
+## Local synthetic backend exception — 2026-09-15
+
+Simon authorized the [local conversation/MCP demo](../04-architecture/conversation-runtime-contract.md) with fictional contacts and unsent local drafts. Scripted and connected demo modes have no provider egress. Live mode requires both server opt-in and explicit UI synthetic-text consent; only bounded conversation text reaches OpenRouter under the inherited Qwen privacy/price filters. Keys stay server-side and are omitted from the MCP child environment. Model proposals never receive confirmation authority or MCP results.
+
+Drafts are temporary synthetic files, removed on graceful MCP shutdown; crashes may leave synthetic temporary files. Conversation and event history are process memory only and bounded; session expiry invalidates authority. No production retention/encryption/deletion or personal-data suitability is claimed. Diagnostics omit transcripts, raw tool/provider errors and credentials. This scoped experiment changes the prior blanket no-backend/no-egress prototype boundary only as explicitly requested; real personal data, accounts, capture and Android remain excluded.
 
 ## Data and retention inventory
 

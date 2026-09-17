@@ -2,7 +2,7 @@
 title: "Stage 1 documentation map"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [navigation]
 related:
   - 10-execution/current-milestone.md
@@ -16,6 +16,8 @@ related:
 **Start here for development oversight:** [Cockpit](Cockpit.md) · [visual map](Development.canvas) · [session/message views](10-execution/cockpit.base) · [agent board](10-execution/agent-board.md). [Cockpit guide](10-execution/cockpit-guide.md) owns update/refresh rules. [Conversation-first build](02-design/conversation-first-plan.md) is the active browser experience revision; [its record](10-execution/sessions/2026-09-14-conversation-build.md) separates implemented simulation, review and production evidence.
 
 **Stage 1 stock-Android tablet app only.** Granny is a temporary codename. Vision, App MVP, App V1, later App, future Stage 2 OS and future Stage 3 hardware are separate scopes in [product scope](01-product/scope-and-roadmap.md). docs/ is the Obsidian vault; the whole Git repository is the project source of truth. Ignored Obsidian JSON is private local user state.
+
+Local backend/MCP experiment: [versioned runtime contract](04-architecture/conversation-runtime-contract.md) · [startup/tests](../prototypes/conversation-runtime/README.md) · [T-117 evidence](10-execution/sessions/2026-09-15-mcp-backend-integration.md). Actual local execution with fictional data; production Android gates unchanged.
 
 ## First read / current state
 
@@ -41,8 +43,8 @@ related:
 | What stock hardware is actually known? | [Reference tablet](07-hardware/reference-hardware.md); exact inventory pending, Stage 3 inactive |
 | What evidence exists and what comes next? | [Source register](08-research/README.md), [Android feasibility](08-research/android-stage-1-feasibility.md), [research program](08-research/research-plan.md) |
 | What is accepted versus proposed? | [ADR index](09-decisions/README.md); eight accepted records including the MVP experiment/control decision, two proposals, one deprecated historical record |
-| How do agents maintain this system? | [AGENTS](../AGENTS.md), [session lifecycle skill](../.agents/skills/granny-session-lifecycle/SKILL.md), [automated maintenance and visibility checks](10-execution/cockpit-guide.md#automated-maintenance-contract); [CLAUDE](../CLAUDE.md) delegates to AGENTS |
-| How is work isolated and published? | [Git worktrees, push verification and reviewed integration](10-execution/git-workflow.md); standing task-branch push authority, no automatic main merge |
+| How do agents maintain this system? | [AGENTS](../AGENTS.md), [session lifecycle skill](../.agents/skills/granny-session-lifecycle/SKILL.md), [automated maintenance and visibility checks](10-execution/cockpit-guide.md#automated-maintenance-contract), and [UI/UX skill provenance](10-execution/ui-ux-skills.md); [CLAUDE](../CLAUDE.md) delegates to AGENTS |
+| How is work isolated and published? | [Git worktrees, push verification and reviewed integration](10-execution/git-workflow.md); [repository reconciliation metaprompt](10-execution/repository-reconciliation-metaprompt.md) for branch/PR audits; standing task-branch push authority, no automatic main merge |
 | How do we move from specs to bounded work? | [Delivery workflows and repo skills](10-execution/operating-workflows.md), [first task packets](10-execution/task-packets.md) |
 | What happens at dispatch, Stop, crash and recovery? | [Execution transaction protocol](03-agent/execution-protocol.md); tool schemas and policy remain their existing owners |
 | When is an adapter/build actually supported? | [Capability admission and support lifecycle](04-architecture/capability-admission.md) |

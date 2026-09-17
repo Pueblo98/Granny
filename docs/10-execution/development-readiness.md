@@ -2,7 +2,7 @@
 title: "Stage 1 development-readiness gates and handoff"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [execution]
 related:
   - current-milestone.md
@@ -14,9 +14,17 @@ related:
 
 # Development-readiness assessment
 
+## Local backend/MCP experiment — 2026-09-15
+
+Simon explicitly authorized [T-117](backlog.md#t-117), a bounded conversation-first browser/backend/MCP slice with fictional contacts, specific confirmation and verified unsent demo-store writes. [Runtime contract](../04-architecture/conversation-runtime-contract.md) and [session evidence](sessions/2026-09-15-mcp-backend-integration.md) own its actual implementation/test state. Backend and frontend coordinate through published board checkpoints. Dependency installation for the official MCP SDK was explicitly approved. This is an exception to earlier no-backend prototype statements, not T-103 completion, Android integration or promotion of GATE-03/04/06/07–09. Live synthetic Qwen calls retain prior caps and consent; broader data/release gates remain open.
+
 ## Conversation-first implementation exception, 2026-09-15
 
 Simon's 2026-09-14 build mission authorizes the local five-workflow conversation prototype and reversible proposed styling; his 2026-09-15 checkpoint feedback continues that direction. [Scope and readiness contract](../02-design/conversation-first-plan.md) and [build evidence](sessions/2026-09-14-conversation-build.md) distinguish implementation authority from final design acceptance. This resolves the earlier wait for a prototype implementation request. GATE-05 still needs final decisions and human/access evidence; T-103 and Android/backend/production gates are unchanged.
+
+## UI/UX skill setup follow-up, 2026-09-14
+
+T-118 installs one Granny-specific interface-craft skill and three pinned, locally guarded Google Android skills. Five changed entrypoints pass the skill packaging checks; current repository documentation validation covers nine skills and 16 bundled reference manuals. These checks make the package reviewable, but do not prove fresh-session triggering, design quality, Android compatibility, accessibility or user comprehension. No application code, dependency, device action, product decision or gate status changes from this tooling setup.
 
 ## Cockpit and design-review follow-up, 2026-09-14
 
@@ -53,7 +61,7 @@ The canonical specification package is written and linked. It is **ready for bou
 | Roadmap/gates/DoR/backlog/handoff | This file, [backlog](backlog.md), [milestone](current-milestone.md), [questions](open-questions.md) | Ready with proposed assumptions; not authorization for broader implementation |
 | Instructions/navigation/templates/decisions | [AGENTS](../../AGENTS.md), [docs index](../README.md), [ADRs](../09-decisions/README.md) | Ready as operating map; ADR-0009 accepted 2026-09-14, ADR-0010/0011 proposed, seven earlier accepted records unchanged |
 | Stage 2 OS / Stage 3 hardware | [Accepted stage strategy](../09-decisions/ADR-0007-three-stage-product-strategy.md) | Not applicable to current stage; no development work |
-| Delivery workflows / skills / first task packets | [Workflows](operating-workflows.md), [packets](task-packets.md), [execution protocol](../03-agent/execution-protocol.md), [admission](../04-architecture/capability-admission.md) | Ready with proposed assumptions for bounded preparation/fake implementation; four repo skills structurally checked, fresh-session behavior/discovery not proven |
+| Delivery workflows / skills / first task packets | [Workflows](operating-workflows.md), [UI/UX skill setup](ui-ux-skills.md), [packets](task-packets.md), [execution protocol](../03-agent/execution-protocol.md), [admission](../04-architecture/capability-admission.md) | Ready with proposed assumptions for bounded preparation/fake implementation; nine repo skills and 16 bundled references structurally checked, fresh-session behavior/discovery not proven |
 | Evidence / research execution protocol | [Evidence review](../06-evals/evidence-protocol.md), [research protocols](../08-research/research-protocols.md) | Ready with proposed assumptions as procedures; no device/participant/runtime results |
 
 ## Named gates: evidence, approver, blockers and unlocks
