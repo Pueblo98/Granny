@@ -19,6 +19,8 @@ related:
 
 Local backend/MCP experiment: [versioned runtime contract](04-architecture/conversation-runtime-contract.md) · [startup/tests](../prototypes/conversation-runtime/README.md) · [T-117 evidence](10-execution/sessions/2026-09-15-mcp-backend-integration.md). Actual local execution with fictional data; production Android gates unchanged.
 
+Latest Simon-authored planning input: [class brainstorming capture](08-research/source-material/2026-09-17-class-brainstorming.md) · [alignment and OQ-14 decision packet](10-execution/brainstorming-alignment.md). Compatible refinements are proposed; conflicts remain unresolved until Simon chooses.
+
 ## First read / current state
 
 [Current milestone](10-execution/current-milestone.md) → [readiness/gates/DoR](10-execution/development-readiness.md) → [backlog](10-execution/backlog.md) → [open decisions](10-execution/open-questions.md). The development-readiness specification is written for review. It does not establish runtime feasibility, user demand or final brand acceptance. Start bounded fake-interface/evidence work, not broad MVP implementation.

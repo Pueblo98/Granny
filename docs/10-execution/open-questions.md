@@ -2,7 +2,7 @@
 title: "Stage 1 decision queue and evidence unknowns"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [execution]
 related:
   - development-readiness.md
@@ -36,9 +36,13 @@ T-113 refined execution/journal/Stop and admission contracts without accepting n
 
 **Confirmed direction and implementation authority; final design open:** Simon authorized the [conversation-first build](../02-design/conversation-first-plan.md) on 2026-09-14 and asked to continue its working message checkpoint direction on 2026-09-15. One conversation, talk/type input, contextual content, exact inline/expanded approval and stable Stop are being explored across five simulations. Next assess the integrated experience and proposed Open Day/Bright Signal comparison. This does not accept final brand values, widen autonomy or pass GATE-05. Evidence of older-adult comprehension remains unrun.
 
+## Brainstorming alignment review — OQ-14
+
+**Simon decision; no conflicting owner changed:** [Simon's 2026-09-17 class brainstorm](../08-research/source-material/2026-09-17-class-brainstorming.md) reinforces conversation-led entry, contextual result modules, optional guidance/annotations, Android delivery and an orchestrator posture. Those compatible refinements are captured in the [alignment brief](brainstorming-alignment.md). Simon still needs to choose between current direction and the brainstorm alternatives for: persistent dashboard versus conversation Home; consequence-bound approval versus consequential action-first; explicit memory versus automatic importance-based saving; explicit communication preferences versus silent personality adaptation; predefined components versus agent-created/rearranged UI; and MVP/V1/later separation versus P1–P9 as one Stage 1 completion bar. Recommendation: retain the current safety/release boundaries and adopt only the explicit, schema-bound hybrids described in the brief.
+
 ## Simon's minimum next decision packet
 
-OQ-01 and OQ-02's control posture were accepted together on 2026-09-14; actual route admission remains evidence-gated. Remaining decisions include ADR-0010/0011 and the [name feedback table](../02-design/naming-exploration.md) / [four identity boards](../02-design/identity-review.html). Choosing a direction does not imply accepting name/legal clearance or all token values. Fake contract replay T-103 can proceed in a separately requested coding session without these brand/market choices.
+OQ-01 and OQ-02's control posture were accepted together on 2026-09-14; actual route admission remains evidence-gated. Remaining decisions include OQ-14, ADR-0010/0011 and the [name feedback table](../02-design/naming-exploration.md) / [four identity boards](../02-design/identity-review.html). Choosing a direction does not imply accepting name/legal clearance or all token values. Fake contract replay T-103 can proceed in a separately requested coding session without these brand/market choices.
 
 Unknowns must produce dated evidence or remain unknown. Only update an ADR to accepted with Simon's explicit decision and authority/date; never convert a tentative preference, lack of objection or a successful synthetic test into acceptance.
 

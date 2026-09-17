@@ -9,11 +9,12 @@ related:
   - ../git-workflow.md
   - 2026-09-15-mcp-backend-integration.md
 record_type: session
-session_state: review
+session_state: complete
 record_basis: contemporaneous
 agent: Codex repository reconciliation session
 branch: chore/reconcile-main-2026-09-17
-next_action: Merge the validated reconciliation PR, close superseded PRs, then start the brainstorming import from refreshed main.
+artifact_commit: 8caae0aef7c8b1a021a5a15aea03457d19df82e1
+next_action: Resolve the dirty primary checkout before claiming the merged repository is visible in the local Obsidian vault.
 changed_paths:
   - AGENTS.md
   - docs/README.md
@@ -51,4 +52,4 @@ These establish repository and local synthetic integration behavior only. They d
 
 ## Handoff
 
-Primary checkout `/home/lgtw/Work/granny` remains at `5ffa589` with user-owned changes to `docs/05-safety-privacy/action-policy.md`, `docs/Development.canvas` and untracked `docs/To DO.md`. Nothing there was stashed, reset, copied, staged or overwritten. Publication, PR merge/closure, refreshed `origin/main` SHA and final read-only vault visibility are completed and recorded in the follow-up commit before this session closes.
+Primary checkout `/home/lgtw/Work/granny` remains at `5ffa589` with user-owned changes to `docs/05-safety-privacy/action-policy.md`, `docs/Development.canvas` and untracked `docs/To DO.md`. Nothing there was stashed, reset, copied, staged or overwritten. PR #9 merged the reconciled history as `8caae0aef7c8b1a021a5a15aea03457d19df82e1` after repository-maintenance, runtime and security checks passed. PR #6 is recorded merged through the consolidated history; PR #7 is closed as superseded. There are no open PRs. `origin/main` contains the exact merge. The read-only vault check correctly reports **NEEDS REVIEW** because the primary checkout was still 50 commits behind and contains the preserved user changes above. No primary-vault visibility claim is made.

@@ -13,6 +13,10 @@ related:
 
 # Current milestone — conversation-first browser experience
 
+## Simon class brainstorming input — 2026-09-17
+
+[Simon's class brainstorming session](../08-research/source-material/2026-09-17-class-brainstorming.md) is now preserved as an attributed planning input. Compatible conversation, contextual-module, guidance/annotation, Android-target and orchestration ideas refine existing proposals without changing scope or gates. [OQ-14](open-questions.md#brainstorming-alignment-review--oq-14) holds the conflicting dashboard, action-first, automatic-memory, adaptive-personality, generated-UI and Stage 1 completion choices for Simon; none is silently adopted.
+
 ## Local backend/MCP experiment — 2026-09-15
 
 Simon explicitly authorized [T-117](backlog.md#t-117), a bounded conversation-first browser/backend/MCP slice with fictional contacts, specific confirmation and verified unsent demo-store writes. [Runtime contract](../04-architecture/conversation-runtime-contract.md) and [session evidence](sessions/2026-09-15-mcp-backend-integration.md) own its actual implementation/test state. Backend and frontend coordinate through published board checkpoints. Dependency installation for the official MCP SDK was explicitly approved. This is an exception to earlier no-backend prototype statements, not T-103 completion, Android integration or promotion of GATE-03/04/06/07–09. Live synthetic Qwen calls retain prior caps and consent; broader data/release gates remain open.
