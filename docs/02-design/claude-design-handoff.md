@@ -20,7 +20,7 @@ Design the app experience using the prepared design system. This is a separate l
 
 Before starting composition, obtain the actual synced system reference and its source revision from the completed system session. Review its proposed-versus-accepted status and known gaps. If that system does not yet exist, report the missing prerequisite rather than implying this brief is the system.
 
-Simon wants to settle product questions before designing the app. Read the current [decision queue](../10-execution/open-questions.md) and [OQ-14 alignment brief](../10-execution/brainstorming-alignment.md). Resolve Home/persistence and the agent's interface-generation boundary with Simon before freezing the experience. Do not infer approval from an old prototype.
+Simon wants to settle product questions before designing the app. Read the current [decision queue](../10-execution/open-questions.md) and [OQ-14 alignment brief](../10-execution/brainstorming-alignment.md). Resolve Home/persistence with Simon before freezing the experience. [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md) already accepts bounded semantic composition: registered components and typed slots/actions, with renderer-owned focus/reflow and stable control anchors; arbitrary generated executable controls are excluded. Do not infer approval from an old prototype.
 
 ## Product and design direction
 
@@ -32,7 +32,7 @@ Avoid capability grids, prompt-chip walls, generic AI gradients/sparkles, repeat
 
 ## Paste into Claude Design
 
-> Use the prepared Granny design system attached to this session. First verify its source/version and read the product decisions and constraints in this brief. I rejected the previous UI because it had too many buttons and looked generically AI-generated. Resolve Home/persistence and generated-interface choices with me before composing screens. Then explore three structurally distinct approaches to the same fictional message task, holding copy, safety and accessibility constant and using the supplied system. Explain why each visible control is needed. Review structure with me before expanding. Preserve exact consequence previews, reachable Stop, touch/voice equivalence and honest partial/unknown results. Deliver annotated app flows and responsive states. Do not rebuild the design system, implement the production app or treat a polished screen as accepted product behavior.
+> Use the prepared Granny design system attached to this session. First verify its source/version and read the product decisions and constraints in this brief. I rejected the previous UI because it had too many buttons and looked generically AI-generated. Resolve Home/persistence with me before composing screens. Preserve accepted bounded semantic composition: compose registered components through typed plans, never invent executable controls or action semantics. Then explore three structurally distinct approaches to the same fictional message task, holding copy, safety and accessibility constant and using the supplied system. Explain why each visible control is needed. Review structure with me before expanding. Preserve exact consequence previews, reachable Stop, touch/voice equivalence and honest partial/unknown results. Deliver annotated app flows and responsive states. Do not rebuild the design system, implement the production app or treat a polished screen as accepted product behavior.
 
 ## Canonical inputs
 

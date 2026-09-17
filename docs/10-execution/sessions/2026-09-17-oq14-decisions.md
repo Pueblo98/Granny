@@ -13,7 +13,7 @@ session_state: review
 record_basis: contemporaneous
 agent: Codex OQ-14 decision propagation session
 branch: docs/oq14-decisions-2026-09-17
-next_action: Simon chooses the Home model and generated-interface boundary after reviewing the expanded examples.
+next_action: Simon chooses the Home model after accepting bounded composition in the follow-up decision session.
 changed_paths:
   - docs/01-product/prd.md
   - docs/01-product/scope-and-roadmap.md
@@ -58,7 +58,7 @@ The retained release split leaves MVP memory as explicit preferences/aliases and
 
 ## Open discussion
 
-The alignment brief compares conversation canvas, persistent dashboard and stable-conversation/pinned-shelf Home models. It separately compares fixed components, free-form generated UI and bounded composition, then explains how persistence and component freedom interact. No Home/component owner changes in this session.
+The alignment brief compares conversation canvas, persistent dashboard and stable-conversation/pinned-shelf Home models. It separately compares fixed components, free-form generated UI and bounded composition, then explains how persistence and component freedom interact. This session left both open; Simon accepted bounded composition in the linked follow-up session while Home remains open.
 
 ## Evidence and handoff
 

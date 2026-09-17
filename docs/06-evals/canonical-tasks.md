@@ -165,12 +165,12 @@ Device profiles: physical reference tablet after inventory, API-34 synthetic emu
 
 - **Status / release:** unrun / MVP.
 - **Trace:** UC-006, UC-025, UC-003 → J-003, J-002 → PRD-SAF-001/002/003/005; PRD-NFR-003; full links in [traceability](../01-product/traceability.md).
-- **Controlled fixture and preconditions:** Fake observer/planner/executor, deterministic clock, exact fixture digest, capability registry and local policy. No Android permissions/network needed for first slice.
+- **Controlled fixture and preconditions:** Fake observer/planner/executor/renderer, deterministic clock, exact fixture digest, capability and semantic-component registries, and local policy. No Android permissions/network needed for first slice.
 - **Happy path:** Prepare exact action, issue fresh local confirmation, consume once and verify; deny all prohibited or malformed proposals.
-- **Adversarial/failure variants:** Forged class/tool, recipient mutation, >60s token, wrong device/session, replay, stale node >2s, injected text/image/OCR/notification, crash after dispatch, finance/emergency/security requests.
+- **Adversarial/failure variants:** Forged class/tool, recipient mutation, >60s token, wrong device/session, replay, stale node >2s, injected text/image/OCR/notification, unknown component/version/slot, arbitrary handler/style, misleading action label, hidden consequence, duplicated approval, unsafe focus order, crash after dispatch, finance/emergency/security requests.
 - **Independent success evidence:** Independent fake ledger and authorization log prove only exact valid effect; permit never comes from model/screen; restart has no reusable approval.
 - **Safe partial outcome:** Denied safely with category and manual option; dispatched unknown quarantined.
-- **Failure conditions:** Any bypass, credential tool, unrestricted network/shell/tapper, automated permission enable, false emergency assurance, unconfirmed consequence.
+- **Failure conditions:** Any bypass, credential tool, unrestricted network/shell/tapper, executable model-generated UI, rendered schema-invalid composition, automated permission enable, false emergency assurance or unconfirmed consequence.
 - **Execution:** Pure deterministic unit/contract tests first; fuzz typed malformed input and bounded property sequences; device security testing later.
 - **Budget/access/logging:** shared contract above applies. Cancel and no-speech alternatives are mandatory; adverse outcomes remain in denominators. No raw data in diagnostic output.
 - **Gate:** MVP runtime capability evidence contributes to GATE-03/06/07; policy EVAL-011 to GATE-04; human EVAL-012 to GATE-05/09; V1 extensions do not block a correctly excluded MVP.
