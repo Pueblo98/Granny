@@ -28,6 +28,7 @@ ADRs record consequential scope, distribution, authority/data, platform and inte
 | [ADR-0010](ADR-0010-local-authority-and-data.md) | proposed | Local independent authority and minimized replaceable cloud; App V1 memory behavior is separately accepted in ADR-0012 |
 | [ADR-0011](ADR-0011-explicit-activation-and-access.md) | proposed | Tap-to-talk/full touch, stronger measurable access baseline |
 | [ADR-0012](ADR-0012-automatic-memory-and-adaptive-communication.md) | accepted | App V1 automatically saves allowed important facts; setup preference anchors bounded silent communication adaptation |
+| [ADR-0013](ADR-0013-bounded-interface-composition.md) | accepted | Agent composes registered semantic components through typed plans; arbitrary generated controls remain unavailable |
 
 Accepted history remains unchanged. Routine copy/file layout does not need an ADR. Do not recycle IDs. New proposal links affected requirements, architecture, policy, eval and gate; specify options, recommendation, reversibility, evidence and approver. Acceptance records date/authority and unresolved evidence conditions without pretending tests passed. If an accepted decision changes, add superseding record and mark prior record deprecated with forward link; preserve historical reasoning.
 

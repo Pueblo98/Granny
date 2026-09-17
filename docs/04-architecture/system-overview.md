@@ -44,7 +44,7 @@ Each anchor is a stable architecture owner referenced from [traceability](../01-
 <a id="shell"></a>
 ### Android shell/UI
 
-**Responsibility / state / APIs:** Screen stack, focus, preferences rendering; UserIntent/LocalControl events.
+**Responsibility / state / APIs:** Screen stack, focus, preferences rendering; validate/version typed ComponentPlan against the semantic registry; UserIntent/LocalControl events.
 **Placement/trust:** Local app activity; trusted renderer of local state.
 **Permissions/data:** Own UI, no special grant; private preview only.
 **Offline/failure isolation:** Offline Home/settings/help; crash loses rendering, executor must stop on visibility loss.

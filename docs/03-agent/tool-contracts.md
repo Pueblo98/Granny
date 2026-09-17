@@ -47,11 +47,17 @@ FailureCode = PER_INCOMPLETE | INT_AMBIGUOUS | ACT_NO_EFFECT | VRF_UNKNOWN |
               AUT_DENIED | AUT_STALE | PRV_SCOPE | SEC_PROTECTED |
               DEP_OFFLINE | DEP_AUTH | DEP_PERMISSION | DEP_VERSION |
               USR_INTERRUPTED | PLN_BUDGET | REC_STOPPED
+ComponentPlan = {schemaVersion, taskId, planVersion,
+                 regions: [{componentId, componentVersion, variant,
+                            typedSlotsRef, allowedActionRefs[], orderHint}],
+                 focusStartRef?, contentVersion}
 ```
 
 UUIDs are session/install-scoped internal IDs, never device serials. Content references resolve only inside scope-aware local stores; raw personal values do not go into audit. Prepared/element content digests are private transient values, not exportable anonymous identifiers. The execution protocol defines exact-content encoding and prohibits durable personal-content hashes/permits. HumanObserved is a test oracle, not production claim. UserReported is presented as “You said…” and does not upgrade independent task verification. Model confidence alone cannot produce Verified. Outputs cannot create new executable capabilities.
 
 Result is a tagged union, not a free-form model object: each variant contains ResultCommon and a fixed discriminator. Verified requires a registered postcondition satisfied by fresh independent evidence; Prepared identifies the immutable preview and explicitly has no completed external outcome; Partial lists verified predicate IDs and unresolved IDs; Unknown names a possibly dispatched effect and forbids repeat; Denied includes policy reason and no-effect evidence; Failed includes failure category and whether no effect is proven. Uncertain effect must return Unknown/Partial, never Denied or Failed with an implicit no-effect claim. Missing/extra fields, wrong types and out-of-range values fail schema validation before dispatch.
+
+ComponentPlan is presentation data, never a capability or action request. The renderer accepts only registered CMP IDs/versions/variants and typed slots, derives native semantics/focus/reflow locally, and resolves action references only to already permitted app actions. Unknown components, arbitrary code/handlers/styles, deceptive consequence labels, missing required preview fields or duplicate effect controls fail the entire plan to a known fallback. Rendering cannot mint a permit or dispatch a tool.
 
 Proposed bounded inputs: one active task, ≤12 plan steps; person/query text ≤256 Unicode code points, exact message draft ≤4096 code points (lower adapter limit applies; never silently truncate), entity results ≤5 per explicitly requested page, known registry predicates only. TextScale and SpeechRate use the closed preview choices in the design system; PrivateSpeech and ReducedMotion are booleans. A composite tool debits every internal action/read/wait against the shared executor budget; no hidden unbounded search. Oversized input produces an editable clarification, not a guessed shortened command.
 
