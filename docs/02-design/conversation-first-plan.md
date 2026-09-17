@@ -18,6 +18,8 @@ related:
 
 ## Direction and authority
 
+**Latest feedback, Simon, 2026-09-17:** the implemented UI remains too button-heavy and generically AI-styled. Simon wants a separate Claude design session after settling product questions. [The handoff](claude-design-handoff.md) prepares that session and the requested Figma system. This supersedes earlier positive checkpoint feedback as the current visual review disposition. Do not extend or polish the current composition under the old build request. Semantic safety/accessibility contracts remain; Home and generated-interface choices stay open under OQ-14.
+
 **Confirmed direction:** Simon rejected the feature-button browser Home on 2026-09-14 and requested a minimal chatbot-like experience with less visible interface and more functionality inside the conversation. The cockpit-first planning task is complete.
 
 **Implementation authority, Simon, 2026-09-14:** the Conversation-First Experience Build mission explicitly authorizes implementing this proposed interaction in the existing local browser prototype. Build the message slice first, surface a working checkpoint, then expand the shared interaction to the other four MVP workflows and supporting local settings/recovery. Continue independent reversible work while feedback is pending; adjust before expanding if Simon rejects the checkpoint. This supersedes this document's earlier implementation-wait language. It authorizes exploration, including inline exact previews and neutral then Open Day/Bright Signal comparisons, not final design/brand acceptance or any production gate. [Current execution record](../10-execution/sessions/2026-09-14-conversation-build.md) records scope, tests and handoff.
