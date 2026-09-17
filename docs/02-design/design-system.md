@@ -13,7 +13,7 @@ related:
 
 # Design-system contract
 
-**Design review update, Simon, 2026-09-17:** the browser UI has too many buttons and a generic AI appearance; its visual composition is not accepted. Prepare the existing semantic system for a separate Claude design session through the [handoff and Figma manifest](claude-design-handoff.md). Settle Home/persistence and generated-interface authority before freezing composition. The catalog below does not prescribe displaying all controls at once. Figma authoring in the newly supplied file is authorized but blocked by MCP quota.
+**Design review update, Simon, 2026-09-17:** the browser UI has too many buttons and a generic AI appearance; its visual composition is not accepted. Prepare the existing semantic system for a separate Claude design session through the [handoff and Figma manifest](claude-design-handoff.md). [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md) now accepts bounded semantic composition; Home/persistence remains open before composition is frozen. The catalog below does not prescribe displaying all controls at once. Figma authoring in the newly supplied file is authorized but blocked by MCP quota.
 
 Current composition is implemented as native HTML controls in the [browser prototype](browser-prototype.md). Reusable rendering helpers map to CMP contracts; semantic CSS custom properties are provisional grayscale review values, not accepted production tokens. Figma instances are no longer the required current handoff. Prototype discrepancies remain named gaps, not new component requirements.
 
@@ -34,6 +34,12 @@ Shape: semantic small/control/container/dialog radii; candidate values vary by t
 ## Component contracts
 
 All components have stable IDs and share enabled/focused/pressed/selected/loading/disabled/error/completed semantics. Focus stays visible; pressed changes fill/border, not position; selection includes a check plus label; loading retains label and explanation; disabled gives a reason; error is text plus icon; completed is based on verified state. Destructive/action dispatch controls lock against duplicate submission but Stop never disables.
+
+### Bounded composition contract
+
+The model may emit only a typed composition plan referencing registered CMP IDs, versioned variants, typed content slots and allowed action references. The app renderer validates the whole plan, supplies native semantics and owns focus/source order. Unknown IDs/variants/slots, invalid nesting, duplicate consequential controls, hidden required fields, unsafe order or content beyond component bounds reject the plan and use a known fallback.
+
+Composition can choose which relevant components appear and how nonconsequential content flows within the current task. It cannot create executable code/event handlers, rename a registered consequence, bypass preview/confirmation, remove Stop, move stable Talk/Type/Menu anchors or convert observed content into a control. At large text/narrow width, renderer-owned reflow overrides model ordering when required for reading/focus. Temporary task components may appear automatically; persistent Home placement remains an open OQ-14 choice.
 
 <a id="cmp-001"></a>
 ### CMP-001 — Stop / Cancel / Take over

@@ -56,7 +56,7 @@ This note compares [Simon's class brainstorming session](../08-research/source-m
 | Consequential action | Low-risk steps avoid repetitive prompts; external consequences require exact fresh approval | Agent acts first, then explains or asks at the end | **Retain current policy:** action-first remains appropriate only for admitted low-risk/reversible steps. |
 | Memory capture | Explicit aliases/preferences in MVP; user-confirmed facts in V1; no passive extraction | Model decides which semantic facts are important and saves them | **Choose automatic App V1 capture:** minimize user effort; quiet receipt/Undo and review rights replace per-fact confirmation. See [ADR-0012](../09-decisions/ADR-0012-automatic-memory-and-adaptive-communication.md). |
 | Personality | Respectful stable voice plus explicit preferences | Silent adaptation of jokes, diction, gender presentation and question frequency | **Choose a combination:** explicit setup preference, then bounded silent optimization over time. Voice/gender presentation remains explicit. See ADR-0012. |
-| Generated interface | Stable predefined semantic components | Agent creates/rearranges buttons, modules or widgets | **Open:** elaborate and discuss with the Home model because persistence and composition are coupled. |
+| Generated interface | Stable predefined semantic components | Agent creates/rearranges buttons, modules or widgets | **Choose bounded composition:** the agent automatically composes registered semantic components through typed plans; it cannot invent executable controls or action semantics. See [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md). |
 | Initiative and completion boundary | Basic reminders in V1; artifacts/proactive routines later; MVP validates five experiments | P1–P9 are all required before Stage 1 is complete, including scheduled proactive messages | **Retain the current MVP/App V1/later split.** |
 
 ## Conflict 1 — what is Home?
@@ -71,7 +71,7 @@ This decision is about the stable place the person sees when no task is active. 
 
 Concrete example: after “Show me Sophie's photos,” all three models may display the same photo strip. The difference appears tomorrow. The conversation model removes it with the task; the dashboard may retain or rearrange it; the pinned-shelf model retains it only if the person pins “Family photos.” Questions for Simon are what should dominate the first screen, which information deserves to persist without a request, and whether the agent may change that persistent surface without being asked.
 
-## Conflict 5 — how much interface may the agent generate?
+## Conflict 5 — bounded composition accepted
 
 This decision controls the agent's design vocabulary wherever Home lands.
 
@@ -79,8 +79,26 @@ This decision controls the agent's design vocabulary wherever Home lands.
 |---|---|---|---|---|
 | Fixed components | Select content for predefined photo, message, media, guidance, memory and settings components; control labels/actions are fixed | Fill a reviewed message-preview card with David and the exact draft | Strong accessibility, policy mapping and repeatable testing | Novel tasks may feel constrained and less personal |
 | Free-form generated UI | Invent controls, labels, layouts and module behavior from the current conversation | Create a new “Send to David” button and place it anywhere | Maximum flexibility and visible customization | A generated control may obscure consequence, move unexpectedly, lose accessibility semantics or escape testing |
-| Bounded composition | Choose and combine registered semantic components; generate text/content inside typed slots; propose persistent pin/reorder changes, but never silently apply them | Compose contact choice + exact draft + approved Send component; suggest pinning a recurring photo view | Flexible task-specific UI while controls retain known semantics and policy | Component registry and proposal rules require product work; some ideas still need a new reviewed component |
+| **Bounded composition — accepted** | Choose and combine registered semantic components; generate text/content inside typed slots; persistent placement follows the still-open Home rule | Compose contact choice + exact draft + approved Send component; suggest or place a recurring photo view only as Home later permits | Flexible task-specific UI while controls retain known semantics and policy | Component registry and proposal rules require product work; some ideas still need a new reviewed component |
 
-The Home decision says **where and when** modules persist. The generated-interface decision says **what the agent is allowed to construct**. A coherent hybrid would use a stable conversation, registered contextual components and a small user-owned pinned shelf. The agent could silently choose temporary components for the current task, while persistent additions or rearrangements remain user-owned layout changes.
+The Home decision says **where and when** modules persist. ADR-0013 now answers what the agent may construct: registered components and typed slots, with renderer-owned semantics and policy-owned actions. Temporary task composition may happen automatically. Home still decides whether any module survives the task and how much persistent change happens without asking.
 
-Rows 2, 3, 4 and 6 now have explicit direction. Rows 1 and 5 remain open; no Home or component contract changes until Simon chooses them.
+Rows 2–6 now have explicit direction. Row 1 remains open; no persistent Home contract changes until Simon chooses it.
+
+## Additional low-clutter Home directions
+
+These are design hypotheses for review, not findings about all older adults. W3C's [older-user overview](https://www.w3.org/WAI/older-users/) notes wide variation in ability and experience, while distraction and concentration can affect some older users. Its [literature review](https://www.w3.org/TR/wai-age-literature/) emphasizes heterogeneity, clear labeling, simplified interfaces for newer users and the tradeoff between navigation assistance and page clutter. [Consistent navigation](https://www.w3.org/WAI/WCAG22/Understanding/consistent-navigation) supports keeping repeated controls in predictable positions.
+
+| Direction | Idle Home | How useful information appears | Clutter control | Main tradeoff |
+|---|---|---|---|---|
+| Quiet anchor | Greeting, Talk/Type and Menu only | The conversation supplies everything after a request | No persistent modules | Lowest clutter, but no glanceable daily value |
+| One glance panel | Stable conversation plus one large verified item such as “Reminder at 3” or “Continue your recipe” | System chooses one timely item; More opens a separate page | Exactly one panel; no carousel; absent when nothing earns the space | Relevance mistakes can displace what the person expected |
+| Closed Today drawer | Quiet conversation with a clearly labeled Today control | Opening it shows a short vertical list of calendar/reminder/recent items | Information is one action away and never competes with the composer | Adds a navigation step and can hide value from someone who never opens it |
+| Resume-first Home | Stable conversation plus one “Continue…” row only when work is unfinished or recently used | The row returns to the exact artifact/task; completed work leaves Home | One conditional row with clear expiry | Less useful for passive glance information such as weather/calendar |
+| User-selected calm mode | Setup chooses Quiet or Glanceable; agent still uses bounded composition inside either | Quiet uses no panel; Glanceable uses one panel/drawer | Person controls baseline and can reset | Adds one setup choice and may be hard to judge before real use |
+
+### Recommended direction for testing: stable anchor plus one context layer
+
+Keep Talk/Type, conversation, Menu and active-task Stop in fixed locations. Permit at most one large optional context panel below the invitation, only for verified, timely information that has a clear next action. Never use a carousel, tiled widget grid, advertising-like cards or automatic movement while the screen is open. If more items exist, a labeled Today page holds a short vertical list. The panel disappears when irrelevant; the person can Keep here, Hide and Reset Home. The agent may select its registered component automatically, but persistent placement follows a stable rule and never moves core controls.
+
+This keeps a recognizable Home while testing whether one glanceable item provides value without overload. It should be compared with the pure quiet anchor using actual older adults across different experience, vision, dexterity and cognitive-access needs; age alone does not select a layout.

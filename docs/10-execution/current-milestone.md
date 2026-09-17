@@ -15,13 +15,13 @@ related:
 
 ## Current design feedback and vault synchronization — 2026-09-17
 
-Simon rejects the browser UI as too button-heavy and generically AI-styled. Settle the two remaining [OQ-14 choices](open-questions.md#brainstorming-alignment-review--oq-14), then use a separate Claude design session. [The handoff and manifest](../02-design/claude-design-handoff.md) prepares it from canonical sources. Figma authoring is requested in a new exact file, but MCP quota blocks discovery; no new Figma components or UI implementation are claimed.
+Simon rejects the browser UI as too button-heavy and generically AI-styled. [Bounded semantic composition](../09-decisions/ADR-0013-bounded-interface-composition.md) is now accepted; settle the remaining [OQ-14 Home choice](open-questions.md#brainstorming-alignment-review--oq-14), then use a separate Claude design session. [The handoff and manifest](../02-design/claude-design-handoff.md) prepares it from canonical sources. Figma authoring is requested in a new exact file, but MCP quota blocks discovery; no new Figma components or UI implementation are claimed.
 
 Main and the local vault now include the conversation runtime, UI/UX skills, brainstorm and ADR-0012 through PR #11 (a200395). Earlier unmerged/stale statements below are historical checkpoints. [The current session](sessions/2026-09-17-vault-design-handoff.md) records edit preservation, publication and final vault checks. Product gates remain unchanged.
 
 ## Simon class brainstorming input — 2026-09-17
 
-[Simon's class brainstorming session](../08-research/source-material/2026-09-17-class-brainstorming.md) is preserved as an attributed planning input. Compatible conversation, contextual-module, guidance/annotation, Android-target and orchestration ideas refine existing proposals without changing gates. On 2026-09-17 Simon retained consequence-based approval and the MVP/App V1/later split, and accepted [automatic important-fact memory plus bounded adaptive communication](../09-decisions/ADR-0012-automatic-memory-and-adaptive-communication.md) for App V1. [OQ-14](open-questions.md#brainstorming-alignment-review--oq-14) keeps the coupled Home and generated-interface choices open for discussion.
+[Simon's class brainstorming session](../08-research/source-material/2026-09-17-class-brainstorming.md) is preserved as an attributed planning input. Compatible conversation, contextual-module, guidance/annotation, Android-target and orchestration ideas refine existing proposals without changing gates. On 2026-09-17 Simon retained consequence-based approval and the MVP/App V1/later split, accepted [automatic important-fact memory plus bounded adaptive communication](../09-decisions/ADR-0012-automatic-memory-and-adaptive-communication.md) for App V1, and accepted ADR-0013 bounded composition. [OQ-14](open-questions.md#brainstorming-alignment-review--oq-14) now keeps only persistent Home structure open for discussion.
 
 ## Local backend/MCP experiment — 2026-09-15
 
