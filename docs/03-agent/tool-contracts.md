@@ -2,7 +2,7 @@
 title: "Stage 1 Typed Capability Contracts"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [agent, interfaces]
 related:
   - device-control.md
@@ -95,4 +95,4 @@ ReplayPort.feed(RecordedSyntheticObservation, ClockTick, UserEvent) -> Trace
 
 Provider adapters cannot receive permits, native nodes, credentials or arbitrary network destinations. Transport/credentials are infrastructure-owned. Replay uses synthetic fixtures, fake clock and deterministic receipt/action drivers; it cannot dispatch to real apps. Evaluation injects permission loss, stale nodes, duplicate callback, process death, provider outage, user touch, lock and malicious observed text.
 
-V1 capabilities (calls, reminders, documents, helper proposals, broader explicit memory) require separate schema additions with PRD-FR-018–020/PRV-003/005 and EVAL-013–017 before task admission. No unrestricted placeholder API should be implemented “for later.”
+V1 capabilities (calls, reminders, documents, helper proposals, ADR-0012 automatic important-fact memory/adaptive communication) require separate schema additions with PRD-FR-018–020/PRV-003/005 and EVAL-013–017 before task admission. No unrestricted placeholder API should be implemented “for later.”

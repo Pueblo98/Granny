@@ -2,7 +2,7 @@
 title: "Decision records and authority"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-17
 tags: [decisions]
 related:
   - ../_templates/adr.md
@@ -25,8 +25,9 @@ ADRs record consequential scope, distribution, authority/data, platform and inte
 | [ADR-0007](ADR-0007-three-stage-product-strategy.md) | accepted | Stage 1 exclusively active |
 | [ADR-0008](ADR-0008-docs-obsidian-vault.md) | accepted | docs/ is Obsidian vault; repository remains full source of truth |
 | [ADR-0009](ADR-0009-mvp-and-control-posture.md) | accepted | Five MVP experiments; policy-bounded candidate vs synthetic dynamic lab; Simon approved 2026-09-14, feasibility/release gates remain open |
-| [ADR-0010](ADR-0010-local-authority-and-data.md) | proposed | Local independent authority, explicit memory and minimized replaceable cloud |
+| [ADR-0010](ADR-0010-local-authority-and-data.md) | proposed | Local independent authority and minimized replaceable cloud; App V1 memory behavior is separately accepted in ADR-0012 |
 | [ADR-0011](ADR-0011-explicit-activation-and-access.md) | proposed | Tap-to-talk/full touch, stronger measurable access baseline |
+| [ADR-0012](ADR-0012-automatic-memory-and-adaptive-communication.md) | accepted | App V1 automatically saves allowed important facts; setup preference anchors bounded silent communication adaptation |
 
 Accepted history remains unchanged. Routine copy/file layout does not need an ADR. Do not recycle IDs. New proposal links affected requirements, architecture, policy, eval and gate; specify options, recommendation, reversibility, evidence and approver. Acceptance records date/authority and unresolved evidence conditions without pretending tests passed. If an accepted decision changes, add superseding record and mark prior record deprecated with forward link; preserve historical reasoning.
 

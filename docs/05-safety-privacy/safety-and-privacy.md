@@ -2,7 +2,7 @@
 title: "Stage 1 Privacy and Data Policy"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [privacy, safety]
 related:
   - action-policy.md
@@ -31,7 +31,7 @@ All durations are proposed product defaults, not observed behavior or legal mand
 | Semantic tree / screenshot / selected image | Scoped local observer; selected redacted slice to provider if consented | User-started scope; in-memory only; discard after step/task or protected boundary/revocation | No screenshot gallery/audit; grant does not authorize training or export |
 | Selected file URI / attachment references | Local scoped content grant; approved adapter | Only task-needed URI; release when no longer required; persistent grant only explicitly selected V1 use | Delete references/caches; user app's original files remain |
 | Explicit UI/voice preferences | Local private store | Explicit setting choice until changed/deleted | Review/edit/restore; export local settings if requested |
-| Contact aliases and V1 explicit facts | Local structured store, private to user | Explicit Save only; until deleted; review after 12 months proposed, no automatic erasure of chosen contact | Source/confidence/scope visible; edit/delete/export; remove derived index/cache; no family access |
+| Contact aliases and V1 important facts/adaptive communication | Local structured store, private to user | MVP aliases/settings use explicit Save; App V1 automatically stores admitted direct-user facts and bounded communication adjustments after setup disclosure; until deleted; review after 12 months proposed | Quiet fact receipt/Undo; source/policy class/scope visible; edit/pause/reset/delete/export; remove derived index/cache; no family access |
 | Task/audit history | Local minimal journal; user UI and policy | Task type, coarse timestamp, result/evidence grade, codes/versions; 7 days rolling default | Clear history; unresolved effects retain no content and expire on same schedule; never duplicate by analytics |
 | Diagnostic export | Local preview; user-chosen support recipient | Opt-in exact preview; app temp file removed within 24h; proposed support copy ≤30 days if collected later | Support deletion process required before pilot; optional note may be private, user reviews separately |
 | Consent/authorization state | Local policy store; remote provider/service only when necessary | Consent version/scope/time and active grants; permits in memory ≤60s; consent records until revoked or app data deleted | Revocation immediate local; retain content-free revoked record ≤7 days; no reusable approval in backups |
@@ -39,7 +39,7 @@ All durations are proposed product defaults, not observed behavior or legal mand
 | V1 helper identity/grant/proposals | Local grant authority + selected backend after ADR/evidence | Optional invitation; grant proposed 90-day review; proposal expires in 7 days | Revoke local immediately; delete pending proposals; no task/content entitlement |
 | Research recordings/consent | Separate restricted research storage, never repository personal data | Explicit study consent; proposed raw recordings ≤30 days, deidentified synthesis only in Git | Participant withdrawal process before study; separate consent for optional recording |
 
-No cloud synchronization, raw recordings, automatic memory extraction, ad analytics or remote helper access in MVP. A user's selection of a screenshot may contain third-party private content; explain scope and redact before egress. Do not send the whole screen because a model could use more context.
+No cloud synchronization, raw recordings, automatic memory extraction, ad analytics or remote helper access in MVP. App V1 automatic memory remains local and typed under ADR-0012; it does not change egress consent. A user's selection of a screenshot may contain third-party private content; explain scope and redact before egress. Do not send the whole screen because a model could use more context.
 
 ## Data flow and deletion semantics
 
@@ -53,7 +53,7 @@ MVP content-free deletion tombstones persist until all referencing local tasks/c
 
 ## Memory ownership and confidence
 
-User-stated and user-confirmed facts remain distinct from model inference. Store provenance, source time, last confirmed, sensitivity, scope and revision. Inferences may exist transiently as candidate interpretations but are never saved as facts in MVP/V1. No medical/cognitive diagnosis, inferred vulnerability, financial profile or relationship truth from a photo. Conflicts prompt user choice, not silent overwrite. Corrections invalidate derived plans and previews.
+User-stated facts, setup selections, bounded interaction preferences and model inferences remain distinct. Store provenance, source time, policy class, sensitivity, scope and revision. In App V1 the model may select an important candidate from the user's direct statement, but local policy must admit the class before automatic saving; the raw transcript is not retained. Inferences from screens, messages, photos, helpers or third parties are never saved as the user's facts. No medical/cognitive diagnosis, inferred vulnerability, financial/legal profile or relationship truth from a photo. Conflicts keep the existing value and prompt only when material, never silently overwrite. Corrections invalidate derived plans and previews.
 
 ## Family/helper boundary
 

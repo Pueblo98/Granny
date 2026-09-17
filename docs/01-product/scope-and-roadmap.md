@@ -2,7 +2,7 @@
 title: Stage 1 scope and product progression
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-17
 tags: [product, stage-1]
 related:
   - prd.md
@@ -18,7 +18,7 @@ related:
 |---|---|---|
 | Vision | A personal computer experience that understands intent, acts, remembers appropriately and supports human connection | Long-term direction; not a checklist |
 | Stage 1 App MVP | A supervised, bounded thesis experiment on inventoried stock tablets: five workflows, explicit activation, touch parity, local enforcement and truthful recovery | Task value, control and distribution evidence before real-user pilot |
-| Stage 1 App V1 | Maintainable release for independent adults in a selected market, with tested app/device support, support operations and correctable explicit memory | MVP evidence plus localization, retention, reliability and support gates |
+| Stage 1 App V1 | Maintainable release for independent adults in a selected market, with tested app/device support, support operations, correctable automatic important-fact memory and bounded adaptive communication | MVP evidence plus localization, retention, reliability and support gates |
 | Later Stage 1 | Wider apps, stories, cross-app search, optional remote help and bounded routines | Separate task evidence and decisions |
 | Stage 2 OS | future-stage context: OS ownership | Dormant; Simon must activate |
 | Stage 3 hardware | future-stage context: integrated tablet/base | Dormant; Simon must activate |
@@ -42,7 +42,7 @@ related:
 | Area | In (after evidence) | Out | Why |
 |---|---|---|---|
 | Core | Reliable MVP flows plus known-person call, basic reminders, selected document opening, read-aloud and in-app history | Arbitrary delegated tasks | Coherent daily value with supportable boundaries |
-| People/memory | Explicit preferences, relationship aliases and important dates with provenance, correction, deletion and export | Inferred health, passive personal graph, recorded stories | Continuity with understandable control |
+| People/memory | Setup-selected communication baseline; automatic allowed important facts and bounded style adaptation with provenance, quiet receipt/Undo, correction, pause/reset, deletion and export | Transcript archive, inferred health/vulnerability, third-party assertions as fact, recorded stories | Low-effort continuity with understandable control |
 | Family | Optional authenticated helper proposes contact/accessibility changes; adult reviews locally | Private content access, remote operation or surveillance | Support without overriding primary user |
 | Platform | Published tested device/OS/app/locale matrix and regression process | “All Android tablets” | App versions and OEM behavior vary |
 | Service | Account only if selected integration requires it; scoped provider consent and support/runbooks | Mandatory family account, ads, engagement optimization | Keep ownership and dependencies clear |
@@ -57,7 +57,7 @@ M = MVP, V = App V1, L = later App; a proposed inclusion is conditional on its g
 | Recent message photos, explain/recover, message preparation, media, in-app text adjustment | Must | Extend tested support | Wider apps | No dependency |
 | Sending through supported integration | Conditional; handoff otherwise | Tested route required for claimed send support | More channels | No dependency |
 | Calls, reminders, documents, read-aloud | Out | Must for selected supported routes | Extend | No dependency |
-| Explicit private memory, export | Preferences/aliases only | Must | Richer classes | No dependency |
+| Private memory, adaptation and export | Explicit preferences/aliases only | Automatic allowed important facts and bounded style adaptation; Must | Richer classes | No dependency |
 | Helper proposals | Co-present only | Should | Extend | No dependency |
 | Story capture/derived artifacts; remote help; proactive routines | Out | Out | Could after new safety/eval gates | No current OS/hardware requirement |
 | Persistent OS-wide ownership; far-field dock | Out | Out | Out | Dormant Stage 2 / Stage 3 respectively |

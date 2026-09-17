@@ -2,7 +2,7 @@
 title: "Stage 1 System Architecture"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [architecture, android]
 related:
   - ../03-agent/tool-contracts.md
@@ -32,7 +32,7 @@ flowchart TD
  O --> V[Postcondition verifier]
  V --> S
  S --> H[Minimal local history]
- M[Explicit private memory] --> P
+ M[Private typed memory and adaptation] --> P
 ```
 
 Diagram arrows show logical request/data relationships; actual outbound payloads pass privacy filter before provider transport. No provider directly reaches OS/executor. Helper is V1 optional remote principal restricted to proposals; it cannot reach private memory, history or observer.
@@ -134,9 +134,9 @@ Each anchor is a stable architecture owner referenced from [traceability](../01-
 <a id="memory"></a>
 ### Memory repository
 
-**Responsibility / state / APIs:** Explicit item revisions, provenance, private retrieval and deletion.
+**Responsibility / state / APIs:** Versioned item revisions, automatic-candidate admission, adaptive-communication baseline/state, provenance, private retrieval and deletion.
 **Placement/trust:** Local protected app storage MVP; no cloud sync.
-**Permissions/data:** User-entered aliases/preferences; V1 facts optional.
+**Permissions/data:** MVP user-entered aliases/preferences; V1 allowed direct-user important facts and bounded interaction preferences under ADR-0012.
 **Offline/failure isolation:** Offline local rights; tombstone blocks use immediately.
 **Dependencies:** privacy, planner, shell.
 

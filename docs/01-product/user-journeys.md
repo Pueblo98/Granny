@@ -2,7 +2,7 @@
 title: "Stage 1 Signature Journeys"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-17
 tags: [product, journeys]
 related:
   - use-cases.md
@@ -135,6 +135,8 @@ When outside Granny, SCR-006 asks “Granny's text or this app's text?” Extern
 4. Screen-help setup explains what scoped content can be read and what cannot; user can decline. Android accessibility settings or capture consent are user-operated. Returning triggers actual grant check.
 5. SCR-003 offers synthetic practice; SCR-004 request → SCR-005 visible task → Stop → SCR-008 “Stopped.” No real communication during practice.
 6. SCR-010 saves only explicit contact aliases/settings the user chooses; show source and correction/deletion. SCR-009 shows minimal task history. SCR-012 explains microphone/cloud/history/helper boundaries and offers clear/delete. SCR-015 help previews optional diagnostics export.
+
+**App V1 continuation under ADR-0012:** the setup communication choice becomes the stable baseline. During later conversations an allowed important fact directly stated by the person may save automatically with a quiet receipt and Undo; no per-fact confirmation dialog. Bounded communication traits may tune silently from direct corrections and interaction choices. SCR-010 provides review, pause/reset, correction, deletion and export. External content, third-party claims, restricted categories and conflicting values do not silently enter memory.
 
 Denied grant: relevant tile explains limited mode; never a repeated nag. Restricted installation: describe need for trusted installation route and stop setup until resolved through authorized user action. Process death: reopen at last safe setup step, not pending grant acceptance. Auth belongs in provider app; do not collect passwords. Offline: touch practice and local settings available. Privacy deletion confirmation lists exact categories and what external app data remains; no false remote deletion claim.
 
