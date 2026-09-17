@@ -81,7 +81,7 @@ A gate record names configuration, approving person/role, evidence, exceptions, 
 
 Freeze the failing configuration; stop only affected admission where possible. Record expected/actual outcome, severity and privacy-safe reproduction. Add an adversarial case to the owning EVAL before re-enabling. Preserve the user's unrelated work; inspect dirty paths before staging specific files.
 
-Handoff contains: requested task and scope; actual changes; commands and exit/results; unrun tests and reasons; accepted/proposed/evidence distinctions; remaining risks; branch/commit/worktree and verified remote SHA; next bounded action. No raw research data or real message content. Change tasks follow the [Git workflow](git-workflow.md): isolated worktree, scoped commits and task-branch pushes under Simon's standing authorization. This does not authorize review-only edits, PR creation, main merges or product publication.
+Handoff contains: requested task and scope; actual changes; commands and exit/results; unrun tests and reasons; accepted/proposed/evidence distinctions; remaining risks; branch/commit/worktree and verified remote SHA; next bounded action. No raw research data or real message content. Change tasks follow the [Git workflow](git-workflow.md): isolated worktree, scoped commits and task-branch pushes under Simon's standing authorization. Completed documentation-only tasks continue through scoped PR, passing checks, normal `main` merge and safe primary-vault synchronization under his 2026-09-17 direction. Review-only work remains read-only; mixed/code integration and product publication retain separate authority.
 
 ## Change-impact routing
 
@@ -104,7 +104,7 @@ Six Granny instruction-only skills route to these canonical workflows:
 
 | Skill | Use it for | Do not use it to |
 |---|---|---|
-| [granny-session-lifecycle](../../.agents/skills/granny-session-lifecycle/SKILL.md) | Start/handoff change work, maintain cockpit records, check PR coverage and vault visibility | Edit from review-only requests, auto-merge or modify private vault settings |
+| [granny-session-lifecycle](../../.agents/skills/granny-session-lifecycle/SKILL.md) | Start/handoff change work, maintain cockpit records, complete authorized docs-main integration and check vault visibility | Edit from review-only requests, bypass checks/dirty-work protection or modify private vault settings |
 | [granny-spec-change](../../.agents/skills/granny-spec-change/SKILL.md) | Change or review product specs and propagate actual decisions | Approve a proposal, rewrite historical sources or implement from a review request |
 | [granny-task-slice](../../.agents/skills/granny-task-slice/SKILL.md) | Prepare or execute one explicitly requested, gate-bounded engineering slice | Start a broad app build or infer device/network permission |
 | [granny-design-handoff](../../.agents/skills/granny-design-handoff/SKILL.md) | Prepare/review frames, states, components and design evidence | Invent a Figma file or silently finalize identity |
