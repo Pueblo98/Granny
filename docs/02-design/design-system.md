@@ -13,7 +13,7 @@ related:
 
 # Design-system contract
 
-**Design review update, Simon, 2026-09-17:** the browser UI has too many buttons and a generic AI appearance; its visual composition is not accepted. Prepare the existing semantic system for a separate Claude design session through the [handoff and Figma manifest](claude-design-handoff.md). [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md) now accepts bounded semantic composition; Home/persistence remains open before composition is frozen. The catalog below does not prescribe displaying all controls at once. Figma authoring in the newly supplied file is authorized but blocked by MCP quota.
+**Design review update, Simon, 2026-09-17:** the browser UI has too many buttons and a generic AI appearance; its visual composition is not accepted. Use the [Claude Code system-construction brief](claude-code-design-system-handoff.md) to build brand guidance, tokens and reusable specimens before /design-sync. The separate [Claude Design app brief](claude-design-handoff.md) consumes that system after the Home choice is settled, preserving [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md)'s accepted bounded composition. The catalog below does not prescribe displaying all controls at once. Historical Figma authoring remains quota-blocked; it is not a dependency of the Claude Code route.
 
 Current composition is implemented as native HTML controls in the [browser prototype](browser-prototype.md). Reusable rendering helpers map to CMP contracts; semantic CSS custom properties are provisional grayscale review values, not accepted production tokens. Figma instances are no longer the required current handoff. Prototype discrepancies remain named gaps, not new component requirements.
 

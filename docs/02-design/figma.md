@@ -15,7 +15,7 @@ related:
 
 ## Authorized design-system handoff — 2026-09-17
 
-Simon requested a reviewable design system in [this exact file](https://www.figma.com/design/lyfsTF7BrZ0Ywv36fhRXHp/Untitled), aligned with Obsidian and portable to a separate Claude design session. This authorizes scoped foundation/component authoring there; historical paused-medium language below does not prohibit this task. [The handoff](claude-design-handoff.md) records feedback, product dependencies and the manifest. It does not authorize copying the rejected button-heavy composition or selecting final brand values.
+Simon requested a reviewable design system in [this exact file](https://www.figma.com/design/lyfsTF7BrZ0Ywv36fhRXHp/Untitled), aligned with Obsidian and portable to a separate Claude design session. This authorized scoped foundation/component authoring there; historical paused-medium language below did not prohibit that task. After the quota block, Simon requested separate [Claude Code system construction and /design-sync](claude-code-design-system-handoff.md) and [Claude Design app composition](claude-design-handoff.md) briefs. Those workflows do not depend on Figma or authorize copying the rejected button-heavy composition or accepting final brand values.
 
 Official MCP authentication, page 0:1 metadata and library discovery succeeded on 2026-09-17. The page returned empty. Component/token search then failed with the Starter-plan MCP tool-call limit. No Figma objects were created or visually verified. Restore quota before resuming discovery and native authoring; do not add duplicate connections or infer authoring access from login success.
 
