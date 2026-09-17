@@ -25,6 +25,8 @@ cd ../..
 node prototypes/conversation-runtime/server.mjs
 ```
 
+`node_modules/` is intentionally ignored and absent in every new worktree until this command runs. A missing `zod` or MCP package therefore means the per-worktree install has not run; do not commit or copy `node_modules`. Tests that spawn the real MCP stdio child can fail in a restricted host sandbox even after installation. Repeat the exact test under a narrowly approved outside-sandbox execution and preserve both results rather than changing the protocol or skipping the test.
+
 Open http://127.0.0.1:4180. Optional numeric port argument. The backend serves the sibling conversation-first UI and same-origin API; use its explicit connected demo entry. Scripted UI remains separate. Stub model is deterministic; MCP initialization, JSON-RPC stdio, tool discovery/calls, temporary files and independent readback are real. Only the three allowlisted demo tools are exposed. MCP wire protocol **2025-11-25** is observed during initialization and required, using SDK 2.0.0's maintained legacy handshake support.
 
 Try `Hello`, then `Tell David Brother "Meet at six.  🌱" via Example Messages`. Ambiguity example: `Tell David "Meet at six."`. The unquoted fixture `Tell David Brother I will call after dinner. via Example Messages` also works. Demo grammar is deliberately deterministic for testing; Qwen performs live semantic interpretation. Review exact recipient/channel/body, optionally edit, then explicitly create the unsent demo draft. Stop remains local and bounded. Unknown effects cannot be retried in that session.
