@@ -5,9 +5,12 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { serve } from './serve.mjs';
 
-export async function browser() {
+export async function browser({baseURL} = {}) {
+  if (baseURL && !/^http:\/\/127\.0\.0\.1:\d+$/.test(baseURL))
+    throw new Error('Browser integration requires an exact loopback origin');
   const output = await mkdtemp(join(tmpdir(), 'granny-conversation-review-'));
-  const server = await serve(0), base = 'http://127.0.0.1:' + server.address().port;
+  const server = baseURL ? null : await serve(0);
+  const base = baseURL || 'http://127.0.0.1:' + server.address().port;
   const chrome = spawn(process.env.GRANNY_CHROMIUM || '/usr/bin/chromium', [
     '--headless', '--disable-gpu', '--no-first-run', '--disable-background-networking',
     '--remote-debugging-port=0', '--user-data-dir=' + join(output, 'profile'), 'about:blank'
@@ -19,7 +22,7 @@ export async function browser() {
     pending.clear();
     if (socket) socket.close();
     chrome.kill('SIGTERM');
-    await new Promise(resolve => server.close(resolve));
+    if (server) await new Promise(resolve => server.close(resolve));
   };
   try {
     const wsURL = await new Promise((resolve, reject) => {

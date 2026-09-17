@@ -42,10 +42,24 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
     preview(s,requestId);
   }
   async function interpret(s,text,requestId,epoch){
-    const proposal=parse(proposalSchema,await (s.mode==='live'?provider:stub).interpret(text,s.controller.signal));
+    const proposal=parse(proposalSchema,await (s.mode==='live'?provider:stub).interpret(text,s.controller.signal,s.history));
     if(!active(s,epoch))return;
+    s.history.push({role:'user',content:text});
+    if(proposal.kind==='chat')s.history.push({role:'assistant',content:proposal.text});
+    while(s.history.length>10||s.history.reduce((n,m)=>n+m.content.length,0)>10000)s.history.shift();
     if(proposal.kind==='chat'){emit(s,'chat','idle',{text:proposal.text,source:s.mode==='live'?'live-model':'stub-model',verified:false},requestId);return;}
     const {bodyStart:start,bodyEnd:end}=proposal;
+    // Explicit user delimiters are independent evidence of the intended body span.
+    // A model cannot trim punctuation/whitespace inside a quoted or marked exact body.
+    let explicitSpan;
+    const marker=/\b(?:the )?exact message(?: text)? is: ?/i.exec(text);
+    if(marker)explicitSpan={start:marker.index+marker[0].length,end:text.length};
+    else if(proposal.recipientQuery){
+      const recipientEnd=text.indexOf(proposal.recipientQuery)+proposal.recipientQuery.length;
+      const quoted=/^\s+(?:saying\s+)?[“"]([\s\S]*)[”"](?: via (?:Example Messages|Example Mail))?$/.exec(text.slice(recipientEnd));
+      if(quoted){const opening=text.slice(recipientEnd).search(/[“"]/);explicitSpan={start:recipientEnd+opening+1,end:recipientEnd+opening+1+quoted[1].length};}
+    }
+    if(explicitSpan&&(start!==explicitSpan.start||end!==explicitSpan.end)){clarify(s,'body',[],requestId);return;}
     if(end<=start||end>text.length||!text.slice(start,end).trim()) {clarify(s,'body',[],requestId);return;}
     // Reject invalid UTF-16 boundaries; preserve bytes without normalization.
     const splitsSurrogate=i=>i>0&&i<text.length&&/[\uD800-\uDBFF]/.test(text[i-1])&&/[\uDC00-\uDFFF]/.test(text[i]);
@@ -68,7 +82,7 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
       if(previous){if(!isDeepStrictEqual(previous.input,value))reject('request_conflict');return snapshot(get(previous.sessionId));}
       if(sessions.size>=8)reject('session_limit',429);
       if(value.mode==='live'&&!provider?.available)reject('provider_unavailable',503);
-      const s={id:id(),mode:value.mode,epoch:0,state:'idle',events:[],requests:new Map(),turnId:null,preview:null,controller:new AbortController(),operations:0,dispatched:false,quarantine:false,expires:now()+sessionTTL};
+      const s={id:id(),mode:value.mode,history:[],epoch:0,state:'idle',events:[],requests:new Map(),turnId:null,preview:null,controller:new AbortController(),operations:0,dispatched:false,quarantine:false,expires:now()+sessionTTL};
       sessions.set(s.id,s);creations.set(value.requestId,{input:value,sessionId:s.id});return snapshot(s);
     },
     events(sessionId,after){return snapshot(get(sessionId),after);},
@@ -78,8 +92,11 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
       // Stop remains available even after resource exhaustion.
       if(c.kind!=='cancel'&&(s.requests.size>=64||s.events.length>=480))reject('session_budget',429);
       if(c.kind==='cancel'){
+        if(s.state==='stopped'||(s.state==='unknown'&&s.events.at(-1)?.type==='cancellation')){
+          if(s.requests.size<70)s.requests.set(c.requestId,c);return snapshot(s);
+        }
         const uncertain=s.dispatched||s.quarantine;invalidate(s);s.quarantine ||= uncertain;
-        if(!['stopped','unknown'].includes(s.state))emit(s,'cancellation',uncertain?'unknown':'stopped',{effect:uncertain?'unknown':'none'},c.requestId);
+        emit(s,'cancellation',uncertain?'unknown':'stopped',{effect:uncertain?'unknown':'none'},c.requestId);
         if(s.requests.size<70)s.requests.set(c.requestId,c);return snapshot(s);
       }
       if(s.quarantine || (s.dispatched&&s.state!=='completed'))reject('effect_unknown');

@@ -17,6 +17,8 @@ related:
 
 **Stage 1 stock-Android tablet app only.** Granny is a temporary codename. Vision, App MVP, App V1, later App, future Stage 2 OS and future Stage 3 hardware are separate scopes in [product scope](01-product/scope-and-roadmap.md). docs/ is the Obsidian vault; the whole Git repository is the project source of truth. Ignored Obsidian JSON is private local user state.
 
+Local backend/MCP experiment: [versioned runtime contract](04-architecture/conversation-runtime-contract.md) · [startup/tests](../prototypes/conversation-runtime/README.md) · [T-117 evidence](10-execution/sessions/2026-09-15-mcp-backend-integration.md). Actual local execution with fictional data; production Android gates unchanged.
+
 ## First read / current state
 
 [Current milestone](10-execution/current-milestone.md) → [readiness/gates/DoR](10-execution/development-readiness.md) → [backlog](10-execution/backlog.md) → [open decisions](10-execution/open-questions.md). The development-readiness specification is written for review. It does not establish runtime feasibility, user demand or final brand acceptance. Start bounded fake-interface/evidence work, not broad MVP implementation.

@@ -2,7 +2,7 @@
 title: "Stage 1 System Architecture"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-15
 tags: [architecture, android]
 related:
   - ../03-agent/tool-contracts.md
@@ -185,6 +185,10 @@ Each anchor is a stable architecture owner referenced from [traceability](../01-
 **Offline/failure isolation:** Offline new grants blocked; local revocation immediate; pending proposals rejected.
 **Dependencies:** backend, policy, shell, memory.
 
+
+## Local browser runtime experiment — 2026-09-15
+
+Simon authorized one actual local backend/MCP slice with synthetic contacts and an isolated unsent draft store. [Conversation runtime contract](conversation-runtime-contract.md) owns the browser API, backend authority and event boundaries; [source and startup](../../prototypes/conversation-runtime/README.md) implement them. It is separate from production Android and T-103. MCP is a protocol boundary, not permission; only fixed contact resolution, draft creation and readback tools exist. Model/provider choice is replaceable. No helper/sync/account platform is introduced.
 
 ## Major sequences
 

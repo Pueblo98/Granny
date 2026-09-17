@@ -11,7 +11,9 @@ related:
 
 # Stage 1 browser design prototype
 
-A dependency-free, local-only interaction sandbox for Granny's five MVP workflows. This is **not the Android application, production agent, or T-103 runtime**. Every external action/result is a fictional fixture. Never enter personal data.
+A dependency-free browser frontend for Granny's five scripted MVP workflows, with a separate opt-in connected local demo-draft mode. This is **not the Android application, production agent, or T-103 runtime**. Scripted external actions/results are fictional fixtures; the connected backend can create real local demo drafts for fictional contacts, never send messages. Never enter personal data.
+
+Current connected runtime: [versioned local backend/MCP contract](../../docs/04-architecture/conversation-runtime-contract.md). Scripted remains default; local demo uses a stub model with actual MCP/store operations. Explicit live synthetic consent is available only when the backend enables it; the one live proposal check failed, so model reliability is not established.
 
 ## Run
 
@@ -31,10 +33,20 @@ The server binds only 127.0.0.1 and serves an exact allowlist of runtime scripts
 - Try “Tell David I’ll call after dinner.” Resolve the person/channel, edit the exact preview, then choose **Open this draft**. Default outcome is a fictional **unsent** draft.
 - Try “Show me the photos Sophie sent yesterday.”, “What am I looking at?”, “Play some Nina Simone.” and “Make this easier to read.” Results and controls appear in the same conversation. Screen help asks for a supplied fictional screen; no actual screen is observed.
 - Demonstration progression is automatic, normally 650 ms per stage. These are scripted timings, not measured model/Android latency. Stop, edits, reset and task replacement invalidate pending callbacks.
-- Menu reveals the secondary settings/help/privacy/history functions. Data lives in this tab's memory; no browser storage, account or provider exists. Do not enter personal data.
+- Menu reveals the secondary settings/help/privacy/history functions. Scripted data lives in this tab's memory; no browser persistence or account exists. Connected mode has separate server-side synthetic state, described below. Do not enter personal data.
 - Open **http://127.0.0.1:4173/?review=1** for separate reviewer controls. Participant mode never inserts these controls into its DOM/focus order. Reviewer choices expose fixtures, outcomes, timing/expiry, enlarged text and proposed visual territories; hypothetical sends are explicitly simulations.
 
 Start with the [review script and coverage/gaps](../../docs/02-design/browser-prototype.md). English, name, interaction and neutral/Open Day/Bright Signal styling remain proposals. No final font, palette or public name is selected.
+
+## Connected local demo (separate opt-in)
+
+**Menu → Demo connection → Connect to local demo** explicitly consents to fictional-data use. The static server above deliberately has no API, so this option requires the backend session's same-origin loopback runtime server serving these current frontend assets. Its canonical interface is [granny.conversation.v1 at the agreed checkpoint](https://github.com/Pueblo98/Granny/blob/aea7f442021347aab0130fcbe220ab5a1ab53b1b/docs/04-architecture/conversation-runtime-contract.md); frontend does not own or duplicate that runtime. See the [frontend coordination record](../../docs/10-execution/sessions/2026-09-15-ui-backend-frontend.md) for exact integrated commits and evidence before claiming a runnable combined build.
+
+The connected slice prepares an unsent message for a fictional person: request, required clarification, exact person/channel/body/effect preview, explicit **Create this unsent demo draft**, creating/checking, and a verified **not sent** result. Editing message words creates a fresh preview; changing person/destination returns to a new natural request because backend-approved identity choices must not be invented by the frontend. An expired approval keeps the readable draft and offers review again. Typed “yes” is not confirmation.
+
+Connected state comes only from ordered runtime events. No scripted timing, model prose or browser timer manufactures completion. Stop disables approval immediately and waits for backend acknowledgment. Connection loss disables action controls and recovers events read-only; it does not retry a confirmation. Unknown effect blocks another connected draft/session in this tab and remains disclosed even after leaving the connected view. Returning to scripted mode requests cancellation first where needed; browser reset is not deletion of the backend's synthetic store.
+
+Text size and unfinished composer/editor content are preserved across secondary navigation. Scripted aliases, music and activity remain separate from backend contacts/execution. Connected mode currently exposes only the local demo, not a live/cloud-provider selector. No key is sent to the browser, no runtime calls occur before opting in, and CSP permits same-origin connections only. The default five-workflow scripted experience is unchanged.
 
 ## Supported rule-based grammar
 
@@ -55,8 +67,10 @@ Clarification accepts the displayed choice label as a typed reply. `Change the m
 ```bash
 node prototypes/stage-1/model.test.mjs
 node prototypes/stage-1/scheduler.test.mjs
+node prototypes/stage-1/cloud.test.mjs
 node prototypes/stage-1/serve.test.mjs
 node prototypes/stage-1/browser-check.mjs
+node prototypes/stage-1/runtime-browser-check.mjs
 python3 scripts/validate-docs.py
 python3 scripts/cockpit.py --check
 python3 -m unittest discover -s scripts -p 'test_*.py'
@@ -68,6 +82,12 @@ The browser check uses an already installed Chromium at /usr/bin/chromium and No
 
 The model test can also run under node --test, but this environment's runner summarized the test file as one test. Direct execution prints each individual assertion case and its total. No test result here passes a canonical device or human EVAL.
 
+cloud.test.mjs and runtime-browser-check.mjs use fake-fetch/wire fixtures: they test the frontend, **not real MCP or server-side enforcement**. Actual integrated backend tests must run separately. The browser driver accepts an optional exact existing loopback origin via browser({baseURL}); it never starts or terminates someone else's server in that mode.
+
+Against a combined frontend/backend checkout already served by its owner, run `node prototypes/stage-1/runtime-integration-check.mjs http://127.0.0.1:4180` (substitute its verified port). This creates one fictional local demo draft through the browser and real runtime/MCP, checks exact edits, clarification, unsent verification, chat, Stop, layout and egress, then closes only its isolated browser. It neither starts nor stops the supplied server. Check the session record for the actual served commit/port and results.
+
+Observed combined review endpoint: **http://127.0.0.1:4181/**, served from /tmp/granny-mcp-backend-integration at combined checkpoint 4d175f6. Start there with `node prototypes/conversation-runtime/server.mjs 4181`; do not replace an occupied preview process. Frontend's real integration check passed 13 assertions there; the backend's 22 runtime/provider/HTTP tests also passed. Latest integrated source and server availability are checkpoints, not a background-service guarantee. The static 4173 preview still cannot create a real demo draft.
+
 ## Source ownership
 
 | File | Role |
@@ -78,14 +98,25 @@ The model test can also run under node --test, but this environment's runner sum
 | [intent.js](intent.js) | Modest documented rule-based request/slot interpretation; no general AI |
 | [model.js](model.js) | In-memory conversation/task transitions, approval versions, local preferences |
 | [scheduler.js](scheduler.js) | Cancellable bounded demonstration delays and preview expiry |
+| [cloud.js](cloud.js) | Same-origin v1 client: event fencing, exact confirmation, Stop and read-only recovery; no provider key/model calls |
 | [app.js](app.js) | Reusable native controls, exact proposed copy and view composition |
 | [serve.mjs](serve.mjs) | Local-only allowlisted static server |
 | [model.test.mjs](model.test.mjs) | Deterministic simulation regression cases |
 | [scheduler.test.mjs](scheduler.test.mjs) | Controlled-clock stale callback, Stop/reset/edit and expiry cases |
+| [cloud.test.mjs](cloud.test.mjs) | Deterministic frontend transport/event/approval regressions, not backend evidence |
 | [serve.test.mjs](serve.test.mjs) | Exact allowlist, methods, traversal and response-header checks |
 | [browser-check.mjs](browser-check.mjs) | Real browser clicks, layout, focus, storage and request checks |
+| [runtime-browser-check.mjs](runtime-browser-check.mjs) | Connected rendering with explicit wire fixtures; not MCP integration evidence |
+| [runtime-integration-check.mjs](runtime-integration-check.mjs) | Real browser-to-local-runtime draft path against an explicitly supplied loopback server |
 | [browser-driver.mjs](browser-driver.mjs) | Test-only CDP helper; importing/running the helper alone is not a test |
 
 Do not copy this simplified state model into the product runtime as a safety implementation. Production authority, verification and permission boundaries belong in the canonical agent/architecture/safety docs. No package manager, framework or vendor has been selected for the product.
 
 Design changes update the canonical behavior owner if behavior changes, then the prototype, coverage manifest and regression tests. Use the task worktree and Git publication workflow. Rollback is removing/reverting only this isolated prototype directory and its documentation links in a reviewed change; no production integration exists.
+
+
+## Delegated live synthetic conversation entry — 2026-09-15
+
+Under Simon's backend integration mission and frontend's published FE006 file-scoped handoff, Menu → Demo connection now offers **Check live model availability**. Only an explicitly enabled backend with liveAvailable exposes **Review live conversation consent**. Separate consent names synthetic conversation egress to OpenRouter/Qwen; cancel makes no session, and confirming creates a mode-bound session without a model call. Text submission starts interpretation. Default remains scripted; connected demo remains stub-only. Keys never enter the browser. No recording, account access, real sending, new capabilities or increased caps.
+
+Live-mode snapshots must match the explicitly consented mode. Mode labels and privacy text disclose provider egress, while exact draft confirmation and backend verification stay unchanged. Unknown/Stop/replay fences remain in force. Client/wire and actual live-mode HTTP/MCP tests use a stub provider, not paid model evidence. The backend's single live Qwen check failed to propose a structured draft; the mode entry does not imply reliable language interpretation. Existing interaction layout/style/other component behavior is unchanged by this delegated extension.

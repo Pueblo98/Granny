@@ -5,6 +5,7 @@ const types = { "/": ["index.html","text/html"], "/index.html": ["index.html","t
   "/styles.css": ["styles.css","text/css"], "/model.js": ["model.js","text/javascript"], "/app.js": ["app.js","text/javascript"],
   "/fixtures.js": ["fixtures.js","text/javascript"], "/intent.js": ["intent.js","text/javascript"],
   "/scheduler.js": ["scheduler.js","text/javascript"],
+  "/cloud.js": ["cloud.js","text/javascript"],
   "/assets/garden.svg": ["assets/garden.svg","image/svg+xml"],
   "/assets/seaside.svg": ["assets/seaside.svg","image/svg+xml"],
   "/assets/meal.svg": ["assets/meal.svg","image/svg+xml"] };

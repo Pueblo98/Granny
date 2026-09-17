@@ -24,6 +24,10 @@ This is the **mapping owner**, not a duplicate requirement definition. [PRD](prd
 
 Problem/job chain: PROB-01→JOB-01 delegation; PROB-02→JOB-02 understanding/recovery; PROB-03→JOB-03 access; PROB-04→JOB-04 control; PROB-05→JOB-05 privacy/support. These are hypotheses, not proven research. IDs are never recycled. Legacy REQ aliases in PRD retain migration history.
 
+## Real local demo runtime evidence
+
+[T-117](../10-execution/backlog.md#t-117) implements the [versioned conversation runtime](../04-architecture/conversation-runtime-contract.md) and [actual MCP backend](../../prototypes/conversation-runtime/README.md) for PRD-FR-002/003/008/013, PRD-SAF-001/002/003 and PRD-PRV-001 themes, UC-006/J-003, SCR-003/007 and CMP-001/003. [Runtime tests](../../prototypes/conversation-runtime/runtime.test.mjs), [provider tests](../../prototypes/conversation-runtime/provider.test.mjs) and [HTTP tests](../../prototypes/conversation-runtime/server.test.mjs) are executed local-prototype evidence for EVAL-003/006/008/009/010 themes. They do not promote the production implementation or canonical EVAL statuses below. Contacts/destination remain fictional; backend/MCP/store operations are actual.
+
 ## Contract routing
 
 All tasks use [typed capability envelopes](../03-agent/tool-contracts.md), [behavior loop](../03-agent/agent-behavior.md), [device-control invariants](../03-agent/device-control.md), [execution protocol](../03-agent/execution-protocol.md), [capability admission](../04-architecture/capability-admission.md) and canonical [action policy](../05-safety-privacy/action-policy.md). Observer/executor/verifier owners use the corresponding finite capabilities; shell/audit/memory owners use local interfaces. No row invents a production implementation link. T-IDs below remain production/evidence tasks; T-102's initial browser design slice is the limited exception linked below. [Task packets](../10-execution/task-packets.md) detail the first slices; [evidence protocol](../06-evals/evidence-protocol.md) governs results without changing the requirement's own status.
