@@ -1,120 +1,59 @@
 ---
-title: "Claude design-session handoff and Figma library manifest"
+title: "Claude Design handoff — app experience using the prepared system"
 status: proposed
 owner: Simon
 last_updated: 2026-09-17
-tags: [design, handoff, figma]
+tags: [design, handoff, interaction]
 related:
-  - design-system.md
   - product-design-spec.md
+  - design-system.md
   - accessibility.md
   - voice-ux.md
-  - figma.md
   - ../10-execution/brainstorming-alignment.md
-  - ../09-decisions/ADR-0012-automatic-memory-and-adaptive-communication.md
-  - ../10-execution/sessions/2026-09-17-vault-design-handoff.md
 ---
 
-# Claude design-session handoff
+# Claude Design: app experience
 
-## Read this first
+## Assignment and entry conditions
 
-Simon rejected the current browser UI on 2026-09-17: too many buttons and a generic AI appearance. He wants to settle product questions first, then work on design in a separate Claude session. The prototype demonstrates bounded interactions and test fixtures; its visual composition is not approved and must not become the design system by copying its CSS.
+Design the app experience using the prepared design system. This is a separate later session from design-system construction. Do not rebuild the palette, typography or component library here, and do not run a Figma library-authoring task.
 
-Audience: older adults using an ordinary stock-Android tablet app. Goal: express an everyday intention, understand what will happen, retain control and receive a truthful result with little configuration. Emotional posture: calm, capable and adult. Granny remains a temporary codename. No final font, name, palette or logo is selected.
+Before starting composition, obtain the actual synced system reference and its source revision from the completed system session. Review its proposed-versus-accepted status and known gaps. If that system does not yet exist, report the missing prerequisite rather than implying this brief is the system.
 
-Source baseline: product-decision commit e573547, merged by a200395 on 2026-09-17, plus this handoff's current feedback. This file is an exportable entry point into the existing knowledge base; linked canonical owners remain authoritative. Check for later decisions before starting the Claude session.
+Simon wants to settle product questions before designing the app. Read the current [decision queue](../10-execution/open-questions.md) and [OQ-14 alignment brief](../10-execution/brainstorming-alignment.md). Resolve Home/persistence and the agent's interface-generation boundary with Simon before freezing the experience. Do not infer approval from an old prototype.
 
-## Artifact status and target
+## Product and design direction
 
-Authorized target: [Simon's Figma design file](https://www.figma.com/design/lyfsTF7BrZ0Ywv36fhRXHp/Untitled). MCP authentication and page 0:1 metadata access succeeded. That page was empty. Library discovery succeeded, but component/token search failed with the Starter-plan MCP call-limit response. **No design-system objects have been created or visually verified in this file.** This is the preparation manifest, not a delivered Figma library.
+The product is a stock-Android tablet app for older adults with varied access needs. Granny is a temporary codename. Simon rejected the existing browser UI as too button-heavy and generically AI-styled. Its behavior fixtures are useful evidence; its appearance is not an accepted reference.
 
-Figma authoring remains authorized in this file once access is restored. Inspect current contents again before changes. Do not mutate the historical exploration file, publish a library or create Code Connect mappings as part of this task. No browser UI changes are included.
+The intended experience lets a person express an everyday goal, understand the consequence, stay in control and receive a truthful result. Keep it calm, capable and adult. Use the supplied system's type, colors and components. Keep product content central and make each visible control earn its place.
 
-## Product decisions before composition
+Avoid capability grids, prompt-chip walls, generic AI gradients/sparkles, repeated floating cards and tiny icon-only actions. Fewer visible controls must preserve the complete touch path, exact approval, stable Stop and discoverable privacy/settings access.
 
-Read the [alignment brief](../10-execution/brainstorming-alignment.md) and [decision queue](../10-execution/open-questions.md).
+## Paste into Claude Design
 
-| Status | Direction | Design consequence |
-|---|---|---|
-| Accepted experiment scope | Five MVP experiments: photos, explain/recover, message preparation/approval, media and in-app readability | Design reusable task content; do not turn five experiments into five Home buttons |
-| Retained approval policy | Admitted reversible steps can proceed with low friction; consequential effects require specific fresh approval | Preserve exact target/content/effect and reachable Change/Cancel; simplify surrounding chrome |
-| Retained release split | MVP, App V1 and later App remain separate | Future features must not populate the MVP interface by default |
-| Accepted App V1 direction | Automatic admitted important facts and bounded communication adaptation after setup preference; ADR-0012 | V1-only quiet receipt/Undo, review, pause/reset and correction; no transcript archive or new action authority |
-| Open: Home | Conversation canvas, persistent dashboard, or conversation with a small user-owned pinned shelf | Do not freeze navigation, persistence or pinning in the foundation library |
-| Open: generated interface | Fixed components, free-form generation, or bounded composition | Semantic contracts can be documented now; model layout freedom is not accepted |
-| Open: visual identity | Name, typeface, territory, dark-mode values and final assets | Use provisional review values; no implied brand acceptance |
+> Use the prepared Granny design system attached to this session. First verify its source/version and read the product decisions and constraints in this brief. I rejected the previous UI because it had too many buttons and looked generically AI-generated. Resolve Home/persistence and generated-interface choices with me before composing screens. Then explore three structurally distinct approaches to the same fictional message task, holding copy, safety and accessibility constant and using the supplied system. Explain why each visible control is needed. Review structure with me before expanding. Preserve exact consequence previews, reachable Stop, touch/voice equivalence and honest partial/unknown results. Deliver annotated app flows and responsive states. Do not rebuild the design system, implement the production app or treat a polished screen as accepted product behavior.
 
-Home controls what persists and where. Generated-interface authority controls what the agent may construct. Resolve them separately even when reviewing the final combination together.
+## Canonical inputs
 
-## Design-session starting prompt
+Read [scope](../01-product/scope-and-roadmap.md), [PRD](../01-product/prd.md), [journeys](../01-product/user-journeys.md), [screen contracts](product-design-spec.md), [components](design-system.md), [voice](voice-ux.md), [accessibility](accessibility.md), [action policy](../05-safety-privacy/action-policy.md) and [privacy](../05-safety-privacy/safety-and-privacy.md).
 
-> Work with me on the design of a stock-Android tablet assistant for older adults. Read this handoff and its canonical sources before proposing visuals. I rejected the prototype because it has too many buttons and looks generically AI-generated. First help me settle Home/persistence and the agent's interface-generation boundary. Do not treat recommendations or old prototype behavior as my acceptance. Then explore three structurally different directions using the same fictional message task, exact consequence, Stop behavior and accessibility requirements. Explain what each visible control earns. Favor readable content, stable placement and direct language; avoid capability grids, prompt-chip walls, decorative AI sparkles, generic gradients, repeated floating cards and hidden icon-only actions. Keep necessary safety controls and complete touch access. Show neutral composition before brand treatments. Do not implement the application, change action policy or promote product gates without my separate request. Return editable references, component/state coverage, provisional tokens, accessibility annotations and remaining decisions.
+MVP covers photos, explain/recover, message preparation/approval, media and in-app readability, with supporting setup/privacy/history. These are outcomes, not a requirement for five Home buttons. Consequential effects require exact fresh approval. App V1 automatic important-fact memory and bounded communication adaptation follow [ADR-0012](../09-decisions/ADR-0012-automatic-memory-and-adaptive-communication.md); they do not silently expand MVP.
 
-## Canonical source map
+## Work sequence
 
-| Question | Owner |
-|---|---|
-| Release boundaries and outcomes | [Scope](../01-product/scope-and-roadmap.md), [PRD](../01-product/prd.md), [journeys](../01-product/user-journeys.md) |
-| Accepted decisions | [ADR index](../09-decisions/README.md), [MVP/control](../09-decisions/ADR-0009-mvp-and-control-posture.md), [V1 memory/adaptation](../09-decisions/ADR-0012-automatic-memory-and-adaptive-communication.md) |
-| Open choices | [OQ-14 alternatives](../10-execution/brainstorming-alignment.md), [decision queue](../10-execution/open-questions.md) |
-| Screens and transitions | [Product design](product-design-spec.md), [conversation plan](conversation-first-plan.md) |
-| Reusable behavior and dimensions | [Design system](design-system.md) |
-| Contrast, scaling and input equivalence | [Accessibility](accessibility.md) |
-| Tone, capture and exact copy | [Voice](voice-ux.md) |
-| Consequences and private data | [Action policy](../05-safety-privacy/action-policy.md), [privacy](../05-safety-privacy/safety-and-privacy.md) |
-| Tokens and candidate identity | [Token boundary](../../design-tokens/README.md), [brand](brand-and-visual-identity.md), [naming](naming-exploration.md) |
-| Figma conventions | [Figma contract](figma.md) |
+1. Confirm the supplied system and resolved product choices.
+2. Explore three different structures for one fictional message task using the same content and component semantics.
+3. Review composition with Simon, including what appears at rest versus during a task.
+4. Develop the selected direction through clarification, preview/edit, activity/Stop, result and recovery before extending to the other MVP flows.
+5. Review narrow/tablet, portrait/landscape, long content, keyboard-open, 200% and combined 300% text scenarios, silent/touch-only use and focus restoration.
 
-## Foundation manifest — provisional
+Exact fixture: “Tell David I'll call after dinner.” Clarify only if identity/channel is unresolved. Show exact recipient, channel, message and effect before approval. A local-demo result must say saved locally and not sent; Android handoff and verified sending are separate states. Unknown effect never offers a blind resend.
 
-These are review starting points from existing owners, not new accepted tokens. Before creation, resolve font availability and conflicting library values. Figma reference geometry is not measured Android dp/sp compliance.
+System-owned permission/authentication screens are annotated placeholders until device evidence. Do not claim a universal external Stop overlay works.
 
-| Foundation | Manifest |
-|---|---|
-| Semantic colors | Background, surface, raised surface, primary/secondary text, border, primary action/on-primary, decorative accent, success/warning/danger, focus and disabled. Alias semantics to primitives. Status includes words or symbols. |
-| Neutral fixture | White canvas; #152522 text; #123B36 primary; #982D35 danger; #5C32A3 focus, from the token README. Measure every actual foreground/background combination. Other role values remain to be specified; this is not a complete palette. |
-| Type size/line-height | Display 32/40sp; heading 28/36; body 20/30; body-large 24/34; button/status 20/28; supporting 18/26. Regular body and semibold labels; exact family/metrics pending review. |
-| Spacing | 4/8/12/16/24/32/48dp; screen inset 24, narrow 16; distinct primary targets separated by 12; internal label/icon gap 8. |
-| Targets | At least 56dp; primary/Stop/consequential controls at least 64dp high. Labels wrap and targets grow. Fewer buttons never means smaller targets. |
-| Shape/elevation | Small/control/container/dialog roles; radii remain candidates. Flat layout; spacing/borders group content. No required shadow or depth-only meaning. |
-| Focus/motion | Proposed 3dp ring with 2dp separation; at least 3:1 distinction. Press/state/panel 120/180/240ms; reduced motion uses immediate static equivalents. |
-| Scaling | 360/600/840 reference widths, both orientations, 100/130/200% system-font scenarios plus combined 200% system and 1.5 app scale. Never clip exact previews or hide Stop. |
+## Deliverables and review
 
-No dark palette is accepted. Record missing coverage until actual pairs and tests exist. Every eventual token needs name/value/unit/mode/maturity/source, scope and code syntax. No production Android mapping is claimed.
+Return actual editable app-design references, state/flow coverage, source-system version, focus/semantics annotations, responsive variants and remaining product questions. Trace surfaces to existing J/SCR/CMP IDs. Record required system changes as proposals for its owner rather than silently introducing one-off colors or components.
 
-## Component library manifest
-
-Build atoms before composites; retain canonical CMP identity. Use `Granny/<role>` names, meaningful state properties, editable text, auto-layout and token bindings. This catalog is not a screen displaying every control at once.
-
-| Contract | Required specimens | Essential annotations |
-|---|---|---|
-| CMP-007 controls | Primary/secondary/destructive buttons, labeled field, On/Off switch, adjustment with +/− | Enabled/focus/pressed/disabled-with-reason/loading/error where applicable; one primary per decision region |
-| CMP-001 escape | Stop, Cancel, Take over and reconciliation | Stable reachable location while active; Stop never disables; distinguish no effect from unknown in-flight effect |
-| CMP-002 input | Talk, listening, partial/final transcript, typed alternative, capture error | Explicit capture state; intent submission is not consequence approval; no ambient microphone |
-| CMP-003 preview | Ready/editing/expired/invalidated/long-content variants and separate deletion preview | Exact recipient/channel/content/effect; named approval, Change/Cancel; no autofocus approval or historical-turn execution |
-| CMP-004 activity | Planning/waiting/verifying with goal/current/last-verified step | No guessed percentage or model reasoning; 5s dependency text, 15s manual-route proposal; include Stop |
-| CMP-005 choice | Normal/selected/focused/no-match/more-results; duplicate-name fixture | One question, actual differentiator, stable entity identity, whole-row target, up to five results |
-| CMP-006 outcome | Verified complete, prepared/handoff, partial, unknown, interrupted, cancelled, safely failed | Words and evidence; no generic success toast or automatic retry after unknown effect |
-| CMP-008 guidance | Inline obstacle; data/grant disclosure; decline/denied/revoked; system-handoff placeholder | Data/purpose/destination/decline effect; annotate system-owned UI as device dependent |
-| CMP-009 content/settings | Photo result, media row, history row, preference preview/restore and empty states | Labeled state; no autoplay or history message body; preserve focus/list position |
-
-V1 memory/adaptation controls belong on a separately labeled future-release review page under ADR-0012. They do not add an always-visible MVP toolbar. Validate applicable states; do not invent irrelevant Cartesian combinations.
-
-## Planned Figma structure and verification
-
-1. Read me: source commit, latest feedback, open decisions, maturity and change log.
-2. Foundations: variables, type, spacing, targets, focus, contrast and units.
-3. Components: one page per family or related group, variants and usage/accessibility notes.
-4. Review cases: exact message, ambiguous person, Stop/unknown outcome, long text and enlarged text. Final Home composition awaits Simon's choices.
-5. Handoff: actual node URLs, coverage/gaps, token maturity, revision and Claude prompt.
-
-Complete discovery before authoring: inspect local assets, enumerate libraries, search components/tokens, record code-versus-Figma gaps and lock the v1 inventory. Then create foundations, build and validate one component family at a time, and audit bindings, names, contrast, targets and reflow. Capture and inspect actual screenshots. Never report wrappers or a manifest as completed components.
-
-Use fictional David/Sophie fixtures. Exact example: “I'll call after dinner.” A local demo result says the draft was saved locally and not sent; Android handoff is a separate proposed route. Unknown send status must not become success to simplify a screen.
-
-## Acceptance and next work
-
-Ask Simon to assess structure and visible interface before polishing. Each retained control serves entry, current task, exact approval, recovery or essential navigation. A calm surface may have few controls at rest and more when a real decision requires them.
-
-Figma delivery requires completed discovery, actual bound variables/styles/components, verified declared variants, inspected screenshots, exact node references and review exports. MCP quota is currently the blocker. Device/TalkBack/switch/user studies remain unrun; neither Figma review nor a component catalog passes a production gate.
+Assess hierarchy, amount of visible interface, consequence comprehension, Stop reachability and readability before visual polish. Report missing states and unrun native/user studies. Design approval does not pass Android feasibility, accessibility or release gates.
