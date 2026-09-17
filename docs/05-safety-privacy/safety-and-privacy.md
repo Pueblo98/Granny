@@ -41,6 +41,8 @@ All durations are proposed product defaults, not observed behavior or legal mand
 
 No cloud synchronization, raw recordings, automatic memory extraction, ad analytics or remote helper access in MVP. App V1 automatic memory remains local and typed under ADR-0012; it does not change egress consent. A user's selection of a screenshot may contain third-party private content; explain scope and redact before egress. Do not send the whole screen because a model could use more context.
 
+Home's optional context panel follows [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md). It may reference only data and capabilities already admitted for the active release. It does not show message bodies, contact details, health/financial facts, private-memory values or another person's content unsolicited; use a generic description and explicit open action. Hide removes the current item from Home selection, Keep here is an explicit persistence choice, and Reset Home clears Home pins/suppression state without deleting the underlying task, reminder, artifact or memory. No panel impression, click or absence becomes advertising, profiling or family/helper telemetry.
+
 ## Data flow and deletion semantics
 
 Capture/selection → local sensitivity classification/redaction → scope/consent check → minimum provider payload → transient response → local typed proposal → independent policy/executor → minimal result journal. Model/provider credentials remain outside model input. TLS and application authentication are implementation requirements for any network route; vendor choice remains open.

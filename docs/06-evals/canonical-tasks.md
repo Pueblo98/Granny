@@ -120,12 +120,12 @@ Device profiles: physical reference tablet after inventory, API-34 synthetic emu
 
 - **Status / release:** unrun / MVP.
 - **Trace:** UC-007, UC-022 → J-006, J-007 → PRD-FR-011; PRD-ACC-001/002/003; full links in [traceability](../01-product/traceability.md).
-- **Controlled fixture and preconditions:** All MVP SCR variants at 360/600/840dp widths, portrait/landscape and 100/130/200% font; TalkBack, switch, keyboard, touch-only, no audio, reduced motion. Own-app settings start known.
+- **Controlled fixture and preconditions:** All MVP SCR variants at 360/600/840dp widths, portrait/landscape and 100/130/200% font; TalkBack, switch, keyboard, touch-only, no audio, reduced motion. SCR-003 runs with CMP-010 absent, present, expired and sensitive-summary variants. Own-app settings start known.
 - **Happy path:** Complete five workflows with relevant alternative input, apply larger Granny text and restore; keep essential content and Stop reachable.
-- **Adversarial/failure variants:** Long names, multiline draft, keyboard occlusion, timeout, permission UI, high contrast, interrupted speech, largest font including 200% system plus 1.5 in-app multiplier; native TalkBack/keyboard activation of deliberately focused approval remains available.
+- **Adversarial/failure variants:** Long names, multiline draft, keyboard occlusion, timeout, permission UI, high contrast, interrupted speech, largest font including 200% system plus 1.5 in-app multiplier; context panel insertion/expiry while focus is elsewhere; native TalkBack/keyboard activation of deliberately focused approval remains available.
 - **Independent success evidence:** Layout bounds/contrast calculation + actual focus/semantic traversal + completed fixture outcome; chosen size persists and undo restores.
 - **Safe partial outcome:** Android/external screen limitation clearly handed off; Granny change never claims system-wide effect.
-- **Failure conditions:** Clipped confirm/recipient/Stop; unlabeled or unreachable control; audio/color-only meaning; focus auto-activates send; accidental task on repeated selection.
+- **Failure conditions:** Clipped confirm/recipient/Stop; unlabeled or unreachable control; audio/color-only meaning; context panel moves core anchors, steals focus or creates essential horizontal scroll; focus auto-activates send; accidental task on repeated selection.
 - **Execution:** Automate own-layout/a11y checks where possible; human TalkBack/switch/keyboard and representative access-needs trials remain required.
 - **Budget/access/logging:** shared contract above applies. Cancel and no-speech alternatives are mandatory; adverse outcomes remain in denominators. No raw data in diagnostic output.
 - **Gate:** MVP runtime capability evidence contributes to GATE-03/06/07; policy EVAL-011 to GATE-04; human EVAL-012 to GATE-05/09; V1 extensions do not block a correctly excluded MVP.
@@ -196,11 +196,11 @@ Device profiles: physical reference tablet after inventory, API-34 synthetic emu
 - **Status / release:** unrun / MVP.
 - **Trace:** UC-002/003/004/006/007/016/019 → J-001/002/003/005/006/007 → PRD-OUT-001/002/003; PRD-ACC-004; full links in [traceability](../01-product/traceability.md).
 - **Controlled fixture and preconditions:** Consented staged prototype with fictional contacts; paired current-method baseline and assistance coding; counterbalanced order; recruit independent older adults across access/tech-comfort profiles, not age stereotype.
-- **Happy path:** User selects voice/touch/guidance, completes workflows, explains action before commit and result after, finds Stop, states desired control.
-- **Adversarial/failure variants:** Wrong suggested person, partial outcome, timeout, noisy room, family absent; changed name/identity territory shown separately after structural tasks.
+- **Happy path:** User selects voice/touch/guidance, completes workflows, explains action before commit and result after, finds Stop, understands or dismisses one context panel and states desired control.
+- **Adversarial/failure variants:** Wrong suggested person, irrelevant/stale/sensitive context panel, panel absent, partial outcome, timeout, noisy room, family absent; compare the accepted one-panel Home with a quiet-anchor control before changed name/identity territory is shown separately.
 - **Independent success evidence:** Observed correct explanation/fixture outcome, intervention counts/time and participant quotes with consent; report sample and negative cases, no population claim.
 - **Safe partial outcome:** Participant safely declines delegation or uses guidance; record preference not failure of person.
-- **Failure conditions:** Undisclosed fake send; coercion; inaccessible consent; confusion about actual outcome; researcher coaching counted as independent completion.
+- **Failure conditions:** Undisclosed fake send; coercion; inaccessible consent; confusion about actual outcome or whether panel action is required; repeated panel distraction or inability to find Talk/Type; researcher coaching counted as independent completion.
 - **Execution:** Human moderated study only for comprehension/dignity; task timestamps automated, not emotion inference.
 - **Budget/access/logging:** shared contract above applies. Cancel and no-speech alternatives are mandatory; adverse outcomes remain in denominators. No raw data in diagnostic output.
 - **Gate:** MVP runtime capability evidence contributes to GATE-03/06/07; policy EVAL-011 to GATE-04; human EVAL-012 to GATE-05/09; V1 extensions do not block a correctly excluded MVP.

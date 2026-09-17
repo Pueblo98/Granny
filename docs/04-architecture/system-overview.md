@@ -44,10 +44,10 @@ Each anchor is a stable architecture owner referenced from [traceability](../01-
 <a id="shell"></a>
 ### Android shell/UI
 
-**Responsibility / state / APIs:** Screen stack, focus, preferences rendering; validate/version typed ComponentPlan against the semantic registry; UserIntent/LocalControl events.
+**Responsibility / state / APIs:** Screen stack, focus, preferences rendering; validate/version typed ComponentPlan against the semantic registry; select at most one release-admitted CMP-010 Home item through deterministic eligibility/privacy/expiry rules; UserIntent/LocalControl events.
 **Placement/trust:** Local app activity; trusted renderer of local state.
 **Permissions/data:** Own UI, no special grant; private preview only.
-**Offline/failure isolation:** Offline Home/settings/help; crash loses rendering, executor must stop on visibility loss.
+**Offline/failure isolation:** Offline Home/settings/help; missing, stale, invalid or private panel candidate falls back to no panel; crash loses rendering, executor must stop on visibility loss.
 **Dependencies:** session, voice, audit.
 
 <a id="voice"></a>

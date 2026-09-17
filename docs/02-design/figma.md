@@ -138,7 +138,7 @@ Create one Stage 1 design file only after authorization to write to Figma. Owner
 |---|---|---|
 | 00 Read me / decisions | Source commit, proposed status, device assumptions, linked PRD/UC/J/SCR IDs, outstanding choices, change log | No implicit approval by polished appearance |
 | 01 Foundations / neutral | Layout grid, scale, focus, targets, status semantics, neutral provisional colors | Measured accessibility before reuse |
-| 02 Components / neutral | CMP-001–009 with every applicable state and keyboard/TalkBack notes | Design-system contract |
+| 02 Components / neutral | CMP-001–010 with every applicable state and keyboard/TalkBack notes | Design-system contract |
 | 03 Interaction / MVP | J-001/002/003/005/006 plus J-007 setup; low-fidelity grayscale | Interaction review before identity preference |
 | 04 Identity comparison | Four territories, identical SCR-003 Home and SCR-007 confirmation at 600dp portrait; SCR-004 listening and SCR-008 failure for each | No different copy/layout confounding style comparison |
 | 05 Identity production | Finalist wordmarks, symbols, responsive lockups and application tests, still proposed | Simon selects direction, specialist checks name |
@@ -172,7 +172,7 @@ Worked annotation example (proposed, not an existing frame): `J-003/SCR-007/conf
 
 Separate reviews: interaction coverage first, accessible component behavior second, identity preference third, implementation fidelity after actual code exists. A reviewer records precise missing frame/variant or contradictory behavior. Simon's identity selection does not approve an unreviewed workflow; engineering acceptance of layout does not confer name clearance. Research preparation and actual collection follow [research protocols](../08-research/research-protocols.md).
 
-CMP-001 Stop/Take over, 002 microphone/transcript, 003 consequence preview, 004 activity, 005 choices, 006 outcome, 007 buttons/forms, 008 guidance/permissions, 009 lists/media/settings compose all screens. Component names `Granny/Confirmation/prepare`, properties `state`, `inputMode`, `consequence`, `sizeProfile`, `themeCandidate`; identity name is a property, not four forked behavior libraries.
+CMP-001 Stop/Take over, 002 microphone/transcript, 003 consequence preview, 004 activity, 005 choices, 006 outcome, 007 buttons/forms, 008 guidance/permissions, 009 lists/media/settings and 010 Home context panel compose all screens. Component names `Granny/Confirmation/prepare`, properties `state`, `inputMode`, `consequence`, `sizeProfile`, `themeCandidate`; identity name is a property, not four forked behavior libraries.
 
 Use auto-layout with wrapping text; no fixed-height text containers, truncation of recipients or scrolling-hidden Stop. Layout constraints: 360/600/840dp logical widths; portrait and landscape; 100/130/200% font scenarios. These are design reference units, not proof of Android reflow. Touch bounds ≥56dp, main/Stop ≥64dp, 12dp gaps. Annotate nonvisual label/role/state, focus order, status live announcements, switch/keyboard route, focus restoration, reduced-motion equivalent and sensitive regions.
 

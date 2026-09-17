@@ -19,7 +19,7 @@ related:
 
 Local backend/MCP experiment: [versioned runtime contract](04-architecture/conversation-runtime-contract.md) · [startup/tests](../prototypes/conversation-runtime/README.md) · [T-117 evidence](10-execution/sessions/2026-09-15-mcp-backend-integration.md). Actual local execution with fictional data; production Android gates unchanged.
 
-Latest Simon-authored planning input: [class brainstorming capture](08-research/source-material/2026-09-17-class-brainstorming.md) · [alignment and OQ-14 decision packet](10-execution/brainstorming-alignment.md). Compatible refinements are proposed; conflicts remain unresolved until Simon chooses.
+Latest Simon-authored planning input: [class brainstorming capture](08-research/source-material/2026-09-17-class-brainstorming.md) · [resolved OQ-14 alignment packet](10-execution/brainstorming-alignment.md). All six product conflicts have explicit direction; visual and human evidence remains open.
 
 ## First read / current state
 
@@ -44,7 +44,7 @@ Latest Simon-authored planning input: [class brainstorming capture](08-research/
 | How do we prove quality and classify failure? | [Canonical evals](06-evals/canonical-tasks.md), [metrics/strategy](06-evals/eval-strategy.md), [failure taxonomy](06-evals/failure-taxonomy.md) |
 | What stock hardware is actually known? | [Reference tablet](07-hardware/reference-hardware.md); exact inventory pending, Stage 3 inactive |
 | What evidence exists and what comes next? | [Source register](08-research/README.md), [Android feasibility](08-research/android-stage-1-feasibility.md), [research program](08-research/research-plan.md) |
-| What is accepted versus proposed? | [ADR index](09-decisions/README.md); ten accepted records including the MVP control posture, automatic-memory/adaptive-communication and bounded-composition decisions, two proposals, one deprecated historical record |
+| What is accepted versus proposed? | [ADR index](09-decisions/README.md); eleven accepted records including the MVP control posture, automatic-memory/adaptive-communication, bounded-composition and one-panel Home decisions, two proposals, one deprecated historical record |
 | How do agents maintain this system? | [AGENTS](../AGENTS.md), [session lifecycle skill](../.agents/skills/granny-session-lifecycle/SKILL.md), [automated maintenance and visibility checks](10-execution/cockpit-guide.md#automated-maintenance-contract), and [UI/UX skill provenance](10-execution/ui-ux-skills.md); [CLAUDE](../CLAUDE.md) delegates to AGENTS |
 | How is work isolated and published? | [Git worktrees, push verification and reviewed integration](10-execution/git-workflow.md); [repository reconciliation metaprompt](10-execution/repository-reconciliation-metaprompt.md) for branch/PR audits; standing task-branch push authority, no automatic main merge |
 | How do we move from specs to bounded work? | [Delivery workflows and repo skills](10-execution/operating-workflows.md), [first task packets](10-execution/task-packets.md) |

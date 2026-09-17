@@ -17,7 +17,7 @@ related:
 
 ## Authority and use
 
-This note compares [Simon's class brainstorming session](../08-research/source-material/2026-09-17-class-brainstorming.md) with the current Stage 1 plan after repository reconciliation. Compatible ideas may refine an existing proposal. Conflicts stay unresolved under OQ-14 until Simon chooses; this note does not silently supersede accepted ADRs, confirmation policy, memory boundaries or release horizons.
+This note compares [Simon's class brainstorming session](../08-research/source-material/2026-09-17-class-brainstorming.md) with the current Stage 1 plan after repository reconciliation. Simon resolved all six OQ-14 product conflicts on 2026-09-17; the accepted ADRs and canonical owners linked below carry the resulting behavior. This note does not silently supersede confirmation policy, memory boundaries or release horizons.
 
 ## Compatible inputs incorporated now
 
@@ -52,7 +52,7 @@ This note compares [Simon's class brainstorming session](../08-research/source-m
 
 | Conflict | Current direction | Brainstorm alternative | Simon's 2026-09-17 direction |
 |---|---|---|---|
-| Home model | One conversation with contextual task controls and quiet Menu | Persistent customizable dashboard with widgets/app shortcuts | **Open:** elaborate and discuss before changing the Home contract. |
+| Home model | One conversation with contextual task controls and quiet Menu | Persistent customizable dashboard with widgets/app shortcuts | **Choose the recommended stable anchor plus one context layer:** zero or one optional registered panel, fixed core controls and no grid/carousel/widget stack. See [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md). |
 | Consequential action | Low-risk steps avoid repetitive prompts; external consequences require exact fresh approval | Agent acts first, then explains or asks at the end | **Retain current policy:** action-first remains appropriate only for admitted low-risk/reversible steps. |
 | Memory capture | Explicit aliases/preferences in MVP; user-confirmed facts in V1; no passive extraction | Model decides which semantic facts are important and saves them | **Choose automatic App V1 capture:** minimize user effort; quiet receipt/Undo and review rights replace per-fact confirmation. See [ADR-0012](../09-decisions/ADR-0012-automatic-memory-and-adaptive-communication.md). |
 | Personality | Respectful stable voice plus explicit preferences | Silent adaptation of jokes, diction, gender presentation and question frequency | **Choose a combination:** explicit setup preference, then bounded silent optimization over time. Voice/gender presentation remains explicit. See ADR-0012. |
@@ -83,7 +83,7 @@ This decision controls the agent's design vocabulary wherever Home lands.
 
 The Home decision says **where and when** modules persist. ADR-0013 now answers what the agent may construct: registered components and typed slots, with renderer-owned semantics and policy-owned actions. Temporary task composition may happen automatically. Home still decides whether any module survives the task and how much persistent change happens without asking.
 
-Rows 2–6 now have explicit direction. Row 1 remains open; no persistent Home contract changes until Simon chooses it.
+All six rows now have explicit direction. The remaining work is visual design and access/comprehension evidence, not another Home-model decision.
 
 ## Additional low-clutter Home directions
 
@@ -97,8 +97,8 @@ These are design hypotheses for review, not findings about all older adults. W3C
 | Resume-first Home | Stable conversation plus one “Continue…” row only when work is unfinished or recently used | The row returns to the exact artifact/task; completed work leaves Home | One conditional row with clear expiry | Less useful for passive glance information such as weather/calendar |
 | User-selected calm mode | Setup chooses Quiet or Glanceable; agent still uses bounded composition inside either | Quiet uses no panel; Glanceable uses one panel/drawer | Person controls baseline and can reset | Adds one setup choice and may be hard to judge before real use |
 
-### Recommended direction for testing: stable anchor plus one context layer
+### Accepted current direction: stable anchor plus one context layer
 
 Keep Talk/Type, conversation, Menu and active-task Stop in fixed locations. Permit at most one large optional context panel below the invitation, only for verified, timely information that has a clear next action. Never use a carousel, tiled widget grid, advertising-like cards or automatic movement while the screen is open. If more items exist, a labeled Today page holds a short vertical list. The panel disappears when irrelevant; the person can Keep here, Hide and Reset Home. The agent may select its registered component automatically, but persistent placement follows a stable rule and never moves core controls.
 
-This keeps a recognizable Home while testing whether one glanceable item provides value without overload. It should be compared with the pure quiet anchor using actual older adults across different experience, vision, dexterity and cognitive-access needs; age alone does not select a layout.
+Simon accepted this current direction on 2026-09-17 “for now,” so [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md) records it as reversible after evidence rather than final visual approval. It keeps a recognizable Home while testing whether one glanceable item provides value without overload. Compare it with the pure quiet anchor using actual older adults across different experience, vision, dexterity and cognitive-access needs; age alone does not select a layout.

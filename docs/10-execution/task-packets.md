@@ -53,13 +53,13 @@ Then T-104/105/106 test admitted external workflows, T-107 local privacy, and T-
 
 **Question:** Can an adult enter, correct, confirm, stop and understand outcomes without voice, hidden state or technical vocabulary?
 
-**Reads:** J-002/003/006/007; PRD-FR-001–003/011/012/013, ACC-001–004, SAF-002, OUT-002; SCR-001–008/011/014; CMP-001–009; [browser handoff](../02-design/browser-prototype.md), [voice](../02-design/voice-ux.md), [accessibility](../02-design/accessibility.md); EVAL-005/007/012. Optional [Figma](../02-design/figma.md) work remains external and requires separate authorization; a Markdown annotation manifest alone is not a created prototype.
+**Reads:** J-002/003/006/007; PRD-FR-001–003/011/012/013, ACC-001–004, SAF-002, OUT-002; SCR-001–008/011/014; CMP-001–010; [ADR-0014 Home rule](../09-decisions/ADR-0014-stable-home-context-panel.md); [browser handoff](../02-design/browser-prototype.md), [voice](../02-design/voice-ux.md), [accessibility](../02-design/accessibility.md); EVAL-005/007/008/012. Optional [Figma](../02-design/figma.md) work remains external and requires separate authorization; a Markdown annotation manifest alone is not a created prototype.
 
 **Work units:**
 
 | Unit | Concrete frame/component output | Reviewer check |
 |---|---|---|
-| A Entry without microphone | Value, Skip, Talk, Type, denied mic and empty Home | Can complete setup without granting mic/cloud/screen? |
+| A Entry without microphone | Value, Skip, Talk, Type, denied mic and Home with context panel absent/present/sensitive-summary/expired | Can complete setup without granting mic/cloud/screen and understand or dismiss the optional panel? |
 | B Correct an intent | Heard transcript, Edit, duplicate person, channel choice | Correction replaces old intent and invalidates old approval; focus returns predictably |
 | C Consequence | Exact recipient/channel/body/effect preview, Change, Confirm, Cancel, expired approval | Nothing is pre-approved; timer expires authority without hiding readable text |
 | D Activity/Stop | Planning, acting, waiting, verifying, stopped/no-effect and stopped/unknown | Global Stop remains touchable; no promise of undoing in-flight external action |
