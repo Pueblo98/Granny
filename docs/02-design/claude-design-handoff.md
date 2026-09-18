@@ -24,6 +24,8 @@ Simon settled the brainstorming interaction conflicts before this app-design ses
 
 ## Product and design direction
 
+**Selected composer shape, Simon, 2026-09-17:** carry [Round conversation](brand-and-visual-identity.md#accepted-shape-direction--round-conversation) through compact, normal and expanded app compositions. The canonical note embeds the selected image and records the favicon direction. This visual approval preserves the Home and interaction contracts; remaining visual values stay provisional.
+
 The product is a stock-Android tablet app for older adults with varied access needs. Granny is a temporary codename. Simon rejected the existing browser UI as too button-heavy and generically AI-styled. Its behavior fixtures are useful evidence; its appearance is not an accepted reference.
 
 The intended experience lets a person express an everyday goal, understand the consequence, stay in control and receive a truthful result. Keep it calm, capable and adult. Use the supplied system's type, colors and components. Keep product content central and make each visible control earn its place.

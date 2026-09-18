@@ -15,6 +15,8 @@ related:
 
 ## Current design feedback and vault synchronization — 2026-09-17
 
+**Composer shape selected:** Simon accepted [Round conversation](../02-design/brand-and-visual-identity.md#accepted-shape-direction--round-conversation) for compact, normal and expanded use, with a favicon direction. The selected reference is embedded in the brand note and linked from both design handoffs. Palette/type, implementation and device/user evidence remain open; [selection record](sessions/2026-09-17-round-conversation-selection.md) owns this documentation delivery.
+
 Simon rejects the browser UI as too button-heavy and generically AI-styled. Two separate briefs now serve the next work: [Claude Code builds and syncs the design system](../02-design/claude-code-design-system-handoff.md); [Claude Design composes the app](../02-design/claude-design-handoff.md) under accepted ADR-0013 bounded composition and [ADR-0014's stable conversation Home with zero or one context panel](../09-decisions/ADR-0014-stable-home-context-panel.md). They are separate files, not a bundle. Figma quota does not block the proposed Claude Code route. No system construction, sync or new app UI has been executed by preparing these briefs.
 
 Before this decision task, main and the local vault included the conversation runtime, UI/UX skills, brainstorm, bounded composition and separate design handoffs through PR #14 (cc97e48). Earlier unmerged/stale statements below are historical checkpoints. [The Home decision session](sessions/2026-09-17-context-panel-home.md) records the current scoped change; product gates remain unchanged.
