@@ -121,6 +121,31 @@ def is_skill_markdown_resource(name):
     return name.startswith(".agents/skills/") and not name.endswith("/SKILL.md")
 
 
+def is_design_system_package_doc(name):
+    """Return true for Markdown owned by the design-system package or its sync.
+
+    These files use the design-sync host's own schema, not the repository's
+    canonical title/status/owner frontmatter, in the same way .agents/skills
+    resources use their host packaging schema:
+
+    - `design-system/docs/<Name>.md` carries `category`, which sets the
+      component's group in the synced system.
+    - `design-system/docs/guides/*.md` is copied verbatim into the uploaded
+      guidelines/ and carries no frontmatter.
+    - `.design-sync/conventions.md` is prepended verbatim to the generated
+      README and inlined into the design agent's prompt, so frontmatter there
+      would leak into that prompt as literal text.
+    - `.design-sync/NOTES.md` is the skill's own free-form handoff format.
+
+    Links in all of them are still checked. docs/ remains the Obsidian vault
+    and the knowledge base; this exemption is bounded to these two package
+    roots and does not widen to docs/.
+    """
+    return name.endswith(".md") and (
+        name.startswith("design-system/") or name.startswith(".design-sync/")
+    )
+
+
 def trace_errors(prd, trace, definitions):
     """Check concrete reference IDs and duplicated release/status projections."""
     errors = []

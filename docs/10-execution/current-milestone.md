@@ -13,6 +13,21 @@ related:
 
 # Current milestone — conversation-first browser experience
 
+## Design system built and synced — 2026-09-18
+
+The [Claude Code construction brief](../02-design/claude-code-design-system-handoff.md)
+was executed. A versioned token source, a 28-component React package with 87
+authored specimen cells, a runnable gallery and a source-linked brand guide now
+exist and are imported into the Claude Design project *Granny Design System
+(proposed)*. [Session record](sessions/2026-09-18-design-system-build.md) owns
+the deliverables, the measured evidence (96 contrast pairs and 30 browser
+checks, both clean) and the gaps.
+
+Simon's next decisions: territory, typeface and the remaining OQ-14 Home
+direction. Nothing in the system is accepted by building it, no app screen was
+designed, and no product gate moved. The [Claude Design app brief](../02-design/claude-design-handoff.md)
+now has a system to consume rather than a palette to reconstruct.
+
 ## Current design feedback and vault synchronization — 2026-09-17
 
 Simon rejects the browser UI as too button-heavy and generically AI-styled. Two separate briefs now serve the next work: [Claude Code builds and syncs the design system](../02-design/claude-code-design-system-handoff.md); [Claude Design composes the app](../02-design/claude-design-handoff.md) under accepted ADR-0013 bounded composition after the remaining [OQ-14 Home choice](open-questions.md#brainstorming-alignment-review--oq-14). They are separate files, not a bundle. Figma quota does not block the proposed Claude Code route. No system construction, sync or new app UI has been executed by preparing these briefs.

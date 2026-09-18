@@ -2,15 +2,41 @@
 title: "Design token maturity and handoff"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-18
 tags: [design]
 related:
   - ../docs/02-design/design-system.md
   - ../docs/02-design/brand-and-visual-identity.md
   - ../docs/02-design/figma.md
+  - ../docs/10-execution/sessions/2026-09-18-design-system-build.md
 ---
 
 # Design token maturity and handoff
+
+## A machine-readable token source now exists — 2026-09-18
+
+`tokens.json` is the versioned source of truth (v0.1.0, status **proposed**):
+primitives → semantic roles → component references, each with name, type,
+value, unit, theme, source and proposed/proposed-new status. Everything
+downstream is generated from it.
+
+| Command | Produces |
+|---|---|
+| `node design-tokens/build-tokens.mjs` | `design-system/src/styles/tokens.css`, `build/tokens.resolved.json`, `build/android-mapping.md`, the generated TS record |
+| `node design-tokens/validate-contrast.mjs` | Measured contrast for 96 pairs across both themes; exits non-zero on a failure or an accent-policy violation |
+| `node design-tokens/validate-css-vars.mjs` | Fails if any component style reads a custom property the token layer does not define |
+| `node design-tokens/review-grades.mjs` | The recorded per-cell review verdicts for the 87 specimen cells |
+
+Resolution fails closed: an unresolved alias, a cycle, or a raw hex in the
+component layer is an error. Colour primitives are deliberately **not** emitted
+as CSS variables — a colour may only reach a component through a semantic role.
+The dimension and duration scale is emitted, because a component legitimately
+reaches for a step of it.
+
+This moves the boundary from step 1 to a **documented step 3 candidate**:
+values are measured and implemented, and nothing is accepted. Step 4 still
+requires Simon's explicit decision, device evidence and the acceptance record.
+Dark mode is out of scope for v1 and is not derived by inversion.
 
 The [browser-first handoff](../docs/02-design/browser-prototype.md) is active. Its [stylesheet](../prototypes/stage-1/styles.css) contains a neutral interaction baseline and reviewer-only Open Day / Bright Signal comparisons on the same conversation. These reversible proposed values are not final identity. CSS pixels/em are not Android dp/sp. These custom properties are not an accepted portable token schema. Future production exports must trace to a reviewed browser component/screenshot or optional Figma variable; a Figma subscription is not required.
 

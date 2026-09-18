@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Granny design system — specimen gallery (proposed)</title>
+    <!-- Empty icon so the browser's automatic /favicon.ico request cannot
+         404 and show up as a console error in the specimen checks. -->
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./dist/index.css" />
+    <style>
+      /* Gallery chrome only. Deliberately neutral so it cannot be mistaken for
+         part of the design system, and so it does not colour a review of it. */
+      :root { color-scheme: light; }
+      body {
+        margin: 0;
+        background: #eef0ef;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: #1c2320;
+      }
+      .g-bar {
+        position: sticky; top: 0; z-index: 10;
+        background: #ffffff; border-bottom: 1px solid #ccd3d0;
+        padding: 12px 20px; display: flex; flex-wrap: wrap;
+        gap: 12px 24px; align-items: center; justify-content: space-between;
+      }
+      .g-bar-title { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+      .g-tag {
+        font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+        background: #55306f; color: #fff; border-radius: 4px; padding: 2px 6px;
+      }
+      .g-meta { font-weight: 400; font-size: 12px; color: #5d6865; }
+      .g-controls { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+      .g-controls label { font-size: 12px; color: #5d6865; display: flex; flex-direction: column; gap: 3px; }
+      .g-controls select { font-size: 13px; padding: 4px 6px; }
+      .g-check { flex-direction: row !important; align-items: center; gap: 6px !important; }
+      .g-nav {
+        display: flex; flex-wrap: wrap; gap: 8px 16px;
+        padding: 10px 20px; background: #f7f8f8; border-bottom: 1px solid #ccd3d0;
+        font-size: 13px;
+      }
+      .g-nav a { color: #2a4a43; }
+      main { padding: 20px; }
+      .g-group { margin-bottom: 40px; }
+      .g-group-title { font-size: 20px; margin: 0 0 14px; display: flex; gap: 10px; align-items: baseline; }
+      .g-component { margin-bottom: 26px; }
+      .g-component-title {
+        font-size: 15px; margin: 0 0 10px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        color: #35423e;
+      }
+      .g-cells { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+      .g-cell { border: 1px solid #ccd3d0; border-radius: 8px; background: #fff; overflow: hidden; }
+      .g-cell-label {
+        font-size: 11px; font-family: ui-monospace, Menlo, monospace; color: #5d6865;
+        padding: 6px 10px; background: #f7f8f8; border-bottom: 1px solid #e0e5e3;
+      }
+      /* The cell body must not clip a focus ring; the system requires the ring
+         to survive its container. */
+      .g-cell-body { overflow: visible; }
+      .g-footer {
+        padding: 20px; font-size: 12px; color: #5d6865; border-top: 1px solid #ccd3d0;
+        background: #f7f8f8; max-width: 90ch;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./gallery.js"></script>
+  </body>
+</html>

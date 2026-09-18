@@ -1,0 +1,80 @@
+[
+  {
+    "file": "AtkinsonHyperlegibleNext-var.ttf",
+    "bytes": 114552,
+    "sha256": "5a455d1cfa099b601ab70751bb9673e8fe1854dc4500c80e1a220d0d75e31745",
+    "variable": true,
+    "axes": [
+      {
+        "tag": "wght",
+        "min": 200,
+        "def": 400,
+        "max": 800
+      }
+    ],
+    "glyphCount": 362,
+    "coverage": {
+      "Basic Latin": "95/95",
+      "Latin-1 Supplement": "94/96",
+      "Latin Extended-A": "93/128",
+      "Latin Extended-B": "6/208",
+      "Greek": "4/144",
+      "Cyrillic": "0/256",
+      "Arabic": "0/256",
+      "Devanagari": "0/128",
+      "CJK": "0/20992"
+    }
+  },
+  {
+    "file": "Manrope-var.ttf",
+    "bytes": 164700,
+    "sha256": "3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6",
+    "variable": true,
+    "axes": [
+      {
+        "tag": "wght",
+        "min": 200,
+        "def": 200,
+        "max": 800
+      }
+    ],
+    "glyphCount": 678,
+    "coverage": {
+      "Basic Latin": "95/95",
+      "Latin-1 Supplement": "96/96",
+      "Latin Extended-A": "115/128",
+      "Latin Extended-B": "9/208",
+      "Greek": "75/144",
+      "Cyrillic": "104/256",
+      "Arabic": "0/256",
+      "Devanagari": "0/128",
+      "CJK": "0/20992"
+    }
+  },
+  {
+    "file": "SourceSans3-var.ttf",
+    "bytes": 646340,
+    "sha256": "042fe2cc0b933e328410d7acbd0aa6a1873dca5aef81875f4bc214b08825c7b9",
+    "variable": true,
+    "axes": [
+      {
+        "tag": "wght",
+        "min": 200,
+        "def": 200,
+        "max": 900
+      }
+    ],
+    "glyphCount": 1615,
+    "coverage": {
+      "Basic Latin": "95/95",
+      "Latin-1 Supplement": "96/96",
+      "Latin Extended-A": "128/128",
+      "Latin Extended-B": "100/208",
+      "Greek": "88/144",
+      "Cyrillic": "156/256",
+      "Arabic": "0/256",
+      "Devanagari": "0/128",
+      "CJK": "0/20992"
+    }
+  }
+]

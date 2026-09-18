@@ -2,7 +2,7 @@
 title: "Claude Code handoff — build the design system and run design-sync"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-18
 tags: [design, brand, handoff, tokens]
 related:
   - brand-and-visual-identity.md
@@ -11,9 +11,27 @@ related:
   - voice-ux.md
   - naming-exploration.md
   - ../../design-tokens/README.md
+  - ../10-execution/sessions/2026-09-18-design-system-build.md
 ---
 
 # Claude Code: build and sync the design system
+
+## Executed — 2026-09-18
+
+This assignment was carried out. [Session record](../10-execution/sessions/2026-09-18-design-system-build.md)
+owns the exact deliverables, validation results, gaps and sync reference.
+
+Built from source revision `cc97e484`: a versioned token source in
+`design-tokens/`, a React package in `design-system/` with 28 components and
+87 authored specimen cells, a runnable local gallery, and a source-linked
+brand guide. Synced to the Claude Design project **Granny Design System
+(proposed)** (`4148cba1-baa4-4241-b893-6c54188897ff`), 154 files, verified by
+reading files back from the destination.
+
+Every value remains **proposed**. No territory, typeface, radius or motion
+value is accepted, no Home composition is fixed, and no app screen was
+designed. Browser checks are not Android conformance; TalkBack, switch access,
+device and participant evidence remain unrun.
 
 ## Assignment
 

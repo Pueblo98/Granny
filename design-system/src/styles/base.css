@@ -1,0 +1,112 @@
+/* Base layer: the theme root, the type roles and focus.
+ * Every value resolves from a --ds-* custom property. A literal colour, size
+ * or duration in this file would be a token-source bypass.
+ */
+
+.ds-root {
+  background: var(--ds-surface-canvas);
+  color: var(--ds-text-primary);
+  font-family: var(--ds-type-body-family);
+  font-size: var(--ds-type-body-size);
+  line-height: var(--ds-type-body-line);
+  font-weight: var(--ds-type-body-weight);
+  -webkit-font-smoothing: antialiased;
+  /* Grouping is carried by spacing and rules, so the root establishes rhythm
+     rather than a stack of raised cards. */
+  padding: var(--ds-space-inset-nominal);
+  box-sizing: border-box;
+}
+
+.ds-root *,
+.ds-root *::before,
+.ds-root *::after {
+  box-sizing: border-box;
+}
+
+/* A theme root inside another theme root is a scope, not a second screen: it
+   switches the token values for its subtree without adding another screen
+   inset or a second background. */
+.ds-root .ds-root {
+  padding: 0;
+  background: none;
+  min-width: 0;
+}
+
+/* Narrow width uses the narrow inset. 600px is the browser stand-in for the
+   600dp breakpoint; CSS px is not dp. */
+@media (max-width: 600px) {
+  .ds-root {
+    padding: var(--ds-space-inset-narrow);
+  }
+}
+
+/* --- type roles ------------------------------------------------------- */
+
+.ds-type-display,
+.ds-type-heading,
+.ds-type-body,
+.ds-type-body-large,
+.ds-type-button,
+.ds-type-status,
+.ds-type-supporting {
+  margin: 0;
+  /* Labels wrap rather than truncate. Nothing in this system clips a label
+     to make a control fit. */
+  overflow-wrap: break-word;
+  hyphens: manual;
+}
+
+.ds-type-display    { font-family: var(--ds-type-display-family);    font-size: var(--ds-type-display-size);    line-height: var(--ds-type-display-line);    font-weight: var(--ds-type-display-weight); }
+.ds-type-heading    { font-family: var(--ds-type-heading-family);    font-size: var(--ds-type-heading-size);    line-height: var(--ds-type-heading-line);    font-weight: var(--ds-type-heading-weight); }
+.ds-type-body-large { font-family: var(--ds-type-body-large-family); font-size: var(--ds-type-body-large-size); line-height: var(--ds-type-body-large-line); font-weight: var(--ds-type-body-large-weight); }
+.ds-type-body       { font-family: var(--ds-type-body-family);       font-size: var(--ds-type-body-size);       line-height: var(--ds-type-body-line);       font-weight: var(--ds-type-body-weight); }
+.ds-type-button     { font-family: var(--ds-type-button-family);     font-size: var(--ds-type-button-size);     line-height: var(--ds-type-button-line);     font-weight: var(--ds-type-button-weight); }
+.ds-type-status     { font-family: var(--ds-type-status-family);     font-size: var(--ds-type-status-size);     line-height: var(--ds-type-status-line);     font-weight: var(--ds-type-status-weight); }
+.ds-type-supporting { font-family: var(--ds-type-supporting-family); font-size: var(--ds-type-supporting-size); line-height: var(--ds-type-supporting-line); font-weight: var(--ds-type-supporting-weight); color: var(--ds-text-secondary); }
+
+/* Reading measure. Roughly 45-65 characters where practical; never a fixed
+   line count and never a clamp that hides content. */
+.ds-measure { max-width: 62ch; }
+
+/* --- focus ------------------------------------------------------------ */
+
+/* 3dp ring with 2dp separation. outline-offset keeps the gap; no ancestor in
+   this system sets overflow:hidden on a focusable region, so the ring is
+   never clipped by a card edge. */
+.ds-root :focus-visible {
+  outline: var(--ds-focus-ring-width) solid var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+  border-radius: inherit;
+}
+
+/* --- layout helpers --------------------------------------------------- */
+
+.ds-stack        { display: flex; flex-direction: column; gap: var(--ds-space-stack-default); }
+.ds-stack-tight  { display: flex; flex-direction: column; gap: var(--ds-space-stack-tight); }
+.ds-stack-loose  { display: flex; flex-direction: column; gap: var(--ds-space-stack-loose); }
+
+/* Distinct primary targets stay at least 12dp apart and wrap instead of
+   shrinking, so a long label grows the control rather than truncating it. */
+.ds-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-gap-primary-targets);
+  align-items: stretch;
+}
+
+.ds-rule {
+  border: 0;
+  border-top: 1px solid var(--ds-border-subtle);
+  margin: 0;
+}
+
+.ds-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

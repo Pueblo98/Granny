@@ -1,0 +1,36 @@
+/* Bundled variable fonts. No remote font dependency: these files ship with the
+ * system and are served from ./fonts/. Provenance, exact axis ranges, SHA-256
+ * digests and measured script coverage are in ./font-inspection.json and
+ * ../docs/typography.md.
+ *
+ * Every family below is SIL Open Font License 1.1; the licence text sits
+ * beside each file.
+ *
+ * These are variable fonts whose DEFAULT instance is not 400 (Manrope and
+ * Source Sans 3 default to 200). Every type role therefore sets an explicit
+ * font-weight — never rely on the family default.
+ */
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  src: url("./AtkinsonHyperlegibleNext-var.ttf") format("truetype");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("./Manrope-var.ttf") format("truetype");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("./SourceSans3-var.ttf") format("truetype");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}

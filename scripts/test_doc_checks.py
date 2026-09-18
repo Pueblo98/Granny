@@ -2,7 +2,7 @@
 import datetime
 import unittest
 
-from doc_checks import is_skill_markdown_resource, markdown_links, skill_errors, split_frontmatter, trace_errors
+from doc_checks import is_design_system_package_doc, is_skill_markdown_resource, markdown_links, skill_errors, split_frontmatter, trace_errors
 
 
 class FrontmatterTests(unittest.TestCase):
@@ -65,6 +65,20 @@ class SkillTests(unittest.TestCase):
         self.assertTrue(is_skill_markdown_resource(".agents/skills/adaptive/references/android.md"))
         self.assertFalse(is_skill_markdown_resource(".agents/skills/adaptive/SKILL.md"))
         self.assertFalse(is_skill_markdown_resource("docs/02-design/accessibility.md"))
+
+    def test_design_system_package_docs_use_their_host_schema(self):
+        self.assertTrue(is_design_system_package_doc("design-system/docs/Button.md"))
+        self.assertTrue(is_design_system_package_doc("design-system/docs/guides/brand-guide.md"))
+        self.assertTrue(is_design_system_package_doc(".design-sync/conventions.md"))
+        self.assertTrue(is_design_system_package_doc(".design-sync/NOTES.md"))
+
+    def test_design_system_exemption_does_not_widen_to_the_vault(self):
+        # docs/ stays the knowledge base under canonical frontmatter, including
+        # the documents that describe the design system.
+        self.assertFalse(is_design_system_package_doc("docs/02-design/design-system.md"))
+        self.assertFalse(is_design_system_package_doc("docs/02-design/accessibility.md"))
+        self.assertFalse(is_design_system_package_doc("design-tokens/README.md"))
+        self.assertFalse(is_design_system_package_doc("design-system/src/Icon.tsx"))
 
 
 class TraceTests(unittest.TestCase):

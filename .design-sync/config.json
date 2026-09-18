@@ -1,0 +1,16 @@
+{
+  "pkg": "@granny/design-system",
+  "globalName": "GrannyDS",
+  "projectId": "4148cba1-baa4-4241-b893-6c54188897ff",
+  "shape": "package",
+  "buildCmd": "npm --prefix design-system run build",
+  "cssEntry": "dist/index.css",
+  "docsDir": "docs",
+  "guidelinesGlob": ["docs/guides/**/*.md"],
+  "extraFonts": ["fonts/fonts.css"],
+  "readmeHeader": ".design-sync/conventions.md",
+  "provider": {
+    "component": "ThemeProvider",
+    "props": { "theme": "open-day" }
+  }
+}

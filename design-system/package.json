@@ -1,0 +1,37 @@
+{
+  "name": "@granny/design-system",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Granny Stage 1 design system — proposed foundations and semantic component specimens. React is a transfer format for design-system review, not an Android framework decision.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "style": "./dist/index.css",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/index.css"
+  },
+  "files": ["dist", "fonts"],
+  "scripts": {
+    "tokens": "node ../design-tokens/build-tokens.mjs",
+    "build": "npm run tokens && node build.mjs && tsc -p tsconfig.json",
+    "gallery": "node scripts/serve-gallery.mjs"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "esbuild": "^0.24.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.6.3"
+  }
+}

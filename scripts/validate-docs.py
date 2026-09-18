@@ -8,7 +8,7 @@ try:
     import yaml
 except ImportError:
     sys.exit("PyYAML required; do not install without authorization.")
-from doc_checks import is_skill_markdown_resource, markdown_links, skill_errors, split_frontmatter, trace_errors
+from doc_checks import is_design_system_package_doc, is_skill_markdown_resource, markdown_links, skill_errors, split_frontmatter, trace_errors
 ROOT=Path(__file__).resolve().parents[1]
 errors=[]; counts=collections.Counter()
 def fail(message): errors.append(message)
@@ -51,6 +51,23 @@ for p,text in texts.items():
     name=rel(p)
     if name in preserved:
         counts["preserved_markdown_exempt"]+=1; continue
+    if is_design_system_package_doc(name):
+        # Package source using the design-sync host schema. A per-component doc
+        # carries `category` (its group in the synced system); the brand guide
+        # under docs/guides/ carries no frontmatter by design, because it is
+        # copied verbatim into the uploaded guidelines/.
+        counts["design_system_package_docs"]+=1
+        if name.startswith("design-system/docs/") and "/guides/" not in name:
+            try:
+                meta,_=split_frontmatter(text)
+                if not isinstance(meta.get("category"),str) or not meta["category"].strip():
+                    fail(f"{name}: component doc needs a non-empty category")
+            except ValueError as exc:
+                fail(f"{name}: {exc}")
+        destinations,unresolved=markdown_links(body(text))
+        for raw in destinations: link(p,raw)
+        for label in unresolved: fail(f"{name}: undefined link reference {label}")
+        continue
     if is_skill_markdown_resource(name):
         counts["skill_resources"]+=1
         destinations,unresolved=markdown_links(body(text))

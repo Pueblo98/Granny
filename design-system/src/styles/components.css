@@ -1,0 +1,675 @@
+/* Component layer. Reads --ds-cmp-* and --ds-* properties only.
+ *
+ * Shared state contract (design-system.md "Component contracts"):
+ *   focus stays visible; pressed changes fill or border, never position;
+ *   selection is a check plus a label, never colour alone; loading keeps its
+ *   label and its explanation; disabled states the reason in the same region;
+ *   error is text plus icon; completed reflects verified state.
+ */
+
+/* ===================== buttons (CMP-007) ============================== */
+
+.ds-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-gap-label-icon);
+  /* Targets grow with their label. min-height, never height. */
+  min-height: var(--ds-size-target-min);
+  padding: var(--ds-space-3) var(--ds-space-5);
+  border-radius: var(--ds-cmp-button-radius);
+  border: 2px solid transparent;
+  font-family: var(--ds-type-button-family);
+  font-size: var(--ds-type-button-size);
+  line-height: var(--ds-type-button-line);
+  font-weight: var(--ds-type-button-weight);
+  text-align: center;
+  cursor: pointer;
+  /* Pressed changes fill; nothing here animates position. */
+  transition: background-color var(--ds-motion-press) var(--ds-motion-easing-standard),
+              border-color var(--ds-motion-press) var(--ds-motion-easing-standard),
+              color var(--ds-motion-press) var(--ds-motion-easing-standard);
+  overflow-wrap: break-word;
+  /* A button in a flex row must be able to shrink so its label wraps, rather
+     than holding its content width and widening the whole region. */
+  min-width: 0;
+}
+.ds-button > span { min-width: 0; }
+
+/* Primary, Stop and consequential actions are taller than the 56dp floor. */
+.ds-button--primary,
+.ds-button--danger,
+.ds-button--stop {
+  min-height: var(--ds-size-target-primary);
+}
+
+.ds-button--primary {
+  background: var(--ds-cmp-button-primary-background);
+  color: var(--ds-cmp-button-primary-label);
+}
+.ds-button--primary:hover:not(:disabled) { background: var(--ds-cmp-button-primary-background-hover); }
+.ds-button--primary:active:not(:disabled),
+.ds-button--primary[data-state="pressed"] { background: var(--ds-cmp-button-primary-background-pressed); }
+
+.ds-button--secondary {
+  background: var(--ds-surface-panel);
+  color: var(--ds-cmp-button-secondary-label);
+  border-color: var(--ds-cmp-button-secondary-border);
+}
+/* Pressed inverts rather than tinting: the tinted alternative measured
+   5.93:1 for the secondary label, under the 7:1 essential target. */
+.ds-button--secondary:active:not(:disabled),
+.ds-button--secondary[data-state="pressed"] {
+  background: var(--ds-cmp-button-secondary-background-pressed);
+  color: var(--ds-cmp-button-secondary-label-pressed);
+}
+
+.ds-button--danger {
+  background: var(--ds-cmp-button-danger-background);
+  color: var(--ds-cmp-button-danger-label);
+}
+
+.ds-button:disabled,
+.ds-button[aria-disabled="true"] {
+  background: var(--ds-cmp-button-disabled-background);
+  color: var(--ds-cmp-button-disabled-label);
+  /* A disabled control keeps a measured outline — its fill is not what marks
+     where it is. */
+  border-color: var(--ds-cmp-button-disabled-border);
+  cursor: not-allowed;
+}
+
+/* The reason a control is disabled sits in the same region at full supporting
+   contrast. It is never rendered in the disabled label colour. */
+.ds-button-reason {
+  color: var(--ds-cmp-button-disabled-reason);
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  line-height: var(--ds-type-supporting-line);
+  margin-top: var(--ds-space-2);
+  max-width: 48ch;
+}
+
+.ds-button-group { display: flex; flex-direction: column; }
+
+/* Loading keeps the label and adds an explanation. The indicator never
+   replaces text and never implies progress it cannot measure. */
+.ds-button[data-loading="true"] { cursor: progress; }
+
+.ds-spinner {
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  flex: none;
+  animation: ds-spin 900ms linear infinite;
+}
+@keyframes ds-spin { to { transform: rotate(360deg); } }
+
+/* Reduced motion: the indicator stops and becomes a static mark. No infinite
+   decorative movement survives this setting — whether it came from the OS or
+   from the in-app control. */
+@media (prefers-reduced-motion: reduce) {
+  .ds-spinner { animation: none; border-top-color: currentColor; opacity: 1; }
+}
+[data-ds-reduced-motion="true"] .ds-spinner {
+  animation: none;
+  border-top-color: currentColor;
+  opacity: 1;
+}
+
+/* ===================== Stop (CMP-001) ================================= */
+
+.ds-stop {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-3);
+  width: 100%;
+  /* At large text Take over drops below Stop rather than pushing the panel
+     wider. Both stay reachable; Stop keeps its position first. */
+  flex-wrap: wrap;
+}
+.ds-stop > .ds-button { min-width: 0; }
+
+.ds-stop .ds-button--stop {
+  background: var(--ds-cmp-stop-background);
+  color: var(--ds-cmp-stop-label);
+  flex: 1 1 auto;
+}
+.ds-stop .ds-button--stop:active { background: var(--ds-action-primary-pressed); }
+
+.ds-stop-note {
+  color: var(--ds-text-secondary);
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  line-height: var(--ds-type-supporting-line);
+}
+
+/* ===================== fields and switches (CMP-007) ================== */
+
+.ds-field { display: flex; flex-direction: column; gap: var(--ds-space-2); }
+
+/* Persistent label. Never a placeholder standing in for a label. */
+.ds-field-label {
+  font-family: var(--ds-type-body-family);
+  font-size: var(--ds-type-body-size);
+  line-height: var(--ds-type-body-line);
+  font-weight: 600;
+  color: var(--ds-cmp-field-label);
+}
+
+.ds-field-input {
+  min-height: var(--ds-cmp-field-min-height);
+  padding: var(--ds-space-3) var(--ds-space-4);
+  background: var(--ds-cmp-field-background);
+  color: var(--ds-text-primary);
+  border: 2px solid var(--ds-cmp-field-border);
+  border-radius: var(--ds-cmp-button-radius);
+  font-family: var(--ds-type-body-family);
+  font-size: var(--ds-type-body-size);
+  line-height: var(--ds-type-body-line);
+  width: 100%;
+  resize: vertical;
+}
+
+/* A disabled field must look disabled. Without this it renders identically to
+   an editable one, and the only thing distinguishing them is that typing does
+   nothing — which is not a state a person can see. */
+.ds-field-input:disabled {
+  background: var(--ds-surface-disabled);
+  color: var(--ds-text-disabled);
+  border-color: var(--ds-border-disabled);
+  cursor: not-allowed;
+}
+
+.ds-field--error .ds-field-input { border-color: var(--ds-cmp-field-error); border-width: 3px; }
+
+/* Error is text plus an icon. The border colour alone never carries it. */
+.ds-field-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-space-2);
+  color: var(--ds-cmp-field-error);
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  line-height: var(--ds-type-supporting-line);
+  font-weight: 600;
+}
+
+.ds-field-help {
+  color: var(--ds-text-secondary);
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  line-height: var(--ds-type-supporting-line);
+}
+
+.ds-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-4);
+  min-height: var(--ds-size-target-min);
+  padding: var(--ds-space-3) 0;
+  flex-wrap: wrap;
+}
+
+.ds-switch-text { flex: 1 1 22ch; min-width: 0; }
+
+.ds-switch-control {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-3);
+  background: none;
+  border: 0;
+  padding: var(--ds-space-2);
+  cursor: pointer;
+  border-radius: var(--ds-cmp-button-radius);
+  flex: none;
+}
+
+/* The word On or Off is part of the control, not a colour reading. */
+.ds-switch-state {
+  font-family: var(--ds-type-button-family);
+  font-size: var(--ds-type-button-size);
+  font-weight: var(--ds-type-button-weight);
+  color: var(--ds-text-primary);
+  min-width: 4ch;
+  text-align: right;
+}
+
+.ds-switch-track {
+  width: 64px;
+  height: 36px;
+  border-radius: 18px;
+  background: var(--ds-cmp-switch-track-off);
+  border: 2px solid var(--ds-cmp-switch-border);
+  position: relative;
+  flex: none;
+  transition: background-color var(--ds-motion-state) var(--ds-motion-easing-standard);
+}
+.ds-switch-control[aria-checked="true"] .ds-switch-track {
+  background: var(--ds-cmp-switch-track-on);
+  border-color: var(--ds-cmp-switch-track-on);
+}
+
+.ds-switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--ds-cmp-switch-knob);
+  border: 2px solid var(--ds-cmp-switch-border);
+  transition: transform var(--ds-motion-state) var(--ds-motion-easing-standard);
+}
+.ds-switch-control[aria-checked="true"] .ds-switch-knob { transform: translateX(28px); }
+
+/* Same reason as the disabled field: the switch has to look unavailable, not
+   merely fail to respond. The On/Off word keeps supporting contrast so the
+   current state is still readable while the control is off. */
+.ds-switch-control[aria-disabled="true"] { cursor: not-allowed; }
+.ds-switch-control[aria-disabled="true"] .ds-switch-state { color: var(--ds-text-disabled); }
+.ds-switch-control[aria-disabled="true"] .ds-switch-track {
+  background: var(--ds-surface-disabled);
+  border-color: var(--ds-border-disabled);
+}
+.ds-switch-control[aria-disabled="true"] .ds-switch-knob {
+  background: var(--ds-surface-disabled);
+  border-color: var(--ds-border-disabled);
+}
+
+/* Slider always exposes minus/plus alternatives and the current numeric value,
+   so dragging is never the only way to change it. */
+.ds-stepper { display: flex; flex-direction: column; gap: var(--ds-space-3); }
+/* Minus, value and plus stay on one line: wrapping them onto separate rows
+   separates the two halves of a single control and reads as two unrelated
+   buttons. The value shrinks instead. */
+.ds-stepper-controls { display: flex; align-items: center; gap: var(--ds-space-3); flex-wrap: nowrap; }
+.ds-stepper-value {
+  font-family: var(--ds-type-status-family);
+  font-size: var(--ds-type-status-size);
+  font-weight: var(--ds-type-status-weight);
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  overflow-wrap: break-word;
+}
+.ds-stepper-step { flex: none; }
+.ds-stepper-step {
+  min-width: var(--ds-size-target-min);
+  min-height: var(--ds-size-target-min);
+  font-size: var(--ds-type-heading-size);
+}
+
+/* ===================== talk and transcript (CMP-002) ================== */
+
+.ds-talk { display: flex; flex-direction: column; gap: var(--ds-space-3); }
+
+.ds-talk-state {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-2);
+  font-family: var(--ds-type-status-family);
+  font-size: var(--ds-type-status-size);
+  font-weight: var(--ds-type-status-weight);
+  color: var(--ds-text-primary);
+}
+
+.ds-transcript {
+  background: var(--ds-surface-panel);
+  border: 2px solid var(--ds-border-control);
+  border-radius: var(--ds-radius-container);
+  padding: var(--ds-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-2);
+}
+
+.ds-transcript-label {
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  font-weight: 600;
+  color: var(--ds-text-secondary);
+}
+
+.ds-transcript-partial { color: var(--ds-text-secondary); font-style: italic; }
+
+/* ===================== previews (CMP-003) ============================= */
+
+.ds-preview {
+  background: var(--ds-cmp-preview-background);
+  border: 2px solid var(--ds-cmp-preview-border);
+  border-radius: var(--ds-radius-container);
+  padding: var(--ds-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-4);
+  /* Never clipped: an exact preview shows the whole recipient and the whole
+     body, at any text size. */
+  overflow: visible;
+}
+
+.ds-preview--destructive { border-color: var(--ds-status-danger); border-width: 3px; }
+
+/* Each fact is a label above its value, never a two-column grid.
+ *
+ * A grid whose label column takes max-content leaves the value column
+ * arbitrarily narrow once the text scale grows, and a recipient then wraps one
+ * character per line. Stacking gives the recipient and the body the full
+ * width of the panel at every text size, which is what "the preview never
+ * truncates or mangles the recipient" actually requires. */
+.ds-preview-facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-1);
+  margin: 0;
+}
+
+.ds-preview-facts dt {
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  line-height: var(--ds-type-supporting-line);
+  font-weight: 600;
+  color: var(--ds-cmp-preview-metadata);
+}
+.ds-preview-facts dd {
+  margin: 0 0 var(--ds-space-3);
+  font-family: var(--ds-type-body-family);
+  font-size: var(--ds-type-body-size);
+  line-height: var(--ds-type-body-line);
+  color: var(--ds-cmp-preview-body);
+  /* break-word, not anywhere: a long address still breaks rather than
+     overflowing, but ordinary words and phone numbers are left intact. */
+  overflow-wrap: break-word;
+}
+.ds-preview-facts dd:last-child { margin-bottom: 0; }
+
+/* The exact body the person is approving. Selectable, wrapping, never
+   truncated or ellipsised. */
+.ds-preview-body {
+  background: var(--ds-surface-canvas);
+  border-left: 4px solid var(--ds-action-primary);
+  padding: var(--ds-space-4);
+  font-family: var(--ds-type-body-large-family);
+  font-size: var(--ds-type-body-large-size);
+  line-height: var(--ds-type-body-large-line);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ds-preview-effect {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-space-2);
+  font-family: var(--ds-type-status-family);
+  font-size: var(--ds-type-status-size);
+  line-height: var(--ds-type-status-line);
+  font-weight: var(--ds-type-status-weight);
+  min-width: 0;
+}
+.ds-preview-effect > span { min-width: 0; overflow-wrap: anywhere; }
+.ds-preview-effect > svg { flex: none; }
+
+.ds-preview-expiry {
+  color: var(--ds-status-warning);
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-2);
+}
+
+/* ===================== activity (CMP-004) ============================= */
+
+.ds-activity {
+  background: var(--ds-surface-panel);
+  border-radius: var(--ds-radius-container);
+  padding: var(--ds-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-4);
+  border-left: 4px solid var(--ds-action-primary);
+}
+
+.ds-activity-goal {
+  font-family: var(--ds-type-heading-family);
+  font-size: var(--ds-type-heading-size);
+  line-height: var(--ds-type-heading-line);
+  font-weight: var(--ds-type-heading-weight);
+}
+
+.ds-activity-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--ds-space-2); }
+.ds-activity-step { display: flex; align-items: flex-start; gap: var(--ds-space-2); }
+.ds-activity-step--verified { color: var(--ds-status-success); font-weight: 600; }
+.ds-activity-step--current { color: var(--ds-text-primary); font-weight: 600; }
+
+/* ===================== choices and rows (CMP-005, CMP-009) ============ */
+
+.ds-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-4);
+  width: 100%;
+  min-height: var(--ds-cmp-row-min-height);
+  padding: var(--ds-space-3) var(--ds-space-4);
+  background: var(--ds-cmp-row-background);
+  border: 2px solid var(--ds-border-subtle);
+  border-radius: var(--ds-radius-control);
+  text-align: left;
+  font-family: var(--ds-type-body-family);
+  font-size: var(--ds-type-body-size);
+  color: var(--ds-text-primary);
+  cursor: pointer;
+  transition: background-color var(--ds-motion-press) var(--ds-motion-easing-standard);
+}
+
+.ds-row:active { background: var(--ds-cmp-row-background-pressed); }
+
+/* Selection is the check mark, the spoken state and the boundary together.
+   The fill is the faintest of the three signals and never carries it alone. */
+.ds-row[aria-selected="true"],
+.ds-row[aria-checked="true"] {
+  background: var(--ds-cmp-row-background-selected);
+  border-color: var(--ds-cmp-row-border-selected);
+  border-width: 3px;
+}
+
+.ds-row-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--ds-space-1); }
+.ds-row-name { font-weight: 600; overflow-wrap: anywhere; }
+.ds-row-detail {
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  line-height: var(--ds-type-supporting-line);
+  color: var(--ds-text-secondary);
+}
+.ds-row-mark { flex: none; width: 32px; display: flex; justify-content: center; color: var(--ds-action-primary); }
+
+.ds-list { display: flex; flex-direction: column; gap: var(--ds-space-3); margin: 0; padding: 0; list-style: none; }
+
+.ds-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-4);
+  min-height: var(--ds-cmp-row-min-height);
+  padding: var(--ds-space-3) 0;
+  border-bottom: 1px solid var(--ds-cmp-row-divider);
+  flex-wrap: wrap;
+}
+
+.ds-media-row { display: flex; align-items: center; gap: var(--ds-space-4); flex-wrap: wrap; }
+.ds-media-art {
+  width: 72px; height: 72px; flex: none;
+  border-radius: var(--ds-radius-small);
+  background: var(--ds-surface-pressed);
+  border: 1px solid var(--ds-border-subtle);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ds-text-secondary);
+}
+
+/* ===================== outcome (CMP-006) ============================== */
+
+/* Outcome blocks group with a rule and spacing, not a tinted fill. The status
+   word therefore sits on the panel, where it holds 7.6-8.6:1. */
+.ds-outcome {
+  background: var(--ds-cmp-outcome-surface);
+  border-left: 6px solid var(--ds-cmp-outcome-neutral-rule);
+  border-radius: var(--ds-radius-small);
+  padding: var(--ds-space-4) var(--ds-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-3);
+}
+
+.ds-outcome--complete    { border-left-color: var(--ds-cmp-outcome-complete-rule); }
+.ds-outcome--prepared    { border-left-color: var(--ds-action-primary); }
+.ds-outcome--partial     { border-left-color: var(--ds-cmp-outcome-unknown-rule); }
+.ds-outcome--unknown     { border-left-color: var(--ds-cmp-outcome-unknown-rule); }
+.ds-outcome--interrupted { border-left-color: var(--ds-cmp-outcome-unknown-rule); }
+.ds-outcome--cancelled   { border-left-color: var(--ds-cmp-outcome-neutral-rule); }
+.ds-outcome--failed      { border-left-color: var(--ds-cmp-outcome-failed-rule); }
+
+.ds-outcome-head { display: flex; align-items: flex-start; gap: var(--ds-space-3); min-width: 0; }
+.ds-outcome-head > div { min-width: 0; }
+.ds-outcome-icon { flex: none; }
+
+.ds-outcome-heading {
+  font-family: var(--ds-type-heading-family);
+  font-size: var(--ds-type-heading-size);
+  line-height: var(--ds-type-heading-line);
+  font-weight: var(--ds-type-heading-weight);
+}
+
+.ds-outcome-icon { flex: none; margin-top: 2px; }
+.ds-outcome-icon--complete { color: var(--ds-cmp-outcome-complete-rule); }
+.ds-outcome-icon--unknown  { color: var(--ds-cmp-outcome-unknown-rule); }
+.ds-outcome-icon--failed   { color: var(--ds-cmp-outcome-failed-rule); }
+.ds-outcome-icon--neutral  { color: var(--ds-text-secondary); }
+
+/* Evidence level is stated, never implied by the tone of the heading. */
+.ds-outcome-evidence {
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  line-height: var(--ds-type-supporting-line);
+  color: var(--ds-text-secondary);
+  display: flex;
+  gap: var(--ds-space-2);
+  align-items: baseline;
+  /* At very large text the badge and the sentence must be able to fall onto
+     separate lines rather than pushing the panel wider than its container. */
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.ds-outcome-evidence > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.ds-outcome-evidence .ds-status-proposed { flex: none; }
+
+/* ===================== guidance and disclosure (CMP-008) ============== */
+
+.ds-guidance {
+  border-left: 6px solid var(--ds-action-secondary);
+  background: var(--ds-surface-panel);
+  border-radius: var(--ds-radius-small);
+  padding: var(--ds-space-4) var(--ds-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-3);
+}
+.ds-guidance--warning { border-left-color: var(--ds-status-warning); }
+
+.ds-disclosure {
+  background: var(--ds-surface-panel);
+  border: 2px solid var(--ds-border-control);
+  border-radius: var(--ds-radius-container);
+  padding: var(--ds-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-4);
+}
+
+.ds-disclosure-facts { display: flex; flex-direction: column; gap: var(--ds-space-3); margin: 0; }
+.ds-disclosure-fact { display: flex; flex-direction: column; gap: var(--ds-space-1); }
+.ds-disclosure-fact dt {
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  font-weight: 600;
+  color: var(--ds-text-secondary);
+}
+.ds-disclosure-fact dd { margin: 0; }
+
+/* ===================== accent =========================================== */
+
+/* The decorative accent appears as punctuation at an edge. It is never a
+   control fill, a status colour or a surface behind essential text. */
+.ds-accent-edge {
+  height: 6px;
+  background: var(--ds-accent-decorative);
+  border-radius: 3px;
+  width: var(--ds-space-7);
+}
+
+/* ===================== foundation sheets =============================== */
+
+.ds-sheet { display: flex; flex-direction: column; gap: var(--ds-space-5); }
+.ds-sheet-title {
+  font-family: var(--ds-type-heading-family);
+  font-size: var(--ds-type-heading-size);
+  line-height: var(--ds-type-heading-line);
+  font-weight: var(--ds-type-heading-weight);
+}
+.ds-sheet-note {
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  line-height: var(--ds-type-supporting-line);
+  color: var(--ds-text-secondary);
+  max-width: 68ch;
+}
+
+/* min() lets a column shrink below its preferred width on a narrow screen
+   rather than forcing the page to scroll sideways. */
+.ds-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: var(--ds-space-4); }
+.ds-swatch { display: flex; flex-direction: column; gap: var(--ds-space-2); }
+.ds-swatch-chip {
+  height: 72px;
+  border-radius: var(--ds-radius-control);
+  border: 1px solid var(--ds-border-subtle);
+  display: flex;
+  align-items: flex-end;
+  padding: var(--ds-space-2);
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  font-weight: 600;
+}
+.ds-swatch-meta {
+  font-family: var(--ds-type-supporting-family);
+  font-size: var(--ds-type-supporting-size);
+  line-height: var(--ds-type-supporting-line);
+  color: var(--ds-text-secondary);
+}
+.ds-swatch-name { color: var(--ds-text-primary); font-weight: 600; overflow-wrap: anywhere; }
+
+.ds-spec-table { width: 100%; border-collapse: collapse; font-size: var(--ds-type-supporting-size); font-family: var(--ds-type-supporting-family); }
+.ds-spec-table th, .ds-spec-table td { text-align: left; padding: var(--ds-space-2) var(--ds-space-3); border-bottom: 1px solid var(--ds-border-subtle); vertical-align: top; }
+.ds-spec-table th { color: var(--ds-text-secondary); font-weight: 600; }
+/* A wide table scrolls inside its own container. min-width:0 is required
+   because a flex child will not shrink below its content otherwise, which
+   would push the scroll onto the page instead. */
+.ds-scroll-x { overflow-x: auto; min-width: 0; max-width: 100%; }
+.ds-sheet > * { min-width: 0; }
+
+.ds-space-bar { background: var(--ds-action-secondary); height: 24px; border-radius: 2px; }
+
+.ds-status-proposed {
+  display: inline-block;
+  font-family: var(--ds-type-supporting-family);
+  font-size: calc(var(--ds-type-supporting-size) * 0.85);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ds-text-secondary);
+  border: 1px solid var(--ds-border-control);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
