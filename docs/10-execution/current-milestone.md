@@ -2,7 +2,7 @@
 title: "Current milestone — conversation-first browser experience"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-18
 tags: [execution]
 related:
   - development-readiness.md
@@ -12,6 +12,25 @@ related:
 ---
 
 # Current milestone — conversation-first browser experience
+
+## Claude Design frontend handoff — 2026-09-18
+
+The proposed Stage 1 design system is built and synced in Claude Design project
+**Granny Design System (proposed)** from `feature/design-system-build` commit
+`17658b0`. Simon requested the next Claude Design session begin developing the
+conversation frontend with the selected Codex-designed interaction, very few
+visible buttons and the canonical product principles. The [execution-ready
+frontend metaprompt](../02-design/claude-design-frontend-metaprompt.md) now
+starts with the zero-panel Home and complete fictional message slice, then
+extends the same interaction language to the other MVP flows and supporting
+states.
+
+The metaprompt explicitly reconciles the two later accepted design decisions
+that are absent from the synced `0.1.0` registry: the Round conversation
+composer and ADR-0014/CMP-010 Home context panel. It directs Claude Design to
+log those as system deltas instead of silently inventing one-off app tokens.
+This handoff does not itself create the frontend, accept proposed brand values,
+implement Android code or move a product gate.
 
 ## Current design feedback and vault synchronization — 2026-09-17
 
