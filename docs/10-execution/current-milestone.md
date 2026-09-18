@@ -2,7 +2,7 @@
 title: "Current milestone — conversation-first browser experience"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-18
 tags: [execution]
 related:
   - development-readiness.md
@@ -27,9 +27,9 @@ Before this decision task, main and the local vault included the conversation ru
 
 Simon explicitly authorized [T-117](backlog.md#t-117), a bounded conversation-first browser/backend/MCP slice with fictional contacts, specific confirmation and verified unsent demo-store writes. [Runtime contract](../04-architecture/conversation-runtime-contract.md) and [session evidence](sessions/2026-09-15-mcp-backend-integration.md) own its actual implementation/test state. Backend and frontend coordinate through published board checkpoints. Dependency installation for the official MCP SDK was explicitly approved. This is an exception to earlier no-backend prototype statements, not T-103 completion, Android integration or promotion of GATE-03/04/06/07–09. Live synthetic Qwen calls retain prior caps and consent; broader data/release gates remain open.
 
-## Next backend sprint — T-103 offline authority core
+## T-103 offline authority core — delivered for review
 
-Simon requested a fresh-session handoff for the complete T-103 backend sprint on 2026-09-17. The [execution metaprompt](t103-backend-sprint-handoff.md) covers units A–D, cases C01–C20, environment bootstrap, deterministic evidence and the stop boundary before Android, network/provider and adjacent capabilities. The existing lockfile installs cleanly per worktree; all 25 current backend tests pass outside the host's restricted stdio sandbox. Preparing this handoff does not implement T-103 or change a product gate.
+Simon requested the complete T-103 backend sprint on 2026-09-17. The [pure offline core](../../prototypes/t103-authority-core/README.md) now implements units A-D with named fake ports, controlled time/generations, strict local admission, exact one-use authority, independent ledger verification, Stop/restart ordering, budgets and privacy projection. Its [C01-C20 report](../../prototypes/t103-authority-core/EVIDENCE.md) records 20/20 passing cases and 147 explicit assertions on fixture `t103-fixture-v1`; the existing 25 conversation-runtime tests also pass in the implementation worktree. T-103 remains at review until Simon accepts it. No Android, external app, real message, live provider, MCP execution path or product-gate promotion follows from this result.
 
 ## Active milestone — review the conversation-first browser experience
 
@@ -63,7 +63,7 @@ Git workflow validation, 2026-09-14: in the isolated docs/git-workflow worktree,
 
 Simon's subsequent 2026-09-14 request authorizes GitHub publication and future task-branch pushes with worktree isolation. The [Git workflow](git-workflow.md) owns this standing authority and the validation/commit/push/remote-SHA handoff. The follow-up branch docs/git-workflow starts from a4fc05b and contains the readiness and Figma history; main integration remains pending separate review/authority. Use that branch for sessions needing the new rules until integration. No product gate changes follow from publishing documentation.
 
-Simon's 2026-09-14 follow-up requests a holistic documentation/skills/workflow system **before actual design and development**. T-113 supplies [delivery workflows and four repository skills](operating-workflows.md), [first task packets](task-packets.md), [transaction protocol](../03-agent/execution-protocol.md), [capability admission](../04-architecture/capability-admission.md), [evidence review](../06-evals/evidence-protocol.md) and [research execution protocols](../08-research/research-protocols.md). Documentation-tool regression tests are executable; T-103's 20 product-contract cases remain unrun. No application code, external Figma file or participant/device study was created. The official remote Figma MCP connection was verified read-only on 2026-09-14; no canvas mutation or credential/config file was added to the repository.
+Simon's 2026-09-14 follow-up requested a holistic documentation/skills/workflow system **before actual design and development**. T-113 supplied [delivery workflows and four repository skills](operating-workflows.md), [first task packets](task-packets.md), [transaction protocol](../03-agent/execution-protocol.md), [capability admission](../04-architecture/capability-admission.md), [evidence review](../06-evals/evidence-protocol.md) and [research execution protocols](../08-research/research-protocols.md). That historical package created no application code; T-103's cases were subsequently implemented and run in the bounded offline core described above. No external Figma file or participant/device study was created. The official remote Figma MCP connection was verified read-only on 2026-09-14; no canvas mutation or credential/config file was added to the repository.
 
 The next user-authorized work can start a named low-fi design package or T-103's offline fake replay from these packets; no need for another broad specification-writing milestone. Remaining real-world evidence and Simon decisions still gate production work. Skills are repo-local. No new global setting, plugin or scheduled automation was installed by this repository task; the pre-existing official Figma plugin connection is documented in the Figma contract.
 
@@ -81,7 +81,7 @@ Current official Play policy does not permit a general-assistant AccessibilitySe
 
 ## Proposed next milestone
 
-Evidence-led foundation: MVP/control review T-100 is complete; next inventory device and policy routes (T-101), or build offline policy/Stop/verification replay only (T-103) in a separately requested coding session. Produce/test low-fi interaction and iterate naming/identity (T-102/108) within their authorization and evidence boundaries. Do not begin broad MVP implementation or personal-data automation.
+Evidence-led foundation: MVP/control review T-100 is complete and T-103 awaits review. Next, review the offline authority evidence before any acceptance, then inventory device and policy routes under T-101 when separately authorized. Produce/test low-fi interaction and iterate naming/identity (T-102/108) within their authorization and evidence boundaries. Do not begin broad MVP implementation or personal-data automation.
 
 Naming recommendation: Daykind / Handspan / Clearfold, all uncleared with documented concerns. Identity recommendation: test Open Day against challengers. Neither is accepted. That initial browser used provisional grayscale; the current conversation build adds reviewer-only territory comparisons. Figma remains a partial paused artifact.
 

@@ -2,7 +2,7 @@
 title: "Stage 1 requirements traceability"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-18
 tags: [traceability]
 related:
   - prd.md
@@ -20,13 +20,17 @@ related:
 
 The [authorized conversation revision](../02-design/conversation-first-plan.md) implements intent/slot handling in [intent.js](../../prototypes/stage-1/intent.js), bounded in-memory transitions in [model.js](../../prototypes/stage-1/model.js), automatic cancellable demonstration timing in [scheduler.js](../../prototypes/stage-1/scheduler.js), and shared content/control rendering in [app.js](../../prototypes/stage-1/app.js). [Scheduler cases](../../prototypes/stage-1/scheduler.test.mjs) cover late callbacks/expiry; [server cases](../../prototypes/stage-1/serve.test.mjs) cover the loopback allowlist. [Session evidence](../10-execution/sessions/2026-09-14-conversation-build.md) distinguishes executed browser/fixture tests from the unchanged unrun canonical EVALs below.
 
-This is the **mapping owner**, not a duplicate requirement definition. [PRD](prd.md) owns the 48 requirements; [personas/jobs](personas.md) owns problems/jobs; [use cases](use-cases.md), [journeys](user-journeys.md), [screens](../02-design/product-design-spec.md) and [components](../02-design/design-system.md) own behavior. Every row provides a primary destination; shared contracts apply across workflows. Production implementation and every canonical runtime/human eval remain **unrun/not started**. T-102 now has an executable browser design simulation with separate prototype checks; it does not implement the agent/runtime contracts.
+This is the **mapping owner**, not a duplicate requirement definition. [PRD](prd.md) owns the 48 requirements; [personas/jobs](personas.md) owns problems/jobs; [use cases](use-cases.md), [journeys](user-journeys.md), [screens](../02-design/product-design-spec.md) and [components](../02-design/design-system.md) own behavior. Every row provides a primary destination; shared contracts apply across workflows. Production implementation and every complete canonical runtime/human eval remain **unrun/not started**. T-102 has an executable browser design simulation, and T-103 now has a separate offline authority fixture; neither establishes production or device behavior.
 
 Problem/job chain: PROB-01→JOB-01 delegation; PROB-02→JOB-02 understanding/recovery; PROB-03→JOB-03 access; PROB-04→JOB-04 control; PROB-05→JOB-05 privacy/support. These are hypotheses, not proven research. IDs are never recycled. Legacy REQ aliases in PRD retain migration history.
 
 ## Real local demo runtime evidence
 
 [T-117](../10-execution/backlog.md#t-117) implements the [versioned conversation runtime](../04-architecture/conversation-runtime-contract.md) and [actual MCP backend](../../prototypes/conversation-runtime/README.md) for PRD-FR-002/003/008/013, PRD-SAF-001/002/003 and PRD-PRV-001 themes, UC-006/J-003, SCR-003/007 and CMP-001/003. [Runtime tests](../../prototypes/conversation-runtime/runtime.test.mjs), [provider tests](../../prototypes/conversation-runtime/provider.test.mjs) and [HTTP tests](../../prototypes/conversation-runtime/server.test.mjs) are executed local-prototype evidence for EVAL-003/006/008/009/010 themes. They do not promote the production implementation or canonical EVAL statuses below. Contacts/destination remain fictional; backend/MCP/store operations are actual.
+
+## Offline authority replay evidence
+
+[T-103](../10-execution/backlog.md#t-103) is implemented for review as a [pure fake-port authority core](../../prototypes/t103-authority-core/README.md), separate from T-117 transport. [C01-C20 tests](../../prototypes/t103-authority-core/authority.test.mjs) and their [evidence report](../../prototypes/t103-authority-core/EVIDENCE.md) exercise the shared authorization, Stop, verification, dependency, provider-negative and privacy invariants linked from PRD-FR-004/005/012–014/016, PRD-SAF-001/003–005, PRD-NFR-001/003/004 and PRD-DST-004. This is executed offline subset evidence for EVAL-006/008/009/010; EVAL-002/005 and every complete canonical eval retain their own unrun status. In the table below, “not implemented” on a T-103 row continues to mean production/device implementation, while this section owns the bounded fixture exception.
 
 ## Contract routing
 
