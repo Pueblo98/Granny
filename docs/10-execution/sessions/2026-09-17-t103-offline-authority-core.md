@@ -14,6 +14,7 @@ session_state: review
 record_basis: contemporaneous
 agent: Codex T-103 implementation session
 branch: feature/t103-offline-authority-core
+artifact_commit: 466d13c89347e007a1de63768f96315f0e02ec64
 next_action: Simon reviews the bounded T-103 evidence and decides whether to accept the task before any device or adjacent capability work.
 changed_paths:
   - docs/01-product/traceability.md
@@ -66,4 +67,4 @@ No live-provider command, private environment file, Android/device action, real 
 
 ## Handoff
 
-Worktree: `/tmp/granny-t103-offline-authority-core`; branch: `feature/t103-offline-authority-core`; base: `origin/main` at `ed439325845f6e7e0c0b41e0508c36eb5859b103`. Final scoped commit/publication and remote-SHA verification follow the remaining cockpit, handoff and documentation-tool checks. No PR or main integration is authorized or performed.
+Worktree: `/tmp/granny-t103-offline-authority-core`; branch: `feature/t103-offline-authority-core`; base: `origin/main` at `ed439325845f6e7e0c0b41e0508c36eb5859b103`. Implementation commit `466d13c89347e007a1de63768f96315f0e02ec64` was pushed and independently matched `refs/heads/feature/t103-offline-authority-core`. This record and the generated snapshot form the final metadata follow-up on the same branch. No PR or main integration was created or performed.
