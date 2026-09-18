@@ -77,6 +77,8 @@ Then T-104/105/106 test admitted external workflows, T-107 local privacy, and T-
 
 **Outcome:** Demonstrate the local control contract against deterministic synthetic side effects before exposing real apps or data. PRD-SAF-001–005, FR-004/012/013/016, NFR-001/003/004, DST-004; UC-003/006/011/019/025; J-002/003; EVAL-006/008/009/010.
 
+**Fresh-session execution:** use the [complete T-103 backend sprint handoff](t103-backend-sprint-handoff.md) to implement units A–D and C01–C20 with the environment bootstrap, validation and publication boundaries already spelled out.
+
 **Canonical contracts:** [tool types](../03-agent/tool-contracts.md), [transaction protocol](../03-agent/execution-protocol.md), [control budgets](../03-agent/device-control.md), [action matrix](../05-safety-privacy/action-policy.md), [privacy](../05-safety-privacy/safety-and-privacy.md), [admission](../04-architecture/capability-admission.md). If a packet and those owners disagree, report the conflict and correct the owner; do not create a second implementation contract in this file.
 
 ### Scope and interfaces

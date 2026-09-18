@@ -20,7 +20,7 @@ The vault is the repository's **docs/** directory. Open [Cockpit](../Cockpit.md)
 
 Suggested layout: Cockpit in the main pane, [agent board](agent-board.md) on the right, local graph/backlinks in the sidebar. Bookmark Cockpit. Optionally enable the built-in Workspaces plugin yourself and save this arrangement as “Granny cockpit”. [Plugin assessment and instructions](obsidian-cockpit-plugins.md) explains the tradeoffs.
 
-The browser and cockpit were integrated through [PR #3](https://github.com/Pueblo98/Granny/pull/3), merge 70af0dbffaad52c259b173ccad4d72f722521fe5, on 2026-09-14. The primary checkout was fast-forwarded and switched to main with existing user edits preserved. Use its normal docs/ vault. Later task branches remain invisible there until separately reviewed integration and local synchronization; do not copy notes between worktrees or create a second knowledge store.
+The browser and cockpit were integrated through [PR #3](https://github.com/Pueblo98/Granny/pull/3), merge 70af0dbffaad52c259b173ccad4d72f722521fe5, on 2026-09-14. The primary checkout was fast-forwarded and switched to main with existing user edits preserved. Use its normal docs/ vault. A task branch remains invisible there until integration and local synchronization. Completed documentation-only tasks now proceed through checked PR merge under standing authority; if dirty overlapping primary files block the fast-forward, preserve them and report the local vault as behind rather than copying notes between worktrees or creating a second knowledge store.
 
 ## One owner per fact
 

@@ -4,7 +4,7 @@ description: "Start or hand off a Granny change session, maintain its cockpit re
 metadata:
   owner: Simon
   status: proposed
-  last_updated: "2026-09-14"
+  last_updated: "2026-09-17"
 ---
 
 # Granny session lifecycle
@@ -15,6 +15,6 @@ At start, identify the requested mode and bounded task. Inspect Git and applicab
 
 At handoff, update the canonical owners actually affected, then your record with exact changed_paths, checks, unrun gaps and next action. Route unresolved issues through separate linked messages only when useful. Regenerate the derived snapshot and run the maintenance commands in the guide. A green check establishes structural consistency, not truthful research, design acceptance or product readiness.
 
-Follow [Git publication and integration](../../../docs/10-execution/git-workflow.md). A task-branch push is not a main merge, and a GitHub merge is not a local vault update. After separately authorized integration, run the read-only vault check against the exact merge commit and actual primary checkout. Report an out-of-date or dirty target; never fix it by copying notes, stashing user work or auto-merging.
+Follow [Git publication and integration](../../../docs/10-execution/git-workflow.md). A task-branch push is not a main merge, and a GitHub merge is not a local vault update. Completed documentation-only tasks have Simon's standing authority to create the scoped PR, wait for required checks, merge normally to `main`, and safely synchronize the primary vault; mixed/code tasks retain their own integration boundary. After integration, run the read-only vault check against the exact merge commit and actual primary checkout. Report an out-of-date or dirty overlapping target; never fix it by copying notes, stashing, resetting or overwriting user work.
 
 No plugin, scheduler, cross-worktree synchronization or live agent messaging is implied. Do not touch private Obsidian configuration. Neither this skill nor a board message grants new external authority.
