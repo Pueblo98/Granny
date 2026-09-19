@@ -1,6 +1,6 @@
 ---
 title: "Record T-103 acceptance and prepare T-101 handoff"
-status: review
+status: accepted
 owner: Simon
 last_updated: 2026-09-19
 tags: [execution, session, agent, evidence]
@@ -10,11 +10,12 @@ related:
   - ../t101-route-evidence-handoff.md
   - 2026-09-17-t103-offline-authority-core.md
 record_type: session
-session_state: review
+session_state: complete
 record_basis: contemporaneous
 agent: Codex T-103 acceptance session
 branch: docs/t103-acceptance-t101-handoff
-next_action: Integrate the acceptance record, then start a fresh T-101 desk-route evidence session from the provided metaprompt.
+artifact_commit: 9cdbdfeca5c172d78dc45a58bbf99ec7ad3487f3
+next_action: Start a fresh T-101 desk-route evidence session from the provided metaprompt; keep device execution separately gated.
 changed_paths:
   - docs/01-product/traceability.md
   - docs/10-execution/backlog.md
@@ -54,4 +55,4 @@ The acceptance basis is Simon's direct review decision, not a new test run. Exis
 
 ## Handoff
 
-At task start, `origin/main` was `dd3ed40563ab8e8bb278ba564a3f9642a8f9607e`. Work used `/tmp/granny-t103-acceptance-t101-handoff` on `docs/t103-acceptance-t101-handoff`, leaving primary-checkout work untouched. Final validation, commit, publication, PR/integration and vault status are recorded before handoff.
+At task start, `origin/main` was `dd3ed40563ab8e8bb278ba564a3f9642a8f9607e`. Work used `/tmp/granny-t103-acceptance-t101-handoff` on `docs/t103-acceptance-t101-handoff`, leaving primary-checkout work untouched. The scoped artifact commit `9cdbdfeca5c172d78dc45a58bbf99ec7ad3487f3` was pushed and independently matched the remote branch. PR, integration and primary-vault results follow in the final session handoff after hosted checks.
