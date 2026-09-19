@@ -57,10 +57,10 @@ Each anchor is a stable architecture owner referenced from [traceability](../01-
 <a id="voice"></a>
 ### Voice input/output
 
-**Responsibility / state / APIs:** Capture session state, revisioned provisional/verbatim/display transcript events, conservative cleanup, stop/output controls.
-**Placement/trust:** Local adapter around Android's on-device `SpeechRecognizer` for the initial route and a local TTS wrapper; recognizer output remains untrusted input.
-**Permissions/data:** Runtime microphone; audio focus; ephemeral audio/text.
-**Offline/failure isolation:** No on-device recognizer, locale support or permission → typed path; never fall back silently to network recognition; no ambient background promise. Destroy/cancel the recognizer on session replacement, Stop or lifecycle exit and reject callbacks from an old generation.
+**Responsibility / state / APIs:** Capture session state, revisioned provisional/verbatim/display transcript events, conservative cleanup, explicit readback requests, speech-rate preferences and independent stop/output controls.
+**Placement/trust:** Local adapters around Android's on-device `SpeechRecognizer` and `TextToSpeech`; recognizer output remains untrusted input. T-121 selects only an installed locale-compatible TTS voice whose Android metadata reports no network requirement.
+**Permissions/data:** Runtime microphone for input; no additional permission for output; audio focus and ephemeral audio/text. Exact user-selected readback text crosses the app/TTS-service boundary only for that utterance.
+**Offline/failure isolation:** No on-device recognizer, locale support or permission → typed path; no matching installed non-network-required TTS voice → written path. Never fall back silently to network recognition or speech. Destroy/cancel input and output on session replacement, Stop or lifecycle exit, and reject callbacks from an old generation/revision. T-120/T-121 host tests cover the controllers; physical recognizer/TTS, audio focus, engine egress and accessibility behavior remain unrun.
 **Dependencies:** shell, privacy; the replaceable provider boundary is unused by the initial recognition slice.
 
 <a id="session"></a>

@@ -30,6 +30,34 @@ Barge-in works only during an explicitly active listening period and must be tes
 
 Speech follows Android audio focus and user's selected output. When TalkBack is active, prefer its announcements and avoid duplicate TTS. Do not read private message content automatically when private-content speech is off. Neither headphones nor audio output implies consent to capture.
 
+### Explicit spoken readback controls
+
+[T-121](../10-execution/backlog.md#t-121) implements the first own-app spoken
+output slice. Written request text is the source of truth and remains visible.
+The app speaks it only after **Read request aloud** or **Repeat readback**;
+opening a screen, receiving text, submitting a request or enabling Sound never
+starts speech. Repeat is valid only for the unchanged text revision that was
+previously selected. Editing the text, leaving the foreground or losing the
+voice route stops the old utterance, clears its repeat copy and rejects stale
+engine callbacks.
+
+**Stop speaking** interrupts output without deleting the written text. The
+global **Stop** also interrupts active output. Starting Talk or Type stops
+speech first, so capture and app readback do not run together. **Sound off** is
+a persistent own-app preference and immediately stops speech; it does not mute
+Android, TalkBack or another app. The route chooses only an installed
+locale-compatible Android TTS voice that reports no network requirement. If no
+such voice exists, initialization fails, speech controls remain unavailable and
+the written path remains complete. Host evidence cannot establish what an
+installed engine does at runtime, so offline/egress behavior remains a device
+test rather than a product claim.
+
+Speech rate is a closed set: Slower (0.75), Normal (1.0), Faster (1.25) and
+Fastest (1.5). A person selects and hears a short fixed sample before Apply is
+enabled. Apply persists the exact choice with readback; Restore previous rate
+is available once. A failed, conflicting or uncertain write is not retried
+automatically. Rate preview never becomes repeatable private content.
+
 ## Content rules
 
 Default progress/result: one or two short sentences, one next step. Explain details on request. Announce meaningful state changes, not every tap, model reasoning or unverified progress. At 5s name the wait; at 15s offer manual continuation; bounded timeout ends work. Repetition never repeats an action.
