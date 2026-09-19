@@ -5,6 +5,7 @@ owner: Simon
 last_updated: 2026-09-20
 tags: [design, mockups, conversation, states, safety]
 related:
+  - ../../../shared-conversation-state-surfaces.md
   - ../../2026-09-19-style-boards/final-harbour-blue/README.md
   - ../../2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md
   - ../../../conversation-first-plan.md
@@ -26,6 +27,13 @@ The pack is a state family, not a promise that every run follows all seven
 screens. “Prepared — not sent” and “Unknown outcome” are alternative result
 branches. Nothing here sends a real message, identifies a real contact or
 proves a production workflow.
+
+> [!important] These are state studies, not seven page templates
+> The accepted [state-surface contract](../../../shared-conversation-state-surfaces.md)
+> keeps Home or the current Room underneath. Listening normally expands the
+> bottom composer; clarification, preview, activity and results appear as one
+> temporary surface above it. The raster isolates each state for review and
+> does not require an implementation to replace the whole screen.
 
 ## Comparison
 
