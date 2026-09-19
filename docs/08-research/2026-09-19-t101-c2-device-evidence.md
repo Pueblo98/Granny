@@ -137,3 +137,30 @@ runtime retention/egress remain uninstrumented. Both packages were uninstalled.
 The human revoked debugging authorization, disabled USB debugging and Developer
 options, unplugged the cable and reported restoration complete. T-101 remains
 in progress and GATE-03/04/06 remain unchanged.
+
+## Generation-recovery verification run
+
+Simon authorized commit
+`2ef6c98de65aec9798f686c7669cb4fcaae478a1` and its exact APK digests for the
+ordered C2-10 then C2-12 sequence only. Exactly one redacted transport count was
+observed. Both installs and both uninstalls returned `Success`; no screenshot,
+raw content, shell command, transport identifier, personal app/account/data,
+full-screen capture or network egress was used.
+
+| Case | Generation-recovery result | Content-free observation and limit |
+|---|---|---|
+| C2-10 | **passed ordered setup oracle** | One rotation returned `EXPLAINED` with explicit bounded-resize evidence and sharing ended, establishing the retained higher generation needed for the regression. |
+| C2-12 | **passed targeted generation/task-removal oracle** | In the same process, removing the observer task ended sharing. Reopening displayed the new `STOPPED` result with `No capture continues without the lab task`, not the prior C2-10 result. |
+
+The human also reported that the red button remained labeled `Stop capture`
+when no capture was active. That is a separate state-clarity defect; it does not
+invalidate the lifecycle outcome but must not be represented as resolved.
+
+This run closes the bounded stale-result regression and supplies positive
+task-removal result-recovery evidence for this exact synthetic build/device
+row. C2 remains **not admitted**: selected-package identity remains absent,
+runtime retention/egress remain uninstrumented, the idle Stop label is unclear,
+and no generic-app or distribution claim follows. Both packages were
+uninstalled. The human revoked debugging authorization, disabled USB debugging
+and Developer options, unplugged the cable and confirmed restoration. T-101
+remains in progress and GATE-03/04/06 remain unchanged.

@@ -285,12 +285,26 @@ Signature Scheme v2 and the same ordinary debug certificate:
 
 | APK | Generation-repair SHA-256 | Device state |
 |---|---|---|
-| `fixture-debug.apk` | `044a693583f95ad6bb98e2038019546871cea36b39b570ae07217bc03a070678` | Unrun for this source revision |
-| `observer-debug.apk` | `b5acd8315c6dbeefdabc42f85c5c4560036d9042be6091bb086adafa1f0b5476` | Unrun |
+| `fixture-debug.apk` | `044a693583f95ad6bb98e2038019546871cea36b39b570ae07217bc03a070678` | Ran only under the later exact generation authority |
+| `observer-debug.apk` | `b5acd8315c6dbeefdabc42f85c5c4560036d9042be6091bb086adafa1f0b5476` | Ran only under the later exact generation authority |
 
-This host evidence does not revise C2-12. The repair needs fresh exact device
-authority before installation or verification, and C2 remains disabled/not
-admitted regardless of source-test success.
+This host evidence did not itself revise C2-12. A later exact-authority ordered
+run produced the bounded result below.
+
+## Generation-recovery verification — 2026-09-19
+
+The authorized C2-10→C2-12 sequence first recreated the activity through a
+successful bounded-resize result, then removed the observer task in the same
+process. Sharing ended, and reopening recovered the new `STOPPED` result with
+the fixed `No capture continues without the lab task` limit rather than stale
+C2-10 text. This closes the bounded generation regression on the exact
+synthetic build/device row.
+
+The human also reported that the red button remains labeled `Stop capture`
+while no capture is active. Record that as an unresolved state-clarity defect,
+not a lifecycle failure. Both packages were uninstalled and debugging was
+restored. C2 remains disabled/not admitted because selected-package identity,
+independent retention/egress evidence and distribution viability remain open.
 
 ## Install and teardown procedure used
 
