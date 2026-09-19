@@ -2,9 +2,10 @@
 title: "Mockup gallery and image filing"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [design, mockups]
 related:
+  - 2026-09-20-shared-state-pack/iteration-1/README.md
   - 2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md
   - 2026-09-19-harbour-blue-home/round-4/README.md
   - 2026-09-19-harbour-blue-home/round-3/README.md
@@ -14,6 +15,14 @@ related:
 ---
 
 # Mockup gallery
+
+**Current shared state pack:** [iteration 1](2026-09-20-shared-state-pack/iteration-1/README.md)
+extends the selected Harbour Blue conversation shell through listening,
+editable transcript, recipient clarification, exact draft review, active work
+with visible Stop, verified prepared-not-sent and honest unknown-outcome states.
+The fixture is fictional, and the result branches are alternatives rather than
+a guaranteed linear run. This visual pack does not implement or validate the
+workflow.
 
 **Current final selection:** [Harbour Blue — image and written design system](2026-09-19-style-boards/final-harbour-blue/README.md), selected by Simon on 2026-09-19. Use this for ongoing visual work. The numbered iterations below are preserved exploration history.
 
