@@ -257,12 +257,19 @@ diagonal and white join mask still interrupted the lower-left border. Direct
 inspection confirmed that the textarea already had `resize: none`, no border
 and no native focus outline; no child control crossed the form boundary, and
 the separated focus ring was not present in the idle defect. The cause was the
-composer's `::after` tail plus its `::before` mask. Both pseudo-elements and
-their now-unused positioning/stacking hooks were removed rather than clipped or
-covered again. The result is one continuous rounded outline with matching
-lower corners. The live review server remained loopback-only. The Home browser
-suite now protects the absent footer/retained disclosure and verifies that the
-composer has no generated tail or resize handle and does not rely on clipping.
+composer's `::after` tail plus its `::before` mask, so both were removed rather
+than clipped or covered again.
+
+Simon then clarified that the small speech-tail character must remain. The
+final implementation uses a dedicated decorative, non-focusable inline SVG
+behind the form. It fits inside the composer's reserved wrapper space and does
+not erase or interrupt the rounded border; there is no generated tail, white
+join mask or overflow-clipping workaround. The result is one continuous
+rounded outline plus a deliberate speech cue. The live review server remained
+loopback-only. The Home browser suite now protects the absent footer/retained
+disclosure and verifies that the tail is contained and decorative, the
+composer has no generated masks, the resize handle is absent and the fix does
+not rely on clipping.
 
 ## Validation
 
@@ -274,7 +281,7 @@ Final validation used the repository's existing Node 26.8.1, Chromium
 - `node prototypes/stage-1/cloud.test.mjs` — 27 passed.
 - `node prototypes/stage-1/serve.test.mjs` — 1 passed, including CSP,
   Permissions Policy, exact allowlist, traversal and write-method rejection.
-- `node prototypes/stage-1/home-browser-check.mjs` — 158 assertions, zero
+- `node prototypes/stage-1/home-browser-check.mjs` — 159 assertions, zero
   browser errors, expected static loopback requests only.
 - `node prototypes/stage-1/browser-check.mjs` — 132 assertions, zero browser
   errors; all five scripted workflows and active Stop passed.
