@@ -2,7 +2,7 @@
 title: "T-103 offline authority core implementation"
 status: review
 owner: Simon
-last_updated: 2026-09-18
+last_updated: 2026-09-19
 tags: [execution, session, agent, safety]
 related:
   - ../backlog.md
@@ -15,7 +15,7 @@ record_basis: contemporaneous
 agent: Codex T-103 implementation session
 branch: feature/t103-offline-authority-core
 artifact_commit: 466d13c89347e007a1de63768f96315f0e02ec64
-next_action: Simon reviews the bounded T-103 evidence and decides whether to accept the task before any device or adjacent capability work.
+next_action: Simon reviews the bounded T-103 evidence and decides whether to accept the task; synchronize the primary vault after its concurrent design edits are safely committed.
 changed_paths:
   - docs/01-product/traceability.md
   - docs/06-evals/canonical-tasks.md
@@ -58,6 +58,7 @@ Environment: Linux host; Node 26.8.1; npm 11.19.0; fixture `t103-fixture-v1`; sy
 | `python3 scripts/cockpit.py --write`; `python3 scripts/cockpit.py --check` | Exit 0; fresh snapshot, 36 records, 12 Canvas nodes/3 edges, 3 Base views and embeds | Generated/structural cockpit evidence only |
 | `python3 -m unittest discover -s scripts -p 'test_*.py'` | Exit 0; 47 tests passed; expected negative Git fixture printed `fatal: Needed a single revision` | Repository documentation tooling only |
 | `python3 scripts/check_handoff.py --base origin/main` | Exit 0; handoff coverage passed | Scoped path coverage, not implementation quality |
+| GitHub PR #20 required checks after merging current main into the task branch | Runtime, Repository maintenance and GitGuardian all passed | Hosted repository checks; no Android/device/provider evidence |
 | Targeted source scan for filesystem/child/HTTP/network/timer APIs | Exit 0; only the deliberate `shell.exec` rejection fixture matched | Heuristic; complemented by source/diff review |
 | `git diff --check` | Exit 0 | Whitespace only |
 
@@ -67,4 +68,6 @@ No live-provider command, private environment file, Android/device action, real 
 
 ## Handoff
 
-Worktree: `/tmp/granny-t103-offline-authority-core`; branch: `feature/t103-offline-authority-core`; base: `origin/main` at `ed439325845f6e7e0c0b41e0508c36eb5859b103`. Implementation commit `466d13c89347e007a1de63768f96315f0e02ec64` was pushed and independently matched `refs/heads/feature/t103-offline-authority-core`. This record and the generated snapshot form the final metadata follow-up on the same branch. No PR or main integration was created or performed.
+Worktree: `/tmp/granny-t103-offline-authority-core`; branch: `feature/t103-offline-authority-core`; original base: `origin/main` at `ed439325845f6e7e0c0b41e0508c36eb5859b103`. Implementation commit `466d13c89347e007a1de63768f96315f0e02ec64` was pushed and independently matched its remote branch. The branch then merged current main, reran all required checks, and [PR #20](https://github.com/Pueblo98/Granny/pull/20) merged normally on 2026-09-19 as `4778c0f04fa83e9c785bac7146002021d13c8877` after all required checks passed.
+
+The required post-merge vault check reported **NEEDS REVIEW**: the primary checkout remained at `d9a4b1a81aee31ddd8863194d4a279e73b8a243c` with concurrent modified canonical files and untracked design artifacts, including overlap in the milestone and generated cockpit snapshot. Those changes were preserved; no copy, stash, reset, forced checkout or automatic merge was used. The T-103 handoff is present on remote `main` but will appear in the primary Obsidian vault only after that checkout can safely fast-forward to the merge commit or later.
