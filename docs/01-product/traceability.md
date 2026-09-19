@@ -34,7 +34,7 @@ Problem/job chain: PROB-01→JOB-01 delegation; PROB-02→JOB-02 understanding/r
 
 ## T-101 route and partial device evidence
 
-The [2026-09-19 route inventory](../08-research/2026-09-19-t101-route-inventory.md) supplies source/desk evidence and unrun experiment worksheets for PRD-FR-005/006/009/010/011, PRD-DST-001–003 and PRD-NFR-005. The [partial manual inventory](../08-research/2026-09-19-t101-physical-inventory.md) identifies the reference model/build and selected display/input/access/app state, but is user-reported and does not implement those requirements or execute EVAL-005/009/011/RES-04. T-101 remains in progress; complete configuration, app behavior, independent device postconditions, Stop/takeover and distribution review are still missing.
+The [2026-09-19 route inventory](../08-research/2026-09-19-t101-route-inventory.md) supplies source/desk evidence and unrun experiment worksheets for PRD-FR-005/006/009/010/011, PRD-DST-001–003 and PRD-NFR-005. The [partial manual inventory](../08-research/2026-09-19-t101-physical-inventory.md) identifies selected reference-tablet state. The [C2 lab scaffold](../../experiments/c2-screen-explanation/README.md) now supplies reviewable synthetic fixture/observer source and local test definitions, but it is unbuilt/unrun and does not implement a candidate capability or execute EVAL-002/005/006/009/011/RES-04. T-101 remains in progress; complete configuration, selected-package identity, app behavior, independent device postconditions, Stop/takeover and distribution review are still missing.
 
 ## Contract routing
 
