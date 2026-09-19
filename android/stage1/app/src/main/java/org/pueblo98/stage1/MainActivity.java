@@ -4,6 +4,14 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Insets;
+import android.view.WindowInsets;
+import android.util.TypedValue;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.pueblo98.stage1.readability.TextScale;
+import org.pueblo98.stage1.readability.TextScaleController;
+import org.pueblo98.stage1.readability.SharedPreferencesTextScaleStore;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,6 +39,14 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private final VoiceSessionController controller = new VoiceSessionController();
     private final Handler handler = new Handler(Looper.getMainLooper());
 
+    private final Map<TextView, Float> baseTextSizes = new LinkedHashMap<>();
+    private TextScaleController textScale;
+    private TextView sizeStatus;
+    private TextView sizePreview;
+    private Button applySizeButton;
+    private Button restoreSizeButton;
+    private final Map<Button, TextScale> sizeChoices = new LinkedHashMap<>();
+    private boolean retainedTextScale;
     private VoiceRecognizerAdapter recognizer;
     private TextView statusView;
     private TextView provisionalView;
@@ -47,7 +63,13 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Object retained = getLastNonConfigurationInstance();
+        retainedTextScale = retained instanceof TextScaleController;
+        textScale = retainedTextScale ? (TextScaleController) retained
+                : new TextScaleController(new SharedPreferencesTextScaleStore(
+                        getSharedPreferences("granny_text_scale", MODE_PRIVATE)));
         recognizer = new AndroidOnDeviceVoiceRecognizer(this);
+        getWindow().setDecorFitsSystemWindows(false);
         setContentView(buildContent());
         render();
     }
@@ -62,31 +84,31 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
 
         TextView title = new TextView(this);
         title.setText(R.string.title);
-        title.setTextSize(30);
+        registerTextSize(title, 30);
         title.setTextColor(Color.rgb(30, 30, 30));
         content.addView(title, matchWrap());
 
         TextView explanation = new TextView(this);
         explanation.setText(R.string.privacy_explanation);
-        explanation.setTextSize(18);
+        registerTextSize(explanation, 18);
         explanation.setTextColor(Color.rgb(55, 55, 55));
         content.addView(explanation, spaced(matchWrap(), gap));
 
         statusView = new TextView(this);
-        statusView.setTextSize(20);
+        registerTextSize(statusView, 20);
         statusView.setTextColor(Color.rgb(20, 70, 60));
         statusView.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
         content.addView(statusView, spaced(matchWrap(), gap * 2));
 
         provisionalView = new TextView(this);
-        provisionalView.setTextSize(24);
+        registerTextSize(provisionalView, 24);
         provisionalView.setTextColor(Color.rgb(80, 80, 80));
         provisionalView.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
         content.addView(provisionalView, spaced(matchWrap(), gap));
 
         transcriptEditor = new EditText(this);
         transcriptEditor.setHint(R.string.transcript_hint);
-        transcriptEditor.setTextSize(24);
+        registerTextSize(transcriptEditor, 24);
         transcriptEditor.setMinHeight(dp(128));
         transcriptEditor.setGravity(android.view.Gravity.TOP | android.view.Gravity.START);
         transcriptEditor.setPadding(dp(16), dp(16), dp(16), dp(16));
@@ -111,7 +133,15 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         doneButton = button(R.string.done_listening, view -> finishListening());
         stopButton = button(
                 R.string.stop,
-                view -> stopEverything("Stopped. You can talk again or type."));
+                view -> {
+                    if (textScale.snapshot().preview != null) {
+                        textScale.cancelPreview();
+                        renderTextSize();
+                        renderButtonsOnly();
+                    } else {
+                        stopEverything("Stopped. You can talk again or type.");
+                    }
+                });
         typeButton = button(R.string.type_instead, view -> startTyping());
         useButton = button(R.string.use_request, view -> {
             controller.submit();
@@ -120,23 +150,113 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
 
         content.addView(talkButton, spaced(matchWrap(), gap));
         content.addView(doneButton, spaced(matchWrap(), gap));
-        content.addView(stopButton, spaced(matchWrap(), gap));
+
         content.addView(typeButton, spaced(matchWrap(), gap));
         content.addView(useButton, spaced(matchWrap(), gap));
 
+        addTextSizeControls(content, gap);
+
         TextView boundary = new TextView(this);
         boundary.setText(R.string.test_boundary);
-        boundary.setTextSize(16);
+        registerTextSize(boundary, 16);
         boundary.setTextColor(Color.rgb(85, 85, 85));
         content.addView(boundary, spaced(matchWrap(), gap * 2));
 
         ScrollView scroll = new ScrollView(this);
         scroll.setFillViewport(true);
         scroll.addView(content);
-        return scroll;
+        LinearLayout root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.addView(scroll, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 0, 1));
+        root.addView(stopButton, matchWrap());
+        root.setOnApplyWindowInsetsListener((view, insets) -> {
+            Insets safe = insets.getInsets(WindowInsets.Type.systemBars()
+                    | WindowInsets.Type.displayCutout() | WindowInsets.Type.ime());
+            view.setPadding(safe.left, safe.top, safe.right, safe.bottom);
+            return WindowInsets.CONSUMED;
+        });
+        return root;
+    }
+
+    private void registerTextSize(TextView view, float baseSp) {
+        baseTextSizes.put(view, baseSp);
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, baseSp);
+    }
+
+    private void addTextSizeControls(LinearLayout content, int gap) {
+        TextView heading = new TextView(this);
+        heading.setText(R.string.text_size_heading);
+        heading.setAccessibilityHeading(true);
+        registerTextSize(heading, 28);
+        content.addView(heading, spaced(matchWrap(), gap * 2));
+        TextView scope = new TextView(this);
+        scope.setText(R.string.text_size_scope);
+        registerTextSize(scope, 18);
+        content.addView(scope, spaced(matchWrap(), gap));
+        sizeStatus = new TextView(this);
+        registerTextSize(sizeStatus, 20);
+        sizeStatus.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
+        content.addView(sizeStatus, spaced(matchWrap(), gap));
+        for (TextScale choice : TextScale.values()) {
+            Button select = button(R.string.text_size_heading, view -> {
+                textScale.preview(choice);
+                renderTextSize();
+                renderButtonsOnly();
+            });
+            select.setText(getString(R.string.preview_size, choice.label()));
+            sizeChoices.put(select, choice);
+            content.addView(select, spaced(matchWrap(), gap));
+        }
+        sizePreview = new TextView(this);
+        sizePreview.setText(R.string.text_size_sample);
+        content.addView(sizePreview, spaced(matchWrap(), gap));
+        applySizeButton = button(R.string.apply_size, view -> {
+            textScale.apply();
+            renderTextSize();
+            renderButtonsOnly();
+        });
+        restoreSizeButton = button(R.string.restore_size, view -> {
+            textScale.restore();
+            renderTextSize();
+            renderButtonsOnly();
+        });
+        content.addView(applySizeButton, spaced(matchWrap(), gap));
+        content.addView(restoreSizeButton, spaced(matchWrap(), gap));
+    }
+
+    private void renderTextSize() {
+        TextScaleController.Snapshot snapshot = textScale.snapshot();
+        for (Map.Entry<TextView, Float> item : baseTextSizes.entrySet()) {
+            item.getKey().setTextSize(TypedValue.COMPLEX_UNIT_SP,
+                    item.getValue() * snapshot.current.multiplier());
+        }
+        TextScale sample = snapshot.preview == null ? snapshot.current : snapshot.preview;
+        sizePreview.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20 * sample.multiplier());
+        sizeStatus.setText(snapshot.message);
+        boolean voiceBusy = controller.snapshot().phase == VoiceSessionController.Phase.STARTING
+                || controller.snapshot().phase == VoiceSessionController.Phase.LISTENING
+                || controller.snapshot().phase == VoiceSessionController.Phase.STOPPING
+                || controller.snapshot().phase == VoiceSessionController.Phase.REQUESTING_PERMISSION;
+        boolean writable = snapshot.persistenceState == TextScaleController.PersistenceState.HEALTHY
+                || snapshot.persistenceState == TextScaleController.PersistenceState.ABSENT;
+        for (Map.Entry<Button, TextScale> entry : sizeChoices.entrySet()) {
+            Button choice = entry.getKey();
+            choice.setEnabled(!voiceBusy && writable);
+            boolean selected = entry.getValue() == snapshot.preview;
+            choice.setSelected(selected);
+            choice.setText(getString(selected ? R.string.preview_size_selected : R.string.preview_size,
+                    entry.getValue().label()));
+            choice.setStateDescription(selected ? getString(R.string.size_preview_selected)
+                    : entry.getValue() == snapshot.current ? getString(R.string.size_current)
+                    : getString(R.string.size_not_selected));
+        }
+        applySizeButton.setEnabled(snapshot.preview != null && !voiceBusy && writable);
+        restoreSizeButton.setEnabled(snapshot.restoreAvailable && !voiceBusy && writable);
     }
 
     private void startTalk() {
+        textScale.cancelPreview();
         cancelTimers();
         recognizer.cancel();
 
@@ -199,6 +319,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     }
 
     private void startTyping() {
+        textScale.cancelPreview();
         VoiceSessionController.Snapshot snapshot = controller.snapshot();
         cancelTimers();
         recognizer.cancel();
@@ -217,6 +338,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         cancelTimers();
         recognizer.cancel();
         controller.stop(reason);
+        textScale.cancelPreview();
         pendingPermissionGeneration = -1;
         render();
     }
@@ -289,6 +411,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
             transcriptEditor.setSelection(transcriptEditor.length());
         }
         rendering = false;
+        renderTextSize();
         renderButtonsOnly();
     }
 
@@ -300,12 +423,13 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         talkButton.setVisibility(capture ? View.GONE : View.VISIBLE);
         doneButton.setVisibility(
                 snapshot.phase == VoiceSessionController.Phase.LISTENING ? View.VISIBLE : View.GONE);
-        stopButton.setVisibility(capture ? View.VISIBLE : View.GONE);
-        typeButton.setVisibility(capture || snapshot.phase == VoiceSessionController.Phase.ERROR
-                || snapshot.phase == VoiceSessionController.Phase.UNAVAILABLE
+        boolean sizePending = textScale.snapshot().preview != null;
+        stopButton.setText(sizePending && !capture ? R.string.cancel_size_preview : R.string.stop);
+        stopButton.setVisibility(capture || sizePending
                 || snapshot.phase == VoiceSessionController.Phase.REQUESTING_PERMISSION
-                ? View.VISIBLE
-                : View.GONE);
+                ? View.VISIBLE : View.GONE);
+        typeButton.setVisibility(snapshot.phase == VoiceSessionController.Phase.FINAL
+                ? View.GONE : View.VISIBLE);
         useButton.setVisibility(snapshot.phase == VoiceSessionController.Phase.FINAL
                 ? View.VISIBLE
                 : View.GONE);
@@ -313,8 +437,29 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     }
 
     @Override
+    public Object onRetainNonConfigurationInstance() {
+        // Only preference state survives rotation; no Activity, View or transcript is retained.
+        return textScale;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (retainedTextScale) {
+            retainedTextScale = false;
+        } else {
+            textScale.reload();
+        }
+        renderTextSize();
+        renderButtonsOnly();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
+        if (!isChangingConfigurations()) textScale.cancelPreview();
+        renderTextSize();
+        renderButtonsOnly();
         VoiceSessionController.Phase phase = controller.snapshot().phase;
         if (phase == VoiceSessionController.Phase.STARTING
                 || phase == VoiceSessionController.Phase.LISTENING
@@ -333,7 +478,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private Button button(int label, View.OnClickListener listener) {
         Button button = new Button(this);
         button.setText(label);
-        button.setTextSize(20);
+        registerTextSize(button, 20);
         button.setMinHeight(dp(64));
         button.setAllCaps(false);
         button.setOnClickListener(listener);
