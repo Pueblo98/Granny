@@ -2,7 +2,7 @@
 title: "Claude Design handoff — app experience using the prepared system"
 status: proposed
 owner: Simon
-last_updated: 2026-09-18
+last_updated: 2026-09-19
 tags: [design, handoff, interaction]
 related:
   - claude-design-frontend-metaprompt.md
@@ -11,6 +11,7 @@ related:
   - accessibility.md
   - voice-ux.md
   - ../10-execution/brainstorming-alignment.md
+  - context-rooms.md
 ---
 
 # Claude Design: app experience
@@ -25,6 +26,8 @@ The synced package predates the selected Round conversation composer and ADR-001
 
 Simon settled the brainstorming interaction conflicts before this app-design session. Read the [resolved OQ-14 alignment brief](../10-execution/brainstorming-alignment.md). [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md) accepts bounded semantic composition, and [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md) accepts a stable conversation Home with zero or one optional context panel. Registered components and typed slots/actions retain renderer-owned focus/reflow and stable control anchors; arbitrary generated executable controls are excluded. Do not reopen a widget dashboard or infer visual approval from an old prototype.
 
+Simon later adopted [Context Rooms](context-rooms.md) under [ADR-0015](../09-decisions/ADR-0015-context-rooms.md) as the active next experience direction. Preserve the global Home and one assistant, then add the bounded T-119 fictional-data slice: direct Rooms library, one Kitchen room, direct browse/search, one disclosed cross-room source and safe archive/delete-room behavior. CMP-011 and SCR-016/017 are explicit system/app deltas; production persistence remains outside this design session.
+
 ## Product and design direction
 
 **Selected composer shape, Simon, 2026-09-17:** carry [Round conversation](brand-and-visual-identity.md#accepted-shape-direction--round-conversation) through compact, normal and expanded app compositions. The canonical note embeds the selected image and records the favicon direction. This visual approval preserves the Home and interaction contracts; remaining visual values stay provisional.
@@ -37,7 +40,7 @@ Avoid capability grids, prompt-chip walls, generic AI gradients/sparkles, repeat
 
 ## Paste into Claude Design
 
-Use the full [Claude Design frontend build metaprompt](claude-design-frontend-metaprompt.md). It replaces the earlier short exploration prompt now that the design system is synced, Home is settled and the Round conversation shape is selected. It asks Claude Design to build the editable zero-panel Home and complete fictional message slice first, then extend the same interaction language to the other MVP flows and supporting states. It does not reopen the structural Home decision or request three unrelated concepts.
+Use the full [Claude Design frontend build metaprompt](claude-design-frontend-metaprompt.md). It replaces the earlier short exploration prompt now that the design system is synced, Home is settled, the Round conversation shape is selected and Context Rooms is adopted. It asks Claude Design to preserve the editable zero-panel Home and complete fictional message slice, extend the same language to the MVP flows, then build the bounded T-119 Rooms slice. It does not reopen the structural Home decision or request three unrelated concepts.
 
 ## Canonical inputs
 
@@ -52,6 +55,7 @@ MVP covers photos, explain/recover, message preparation/approval, media and in-a
 3. Review composition with Simon, including what appears at rest versus during a task.
 4. Develop the selected direction through clarification, preview/edit, activity/Stop, result and recovery before extending to the other MVP flows.
 5. Review narrow/tablet, portrait/landscape, long content, keyboard-open, 200% and combined 300% text scenarios, silent/touch-only use and focus restoration.
+6. Build and review SCR-016/017 with CMP-011: one Kitchen room, direct browse/search, cross-room provenance and the room-versus-data deletion distinction.
 
 Exact fixture: “Tell David I'll call after dinner.” Clarify only if identity/channel is unresolved. Show exact recipient, channel, message and effect before approval. A local-demo result must say saved locally and not sent; Android handoff and verified sending are separate states. Unknown effect never offers a blind resend.
 

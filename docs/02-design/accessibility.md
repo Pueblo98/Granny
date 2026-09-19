@@ -2,7 +2,7 @@
 title: "Stage 1 Accessibility Specification"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-19
 tags: [design, accessibility]
 related:
   - product-design-spec.md
@@ -30,7 +30,7 @@ W3C's [Resize Text explanation](https://www.w3.org/WAI/WCAG22/Understanding/resi
 
 | ID | Proposed target beyond/alongside external baseline | Verification |
 |---|---|---|
-| A11Y-01 | All app text scales to 200%; controls expand/reflow; no clipped action, hidden content or essential horizontal scroll | SCR-001–015 at 1.0/1.3/2.0 font scale, display-size extremes, 360/600/840dp, both orientations; screenshots + manual reading |
+| A11Y-01 | All app text scales to 200%; controls expand/reflow; no clipped action, hidden content or essential horizontal scroll | SCR-001–017 at 1.0/1.3/2.0 font scale, display-size extremes, 360/600/840dp, both orientations; screenshots + manual reading |
 | A11Y-02 | Essential text ≥7:1 including buttons/status; supporting text ≥4.5:1; essential control boundaries/focus ≥3:1; no color-only meaning | Compute sRGB contrast on actual composites; scanner/manual audit; disabled essential explanation retains contrast |
 | A11Y-03 | Targets ≥56dp; main/Stop/confirm ≥64dp; distinct adjacent targets ≥12dp apart unless measured layout exception reviewed | Layout bounds test + dexterity study; dragging never sole interaction |
 | A11Y-04 | Native role/name/state/value/action, logical traversal, no duplicate decorative announcements; focus restored | TalkBack and keyboard walkthrough for all journeys; assert no autofocus on Send; switch scanning reaches Stop/Cancel |
@@ -40,6 +40,7 @@ W3C's [Resize Text explanation](https://www.w3.org/WAI/WCAG22/Understanding/resi
 | A11Y-08 | Plain adult wording, one question at a time, visible chosen recipient/time/content, no forced recall | RES-03 teach-back: user explains effect and stop; note language/access profile and qualitative dignity feedback |
 | A11Y-09 | Speech rate and replay controls, private-content speech opt-out, no TalkBack/TTS competition | Audio-focus tests, Bluetooth route/disconnect, hearing/noisy-room study; text persists |
 | A11Y-10 | Preference changes predictable and reversible, do not infer cognitive status, no age caricatures | EVAL-007 persistence/restore, RES-06/09 identity testing and copy review |
+| A11Y-11 | A room is identifiable through a persistent written name/purpose and stable navigation; illustration, color, spatial memory and conversation are never the sole route | SCR-016/017 at 200%, grayscale/reduced motion, TalkBack/keyboard/switch and model-offline direct-findability review; EVAL-012 |
 
 A11Y IDs are implementation audit items derived from PRD-ACC IDs, not a second product requirement authority.
 

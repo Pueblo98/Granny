@@ -21,6 +21,8 @@ related:
 
 **Selected shape, Simon, 2026-09-17:** [Round conversation](brand-and-visual-identity.md#accepted-shape-direction--round-conversation) is the accepted composer direction moving forward, in compact/normal/expanded sizes, with the same silhouette to explore for a favicon. This resolves the shape choice without accepting the rejected browser composition, changing behavior or authorizing implementation in this documentation session.
 
+**Active extension, Simon, 2026-09-19:** [Context Rooms](context-rooms.md) now extend this shell as the active next design direction. Home remains the universal low-clutter entry. T-119 adds a direct Rooms library and one room using the same assistant, personality, composer and safety controls, with fictional data before persistent implementation.
+
 **Latest feedback, Simon, 2026-09-17:** the implemented UI remains too button-heavy and generically AI-styled. Simon wants a separate Claude design session after settling product questions. [The handoff](claude-design-handoff.md) prepares that session and the requested system. This supersedes earlier positive checkpoint feedback as the current visual review disposition. Do not extend or polish the current composition under the old build request. Semantic safety/accessibility contracts remain; [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md) accepts bounded composition and [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md) now selects a stable conversation Home with zero or one optional context panel.
 
 **Confirmed direction:** Simon rejected the feature-button browser Home on 2026-09-14 and requested a minimal chatbot-like experience with less visible interface and more functionality inside the conversation. The cockpit-first planning task is complete.
@@ -130,7 +132,7 @@ Simon's 2026-09-17 class brainstorm adds two compatible explorations. First, a p
 
 Contextual result components may feel like modules—a photo strip, playback control, exact draft, guidance panel or preference preview—while remaining part of the current conversation. Under ADR-0013 the agent may automatically compose registered semantic components for the current task, while the renderer owns semantics/reflow and policy owns actions. Arbitrary model-created controls remain unavailable. Under ADR-0014, idle Home may contain only one CMP-010 context panel; no grid, carousel, widget stack or automatic movement of core controls is permitted.
 
-[Context Rooms](context-rooms.md), accepted in [ADR-0015](../09-decisions/ADR-0015-context-rooms.md), extend this direction as an optional secondary organization layer rather than a new Home. The same assistant and stable conversation shell operate globally and inside a room; entering a room foregrounds related references and a bounded atmosphere while policy-scoped cross-room retrieval remains possible. Exact access and release placement are open. The current browser build is not authorized to add Rooms merely because the direction is documented.
+[Context Rooms](context-rooms.md), accepted in [ADR-0015](../09-decisions/ADR-0015-context-rooms.md), extend this direction as an optional secondary organization layer rather than a new Home. The same assistant and stable conversation shell operate globally and inside a room; entering a room foregrounds related references and a bounded atmosphere while policy-scoped cross-room retrieval remains possible. T-119 is the active next fictional-data design/contract slice; production persistence and final navigation remain separately gated.
 
 ## Options and recommendation
 
@@ -149,6 +151,7 @@ Contextual result components may feel like modules—a photo strip, playback con
 4. **Add the other four integrated responses** once the conversation slice is coherent. Text-size changes apply across the thread/composer; photo and playback controls stay within the relevant turn.
 5. **Run access and comprehension checks:** no microphone, enlarged text, narrow/landscape, long message/keyboard open, focus/scroll retention, screen-reader and switch walkthrough. Actual participant studies remain RES-03/06 with approved protocol, not inferred from owner preference.
 6. Only then compare identity territories and consider device/agent integration under existing feasibility/safety gates.
+7. **Prototype T-119 Context Rooms:** preserve global Home, add SCR-016 Rooms and one SCR-017 Kitchen room, direct browse/search, one disclosed cross-room source, membership receipt/Undo and archive/delete-room review. Use only fictional in-memory data and CMP-011; do not add a room grid to Home or separate agent identities.
 
 No production AI calls, live mic capture, external message sends, package installation or vendor/framework changes are part of the proposed first slice.
 

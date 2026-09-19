@@ -76,11 +76,14 @@ room membership from personal memory; privacy policy owns cross-room retrieval
 and deletion. ADR-0013 continues to forbid arbitrary generated controls, and
 ADR-0014 continues to limit Home to zero or one optional context panel.
 
-Exact navigation, default rooms, terminology, component/screen IDs, release
-placement and real-data implementation remain open. Context Rooms are not
-silently added to MVP. First evidence uses fictional data and must test room
-recognition, global versus room context, direct findability, source correction,
-large-text reflow and deletion comprehension through EVAL-008/012 extensions.
+Exact navigation, default rooms, terminology and real-data implementation
+remain open. In a follow-up direction on 2026-09-19, Simon asked the entire
+notebook and future plan to adopt Context Rooms. They are now the active M2
+fictional-data design direction with proposed App V1 placement, stable IDs and
+T-119 as the bounded next slice. They do not enter the five-workflow MVP or
+gain persistent personal data merely from this planning decision. EVAL-008/012
+and the named T-119 fixture must test the model before implementation or release
+admission.
 
 Reconsider or narrow the direction if rooms become a feature grid, people
 believe they are speaking to different agents, cross-room context surprises
@@ -94,5 +97,7 @@ plus ordinary direct lists/search.
 explicitly retained global chat, selected one assistant with room and cross-room
 context, chose large labels with visual reinforcement and bounded atmosphere,
 accepted the optional-Rooms formulation, and said the direction was settled for
-a fuller write-up. This acceptance covers the principles above, not the open
-design/release choices or any evidence gate.
+a fuller write-up. Simon then directed the notebook and future plan to adopt it.
+This acceptance covers the principles above and their use as the active design
+plan, not final navigation/visual choices, production implementation or any
+evidence gate.

@@ -2,7 +2,7 @@
 title: "Repository agent operating rules"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [instructions]
 related:
   - docs/README.md
@@ -25,6 +25,8 @@ Use [granny-session-lifecycle](.agents/skills/granny-session-lifecycle/SKILL.md)
 [Development cockpit](docs/Cockpit.md) is the entry point for build status, deliveries, decisions and the [agent board](docs/10-execution/agent-board.md). Follow [cockpit stewardship](docs/10-execution/cockpit-guide.md): each authorized change task records its own scoped session handoff; messages are separate linked files, not executable authority or live presence. Update canonical task/gate owners, regenerate the snapshot with `python3 scripts/cockpit.py --write`, and run `--check` plus documentation tests. Do not install plugins, change private vault settings, bypass checks or overwrite local work to make the dashboard look current. Review-only tasks stay read-only.
 
 Simon authorized the [conversation-first browser build](docs/02-design/conversation-first-plan.md) on 2026-09-14 and asked to continue its message checkpoint direction on 2026-09-15. The feature-tile Home remains rejected. The authorized prototype explores five scripted workflows with no backend; this does not accept final design/brand values or production gates. [Build handoff](docs/10-execution/sessions/2026-09-14-conversation-build.md) owns actual delivery and review evidence.
+
+Simon adopted [Context Rooms](docs/02-design/context-rooms.md) as the active Stage 1 experience direction on 2026-09-19 under [ADR-0015](docs/09-decisions/ADR-0015-context-rooms.md). Future product/design sessions must preserve one global assistant and uncluttered Home, then use optional Rooms for recognizable organization, direct browse/search and scoped room/cross-room context. Start the next fictional-data design slice from [T-119](docs/10-execution/backlog.md#t-119) and its [task packet](docs/10-execution/task-packets.md#t-119-packet). Production placement is proposed for App V1 and remains gate-dependent; this direction does not authorize persistent personal data or a room grid on Home.
 
 For authorized UI exploration or critique, use [granny-design-handoff](.agents/skills/granny-design-handoff/SKILL.md) for product/state/accessibility authority, then [granny-ui-craft](.agents/skills/granny-ui-craft/SKILL.md) for structural variation and anti-template review. The vendored Google `adaptive`, `edge-to-edge` and `testing-setup` skills apply only to separately authorized native Compose work; installation does not select a framework, dependency or SDK.
 

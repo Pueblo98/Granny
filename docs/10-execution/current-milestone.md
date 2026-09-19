@@ -1,5 +1,5 @@
 ---
-title: "Current milestone — conversation-first browser experience"
+title: "Current milestone — Context Rooms on the conversation-first shell"
 status: proposed
 owner: Simon
 last_updated: 2026-09-19
@@ -11,7 +11,7 @@ related:
   - ../01-product/prd.md
 ---
 
-# Current milestone — conversation-first browser experience
+# Current milestone — Context Rooms on the conversation-first shell
 
 ## T-101 desk route inventory — 2026-09-19
 
@@ -19,7 +19,7 @@ The [current-source route assessment](../08-research/2026-09-19-t101-route-inven
 
 This is desk evidence only. No tablet, command, install, account, grant, provider or external app was used. T-101 remains in progress; GATE-03/04 and GATE-06 device/real-data conditions remain open. The next bounded step is Simon-authorized Step B read-only physical inventory on the supplied pseudonymous tablet; T-104 still waits for actual sent-photo route and device-safety evidence.
 
-## Context Rooms direction — 2026-09-19
+## Active Context Rooms plan — 2026-09-19
 
 Simon accepted [ADR-0015](../09-decisions/ADR-0015-context-rooms.md): optional
 [Context Rooms](../02-design/context-rooms.md) organize related material around
@@ -29,12 +29,19 @@ policy-scoped cross-room retrieval remains possible. Rooms use large labels and
 bounded atmosphere, retain direct browse/search, and separate deleting the
 room from deleting underlying data.
 
-The concept document defines the mental model, experience, context layers,
-organization and deletion lifecycle, accessibility/privacy boundaries, failure
-cases and a staged fictional-data prototype. Exact access, terminology,
-default rooms, component/screen IDs, release placement and real persistence
-remain open. This documentation does not add Rooms to the MVP, mutate the
-current Claude Design project or authorize implementation.
+Simon subsequently directed the entire notebook and future sessions to use
+this direction. The next bounded plan is [T-119](backlog.md#t-119): extend the
+conversation-first shell with global Home, a direct Rooms library, one Kitchen
+room, direct browse/search, one provenance-carrying cross-room example and the
+archive/delete-room distinction, all with fictional in-memory data. Stable
+owners are PRD-FR-022, UC-026, J-009, SCR-016/017 and CMP-011.
+
+Production placement is proposed for App V1 because useful Rooms depend on
+durable organization and rights that the five-workflow MVP intentionally does
+not provide. Exact navigation, terminology, default rooms, visual treatment
+and real persistence remain evidence-gated. This plan authorizes documentation
+and a separately requested fictional-data prototype; it does not authorize
+personal-data storage or silently expand the MVP.
 
 ## Claude Design frontend handoff — 2026-09-18
 
@@ -75,11 +82,11 @@ Simon explicitly authorized [T-117](backlog.md#t-117), a bounded conversation-fi
 
 Simon requested the complete T-103 backend sprint on 2026-09-17 and accepted all five bounded review points on 2026-09-19. The [pure offline core](../../prototypes/t103-authority-core/README.md) implements units A-D with named fake ports, controlled time/generations, strict local admission, exact one-use authority, independent ledger verification, Stop/restart ordering, budgets and privacy projection. Its [C01-C20 report](../../prototypes/t103-authority-core/EVIDENCE.md) records 20/20 passing cases and 147 explicit assertions on fixture `t103-fixture-v1`; the existing 25 conversation-runtime tests also pass in the implementation worktree. T-103 is complete for this offline scope. No Android, external app, real message, live provider, MCP execution path or product-gate promotion follows from this acceptance.
 
-## Active milestone — review the conversation-first browser experience
+## Historical milestone — conversation-first browser experience
 
 Simon authorized [conversation-first implementation](../02-design/conversation-first-plan.md) on 2026-09-14: message checkpoint first, then the five integrated MVP simulations, supporting preferences/privacy/recovery and proposed visual comparison. He asked to continue the working message direction on 2026-09-15 and authorized a draft PR after integrated checks. [Build record](sessions/2026-09-14-conversation-build.md) owns current evidence/publication. Main integration is not authorized. No backend, Android automation, capture, live media/message or production gate work is part of this mission.
 
-T-102's conversation-first browser revision is implemented for review; the development cockpit remains approved and complete. Test and iterate the actual browser experience. Final interaction/brand acceptance, device/participant evidence and all production gates retain their existing owners and limits.
+T-102's conversation-first browser revision is implemented for review; the development cockpit remains approved and complete. That shell remains useful input, while T-119 is now the active next design slice. Final interaction/brand acceptance, device/participant evidence and all production gates retain their existing owners and limits.
 
 ## Previous milestone — cockpit approved; conversation-first plan prepared
 
@@ -109,13 +116,13 @@ Simon's subsequent 2026-09-14 request authorizes GitHub publication and future t
 
 Simon's 2026-09-14 follow-up requested a holistic documentation/skills/workflow system **before actual design and development**. T-113 supplied [delivery workflows and four repository skills](operating-workflows.md), [first task packets](task-packets.md), [transaction protocol](../03-agent/execution-protocol.md), [capability admission](../04-architecture/capability-admission.md), [evidence review](../06-evals/evidence-protocol.md) and [research execution protocols](../08-research/research-protocols.md). That historical package created no application code; T-103's cases were subsequently implemented and run in the bounded offline core described above. No external Figma file or participant/device study was created. The official remote Figma MCP connection was verified read-only on 2026-09-14; no canvas mutation or credential/config file was added to the repository.
 
-The next user-authorized work can start a named low-fi design package or T-103's offline fake replay from these packets; no need for another broad specification-writing milestone. Remaining real-world evidence and Simon decisions still gate production work. Skills are repo-local. No new global setting, plugin or scheduled automation was installed by this repository task; the pre-existing official Figma plugin connection is documented in the Figma contract.
+The next experience implementation request should start from T-119's named fictional-data packet; T-103's offline fake replay remains independently available. No new broad specification-writing milestone is needed. Remaining real-world evidence and Simon decisions still gate production work. Skills are repo-local. No new global setting, plugin or scheduled automation was installed by this repository task; the pre-existing official Figma plugin connection is documented in the Figma contract.
 
 The mission's documentation package is written for review. Only the stock-Android tablet app is active; no Android/runtime/backend implementation was started. Simon accepted the five MVP experiments and control posture on 2026-09-14; detailed product choices remain proposed and technical/user evals unrun. [Development readiness](development-readiness.md) is the authoritative gate/status assessment; [backlog](backlog.md) gives bounded next tasks, not another plan to write the PRD.
 
 ## Delivered in this milestone
 
-48 stable PRD requirements; explicit MVP/V1/later boundaries; four proto-personas and five jobs; 25 use cases and eight journeys; 15 screens/19 states/nine components; voice/access/content/Figma contract; brand foundation, 81 naming candidates, 30 live longlist, 12 scored candidates, three finalists and four reproducible identity territories with local boards; finite typed agent tools, Android/local-cloud/trust boundaries; canonical action/privacy/memory/helper/threat policies; 17 unrun evals, metric/failure definitions and full requirement mapping; prioritized evidence program; nine gates, roadmap, DoR and first synthetic coding slice.
+49 stable PRD requirements; explicit MVP/V1/later boundaries; four proto-personas and five jobs; 26 use cases and nine journeys; 17 screens/19 states/11 components; voice/access/content/Figma contract; brand foundation, 81 naming candidates, 30 live longlist, 12 scored candidates, three finalists and four reproducible identity territories with local boards; finite MVP typed capabilities plus proposed CAP-15, Android/local-cloud/trust boundaries; canonical action/privacy/memory/helper/room/threat policies; 17 unrun evals, metric/failure definitions and full requirement mapping; prioritized evidence program; nine gates, roadmap, DoR and bounded T-103/T-119 synthetic slices.
 
 [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) is **accepted by Simon on 2026-09-14**, completing T-100 and passing GATE-02 for experiment scope only. ADR-0010/0011 remain **proposed**. Seven earlier accepted ADRs and deprecated ADR-0004 history remain unchanged. Supplied Dream Book/handoff/conversation and local Obsidian state are preserved.
 

@@ -2,7 +2,7 @@
 title: "Stage 1 failure taxonomy"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-19
 tags: [evals]
 related:
   - canonical-tasks.md
@@ -12,7 +12,7 @@ related:
 
 # Failure taxonomy
 
-A failure code classifies observed behavior, never the user's ability. All examples are synthetic risks, not observed incidents. Preserve existing PER/INT/PLN/ACT/VRF/REC/AUT/PRV/SEC/DEP/USR families; add ACC for access defects. Emit one primary cause and secondary effects; unknown root cause stays unknown.
+A failure code classifies observed behavior, never the user's ability. All examples are synthetic risks, not observed incidents. Preserve existing PER/INT/PLN/ACT/VRF/REC/AUT/PRV/SEC/DEP/USR/ACC families; add CTX for Context Room scope/organization defects. Emit one primary cause and secondary effects; unknown root cause stays unknown.
 
 | Family / stable examples | Failure and detection | Owner / required regression |
 |---|---|---|
@@ -27,6 +27,7 @@ A failure code classifies observed behavior, never the user's ability. All examp
 | SEC-01 injection, SEC-02 confused deputy, SEC-03 identity abuse | Screen content becomes command, spoofed package/entity, account takeover | Policy/security; EVAL-010/016 |
 | DEP-01 permission, DEP-02 network/provider, DEP-03 app/OEM change, DEP-04 policy | Revoked grant, outage, stale recipe, nonviable distribution | Permissions/registry; EVAL-005/009/011 |
 | ACC-01 semantics, ACC-02 layout/contrast, ACC-03 modality/time | Focus trap, clipped Stop, audio-only result, forced-speed approval | Design/shell; EVAL-007/012 |
+| CTX-01 wrong scope, CTX-02 hidden source, CTX-03 stranded/deleted item | Current room leaks into global task, material cross-room source is undisclosed, membership/delete loses direct findability or canonical data | Room resolver + privacy + design; EVAL-008/012, T-119 fixture |
 | USR-01 interruption race, USR-02 control unclear, USR-03 correction lost | Agent ignores takeover, confusing Stop, old intent after edit | Session/design; EVAL-003/006/012 |
 
 ## Severity and disposition

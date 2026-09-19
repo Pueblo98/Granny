@@ -2,7 +2,7 @@
 title: Proto-personas, problems, and jobs
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-19
 tags: [product, stage-1]
 related:
   - prd.md
@@ -18,7 +18,7 @@ These are design hypotheses drawn from the [Dream Book](../00-vision/dream-book.
 |---|---|---|---|
 | PROB-01 — knowing an outcome does not imply knowing the app/menu; hypothesis | JOB-01 — when I want something, help me reach it without learning a navigation sequence | Verified useful task with less assistance | Frequency and willingness to delegate unknown; RES-01, RES-07 |
 | PROB-02 — changed screens can interrupt independent use; hypothesis | JOB-02 — when I am lost, explain where I am and help me continue | Recovery without blame or lost work | Explanation alone may be preferred; RES-01, RES-03 |
-| PROB-03 — small targets, speech-only feedback, and time pressure can exclude people; access mechanisms established, prevalence here unknown | JOB-03 — let me choose how to see, hear, and control this task | Equal outcomes through preferred access method | Profiles must be tested separately; RES-06 |
+| PROB-03 — small targets, speech-only feedback, time pressure and hard-to-recognize organization can exclude people; access mechanisms established, prevalence here unknown | JOB-03 — let me choose how to see, hear, control and find this task or material | Equal outcomes through preferred access method and recognizable organization | Profiles and the Context Rooms hypothesis must be tested separately; RES-03/06 |
 | PROB-04 — uncertainty about what an assistant did can undermine trust; hypothesis | JOB-04 — let me know what will happen, stop it, and check what happened | Accurate understanding and control | Confirmation may be too burdensome; RES-03 |
 | PROB-05 — recurring explanation and family support can expose private context; hypothesis | JOB-05 — keep only context I choose and let me get help on my terms | Continuity without surveillance | Value of memory/helper access unknown; RES-08 |
 

@@ -2,7 +2,7 @@
 title: "Stage 1 Use Cases"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [product, use-cases]
 related:
   - prd.md
@@ -390,3 +390,18 @@ POL-00 = scoped observe, POL-01 = reversible navigation, POL-02 = local preparat
 **Privacy/safety:** High-consequence unauthorized action.
 **Success evidence:** Zero restricted dispatch and understandable limitation.
 **Links:** PRD-SAF-005; [J-002](user-journeys.md#j-002); [EVAL-010](../06-evals/canonical-tasks.md#eval-010). Later cases use planned cross-cutting evals, not implied execution.
+
+<a id="uc-026"></a>
+## UC-026 — Organize and use a Context Room
+
+**Release / priority / actor / job:** App V1 / Should / P-01 or P-02 / JOB-03.
+**Request / touch:** “Put my soup recipes in Kitchen.” / Menu → Rooms → Kitchen → Add or browse.
+**Start and preconditions:** Context Rooms enabled; fictional T-119 fixture first, admitted local store before production.
+**Data and permissions:** Canonical item references, memberships, room purpose/visual preset, sensitivity and provenance; room membership is not sharing or action authority.
+**Expected behavior:** Open global Home or Rooms → enter labeled Kitchen → browse/search directly or ask Granny → current-room references rank first → any material cross-room source is disclosed → proposed membership change has receipt/Undo → archive or delete room without silently deleting canonical items.
+**Autonomy:** POL-00 for browse, POL-02 for reversible membership/room edits, POL-03 for room-container deletion; underlying-data deletion is a separate exact action.
+**Ambiguity and accessibility:** Same assistant/personality and stable controls everywhere; written room name and purpose accompany visual reinforcement; no emoji-only or floor-plan navigation.
+**Failure and recovery:** Model/offline resolver failure leaves direct browse/search; uncertain classification remains Unfiled; stale membership cannot resurrect; delete conflict inventories items and pending work before commit.
+**Privacy/safety:** Minimum necessary context, provenance-carrying cross-room retrieval, sensitivity filters and no implicit egress or sharing.
+**Success evidence:** User identifies current scope, finds an item without chat, understands one cross-room source, returns Home for a general task and distinguishes deleting a room from deleting its data.
+**Links:** PRD-FR-022; [J-009](user-journeys.md#j-009); [EVAL-008](../06-evals/canonical-tasks.md#eval-008), [EVAL-012](../06-evals/canonical-tasks.md#eval-012); [T-119](../10-execution/backlog.md#t-119).
