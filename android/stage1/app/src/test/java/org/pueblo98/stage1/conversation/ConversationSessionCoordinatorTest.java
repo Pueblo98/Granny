@@ -52,6 +52,12 @@ public final class ConversationSessionCoordinatorTest {
         assertEquals(ConversationSessionCoordinator.Surface.UNKNOWN, c.snapshot().surface);
         assertFalse(c.isEnabled(ConversationSessionCoordinator.Capability.SCREEN_EXPLANATION));
     }
+    @Test public void backgroundDropsPrivateRequestAndQueuedAuthorityButKeepsPlace() {
+        ConversationSessionCoordinator c = coordinator(); c.setPlace("Kitchen", new ConversationSessionCoordinator.ReturnAnchor("Kitchen", "recipe", 7));
+        c.typed("make text larger"); c.submit(); c.chooseTextScale(TextScale.LARGE); c.approve(); c.clearForBackground(null);
+        assertEquals("Kitchen", c.snapshot().place); assertEquals("", c.snapshot().editableRequest);
+        assertFalse(c.snapshot().permitQueued); assertEquals(ConversationSessionCoordinator.Result.STALE, c.dispatchApproved());
+    }
     private static ConversationSessionCoordinator coordinator() { FakeStore store = new FakeStore(); return new ConversationSessionCoordinator(new TextScaleController(store), store); }
     private static final class FakeStore implements TextScaleStore {
         StoredValue value; int writes; boolean readbackMismatch;
