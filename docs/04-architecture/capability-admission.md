@@ -2,7 +2,7 @@
 title: "Capability admission, build modes and support lifecycle"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [architecture, android, release]
 related:
   - system-overview.md
@@ -68,7 +68,7 @@ The planner receives a redacted subset of available operation schemas, never wri
 | UC-006 handoff / CAP-08 | Android SMS/email compose or system chooser; exact owner integration if later found | Opened handoff vs independently read-back external draft distinguished | Conditional for truthful manual handoff; unknown for verified consumer-app draft. [T-101 desk evidence](../08-research/2026-09-19-t101-route-inventory.md#route-3--exact-message-preparation-and-confirmation); no sent claim |
 | UC-006 commit / CAP-09 | Supported send integration only | Receipt matched to exact intended effect | Disabled; no working consumer-messenger integration established |
 | UC-004 media / CAP-10 | Owner-exposed Media3 route, named approved integration, or lab-only fixed recipe | Exact content + active playback | Conditional per named owner/version; Spotify App Remote 0.8.0/Auth 2.1.0 is the current concrete candidate, not selected support. [T-101 route evidence](../08-research/2026-09-19-t101-route-inventory.md#route-4--requested-media); Spotify is absent from the partial `TBL-01` inventory and device/provider evidence is unrun |
-| UC-007 text / CAP-11 | Granny-owned preference/UI | Stored value + accessible reflow | Go to own-app synthetic experiment; specified, not implemented; no device-wide claim. [T-101 desk evidence](../08-research/2026-09-19-t101-route-inventory.md#route-5--granny-owned-text-adjustment) |
+| UC-007 text / CAP-11 | Granny-owned preference/UI | Stored value + accessible reflow | Own-app synthetic [C5 source slice](../../android/stage1/README.md) implements preview/apply/restore and private preference readback; device persistence/reflow evidence unrun, not admitted; no device-wide claim. [T-101 desk evidence](../08-research/2026-09-19-t101-route-inventory.md#route-5--granny-owned-text-adjustment) |
 | Stop / CAP-12 | Local coordinator plus tested adapter cancellation boundary | No post-latch dispatch and honest in-flight status | Fake proof T-103 first, device proof EVAL-006 later |
 
 A candidate app name is a test hypothesis, not support. Do not convert WhatsApp Business API documentation into a claim to read an adult's consumer WhatsApp inbox. Do not substitute a controlled fake for a failed third-party route.

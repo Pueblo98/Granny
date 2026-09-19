@@ -1,5 +1,5 @@
 ---
-title: "Current milestone — Context Rooms on the conversation-first shell"
+title: "Current milestone — Context Rooms and the first native voice shell"
 status: proposed
 owner: Simon
 last_updated: 2026-09-20
@@ -11,7 +11,33 @@ related:
   - ../01-product/prd.md
 ---
 
-# Current milestone — Context Rooms on the conversation-first shell
+# Current milestone — Context Rooms and the first native voice shell
+
+## T-120 native on-device voice decision and implementation — 2026-09-20
+
+Simon accepted [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md):
+Stage 1 starts with explicit tap-to-talk and Android's on-device
+`SpeechRecognizer`, retains a complete typed path and defers Whisper-class,
+cloud/realtime and small cleanup-model routes. Initial cleanup is limited to
+Android formatted/raw hypotheses plus deterministic whitespace and punctuation
+spacing; the final visible transcript remains editable and no transcript
+rewriting grants action authority.
+
+[T-120](backlog.md#t-120) is in review. Its [first own-app Android
+shell](../../android/stage1/README.md) requests microphone access only from
+Talk, uses only `createOnDeviceSpeechRecognizer`, fails to Type when on-device
+recognition is unavailable, rejects stale callbacks after Stop/session
+replacement and retains no raw audio or default transcript history. Sixteen
+pure host cases pass with debug assembly and lint; the APK permission dump
+contains only `RECORD_AUDIO` and its runtime dependency graph is empty. Host
+evidence proves only that bounded local contract. No Android device was
+attached, so exact Samsung recognizer, locale, acoustic, lifecycle, latency,
+accessibility and correction-effort evidence remains unrun under RES-06 and
+EVAL-005/007/009/012; no gate passes from the decision or scaffold.
+
+The task branch starts from the latest committed Explicit Scroll Row Home and
+merges current `origin/main`. The owner's later uncommitted Context Rooms work
+remains untouched and is not claimed as part of T-120.
 
 ## Shared conversation state pack — 2026-09-20
 
@@ -38,13 +64,23 @@ and Rooms, deterministic fictional fixtures, responsive/accessibility coverage
 and preservation of existing safety behavior; it does not authorize backend,
 Android, real microphone or external-app work.
 
+## C5 local text-size implementation — 2026-09-20
+
+The [C5 slice](sessions/2026-09-20-c5-native-text-scale.md) extends the existing
+[native voice shell](../../android/stage1/README.md) with closed text-size
+choices, isolated preview, explicit Apply, private saved-value readback and
+Restore previous size. It adds no permission, dependency or network route.
+Source/host evidence does not establish device layout, TalkBack or restart
+persistence; the [synthetic tablet packet](../10-execution/t101-c5-tablet-verification.md)
+owns the pending verification. T-101 and GATE-03/04/06 remain open.
+
 ## T-101 route and partial physical inventory — 2026-09-19
 
 The [current-source route assessment](../08-research/2026-09-19-t101-route-inventory.md) now covers all five ADR-0009 experiments and prepares the non-identifying physical inventory and smallest synthetic experiments. It finds a go route for Granny-local text, conditional routes for scoped screen explanation and named media integration, conditional honest message compose handoff but no send claim, and no ordinary candidate route for sent-photo provenance. Only screen explanation and media remain plausible external candidates; screen explanation has bounded but non-admitting device evidence and media remains unrun, so the accepted two-external-workflow kill criterion is at high risk.
 
 Simon then manually read non-identifying Settings values from `TBL-01`: Samsung `SM-X238U` / Galaxy Tab A11+ 5G, Android 16, One UI 8.0, build/patch, English (United States), partial display/input/access state and installed-app versions. The [physical record](../08-research/2026-09-19-t101-physical-inventory.md) is user-reported and incomplete; Codex did not connect to or operate the tablet. No command, install, update, grant, account/content inspection, external-app actuation or capability experiment occurred.
 
-T-101 remains in progress; GATE-03/04 and GATE-06 device/real-data conditions remain open. The [lab-only Android 16 scaffold](../../experiments/c2-screen-explanation/README.md) now has four bounded [C2 device runs](../08-research/2026-09-19-t101-c2-device-evidence.md). Across the repaired runs, the synthetic protected-scene and ordered stale-result regressions closed; visible Stop, lock cleanup, resize/result recovery and task-removal cleanup produced positive observations. A source-only Stop-control state repair passes 36 host cases but is unrun on Android. Selected-package identity and independent retention/egress evidence remain unresolved. Both latest-run packages were removed; debugging authorization, USB debugging and Developer options were disabled, and the cable was disconnected. T-104 still waits for actual sent-photo route and device-safety evidence.
+T-101 remains in progress; GATE-03/04 and GATE-06 device/real-data conditions remain open. The [lab-only Android 16 scaffold](../../experiments/c2-screen-explanation/README.md) now has four bounded [C2 device runs](../08-research/2026-09-19-t101-c2-device-evidence.md). Across the repaired runs, the synthetic protected-scene and ordered stale-result regressions closed; visible Stop, lock cleanup, resize/result recovery and task-removal cleanup produced positive observations. The merged [C2 local safety repair](sessions/2026-09-20-android-c2-local-safety-sprint.md) passes 49 host cases; its additional source changes remain unrun on Android. Selected-package identity and independent retention/egress evidence remain unresolved. Both latest-run packages were removed; debugging authorization, USB debugging and Developer options were disabled, and the cable was disconnected. T-104 still waits for actual sent-photo route and device-safety evidence.
 
 ## Active Context Rooms plan — 2026-09-19
 

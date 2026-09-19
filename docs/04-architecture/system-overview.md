@@ -2,7 +2,7 @@
 title: "Stage 1 System Architecture"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [architecture, android]
 related:
   - ../02-design/context-rooms.md
@@ -13,7 +13,7 @@ related:
 
 # Stage 1 architecture
 
-Proposed component contracts for the stock-Android app. [ADR-0001/0005/0007](../09-decisions/README.md) constrain platform/control; [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) accepts experiment/control scope. [ADR-0010](../09-decisions/ADR-0010-local-authority-and-data.md) and [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md) still propose local authority/data and explicit voice/access. No framework, database, model vendor, backend topology or public distribution is selected. [Execution protocol](../03-agent/execution-protocol.md) owns transaction/event ordering; [capability admission](capability-admission.md) owns registry/build/support lifecycle.
+Proposed component contracts for the stock-Android app. [ADR-0001/0005/0007](../09-decisions/README.md) constrain platform/control; [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) accepts experiment/control scope. [ADR-0010](../09-decisions/ADR-0010-local-authority-and-data.md) still proposes local authority/data; [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md) accepts tap-to-talk and the initial Android on-device recognition route. No UI framework, database, planner/model vendor, backend topology or public distribution is selected. [Execution protocol](../03-agent/execution-protocol.md) owns transaction/event ordering; [capability admission](capability-admission.md) owns registry/build/support lifecycle.
 
 ## Trust and process map
 
@@ -57,11 +57,11 @@ Each anchor is a stable architecture owner referenced from [traceability](../01-
 <a id="voice"></a>
 ### Voice input/output
 
-**Responsibility / state / APIs:** Capture session state, transcript events, stop/output controls.
-**Placement/trust:** Local capture/TTS wrapper; provider optional, output untrusted.
+**Responsibility / state / APIs:** Capture session state, revisioned provisional/verbatim/display transcript events, conservative cleanup, stop/output controls.
+**Placement/trust:** Local adapter around Android's on-device `SpeechRecognizer` for the initial route and a local TTS wrapper; recognizer output remains untrusted input.
 **Permissions/data:** Runtime microphone; audio focus; ephemeral audio/text.
-**Offline/failure isolation:** No provider/permission → typed path; no ambient background promise.
-**Dependencies:** shell, privacy, provider.
+**Offline/failure isolation:** No on-device recognizer, locale support or permission → typed path; never fall back silently to network recognition; no ambient background promise. Destroy/cancel the recognizer on session replacement, Stop or lifecycle exit and reject callbacks from an old generation.
+**Dependencies:** shell, privacy; the replaceable provider boundary is unused by the initial recognition slice.
 
 <a id="session"></a>
 ### Session coordinator
