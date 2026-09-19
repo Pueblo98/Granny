@@ -170,7 +170,14 @@ peer branch or its browser changes. Main integration remains unapproved for
 this new mixed slice. The primary vault remains on the previously synchronized
 PR #33 main baseline with user assets/notes preserved.
 
-Push/PR and remote SHA verification are completed at publication handoff.
+Published [PR #36](https://github.com/Pueblo98/Granny/pull/36).
+Publication checkpoint `f70ea35429a9e82da45d483960a1569025b56b49`
+matched `refs/heads/feature/t101-c5-local-text` on the verified
+`Pueblo98/Granny` origin. Subsequent documentation-only publication metadata
+does not change the source/APK identities above. The root task worktree is
+clean after publication; final remote equality and GitHub checks are reported
+at conversational handoff. No main merge or primary-vault synchronization has
+been performed for this new slice.
 Next action: review this concrete branch, then authorize named cases in the
 [tablet packet](../t101-c5-tablet-verification.md). The test request excludes
 microphone, capture, accounts, personal data and external applications.
