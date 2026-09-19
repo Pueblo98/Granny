@@ -271,6 +271,14 @@ disclosure and verifies that the tail is contained and decorative, the
 composer has no generated masks, the resize handle is absent and the fix does
 not rely on clipping.
 
+Simon also required the focused state to follow the complete speech-bubble
+silhouette. The form's rectangular CSS outline was replaced with one inert,
+responsive SVG focus contour calculated from the rendered composer dimensions.
+It keeps the separated violet ring, follows the rounded body and routes around
+the tail without drawing a focus line across the join. Resize, large-text and
+thread-state changes update the contour without changing focus or control
+semantics.
+
 ## Validation
 
 Final validation used the repository's existing Node 26.8.1, Chromium

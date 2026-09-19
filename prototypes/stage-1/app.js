@@ -1421,15 +1421,36 @@
     document.body.dataset.compactComposer =
         String($('composer').offsetHeight > innerHeight * 0.42);
   };
+  const updateComposerFocus = () => {
+    const composer = $('composer'), path = $('composer-focus-path');
+    const gap = 7, left = -gap, top = composer.offsetTop - gap;
+    const right = composer.offsetWidth + gap;
+    const formBottom = composer.offsetTop + composer.offsetHeight;
+    const bottom = formBottom + gap, radius = 51;
+    path.setAttribute(
+        'd',
+        `M ${left + radius} ${top} H ${right - radius} ` +
+            `Q ${right} ${top} ${right} ${top + radius} ` +
+            `V ${bottom - radius} Q ${right} ${bottom} ${right - radius} ${bottom} ` +
+            `H 99 L 65 ${formBottom + 25} ` +
+            `Q 59 ${formBottom + 28} 51 ${formBottom + 24} ` +
+            `L 47 ${bottom} H ${left + radius} ` +
+            `Q ${left} ${bottom} ${left} ${bottom - radius} ` +
+            `V ${top + radius} Q ${left} ${top} ${left + radius} ${top} Z`);
+  };
   new ResizeObserver(fitComposer).observe($('composer'));
+  new ResizeObserver(updateComposerFocus).observe(
+      document.querySelector('.composer-wrap'));
   new ResizeObserver(updateRoomLayout).observe($('room-viewport'));
   window.addEventListener('resize', () => {
     fitComposer();
+    updateComposerFocus();
     updateRoomLayout();
   });
   renderRooms();
   render();
   fitComposer();
+  updateComposerFocus();
   if (scheduler && scheduler.sync)
     scheduler.sync();
 })();

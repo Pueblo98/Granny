@@ -427,10 +427,24 @@ body:not([data-home="true"]) .composer-wrap {
 
 .composer-tail path { vector-effect: non-scaling-stroke; }
 
-.composer:focus-within {
-  outline: 4px solid var(--focus);
-  outline-offset: 5px;
+.composer-focus-frame {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: var(--focus);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4px;
+  opacity: 0;
+  pointer-events: none;
 }
+
+.composer-wrap:focus-within .composer-focus-frame { opacity: 1; }
+.composer:focus-within { outline: 0; }
 
 .composer label {
   grid-column: 1;
