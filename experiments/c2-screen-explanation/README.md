@@ -13,8 +13,8 @@ related:
 
 # T-101 C2 synthetic screen-explanation scaffold
 
-Status: **a second source-only repair addresses the observed lifecycle/state
-defects and passes host checks; it is unrun on Android and C2 remains not
+Status: **a source-only generation-recovery repair addresses the latest stale
+result defect and passes host checks; it is unrun on Android and C2 remains not
 admitted**.
 
 This lab-only Android 16 scaffold prepares the smallest C2 experiment from the
@@ -32,7 +32,7 @@ reproducible protected-content failure and an aborted Stop attempt.
   samples a bounded marker band into in-memory color summaries, requires a
   temporally separated same-scene marker transition, maps only known fixture
   colors to fixed explanations, and releases the projection.
-- Thirty-two passing pure local JUnit tests for consent/Stop generation,
+- Thirty-three passing pure local JUnit tests for consent/Stop generation,
   capture geometry, bounded marker sampling, marker classification, freshness
   gating, lifecycle-trial allowlisting, process-local result recovery and
   private-canary suppression.
@@ -268,6 +268,29 @@ stale, leaving prior result text visible. C2-12 therefore does not pass truthful
 result recovery even though projection cleanup was observed. Both APKs were
 uninstalled and debugging was restored. Repair and host-test generation seeding
 before any new exact device request; do not reinterpret this run as admission.
+
+## Post-lifecycle generation recovery — 2026-09-19
+
+The next source-only repair seeds every newly created activity consent state
+machine from the process ledger's current generation. The next explicit request
+therefore advances beyond the retained generation instead of restarting at one
+and having its state/result rejected as stale. A pure regression case seeds
+generation three, verifies that the next request is generation four and rejects
+reuse of generation three.
+
+A clean offline build completed 92 tasks. Eight JUnit suites pass **33/33**
+cases with no failure or skip; lint reports zero errors and the same eight
+lab-only warnings. Permissions remain unchanged. Both APKs verify with APK
+Signature Scheme v2 and the same ordinary debug certificate:
+
+| APK | Generation-repair SHA-256 | Device state |
+|---|---|---|
+| `fixture-debug.apk` | `044a693583f95ad6bb98e2038019546871cea36b39b570ae07217bc03a070678` | Unrun for this source revision |
+| `observer-debug.apk` | `b5acd8315c6dbeefdabc42f85c5c4560036d9042be6091bb086adafa1f0b5476` | Unrun |
+
+This host evidence does not revise C2-12. The repair needs fresh exact device
+authority before installation or verification, and C2 remains disabled/not
+admitted regardless of source-test success.
 
 ## Install and teardown procedure used
 

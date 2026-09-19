@@ -74,4 +74,15 @@ public final class CaptureSessionStateMachineTest {
         long second = machine.beginRequest();
         assertTrue(machine.consentGranted(second));
     }
+
+    @Test
+    public void recreatedActivitySeedsGenerationAboveProcessLedger() {
+        CaptureSessionStateMachine machine = new CaptureSessionStateMachine(3L);
+
+        long next = machine.beginRequest();
+
+        assertEquals(4L, next);
+        assertTrue(machine.consentGranted(next));
+        assertFalse(machine.consentGranted(3L));
+    }
 }

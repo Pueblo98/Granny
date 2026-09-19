@@ -22,7 +22,8 @@ public final class MainActivity extends Activity {
     private static final String FIXTURE_PACKAGE = "org.pueblo98.granny.c2fixture";
     private static final long CONSENT_INVALIDATION_DELAY_MILLIS = 3_000L;
 
-    private final CaptureSessionStateMachine stateMachine = new CaptureSessionStateMachine();
+    private final CaptureSessionStateMachine stateMachine =
+            new CaptureSessionStateMachine(LabSessionLedger.process().snapshot().generation);
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private long activeGeneration;
     private String activeTrial = CaptureTrialPlan.STANDARD;

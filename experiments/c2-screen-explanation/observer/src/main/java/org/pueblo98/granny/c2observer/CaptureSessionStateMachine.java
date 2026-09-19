@@ -16,6 +16,14 @@ public final class CaptureSessionStateMachine {
     private long generation;
     private State state = State.IDLE;
 
+    public CaptureSessionStateMachine() {
+        this(0L);
+    }
+
+    CaptureSessionStateMachine(long initialGeneration) {
+        generation = Math.max(0L, initialGeneration);
+    }
+
     public synchronized long beginRequest() {
         generation += 1;
         state = State.REQUESTING_CONSENT;
