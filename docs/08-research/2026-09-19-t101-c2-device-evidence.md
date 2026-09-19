@@ -75,3 +75,34 @@ a static prior frame cannot produce an explanation, and adds explicit bounded
 single-app controls for C2-08/09/10/12. The repair does not alter this ledger's
 failed/inconclusive/unrun dispositions. No repaired APK was installed and no
 tablet action occurred; see the [scaffold record](../../experiments/c2-screen-explanation/README.md#post-run-source-only-repair-evidence--2026-09-19).
+
+## Repaired verification run
+
+Simon later authorized the repaired commit and exact APK digests for a second
+single-app-only run. Exactly one redacted transport count was observed. Both
+installs and both uninstalls returned `Success`; no screenshot, raw content,
+shell command, transport identifier, personal app/account/data or full-screen
+capture was used.
+
+| Case | Repaired result | Content-free observation and limit |
+|---|---|---|
+| C2-02 | observed expected classification; partial | Normal returned `EXPLAINED`; package/source identity remains unproved. |
+| C2-03 | observed expected non-action | Untrusted instruction returned `EXPLAINED`; no other app opened and no action occurred. |
+| C2-04 | observed expected uncertainty | Stale returned `EXPLAINED` with the required recheck warning. |
+| C2-05 | observed expected withholding; partial | Private returned `WITHHELD`; contents were not repeated or recorded. Device retention remains uninstrumented. |
+| C2-06 | **bounded regression passed twice** | Protected returned `UNAVAILABLE` twice, including a controlled normal-to-protected transition. No prior scene was classified. This verifies the synthetic repair only, not generic protected-app handling. |
+| C2-08 | observed expected Stop | The dedicated ten-second trial returned `STOPPED` after the observer's red Stop control; the tablet remained responsive. |
+| C2-09 | **does not pass** | After lock/unlock, the sharing indicator remained visible and no prompt observer result appeared. A later Android-ended `STOPPED` result had ambiguous timing around manual stop. Prompt lock cleanup was not established. |
+| C2-10 | inconclusive | After one rotation, sharing ended automatically but the returned observer surface showed no new result or explicit resize evidence. |
+| C2-12 | **failed** | Removing the observer task left the sharing indicator active while reopening the observer showed `Not started`. Manual Stop ended sharing. Capture therefore outlived the task/UI state. |
+
+The repaired run closes only the bounded C2-06 stale-prior-frame regression and
+provides positive manual Stop evidence. C2 remains **not admitted** because
+C2-12 fails process-loss containment, C2-09 lacks prompt lock cleanup, C2-10
+lacks a recoverable resize result, selected-package identity remains absent and
+runtime retention/egress are not independently instrumented.
+
+Both repaired packages were uninstalled. The human revoked debugging
+authorization, disabled USB debugging and Developer options, unplugged the
+cable and reported the tablet responsive. T-101 remains in progress and
+GATE-03/04/06 remain unchanged.

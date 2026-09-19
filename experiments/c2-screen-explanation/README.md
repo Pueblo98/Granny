@@ -13,8 +13,8 @@ related:
 
 # T-101 C2 synthetic screen-explanation scaffold
 
-Status: **source-only repair passes host checks; first device run remains failed
-and no repaired artifact has run on Android**.
+Status: **repaired device run closes the bounded C2-06 regression; C2 remains
+not admitted because lifecycle containment is incomplete**.
 
 This lab-only Android 16 scaffold prepares the smallest C2 experiment from the
 [T-101 route inventory](../../docs/08-research/2026-09-19-t101-route-inventory.md#c2--one-session-screen-explanation).
@@ -197,8 +197,28 @@ ordinary debug certificate. They have **not** been installed:
 
 Host tests cannot establish MediaProjection pixels, `FLAG_SECURE` behavior,
 system Stop/revoke callbacks, rotation, process loss, visibility or absence of
-device egress. The repaired APKs must not be installed without fresh exact
-authority after commit and artifact review.
+device egress. Those limits were tested only under the later exact authority
+summarized below.
+
+## Repaired device verification — 2026-09-19
+
+The [content-free ledger](../../docs/08-research/2026-09-19-t101-c2-device-evidence.md#repaired-verification-run)
+owns the full dispositions. The repaired run observed expected C2-02–05
+results, `UNAVAILABLE` for protected content twice and a successful visible
+C2-08 Stop. It also found that lock did not promptly end sharing, rotation did
+not yield a recoverable explicit result, and removing the observer task left
+sharing active until manual Stop. Therefore:
+
+- the temporal marker repair closes only the bounded C2-06 regression;
+- `stopWithTask` is not sufficient evidence for process-loss containment on
+  this configuration;
+- transient broadcast-only result delivery is insufficient for a rotation
+  oracle; and
+- C2 remains disabled/not admitted pending another source repair and fresh
+  authorization.
+
+Both repaired APKs were uninstalled and debugging was restored. Do not rerun
+these artifacts as if C2-09/10/12 were passing.
 
 ## Install and teardown procedure used
 
