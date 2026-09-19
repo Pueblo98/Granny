@@ -21,6 +21,13 @@ related:
 
 ## Selected Home checkpoint
 
+The [responsive room repair](mockups/2026-09-20-room-layout-repair/README.md)
+replaces fixed artwork crops with a full content-sized hero layer and
+uncropped chat portraits. The room composer follows content in normal flow;
+its body/pointer share one continuous outline and separated focus contour.
+Hide centers Home's remaining room row. Room continuations remain strictly
+derived from the active room's own fixture, not Home's Kitchen continuation.
+
 **20 September cleanup:** Simon requested object/decor artwork for Home and
 library entries, portraits for continuation and room conversation, larger
 fading overview atmosphere without a separate corner object, larger text and

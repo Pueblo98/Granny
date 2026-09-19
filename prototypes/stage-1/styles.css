@@ -242,6 +242,13 @@ button.danger {
   padding: clamp(18px, 2.5vw, 34px) 0 clamp(16px, 2vw, 28px);
 }
 
+.home-secondary:has(> .continuation[hidden]) { grid-template-columns: minmax(0, 1fr); }
+.home-secondary:has(> .continuation[hidden]) > .rooms {
+  width: 100%;
+  max-width: 64rem;
+  margin-inline: auto;
+}
+
 .continuation {
   display: grid;
   gap: 20px;
@@ -414,18 +421,17 @@ body:not([data-home="true"]) .composer-wrap {
   min-width: 0;
   min-height: 142px;
   padding: 24px clamp(22px, 3.5vw, 42px);
-  border: 2px solid var(--line);
+  border: 2px solid transparent;
   border-radius: 44px;
-  background: var(--paper);
+  background: transparent;
 }
 
 .composer-tail {
   position: absolute;
   z-index: 0;
-  bottom: 5px;
-  left: 54px;
-  width: 54px;
-  height: 30px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   overflow: visible;
   color: var(--line);
   fill: var(--paper);
@@ -659,17 +665,24 @@ dialog img { width: 100%; height: auto; border-radius: 14px; }
 body[data-room-route="true"] .product-marker { display: none; }
 body[data-room-route="true"] .header-actions { width: 100%; }
 body[data-room-route="true"] #menu-button { margin-left: auto; }
-body[data-room-view="true"] .composer-wrap { position: relative; margin-top: auto; }
-.room-surface { position: relative; isolation: isolate; padding: 18px 0 30px; }
+body[data-room-view="true"] .composer-wrap {
+  position: relative;
+  bottom: auto;
+  flex: none;
+  margin-top: 1em;
+  padding-top: 0;
+  background: transparent;
+}
+.room-surface { position: relative; isolation: isolate; padding: .8em 0 .5em; }
 .room-surface:not([data-room-state="overview"]) { padding: 0 0 18px; }
 /* Collection controls and reading surfaces own the central field completely. */
 .room-surface:is([data-room-state="collection"], [data-room-state="collections"], [data-room-state="detail"]) .room-atmosphere { display: none; }
-.room-atmosphere { position: absolute; z-index: -1; top: -18px; right: -24px; width: 58%; height: 350px; pointer-events: none; }
+.room-atmosphere { position: absolute; z-index: -1; inset: 0; pointer-events: none; }
 /* Alpha masks blend existing artwork into Linen; no coloured gradient fill. */
-.room-backdrop, .room-chat-portrait { position: absolute; inset: 0; width: 100%; height: 100%; mask-image: linear-gradient(to right, transparent, #000 48%), linear-gradient(to bottom, #000 45%, transparent 100%); mask-composite: intersect; }
-.room-backdrop img { object-fit: cover; object-position: right top; opacity: .65; }
-.room-chat-portrait img { object-fit: cover; object-position: center 44%; opacity: .52; }
-.room-surface:is([data-room-state="conversation"], [data-room-state="assistant"]) .room-atmosphere { width: 29%; height: 360px; }
+.room-backdrop { width: 100%; height: 100%; mask-image: linear-gradient(to right, transparent 25%, #000 75%, #000 88%, transparent 100%), linear-gradient(to bottom, transparent, #000 15%, #000 35%, #0008 65%, transparent 100%); mask-composite: intersect; }
+.room-backdrop img { object-fit: cover; object-position: right center; opacity: .5; }
+.room-chat-portrait { width: 27%; margin-left: auto; mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent), linear-gradient(to bottom, transparent, #000 10%, #000 75%, transparent); mask-composite: intersect; }
+.room-chat-portrait img { width: 100%; height: auto; object-fit: contain; opacity: .6; }
 .room-surface[data-room-state="conversation"] .room-conversation { max-width: 72%; }
 .room-identity { display: flex; align-items: center; gap: 22px; width: 74%; min-width: 0; }
 .room-identity .room-mark { width: 112px; height: 112px; flex: 0 0 112px; }

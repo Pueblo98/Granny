@@ -39,6 +39,17 @@ records this revision separately from the earlier checkpoint.
 
 ### Local server
 
+Follow-up layout repair: room atmosphere now fills its content-sized hero with
+responsive edge masks, rather than a fixed-height inset crop. Chat portraits
+retain their natural aspect ratio without `cover` cropping. Room composers
+stay in normal flow with a text-relative gap; Home keeps its selected bottom
+composition. Hiding Home continuation centers the remaining room region.
+The bubble body and pointer are one SVG contour, measured from the real form;
+the separated focus contour uses the same geometry. No overlay hides a seam.
+Run `node prototypes/stage-1/room-layout-browser-check.mjs` for the new
+130-assertion layout/continuation regression suite and reproducible screenshots.
+See [repair evidence](../../docs/02-design/mockups/2026-09-20-room-layout-repair/README.md).
+
 Use the existing Node runtime (validated with Node 26.8.1):
 
 ```bash

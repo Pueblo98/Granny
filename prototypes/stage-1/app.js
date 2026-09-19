@@ -1418,21 +1418,27 @@
         String($('composer').offsetHeight > innerHeight * 0.42);
   };
   const updateComposerFocus = () => {
-    const composer = $('composer'), path = $('composer-focus-path');
-    const gap = 7, left = -gap, top = composer.offsetTop - gap;
-    const right = composer.offsetWidth + gap;
-    const formBottom = composer.offsetTop + composer.offsetHeight;
-    const bottom = formBottom + gap, radius = 51;
-    path.setAttribute(
-        'd',
-        `M ${left + radius} ${top} H ${right - radius} ` +
-            `Q ${right} ${top} ${right} ${top + radius} ` +
-            `V ${bottom - radius} Q ${right} ${bottom} ${right - radius} ${bottom} ` +
-            `H 99 L 65 ${formBottom + 25} ` +
-            `Q 59 ${formBottom + 28} 51 ${formBottom + 24} ` +
-            `L 47 ${bottom} H ${left + radius} ` +
-            `Q ${left} ${bottom} ${left} ${bottom - radius} ` +
-            `V ${top + radius} Q ${left} ${top} ${left + radius} ${top} Z`);
+    const composer = $('composer');
+    if (!composer.offsetWidth) return;
+    const radius = parseFloat(getComputedStyle(composer).borderTopLeftRadius);
+    // One closed contour owns both the rounded body and its pointer. The
+    // transparent form supplies intrinsic layout; no border is masked over.
+    const contour = gap => {
+      const left = composer.offsetLeft - gap, top = composer.offsetTop - gap;
+      const right = composer.offsetLeft + composer.offsetWidth + gap;
+      const bottom = composer.offsetTop + composer.offsetHeight + gap;
+      const r = radius + gap, root = composer.offsetLeft + radius * 1.35;
+      const depth = radius * .45;
+      return `M ${left + r} ${top} H ${right - r} Q ${right} ${top} ${right} ${top + r} ` +
+        `V ${bottom - r} Q ${right} ${bottom} ${right - r} ${bottom} ` +
+        `H ${root + radius * .9 + gap} L ${root - gap} ${bottom + depth} ` +
+        `Q ${root - 3 - gap} ${bottom + depth + 1} ${root - 2 - gap} ${bottom + depth - 3} ` +
+        `L ${root + radius * .1 - gap} ${bottom} H ${left + r} ` +
+        `Q ${left} ${bottom} ${left} ${bottom - r} V ${top + r} ` +
+        `Q ${left} ${top} ${left + r} ${top} Z`;
+    };
+    $('composer-outline-path').setAttribute('d', contour(0));
+    $('composer-focus-path').setAttribute('d', contour(7));
   };
   new ResizeObserver(fitComposer).observe($('composer'));
   new ResizeObserver(updateComposerFocus).observe(
