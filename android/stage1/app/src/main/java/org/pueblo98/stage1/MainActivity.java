@@ -5,19 +5,17 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Insets;
-import android.view.WindowInsets;
-import android.util.TypedValue;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import org.pueblo98.stage1.readability.TextScale;
-import org.pueblo98.stage1.readability.TextScaleController;
-import org.pueblo98.stage1.readability.SharedPreferencesTextScaleStore;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.WindowInsets;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,151 +23,151 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.pueblo98.stage1.conversation.ConversationSessionCoordinator;
+import org.pueblo98.stage1.conversation.ConversationSessionCoordinator.Surface;
+import org.pueblo98.stage1.readability.SharedPreferencesTextScaleStore;
+import org.pueblo98.stage1.readability.TextScale;
+import org.pueblo98.stage1.readability.TextScaleController;
+import org.pueblo98.stage1.ui.ConversationSurfaceModel;
+import org.pueblo98.stage1.ui.ConversationSurfaceModel.Action;
 import org.pueblo98.stage1.voice.AndroidOnDeviceVoiceRecognizer;
 import org.pueblo98.stage1.voice.TranscriptHypotheses;
 import org.pueblo98.stage1.voice.VoiceRecognizerAdapter;
 import org.pueblo98.stage1.voice.VoiceSessionController;
 
-/** Bounded tap-to-talk shell for T-120; it does not connect to a planner or external action. */
+/** Native shared conversation surfaces. Interpretation is a finite local fixture, not a model. */
 public final class MainActivity extends Activity implements VoiceRecognizerAdapter.Listener {
-    private static final int MICROPHONE_PERMISSION_REQUEST = 120;
-    private static final long NO_SPEECH_PROMPT_MS = 10_000L;
-    private static final long MAX_LISTENING_MS = 30_000L;
-
-    private final VoiceSessionController controller = new VoiceSessionController();
+    private static final int MIC_REQUEST = 120;
+    private static final int INK = 0xff2e2d32, BLUE = 0xff2c5981, LINEN = 0xfffbf6ee;
     private final Handler handler = new Handler(Looper.getMainLooper());
-
-    private final Map<TextView, Float> baseTextSizes = new LinkedHashMap<>();
+    private final VoiceSessionController voice = new VoiceSessionController();
+    private final Map<TextView, Float> textSizes = new LinkedHashMap<>();
+    private final Map<String, Integer> placeScroll = new LinkedHashMap<>();
+    private ConversationSessionCoordinator conversation;
     private TextScaleController textScale;
-    private TextView sizeStatus;
-    private TextView sizePreview;
-    private Button applySizeButton;
-    private Button restoreSizeButton;
-    private final Map<Button, TextScale> sizeChoices = new LinkedHashMap<>();
-    private boolean retainedTextScale;
     private VoiceRecognizerAdapter recognizer;
-    private TextView statusView;
-    private TextView provisionalView;
-    private EditText transcriptEditor;
-    private Button talkButton;
-    private Button doneButton;
-    private Button stopButton;
-    private Button typeButton;
-    private Button useButton;
-    private long pendingPermissionGeneration = -1;
-    private boolean permissionDeniedThisProcess;
-    private boolean rendering;
+    private long conversationVoiceGeneration = -1;
+    private long pendingPermission = -1;
+    private boolean deniedThisProcess, foreground, rendering;
+    private Surface renderedSurface;
+    private TextView placeTitle, placeDescription, heading, explanation, outcome, provisional;
+    private TextView requestLabel, sizeSample;
+    private LinearLayout taskSurface, actions, composer;
+    private ScrollView scroll;
+    private EditText editor;
+    private Button talk, type, use, escape, textSettings, home, kitchen;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Object retained = getLastNonConfigurationInstance();
-        retainedTextScale = retained instanceof TextScaleController;
-        textScale = retainedTextScale ? (TextScaleController) retained
-                : new TextScaleController(new SharedPreferencesTextScaleStore(
-                        getSharedPreferences("granny_text_scale", MODE_PRIVATE)));
+    @Override protected void onCreate(Bundle savedState) {
+        super.onCreate(savedState);
+        SharedPreferencesTextScaleStore store = new SharedPreferencesTextScaleStore(
+                getSharedPreferences("granny_text_scale", MODE_PRIVATE));
+        textScale = new TextScaleController(store);
+        conversation = new ConversationSessionCoordinator(textScale, store);
         recognizer = new AndroidOnDeviceVoiceRecognizer(this);
         getWindow().setDecorFitsSystemWindows(false);
         setContentView(buildContent());
+        if (savedState != null) {
+            String place = "Kitchen".equals(savedState.getString("place")) ? "Kitchen" : "Home";
+            int position = Math.max(0, savedState.getInt("scroll", 0));
+            conversation.setPlace(place, new ConversationSessionCoordinator.ReturnAnchor(place, "composer", position));
+            if (savedState.getBoolean("uncertainOperation", false)) conversation.restoreUnknownOutcome();
+            scroll.post(() -> scroll.scrollTo(0, position));
+        }
+        if (Build.VERSION.SDK_INT >= 33) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(0, this::back);
+        }
         render();
     }
 
     private View buildContent() {
-        int outer = dp(24);
-        int gap = dp(12);
-
-        LinearLayout content = new LinearLayout(this);
-        content.setOrientation(LinearLayout.VERTICAL);
-        content.setPadding(outer, outer, outer, outer);
-
-        TextView title = new TextView(this);
-        title.setText(R.string.title);
-        registerTextSize(title, 30);
-        title.setTextColor(Color.rgb(30, 30, 30));
-        content.addView(title, matchWrap());
-
-        TextView explanation = new TextView(this);
-        explanation.setText(R.string.privacy_explanation);
-        registerTextSize(explanation, 18);
-        explanation.setTextColor(Color.rgb(55, 55, 55));
-        content.addView(explanation, spaced(matchWrap(), gap));
-
-        statusView = new TextView(this);
-        registerTextSize(statusView, 20);
-        statusView.setTextColor(Color.rgb(20, 70, 60));
-        statusView.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
-        content.addView(statusView, spaced(matchWrap(), gap * 2));
-
-        provisionalView = new TextView(this);
-        registerTextSize(provisionalView, 24);
-        provisionalView.setTextColor(Color.rgb(80, 80, 80));
-        provisionalView.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
-        content.addView(provisionalView, spaced(matchWrap(), gap));
-
-        transcriptEditor = new EditText(this);
-        transcriptEditor.setHint(R.string.transcript_hint);
-        registerTextSize(transcriptEditor, 24);
-        transcriptEditor.setMinHeight(dp(128));
-        transcriptEditor.setGravity(android.view.Gravity.TOP | android.view.Gravity.START);
-        transcriptEditor.setPadding(dp(16), dp(16), dp(16), dp(16));
-        transcriptEditor.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!rendering && transcriptEditor.isEnabled()) {
-                    controller.edit(s.toString());
-                    renderButtonsOnly();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
-        content.addView(transcriptEditor, spaced(matchWrap(), gap));
-
-        talkButton = button(R.string.talk, view -> startTalk());
-        doneButton = button(R.string.done_listening, view -> finishListening());
-        stopButton = button(
-                R.string.stop,
-                view -> {
-                    if (textScale.snapshot().preview != null) {
-                        textScale.cancelPreview();
-                        renderTextSize();
-                        renderButtonsOnly();
-                    } else {
-                        stopEverything("Stopped. You can talk again or type.");
-                    }
-                });
-        typeButton = button(R.string.type_instead, view -> startTyping());
-        useButton = button(R.string.use_request, view -> {
-            controller.submit();
+        LinearLayout root = column();
+        root.setBackgroundColor(LINEN);
+        placeTitle = text("Home", 28);
+        placeTitle.setAccessibilityHeading(true);
+        root.addView(placeTitle, wrap());
+        LinearLayout content = column();
+        content.setPadding(dp(16), dp(12), dp(16), dp(16));
+        placeDescription = text("", 20);
+        content.addView(placeDescription, wrap());
+        home = button("Home", () -> switchPlace("Home"));
+        kitchen = button("Kitchen — fictional room", () -> switchPlace("Kitchen"));
+        content.addView(home, wrap());
+        content.addView(kitchen, wrap());
+        textSettings = button("Granny text size", () -> {
+            rememberOrigin("text-size");
+            replaceInput("make text larger", false);
+            conversation.submit();
             render();
         });
+        content.addView(textSettings, wrap());
+        TextView boundary = text("Native integration fixture: no external app control or message sending. Screen explanation is unavailable.", 18);
+        content.addView(boundary, spaced());
+        View space = new View(this);
+        content.addView(space, new LinearLayout.LayoutParams(-1, 0, 1));
 
-        content.addView(talkButton, spaced(matchWrap(), gap));
-        content.addView(doneButton, spaced(matchWrap(), gap));
+        taskSurface = column();
+        taskSurface.setPadding(dp(16), dp(16), dp(16), dp(16));
+        taskSurface.setBackground(surfaceBackground(16));
+        heading = text("", 24);
+        heading.setAccessibilityHeading(true);
+        heading.setFocusable(true);
+        heading.setFocusableInTouchMode(true);
+        explanation = text("", 20);
+        outcome = text("", 20);
+        outcome.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
+        provisional = text("", 22);
+        // Partial words are visible but deliberately not an accessibility live region.
+        sizeSample = text("Preview: Granny’s text stays readable.", 20);
+        actions = column();
+        taskSurface.addView(heading, wrap());
+        taskSurface.addView(explanation, spaced());
+        taskSurface.addView(outcome, spaced());
+        taskSurface.addView(provisional, spaced());
+        taskSurface.addView(sizeSample, spaced());
+        taskSurface.addView(actions, spaced());
+        content.addView(taskSurface, spaced());
 
-        content.addView(typeButton, spaced(matchWrap(), gap));
-        content.addView(useButton, spaced(matchWrap(), gap));
-
-        addTextSizeControls(content, gap);
-
-        TextView boundary = new TextView(this);
-        boundary.setText(R.string.test_boundary);
-        registerTextSize(boundary, 16);
-        boundary.setTextColor(Color.rgb(85, 85, 85));
-        content.addView(boundary, spaced(matchWrap(), gap * 2));
-
-        ScrollView scroll = new ScrollView(this);
+        composer = column();
+        composer.setPadding(dp(16), dp(12), dp(16), dp(12));
+        composer.setBackground(surfaceBackground(28));
+        requestLabel = text("Request", 18);
+        editor = new EditText(this);
+        editor.setId(View.generateViewId());
+        editor.setSaveEnabled(false);
+        editor.setHint("Type a request");
+        editor.setMinHeight(dp(96));
+        editor.setGravity(Gravity.TOP | Gravity.START);
+        editor.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        register(editor, 22);
+        requestLabel.setLabelFor(editor.getId());
+        editor.addTextChangedListener(new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void afterTextChanged(Editable s) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!rendering && editor.isEnabled()) {
+                    conversation.edit(s.toString());
+                    cancelAudioForRevision();
+                    render();
+                }
+            }
+        });
+        composer.addView(requestLabel, wrap());
+        composer.addView(editor, wrap());
+        talk = button("Talk", this::startTalk);
+        type = button("Type", this::startTyping);
+        use = button("Use this request", () -> { conversation.submit(); render(); });
+        composer.addView(talk, wrap());
+        composer.addView(type, wrap());
+        composer.addView(use, wrap());
+        content.addView(composer, spaced());
+        scroll = new ScrollView(this);
         scroll.setFillViewport(true);
         scroll.addView(content);
-        LinearLayout root = new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.addView(scroll, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 0, 1));
-        root.addView(stopButton, matchWrap());
+        root.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
+        escape = button("Cancel", () -> stopEverything("Cancelled."));
+        root.addView(escape, wrap());
         root.setOnApplyWindowInsetsListener((view, insets) -> {
             Insets safe = insets.getInsets(WindowInsets.Type.systemBars()
                     | WindowInsets.Type.displayCutout() | WindowInsets.Type.ime());
@@ -179,324 +177,334 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         return root;
     }
 
-    private void registerTextSize(TextView view, float baseSp) {
-        baseTextSizes.put(view, baseSp);
-        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, baseSp);
+    private void rememberOrigin(String focus) {
+        ConversationSessionCoordinator.Snapshot s = conversation.snapshot();
+        placeScroll.put(s.place, scroll.getScrollY());
+        // setPlace is an explicit interruption boundary, never a hidden navigation.
+        conversation.setPlace(s.place,
+                new ConversationSessionCoordinator.ReturnAnchor(s.place, focus, scroll.getScrollY()));
     }
 
-    private void addTextSizeControls(LinearLayout content, int gap) {
-        TextView heading = new TextView(this);
-        heading.setText(R.string.text_size_heading);
-        heading.setAccessibilityHeading(true);
-        registerTextSize(heading, 28);
-        content.addView(heading, spaced(matchWrap(), gap * 2));
-        TextView scope = new TextView(this);
-        scope.setText(R.string.text_size_scope);
-        registerTextSize(scope, 18);
-        content.addView(scope, spaced(matchWrap(), gap));
-        sizeStatus = new TextView(this);
-        registerTextSize(sizeStatus, 20);
-        sizeStatus.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
-        content.addView(sizeStatus, spaced(matchWrap(), gap));
-        for (TextScale choice : TextScale.values()) {
-            Button select = button(R.string.text_size_heading, view -> {
-                textScale.preview(choice);
-                renderTextSize();
-                renderButtonsOnly();
-            });
-            select.setText(getString(R.string.preview_size, choice.label()));
-            sizeChoices.put(select, choice);
-            content.addView(select, spaced(matchWrap(), gap));
-        }
-        sizePreview = new TextView(this);
-        sizePreview.setText(R.string.text_size_sample);
-        content.addView(sizePreview, spaced(matchWrap(), gap));
-        applySizeButton = button(R.string.apply_size, view -> {
-            textScale.apply();
-            renderTextSize();
-            renderButtonsOnly();
-        });
-        restoreSizeButton = button(R.string.restore_size, view -> {
-            textScale.restore();
-            renderTextSize();
-            renderButtonsOnly();
-        });
-        content.addView(applySizeButton, spaced(matchWrap(), gap));
-        content.addView(restoreSizeButton, spaced(matchWrap(), gap));
-    }
-
-    private void renderTextSize() {
-        TextScaleController.Snapshot snapshot = textScale.snapshot();
-        for (Map.Entry<TextView, Float> item : baseTextSizes.entrySet()) {
-            item.getKey().setTextSize(TypedValue.COMPLEX_UNIT_SP,
-                    item.getValue() * snapshot.current.multiplier());
-        }
-        TextScale sample = snapshot.preview == null ? snapshot.current : snapshot.preview;
-        sizePreview.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20 * sample.multiplier());
-        sizeStatus.setText(snapshot.message);
-        boolean voiceBusy = controller.snapshot().phase == VoiceSessionController.Phase.STARTING
-                || controller.snapshot().phase == VoiceSessionController.Phase.LISTENING
-                || controller.snapshot().phase == VoiceSessionController.Phase.STOPPING
-                || controller.snapshot().phase == VoiceSessionController.Phase.REQUESTING_PERMISSION;
-        boolean writable = snapshot.persistenceState == TextScaleController.PersistenceState.HEALTHY
-                || snapshot.persistenceState == TextScaleController.PersistenceState.ABSENT;
-        for (Map.Entry<Button, TextScale> entry : sizeChoices.entrySet()) {
-            Button choice = entry.getKey();
-            choice.setEnabled(!voiceBusy && writable);
-            boolean selected = entry.getValue() == snapshot.preview;
-            choice.setSelected(selected);
-            choice.setText(getString(selected ? R.string.preview_size_selected : R.string.preview_size,
-                    entry.getValue().label()));
-            choice.setStateDescription(selected ? getString(R.string.size_preview_selected)
-                    : entry.getValue() == snapshot.current ? getString(R.string.size_current)
-                    : getString(R.string.size_not_selected));
-        }
-        applySizeButton.setEnabled(snapshot.preview != null && !voiceBusy && writable);
-        restoreSizeButton.setEnabled(snapshot.restoreAvailable && !voiceBusy && writable);
-    }
-
-    private void startTalk() {
-        textScale.cancelPreview();
-        cancelTimers();
-        recognizer.cancel();
-
-        if (!recognizer.isAvailable()) {
-            controller.recognizerUnavailable();
-            render();
-            return;
-        }
-
-        boolean granted = checkSelfPermission(Manifest.permission.RECORD_AUDIO)
-                == PackageManager.PERMISSION_GRANTED;
-        long generation = controller.beginVoice(granted);
+    private void switchPlace(String place) {
+        placeScroll.put(conversation.snapshot().place, scroll.getScrollY());
+        stopEverything("Changed place.");
+        int position = placeScroll.getOrDefault(place, 0);
+        conversation.setPlace(place, new ConversationSessionCoordinator.ReturnAnchor(place, "composer", position));
         render();
-
-        if (granted) {
-            recognizer.start(generation, this);
-            return;
-        }
-
-        pendingPermissionGeneration = generation;
-        if (permissionDeniedThisProcess) {
-            controller.permissionDenied(generation);
-            render();
-        } else {
-            requestPermissions(
-                    new String[] {Manifest.permission.RECORD_AUDIO},
-                    MICROPHONE_PERMISSION_REQUEST);
-        }
+        scroll.post(() -> scroll.scrollTo(0, position));
     }
 
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode != MICROPHONE_PERMISSION_REQUEST || pendingPermissionGeneration < 0) {
-            return;
-        }
-
-        long generation = pendingPermissionGeneration;
-        pendingPermissionGeneration = -1;
-        boolean granted = grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED;
-        if (granted && controller.permissionGranted(generation)) {
-            render();
-            recognizer.start(generation, this);
-        } else {
-            permissionDeniedThisProcess = true;
-            controller.permissionDenied(generation);
-            render();
-        }
-    }
-
-    private void finishListening() {
-        VoiceSessionController.Snapshot snapshot = controller.snapshot();
-        if (controller.requestDone(snapshot.generation)) {
-            cancelTimers();
-            recognizer.done();
-            render();
-        }
+    private void replaceInput(String text, boolean edited) {
+        if (edited) conversation.edit(text); else conversation.typed(text);
+        cancelAudioForRevision();
     }
 
     private void startTyping() {
-        textScale.cancelPreview();
-        VoiceSessionController.Snapshot snapshot = controller.snapshot();
-        cancelTimers();
-        recognizer.cancel();
-        controller.beginTyping(snapshot.displayText.isBlank()
-                ? snapshot.provisionalText
-                : snapshot.displayText);
+        String keep = conversation.snapshot().editableRequest;
+        replaceInput(keep, false);
         render();
-        transcriptEditor.requestFocus();
-        InputMethodManager input = getSystemService(InputMethodManager.class);
-        if (input != null) {
-            input.showSoftInput(transcriptEditor, InputMethodManager.SHOW_IMPLICIT);
+        editor.requestFocus();
+        InputMethodManager keyboard = getSystemService(InputMethodManager.class);
+        if (keyboard != null) keyboard.showSoftInput(editor, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    private void startTalk() {
+        rememberOrigin("composer");
+        conversationVoiceGeneration = conversation.beginListening();
+        // Invalidate before adapter cleanup so synchronous/late callbacks cannot revive capture.
+        voice.stop("New Talk request.");
+        pendingPermission = -1;
+        handler.removeCallbacksAndMessages(null);
+        recognizer.cancel();
+        stopSpokenOutput();
+        if (!recognizer.isAvailable()) {
+            voice.recognizerUnavailable();
+            conversation.voiceUnavailable("On-device recognition is unavailable. You can type instead.");
+            render();
+            return;
         }
+        boolean granted = checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+        long generation = voice.beginVoice(granted);
+        render();
+        if (granted) {
+            recognizer.start(generation, this);
+            scheduleStartTimeout(generation);
+        } else if (deniedThisProcess) {
+            voice.permissionDenied(generation);
+            conversation.voiceUnavailable("Microphone access is unavailable. You can type instead.");
+            render();
+        } else {
+            pendingPermission = generation;
+            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, MIC_REQUEST);
+        }
+    }
+
+    @Override public void onRequestPermissionsResult(int request, String[] permissions, int[] results) {
+        super.onRequestPermissionsResult(request, permissions, results);
+        if (request != MIC_REQUEST || pendingPermission < 0 || !foreground) return;
+        long generation = pendingPermission;
+        pendingPermission = -1;
+        boolean granted = results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED;
+        if (granted && voice.permissionGranted(generation)
+                && conversation.snapshot().generation == conversationVoiceGeneration) {
+            recognizer.start(generation, this);
+            scheduleStartTimeout(generation);
+        } else {
+            deniedThisProcess = !granted;
+            if (voice.permissionDenied(generation)) {
+                conversation.voiceUnavailable("Microphone permission was not granted. You can type instead.");
+            }
+        }
+        render();
+    }
+
+    private void scheduleStartTimeout(long generation) {
+        handler.postDelayed(() -> {
+            if (voice.snapshot().generation == generation && voice.snapshot().phase == VoiceSessionController.Phase.STARTING) {
+                onError(generation, "Listening did not start. You can try again or type.");
+                recognizer.cancel();
+            }
+        }, 10_000);
+    }
+
+    @Override public void onReady(long generation) {
+        if (!foreground || !voice.ready(generation)) return;
+        handler.removeCallbacksAndMessages(null);
+        handler.postDelayed(() -> {
+            if (voice.noSpeechPrompt(generation)) render();
+        }, 10_000);
+        handler.postDelayed(() -> {
+            if (voice.snapshot().generation == generation) finishListening();
+        }, 30_000);
+        render();
+    }
+
+    @Override public void onPartial(long generation, String text) {
+        if (foreground && voice.partial(generation, text)) {
+            conversation.partial(conversationVoiceGeneration, text);
+            render();
+        }
+    }
+
+    @Override public void onFinal(long generation, TranscriptHypotheses hypotheses) {
+        if (!foreground || !voice.finalResult(generation, hypotheses.raw, hypotheses.display)) return;
+        handler.removeCallbacksAndMessages(null);
+        if (hypotheses.display.isBlank()) conversation.voiceUnavailable("I didn’t catch a request. You can type instead.");
+        else conversation.finalVoice(conversationVoiceGeneration, hypotheses.display);
+        render();
+    }
+
+    @Override public void onError(long generation, String reason) {
+        if (!foreground || !voice.error(generation, reason)) return;
+        handler.removeCallbacksAndMessages(null);
+        conversation.voiceUnavailable(reason);
+        render();
+    }
+
+    private void finishListening() {
+        long generation = voice.snapshot().generation;
+        if (!voice.requestDone(generation)) return;
+        handler.removeCallbacksAndMessages(null);
+        recognizer.done();
+        handler.postDelayed(() -> {
+            if (voice.snapshot().generation == generation && voice.snapshot().phase == VoiceSessionController.Phase.STOPPING) {
+                onError(generation, "The final words did not arrive. You can type instead.");
+                recognizer.cancel();
+            }
+        }, 10_000);
+        render();
+    }
+
+    private void cancelAudioForRevision() {
+        voice.stop("Request changed.");
+        pendingPermission = -1;
+        handler.removeCallbacksAndMessages(null);
+        recognizer.cancel();
+        stopSpokenOutput();
     }
 
     private void stopEverything(String reason) {
-        cancelTimers();
-        recognizer.cancel();
-        controller.stop(reason);
-        textScale.cancelPreview();
-        pendingPermissionGeneration = -1;
+        conversation.stop(() -> cancelAudioForRevision());
+        render();
+        restoreOrigin();
+    }
+
+    private void restoreOrigin() {
+        ConversationSessionCoordinator.ReturnAnchor anchor = conversation.snapshot().returnAnchor;
+        scroll.post(() -> {
+            scroll.scrollTo(0, anchor.scrollY);
+            if ("text-size".equals(anchor.focusId)) textSettings.requestFocus();
+            else type.requestFocus();
+        });
+    }
+
+    private void action(Action action, ConversationSessionCoordinator.Snapshot displayed) {
+        ConversationSessionCoordinator.Snapshot current = conversation.snapshot();
+        if (displayed.generation != current.generation || displayed.revision != current.revision
+                || displayed.surface != current.surface) { render(); return; }
+        switch (action) {
+            case USE_REQUEST: conversation.submit(); break;
+            case LISTEN_AGAIN: startTalk(); return;
+            case DONE_LISTENING: finishListening(); return;
+            case TYPE: startTyping(); return;
+            case CANCEL: stopEverything("Cancelled."); return;
+            case STOP: stopEverything("Stopped."); return;
+            case NONE: case EDIT: case CHANGE:
+                replaceInput(displayed.editableRequest, true); break;
+            case APPLY:
+                conversation.approve(displayed.generation, displayed.revision, displayed.consequence);
+                long admittedGeneration = conversation.snapshot().generation;
+                render();
+                handler.post(() -> {
+                    if (!foreground) return;
+                    conversation.dispatchApproved(admittedGeneration);
+                    render();
+                });
+                return;
+            case RESTORE:
+                conversation.dismissResult();
+                conversation.chooseRestore(); break;
+            case REVIEW:
+                // Read-only preference refresh; no approval, write or automatic retry.
+                conversation.reviewStatus(); break;
+            case REPEAT: repeatVisibleStatus(); return;
+            case DONE:
+                conversation.dismissResult(); render(); restoreOrigin(); return;
+        }
         render();
     }
 
-    @Override
-    public void onReady(long generation) {
-        if (controller.ready(generation)) {
-            scheduleListeningTimers(generation);
-            render();
-        }
-    }
-
-    @Override
-    public void onPartial(long generation, String text) {
-        if (controller.partial(generation, text)) {
-            render();
-        }
-    }
-
-    @Override
-    public void onFinal(long generation, TranscriptHypotheses hypotheses) {
-        cancelTimers();
-        if (controller.finalResult(generation, hypotheses.raw, hypotheses.display)) {
-            render();
-        }
-    }
-
-    @Override
-    public void onError(long generation, String recoveryMessage) {
-        cancelTimers();
-        if (controller.error(generation, recoveryMessage)) {
-            render();
-        }
-    }
-
-    private void scheduleListeningTimers(long generation) {
-        cancelTimers();
-        handler.postDelayed(() -> {
-            if (controller.noSpeechPrompt(generation)) {
-                render();
-            }
-        }, NO_SPEECH_PROMPT_MS);
-        handler.postDelayed(() -> {
-            VoiceSessionController.Snapshot snapshot = controller.snapshot();
-            if (snapshot.generation == generation
-                    && snapshot.phase == VoiceSessionController.Phase.LISTENING) {
-                finishListening();
-            }
-        }, MAX_LISTENING_MS);
-    }
-
-    private void cancelTimers() {
-        handler.removeCallbacksAndMessages(null);
-    }
-
     private void render() {
-        VoiceSessionController.Snapshot snapshot = controller.snapshot();
-        statusView.setText(snapshot.message);
-        provisionalView.setText(snapshot.provisionalText.isBlank()
-                ? ""
-                : getString(R.string.hearing_format, snapshot.provisionalText));
-
-        boolean canEdit = snapshot.phase == VoiceSessionController.Phase.FINAL
-                || snapshot.phase == VoiceSessionController.Phase.ERROR
-                || snapshot.phase == VoiceSessionController.Phase.UNAVAILABLE;
-        transcriptEditor.setEnabled(canEdit);
+        if (heading == null) return;
+        ConversationSessionCoordinator.Snapshot state = conversation.snapshot();
+        ConversationSurfaceModel model = ConversationSurfaceModel.forSurface(state.surface);
         rendering = true;
-        if (!transcriptEditor.getText().toString().equals(snapshot.displayText)) {
-            transcriptEditor.setText(snapshot.displayText);
-            transcriptEditor.setSelection(transcriptEditor.length());
+        placeTitle.setText(state.place);
+        placeDescription.setText("Kitchen".equals(state.place)
+                ? "Kitchen\nA fictional room for this integration. Granny remains the same assistant."
+                : "Home\nYour conversation starts here. Rooms are optional.");
+        heading.setText(model.heading);
+        explanation.setText(model.explanation);
+        if (state.surface == Surface.LISTENING) {
+            VoiceSessionController.Snapshot capture = voice.snapshot();
+            if (capture.phase == VoiceSessionController.Phase.REQUESTING_PERMISSION) {
+                heading.setText("Microphone permission");
+                explanation.setText("Listening starts only after this Talk request is allowed. You can cancel or type instead.");
+            } else if (capture.phase == VoiceSessionController.Phase.STARTING) {
+                heading.setText("Starting listening");
+                explanation.setText("Waiting for the on-device recognizer. You can cancel or type instead.");
+            } else if (capture.phase == VoiceSessionController.Phase.STOPPING) {
+                heading.setText("Finishing the transcript");
+                explanation.setText("Waiting for final words. You can cancel or type instead.");
+            }
+        }
+        String detail = state.message + (state.consequence.isEmpty() ? "" : "\nGoal: " + state.consequence);
+        if (!outcome.getText().toString().equals(detail)) outcome.setText(detail);
+        provisional.setVisibility(model.provisional ? View.VISIBLE : View.GONE);
+        provisional.setText("Heard so far\n" + state.heardSoFar + " ▏");
+        TextScaleController.Snapshot size = textScale.snapshot();
+        sizeSample.setVisibility(state.surface == Surface.PREVIEW ? View.VISIBLE : View.GONE);
+        sizeSample.setTextSize(TypedValue.COMPLEX_UNIT_SP,
+                20 * (size.preview == null ? size.current : size.preview).multiplier());
+        for (Map.Entry<TextView, Float> item : textSizes.entrySet()) {
+            if (item.getKey() != sizeSample) item.getKey().setTextSize(TypedValue.COMPLEX_UNIT_SP, item.getValue() * size.current.multiplier());
+        }
+        if (!editor.getText().toString().equals(state.editableRequest)) {
+            editor.setText(state.editableRequest);
+            editor.setSelection(editor.length());
+        }
+        boolean busy = state.surface == Surface.LISTENING || state.surface == Surface.ACTIVE;
+        editor.setEnabled(!busy);
+        editor.setVisibility(state.surface == Surface.LISTENING ? View.GONE : View.VISIBLE);
+        requestLabel.setVisibility(editor.getVisibility());
+        talk.setVisibility(busy ? View.GONE : View.VISIBLE);
+        type.setVisibility(state.surface == Surface.ACTIVE ? View.GONE : View.VISIBLE);
+        use.setVisibility(state.surface == Surface.TRANSCRIPT ? View.VISIBLE : View.GONE);
+        use.setEnabled(!state.editableRequest.isBlank());
+        home.setEnabled(!busy); kitchen.setEnabled(!busy); textSettings.setEnabled(!busy);
+        escape.setVisibility(state.surface == Surface.IDLE ? View.GONE : View.VISIBLE);
+        escape.setText(state.surface == Surface.ACTIVE ? "■ Stop" : "Cancel");
+        escape.setTextColor(state.surface == Surface.ACTIVE ? 0xff962f43 : BLUE);
+        // Buttons are projected from one state; no parallel task cards or inferred authority.
+        for (int i = 0; i < actions.getChildCount(); i++) textSizes.remove(actions.getChildAt(i));
+        actions.removeAllViews();
+        if (model.choices) {
+            for (TextScale choice : TextScale.values()) {
+                Button pick = button(choice.label(), () -> {
+                    if (conversation.snapshot().generation != state.generation
+                            || conversation.snapshot().revision != state.revision) return;
+                    conversation.chooseTextScale(choice); render();
+                });
+                pick.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20 * size.current.multiplier());
+                actions.addView(pick, wrap());
+            }
+        }
+        for (Action action : model.actions) {
+            if (action == Action.CANCEL || action == Action.STOP || action == Action.USE_REQUEST) continue;
+            Button control = button(action.label, () -> action(action, state));
+            control.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20 * size.current.multiplier());
+            if (action == Action.RESTORE) control.setEnabled(size.restoreAvailable);
+            if (action == Action.REPEAT) control.setEnabled(spokenOutputAvailable());
+            if (action == Action.DONE_LISTENING) control.setEnabled(voice.snapshot().phase == VoiceSessionController.Phase.LISTENING);
+            actions.addView(control, wrap());
         }
         rendering = false;
-        renderTextSize();
-        renderButtonsOnly();
-    }
-
-    private void renderButtonsOnly() {
-        VoiceSessionController.Snapshot snapshot = controller.snapshot();
-        boolean capture = snapshot.phase == VoiceSessionController.Phase.STARTING
-                || snapshot.phase == VoiceSessionController.Phase.LISTENING
-                || snapshot.phase == VoiceSessionController.Phase.STOPPING;
-        talkButton.setVisibility(capture ? View.GONE : View.VISIBLE);
-        doneButton.setVisibility(
-                snapshot.phase == VoiceSessionController.Phase.LISTENING ? View.VISIBLE : View.GONE);
-        boolean sizePending = textScale.snapshot().preview != null;
-        stopButton.setText(sizePending && !capture ? R.string.cancel_size_preview : R.string.stop);
-        stopButton.setVisibility(capture || sizePending
-                || snapshot.phase == VoiceSessionController.Phase.REQUESTING_PERMISSION
-                ? View.VISIBLE : View.GONE);
-        typeButton.setVisibility(snapshot.phase == VoiceSessionController.Phase.FINAL
-                ? View.GONE : View.VISIBLE);
-        useButton.setVisibility(snapshot.phase == VoiceSessionController.Phase.FINAL
-                ? View.VISIBLE
-                : View.GONE);
-        useButton.setEnabled(!snapshot.displayText.trim().isEmpty());
-    }
-
-    @Override
-    public Object onRetainNonConfigurationInstance() {
-        // Only preference state survives rotation; no Activity, View or transcript is retained.
-        return textScale;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (retainedTextScale) {
-            retainedTextScale = false;
-        } else {
-            textScale.reload();
+        if (state.surface != renderedSurface) {
+            renderedSurface = state.surface;
+            if (state.surface == Surface.TRANSCRIPT) editor.requestFocus();
+            else if (state.surface != Surface.IDLE) heading.requestFocus();
         }
-        renderTextSize();
-        renderButtonsOnly();
     }
 
-    @Override
-    protected void onStop() {
+    // Bound to the reviewed TTS checkpoint during integration; unavailable until then.
+    private void stopSpokenOutput() {}
+    private void repeatVisibleStatus() {}
+    private boolean spokenOutputAvailable() { return false; }
+
+    @Override protected void onResume() {
+        super.onResume(); foreground = true;
+        if (conversation != null) { textScale.reload(); render(); }
+    }
+    @Override protected void onStop() {
+        foreground = false;
+        conversation.clearForBackground(() -> cancelAudioForRevision());
+        voice.beginTyping(""); voice.stop("App left the foreground.");
         super.onStop();
-        if (!isChangingConfigurations()) textScale.cancelPreview();
-        renderTextSize();
-        renderButtonsOnly();
-        VoiceSessionController.Phase phase = controller.snapshot().phase;
-        if (phase == VoiceSessionController.Phase.STARTING
-                || phase == VoiceSessionController.Phase.LISTENING
-                || phase == VoiceSessionController.Phase.STOPPING) {
-            stopEverything("Stopped because the app left the foreground.");
-        }
     }
-
-    @Override
-    protected void onDestroy() {
-        cancelTimers();
-        recognizer.destroy();
+    @Override protected void onSaveInstanceState(Bundle out) {
+        out.putString("place", conversation.snapshot().place);
+        out.putInt("scroll", scroll.getScrollY());
+        Surface current = conversation.snapshot().surface;
+        out.putBoolean("uncertainOperation", current == Surface.ACTIVE || current == Surface.UNKNOWN);
+        // No request, hypothesis, approval, pending operation or spoken text enters saved state.
+        super.onSaveInstanceState(out);
+    }
+    @Override protected void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+        recognizer.destroy(); stopSpokenOutput();
         super.onDestroy();
     }
-
-    private Button button(int label, View.OnClickListener listener) {
-        Button button = new Button(this);
-        button.setText(label);
-        registerTextSize(button, 20);
-        button.setMinHeight(dp(64));
-        button.setAllCaps(false);
-        button.setOnClickListener(listener);
-        return button;
+    private void back() {
+        if (conversation.snapshot().surface == Surface.IDLE) finish();
+        else if (conversation.snapshot().surface == Surface.KNOWN || conversation.snapshot().surface == Surface.UNKNOWN) {
+            conversation.dismissResult(); render(); restoreOrigin();
+        } else stopEverything("Cancelled.");
     }
 
-    private LinearLayout.LayoutParams matchWrap() {
-        return new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+    private LinearLayout column() { LinearLayout view = new LinearLayout(this); view.setOrientation(LinearLayout.VERTICAL); return view; }
+    private TextView text(String value, float sp) {
+        TextView view = new TextView(this); view.setText(value); view.setTextColor(INK); register(view, sp); return view;
     }
-
-    private LinearLayout.LayoutParams spaced(LinearLayout.LayoutParams params, int top) {
-        params.topMargin = top;
-        return params;
+    private void register(TextView view, float sp) { textSizes.put(view, sp); view.setTextSize(TypedValue.COMPLEX_UNIT_SP, sp); }
+    private Button button(String label, Runnable action) {
+        Button view = new Button(this); view.setText(label); view.setAllCaps(false); view.setMinHeight(dp(64));
+        view.setTextColor(BLUE); register(view, 20); view.setOnClickListener(ignored -> action.run()); return view;
     }
-
-    private int dp(int value) {
-        return Math.round(value * getResources().getDisplayMetrics().density);
+    private GradientDrawable surfaceBackground(int radius) {
+        GradientDrawable result = new GradientDrawable(); result.setColor(Color.WHITE);
+        result.setCornerRadius(dp(radius)); result.setStroke(dp(2), 0xff597da0); return result;
     }
+    private LinearLayout.LayoutParams wrap() { return new LinearLayout.LayoutParams(-1, -2); }
+    private LinearLayout.LayoutParams spaced() { LinearLayout.LayoutParams params = wrap(); params.topMargin = dp(12); return params; }
+    private int dp(int value) { return Math.round(value * getResources().getDisplayMetrics().density); }
 }

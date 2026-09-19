@@ -1,0 +1,67 @@
+package org.pueblo98.stage1.ui;
+
+import java.util.List;
+import org.pueblo98.stage1.conversation.ConversationSessionCoordinator.Surface;
+
+/** Written state/control contract consumed by the native renderer, not a second state owner. */
+public final class ConversationSurfaceModel {
+    public enum Action {
+        USE_REQUEST("Use this request"), LISTEN_AGAIN("Listen again"),
+        DONE_LISTENING("Done listening"), TYPE("Type instead"), CANCEL("Cancel"),
+        EDIT("Edit request"), NONE("None of these"), APPLY("Apply this text size"),
+        CHANGE("Change it"), REPEAT("Repeat"), STOP("■ Stop"),
+        RESTORE("Restore previous size"), REVIEW("Review status"), DONE("Done");
+        public final String label;
+        Action(String label) { this.label = label; }
+    }
+    public final String heading;
+    public final String explanation;
+    public final List<Action> actions;
+    public final boolean choices;
+    public final boolean provisional;
+
+    private ConversationSurfaceModel(String heading, String explanation, boolean choices,
+            boolean provisional, Action... actions) {
+        this.heading = heading;
+        this.explanation = explanation;
+        this.choices = choices;
+        this.provisional = provisional;
+        this.actions = List.of(actions);
+    }
+
+    public static ConversationSurfaceModel forSurface(Surface state) {
+        switch (state) {
+            case LISTENING:
+                return new ConversationSurfaceModel("Listening", "Say what you would like to do.",
+                        false, true, Action.DONE_LISTENING, Action.TYPE, Action.CANCEL);
+            case TRANSCRIPT:
+                return new ConversationSurfaceModel("Check what I heard",
+                        "This asks Granny to understand the request. It does not send anything.",
+                        false, false, Action.USE_REQUEST, Action.LISTEN_AGAIN, Action.CANCEL);
+            case CLARIFICATION:
+                return new ConversationSurfaceModel("Which Granny text size?",
+                        "Choose the size you mean. Nothing has changed yet.",
+                        true, false, Action.NONE, Action.EDIT, Action.CANCEL);
+            case PREVIEW:
+                return new ConversationSurfaceModel("Check the text size change",
+                        "Not changed yet. Apply changes only Granny; Android and other apps keep their own settings.",
+                        false, false, Action.APPLY, Action.CHANGE, Action.REPEAT, Action.CANCEL);
+            case ACTIVE:
+                return new ConversationSurfaceModel("Changing Granny text size",
+                        "Latest verified step: exact preview approved. Current step: saving and checking the local preference.",
+                        false, false, Action.REPEAT, Action.STOP);
+            case KNOWN:
+                return new ConversationSurfaceModel("Granny text size checked",
+                        "What Granny verified: the saved preference. What Granny did not do: change Android or another app. Next step: review the text or restore the previous size.",
+                        false, false, Action.RESTORE, Action.REPEAT, Action.DONE);
+            case UNKNOWN:
+                return new ConversationSurfaceModel("I can’t confirm the text size change",
+                        "Unknown outcome. Known: a local change was requested. Unknown: whether the intended value was saved. Granny will not retry automatically. Next step: review the current status.",
+                        false, false, Action.REVIEW, Action.DONE);
+            default:
+                return new ConversationSurfaceModel("How can I help?",
+                        "Try “make text larger” or “make this bigger”. This bounded fixture understands Granny text size only.",
+                        false, false);
+        }
+    }
+}

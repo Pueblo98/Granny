@@ -1,202 +1,282 @@
 package org.pueblo98.stage1.conversation;
 
+import java.util.List;
+import java.util.Objects;
 import org.pueblo98.stage1.readability.TextScale;
 import org.pueblo98.stage1.readability.TextScaleController;
 import org.pueblo98.stage1.readability.TextScaleStore;
 
-/** Pure, process-local coordinator for the first fictional native conversation slice. */
+/** Main-thread process-local authority. Input/interpretation is never an execution permit. */
 public final class ConversationSessionCoordinator {
     public enum Surface { IDLE, LISTENING, TRANSCRIPT, CLARIFICATION, PREVIEW, ACTIVE, KNOWN, UNKNOWN }
-    public enum Provenance { TYPED, PARTIAL_VOICE, FINAL_VOICE, EDITED_TRANSCRIPT }
+    public enum Provenance { TYPED, PARTIAL_VOICE, FINAL_VOICE, EDITED_TRANSCRIPT, DIRECT_CONTROL }
     public enum Capability { TEXT_SCALE, SCREEN_EXPLANATION }
     public enum BuildMode { SYNTHETIC_LAB, CANDIDATE }
     public enum Result { ACCEPTED, STALE, DENIED, QUEUED, DISPATCHED, KNOWN, UNKNOWN }
+
+    /** Null return means pending; later deliverProposal must use these exact generation/revision values. */
     public interface InterpreterPort { Proposal propose(String exactRequest, long generation, long revision); }
-    public static final class Proposal { public final String consequence; public Proposal(String consequence) { this.consequence = consequence; } }
-    public static final class CapabilityMetadata { public final Capability capability; public final boolean enabled; public final String outcomeOracle; CapabilityMetadata(Capability c, boolean e, String o) { capability=c; enabled=e; outcomeOracle=o; } }
-
-    public static final class ReturnAnchor {
-        public final String placeId;
-        public final String focusId;
-        public final int scrollY;
-        public ReturnAnchor(String placeId, String focusId, int scrollY) { this.placeId = placeId; this.focusId = focusId; this.scrollY = scrollY; }
-        public ReturnAnchor(String focusId, int scrollY) { this("Home", focusId, scrollY); }
+    public static final class Proposal {
+        public final Capability capability;
+        public Proposal(Capability capability) { this.capability = capability; }
+        /** Compatibility for synthetic fixtures; text cannot define an action or grant authority. */
+        public Proposal(String ignoredDescription) { this(Capability.TEXT_SCALE); }
     }
-
-    public static final class Snapshot {
-        public final String place;
-        public final ReturnAnchor returnAnchor;
-        public final Surface surface;
-        public final long generation;
-        public final long revision;
-        public final Provenance provenance;
-        public final String editableRequest;
-        public final String heardSoFar;
-        public final String consequence;
-        public final String message;
-        public final boolean permitQueued;
-        private Snapshot(String place, ReturnAnchor anchor, Surface surface, long generation, long revision,
-                Provenance provenance, String editable, String partial, String consequence, String message,
-                boolean permitQueued) {
-            this.place = place; this.returnAnchor = anchor; this.surface = surface; this.generation = generation;
-            this.revision = revision; this.provenance = provenance; this.editableRequest = editable;
-            this.heardSoFar = partial; this.consequence = consequence; this.message = message;
-            this.permitQueued = permitQueued;
+    public static final class FixtureInterpreter implements InterpreterPort {
+        public Proposal propose(String exact, long generation, long revision) {
+            String request = exact.trim();
+            boolean supported = request.equalsIgnoreCase("make text larger")
+                    || request.equalsIgnoreCase("make granny text larger")
+                    || request.equalsIgnoreCase("make this bigger");
+            return new Proposal(supported ? Capability.TEXT_SCALE : null);
         }
     }
-
-    private final TextScaleController textScale;
-    private final Runnable cancelCleanup;
+    public static final class CapabilityMetadata {
+        public final Capability capability;
+        public final boolean enabled;
+        public final List<String> permissions;
+        public final String schema, cancellation, outcomeOracle;
+        public final List<BuildMode> admittedModes;
+        private CapabilityMetadata(Capability capability, boolean enabled) {
+            this.capability = capability; this.enabled = enabled;
+            permissions = List.of();
+            schema = capability == Capability.TEXT_SCALE ? "closed TextScale / Restore; exact prior version" : "unavailable";
+            cancellation = "Cancel before entry; unknown after entry until independent verification";
+            outcomeOracle = capability == Capability.TEXT_SCALE ? "private preference readback" : "unadmitted";
+            admittedModes = capability == Capability.TEXT_SCALE ? List.of(BuildMode.SYNTHETIC_LAB) : List.of();
+        }
+    }
+    public static final class ReturnAnchor {
+        public final String placeId, focusId;
+        public final int scrollY;
+        public ReturnAnchor(String placeId, String focusId, int scrollY) {
+            this.placeId = placeId; this.focusId = focusId; this.scrollY = Math.max(0, scrollY);
+        }
+        public ReturnAnchor(String focusId, int scrollY) { this("Home", focusId, scrollY); }
+    }
+    public static final class Snapshot {
+        public final String place, editableRequest, heardSoFar, consequence, message;
+        public final ReturnAnchor returnAnchor;
+        public final Surface surface;
+        public final long generation, revision;
+        public final Provenance provenance;
+        public final boolean permitQueued, choicesAvailable;
+        private Snapshot(ConversationSessionCoordinator c) {
+            place = c.place; returnAnchor = c.anchor; surface = c.surface;
+            generation = c.generation; revision = c.revision; provenance = c.provenance;
+            editableRequest = c.editable; heardSoFar = c.partial; consequence = c.consequence;
+            message = c.message; permitQueued = c.permit != null; choicesAvailable = c.choicesAvailable;
+        }
+    }
     private final CapabilityPorts.CapabilityAdapter adapter;
-    private final CapabilityPorts.OutcomeObserver outcomeObserver;
+    private final CapabilityPorts.OutcomeObserver observer;
     private final InterpreterPort interpreter;
-    private final BuildMode buildMode;
-    private String place = "Home";
+    private final Runnable cancelCleanup;
+    private final BuildMode mode;
+    private String place = "Home", editable = "", partial = "", consequence = "";
+    private String message = "Type or talk to make a request.";
     private ReturnAnchor anchor = new ReturnAnchor("Home", "composer", 0);
     private Surface surface = Surface.IDLE;
-    private long generation;
-    private long revision;
     private Provenance provenance = Provenance.TYPED;
-    private String editable = "";
-    private String partial = "";
-    private String consequence = "";
-    private String message = "Type or talk to make a request.";
+    private long generation, revision;
+    private boolean proposalPending, choicesAvailable, entered;
+    private CapabilityPorts.Prepared prepared;
     private Permit permit;
-    private boolean restoreRequested;
 
-    public ConversationSessionCoordinator(TextScaleController textScale) { this(textScale, null, null, () -> {}); }
-    public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore outcomeObserver) { this(textScale, outcomeObserver, BuildMode.SYNTHETIC_LAB); }
-    public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore outcomeObserver, BuildMode mode) { this(textScale, new CapabilityPorts.C5Adapter(textScale, outcomeObserver), new CapabilityPorts.StoreObserver(outcomeObserver), null, () -> {}, mode); }
-    public ConversationSessionCoordinator(TextScaleController textScale, Runnable cancelCleanup) { this(textScale, null, null, cancelCleanup); }
-    public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore outcomeObserver, Runnable cancelCleanup) {
-        this(textScale, outcomeObserver, null, cancelCleanup);
+    public ConversationSessionCoordinator(TextScaleController controller, TextScaleStore store) {
+        this(controller, store, BuildMode.SYNTHETIC_LAB);
     }
-    public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore observer, InterpreterPort interpreter, Runnable cleanup) {
-        this(textScale, new CapabilityPorts.C5Adapter(textScale, observer), new CapabilityPorts.StoreObserver(observer), interpreter, cleanup);
+    public ConversationSessionCoordinator(TextScaleController controller, TextScaleStore store, BuildMode mode) {
+        this(controller, new CapabilityPorts.C5Adapter(controller, store), new CapabilityPorts.StoreObserver(store), null, () -> {}, mode);
     }
-    public ConversationSessionCoordinator(TextScaleController textScale, CapabilityPorts.CapabilityAdapter adapter, CapabilityPorts.OutcomeObserver observer, InterpreterPort interpreter, Runnable cleanup) { this(textScale,adapter,observer,interpreter,cleanup,BuildMode.SYNTHETIC_LAB); }
-    public ConversationSessionCoordinator(TextScaleController textScale, CapabilityPorts.CapabilityAdapter adapter, CapabilityPorts.OutcomeObserver observer, InterpreterPort interpreter, Runnable cleanup, BuildMode mode) {
-        this.textScale = textScale; this.adapter = adapter; this.outcomeObserver = observer; this.interpreter = interpreter; this.cancelCleanup = cleanup; this.buildMode=mode;
+    public ConversationSessionCoordinator(TextScaleController controller, TextScaleStore store, Runnable cleanup) {
+        this(controller, store, null, cleanup);
     }
-
-    public Snapshot snapshot() { return new Snapshot(place, anchor, surface, generation, revision, provenance,
-            editable, partial, consequence, message, permit != null); }
-    public void setPlace(String place, ReturnAnchor anchor) {
+    public ConversationSessionCoordinator(TextScaleController controller, TextScaleStore store, InterpreterPort interpreter, Runnable cleanup) {
+        this(controller, new CapabilityPorts.C5Adapter(controller, store), new CapabilityPorts.StoreObserver(store), interpreter, cleanup, BuildMode.SYNTHETIC_LAB);
+    }
+    public ConversationSessionCoordinator(TextScaleController unused, CapabilityPorts.CapabilityAdapter adapter,
+            CapabilityPorts.OutcomeObserver observer, InterpreterPort interpreter, Runnable cleanup) {
+        this(unused, adapter, observer, interpreter, cleanup, BuildMode.SYNTHETIC_LAB);
+    }
+    public ConversationSessionCoordinator(TextScaleController unused, CapabilityPorts.CapabilityAdapter adapter,
+            CapabilityPorts.OutcomeObserver observer, InterpreterPort interpreter, Runnable cleanup, BuildMode mode) {
+        this.adapter = Objects.requireNonNull(adapter); this.observer = Objects.requireNonNull(observer);
+        this.interpreter = interpreter == null ? new FixtureInterpreter() : interpreter;
+        this.cancelCleanup = cleanup == null ? () -> {} : cleanup; this.mode = mode;
+    }
+    public Snapshot snapshot() { return new Snapshot(this); }
+    public void setPlace(String requestedPlace, ReturnAnchor requestedAnchor) {
         stop();
-        this.place = place == null || place.isEmpty() ? "Home" : place;
-        this.anchor = anchor == null ? new ReturnAnchor(this.place, "composer", 0) : anchor;
+        place = "Kitchen".equals(requestedPlace) ? "Kitchen" : "Home";
+        anchor = new ReturnAnchor(place, requestedAnchor == null ? "composer" : requestedAnchor.focusId,
+                requestedAnchor == null ? 0 : requestedAnchor.scrollY);
     }
-    public long beginListening() { invalidate(); surface = Surface.LISTENING; message = "Listening. Say Done when you are ready."; return generation; }
-    public Result partial(long callbackGeneration, String heard) {
-        if (callbackGeneration != generation || surface != Surface.LISTENING) return Result.STALE;
-        partial = heard == null ? "" : heard; provenance = Provenance.PARTIAL_VOICE; return Result.ACCEPTED;
+    public long beginListening() {
+        invalidate(); editable = ""; surface = Surface.LISTENING;
+        message = "Say what you would like to do. Choose Done listening when ready.";
+        return generation;
     }
-    public Result finalVoice(long callbackGeneration, String cleaned) {
-        if (callbackGeneration != generation || surface != Surface.LISTENING) return Result.STALE;
-        editable = cleaned == null ? "" : cleaned; partial = ""; revision++; provenance = Provenance.FINAL_VOICE;
-        surface = Surface.TRANSCRIPT; message = "Review the words, then use this request."; return Result.ACCEPTED;
+    public Result partial(long candidate, String heard) {
+        if (candidate != generation || surface != Surface.LISTENING) return Result.STALE;
+        if (tooLong(heard)) return voiceUnavailable("The request is too long. Please type a shorter request.");
+        partial = value(heard); provenance = Provenance.PARTIAL_VOICE; return Result.ACCEPTED;
     }
-    public Result voiceUnavailable(String reason) { invalidate(); surface = Surface.TRANSCRIPT; message = reason == null ? "Talk is unavailable. You can type instead." : reason; return Result.ACCEPTED; }
+    public Result finalVoice(long candidate, String cleaned) {
+        if (candidate != generation || surface != Surface.LISTENING) return Result.STALE;
+        return replace(cleaned, Provenance.FINAL_VOICE);
+    }
+    public Result voiceUnavailable(String reason) {
+        invalidate(); surface = Surface.TRANSCRIPT;
+        message = reason == null ? "Talk is unavailable. You can type instead." : reason;
+        return Result.ACCEPTED;
+    }
     public Result typed(String request) { return replace(request, Provenance.TYPED); }
     public Result edit(String request) { return replace(request, Provenance.EDITED_TRANSCRIPT); }
     public Result editRequest(String request) { return edit(request); }
     private Result replace(String request, Provenance source) {
-        if (request != null && request.codePointCount(0, request.length()) > 4096) { surface=Surface.CLARIFICATION; message="Please use 4,096 characters or fewer."; return Result.DENIED; }
-        invalidate(); editable = request == null ? "" : request; revision++; provenance = source;
-        surface = Surface.TRANSCRIPT; message = "Review the words, then use this request."; return Result.ACCEPTED;
+        invalidate(); editable = value(request); revision++; provenance = source;
+        surface = Surface.TRANSCRIPT;
+        message = tooLong(editable) ? "Please shorten the request to 4,096 characters or fewer. Nothing was submitted."
+                : "Review the words, then use this request.";
+        return tooLong(editable) ? Result.DENIED : Result.ACCEPTED;
     }
     public Result submit() {
         if (surface != Surface.TRANSCRIPT) return Result.DENIED;
-        if (editable.trim().isEmpty()) { surface = Surface.CLARIFICATION; message = "Please type or say what you would like to do."; return Result.DENIED; }
-        if (interpreter != null) return deliverProposal(generation, revision, interpreter.propose(editable, generation, revision));
-        if (isTextSizeRequest(editable)) { surface = Surface.CLARIFICATION; consequence = ""; message = "Choose Standard, Larger, Larger still, or Largest."; return Result.ACCEPTED; }
-        surface = Surface.CLARIFICATION; message = "I can help change Granny's text size. Choose a size or try asking to make text larger."; return Result.DENIED;
-    }
-    public Result deliverProposal(long proposalGeneration, long proposalRevision, Proposal proposal) {
-        if (proposalGeneration != generation || proposalRevision != revision || proposal == null) return Result.STALE;
-        if (proposal.consequence == null) { surface = Surface.CLARIFICATION; message = "I need a clearer request. Try asking to make text larger."; return Result.DENIED; }
-        surface = Surface.CLARIFICATION; message = proposal.consequence; return Result.ACCEPTED;
-    }
-    public Result chooseTextScale(TextScale scale) {
-        if (surface == Surface.IDLE) { generation++; revision++; provenance = Provenance.TYPED; }
-        if (surface != Surface.CLARIFICATION && surface != Surface.TRANSCRIPT && surface != Surface.IDLE) return Result.DENIED;
-        CapabilityPorts.Prepared prepared = scale == null ? null : adapter.prepare(scale, false);
-        if (prepared == null) { surface = Surface.UNKNOWN; message = "Text size is unavailable. It was not changed."; return Result.DENIED; }
-        consequence = "Make Granny's text " + scale.label().toLowerCase() + ".";
-        restoreRequested = false; pendingPrepared = prepared;
-        surface = Surface.PREVIEW; message = "This changes only Granny's text size. Review and approve to continue."; return Result.ACCEPTED;
-    }
-    public Result chooseRestore() {
-        CapabilityPorts.Prepared prepared = adapter.prepare(null, true); if (prepared == null) return Result.DENIED;
-        if (surface != Surface.CLARIFICATION && surface != Surface.TRANSCRIPT && surface != Surface.IDLE) return Result.DENIED;
-        consequence = "Restore Granny's previous text size.";
-        restoreRequested = true; pendingPrepared = prepared;
-        surface = Surface.PREVIEW;
-        message = "This restores Granny's previous text size. Review and approve to continue.";
-        return Result.ACCEPTED;
-    }
-    public Result approve() {
-        if (surface != Surface.PREVIEW || consequence.isEmpty() || buildMode != BuildMode.SYNTHETIC_LAB) return Result.DENIED;
-        if (pendingPrepared == null) return Result.DENIED;
-        permit = new Permit(generation, revision, consequence, editable, pendingPrepared); surface = Surface.ACTIVE;
-        message = "Ready to change Granny's text size. Stop is available."; return Result.QUEUED;
-    }
-    public Result approve(long displayedGeneration, long displayedRevision, String displayedConsequence) {
-        if (displayedGeneration != generation || displayedRevision != revision || !safeEquals(displayedConsequence, consequence)) return Result.STALE;
-        return approve();
-    }
-    /** Admission is separate from approval so Stop can win before the local adapter executes. */
-    public Result dispatchApproved() { return dispatchApproved(generation); }
-    public Result dispatchApproved(long queuedGeneration) {
-        if (queuedGeneration != generation) return Result.STALE;
-        if (permit == null || !permit.matches(generation, revision, consequence)) return Result.STALE;
-        Permit admitted = permit; permit = null;
-        if (generation != admitted.generation) return Result.STALE;
-        if (!priorStillMatches(admitted.prepared.prior)) return Result.STALE;
-        boolean applied = adapter.dispatch(admitted.prepared);
-        if (generation != admitted.generation) return Result.STALE;
-        if (generation != admitted.generation) return Result.STALE;
-        if (applied && independentlyObserved(admitted.prepared.target)) {
-            surface = Surface.KNOWN; message = textScale.snapshot().message; return Result.KNOWN;
+        if (editable.isBlank() || tooLong(editable)) {
+            surface = Surface.CLARIFICATION; choicesAvailable = false;
+            message = "Please type a nonempty request of 4,096 characters or fewer."; return Result.DENIED;
         }
-        surface = Surface.UNKNOWN; message = textScale.snapshot().message; return Result.UNKNOWN;
+        proposalPending = true; surface = Surface.CLARIFICATION; choicesAvailable = false;
+        message = "Checking this local fixture request. Nothing is approved.";
+        long g = generation, r = revision;
+        Proposal proposal;
+        try { proposal = interpreter.propose(editable, g, r); }
+        catch (RuntimeException unavailable) { proposal = new Proposal((Capability) null); }
+        return proposal == null ? Result.QUEUED : deliverProposal(g, r, proposal);
     }
-    public Result stop() {
-        boolean inflight = surface == Surface.ACTIVE;
-        invalidate(); adapter.cancel(); cancelCleanup.run(); surface = inflight ? Surface.UNKNOWN : Surface.IDLE;
-        message = inflight ? "Stopped. The text-size result is unknown." : "Stopped. You can talk again or type."; return Result.ACCEPTED;
-    }
-    public Result stop(Runnable cleanup) { boolean inflight = surface == Surface.ACTIVE; invalidate(); adapter.cancel(); if (cleanup != null) cleanup.run(); cancelCleanup.run(); surface = inflight ? Surface.UNKNOWN : Surface.IDLE; message = inflight ? "Stopped. The text-size result is unknown." : "Stopped. You can talk again or type."; return Result.ACCEPTED; }
-    /** Drops active private text and authority on background/recreation; it never resumes work. */
-    public Result clearForBackground(Runnable cleanup) {
-        boolean inflight = surface == Surface.ACTIVE;
-        invalidate(); adapter.cancel();
-        if (cleanup != null) cleanup.run(); cancelCleanup.run();
-        editable = ""; partial = ""; provenance = Provenance.TYPED;
-        surface = inflight ? Surface.UNKNOWN : Surface.IDLE;
-        message = inflight ? "The text-size result is unknown." : "Type or talk to make a request.";
+    public Result deliverProposal(long g, long r, Proposal proposal) {
+        if (g != generation || r != revision || !proposalPending || surface != Surface.CLARIFICATION) return Result.STALE;
+        proposalPending = false;
+        if (proposal == null || !isEnabled(proposal.capability)) {
+            choicesAvailable = false;
+            message = "That request is unavailable in this fixture. You can edit it or open Granny text size.";
+            return Result.DENIED;
+        }
+        choicesAvailable = true; message = "Choose Standard, Larger, Larger still, or Largest.";
         return Result.ACCEPTED;
     }
-    public Result dismissResult() { if (surface != Surface.KNOWN && surface != Surface.UNKNOWN) return Result.DENIED; surface = Surface.IDLE; consequence = ""; message = "Type or talk to make a request."; return Result.ACCEPTED; }
-    /** Restores only an honest content-free uncertainty after Activity/process recreation. */
-    public void restoreUnknownOutcome() { invalidate(); editable=""; partial=""; surface=Surface.UNKNOWN; message="The earlier text-size result is unknown."; }
-    /** A read-only check never dispatches or upgrades an earlier unknown outcome. */
-    public Result reviewStatus() { TextScaleStore.ReadResult read=outcomeObserver.observe(); message=read.status==TextScaleStore.ReadResult.Status.PRESENT ? "Current stored text size is " + read.value.current.label() + ". The earlier result remains unknown." : "The text-size result remains unknown."; surface=Surface.UNKNOWN; return Result.UNKNOWN; }
-    public boolean isEnabled(Capability capability) { return capability == Capability.TEXT_SCALE; }
-    public CapabilityMetadata metadata(Capability capability) { return capability == Capability.TEXT_SCALE ? new CapabilityMetadata(capability, buildMode==BuildMode.SYNTHETIC_LAB, "private preference readback") : new CapabilityMetadata(capability, false, "unadmitted"); }
-    private CapabilityPorts.Prepared pendingPrepared;
-    private void invalidate() { generation++; permit = null; pendingPrepared=null; partial = ""; consequence = ""; restoreRequested = false; adapter.cancel(); }
-    private boolean independentlyObserved(TextScaleStore.StoredValue before) {
-        if (outcomeObserver == null) return false;
-        TextScaleStore.ReadResult observed = outcomeObserver.observe();
-        return observed.status == TextScaleStore.ReadResult.Status.PRESENT && observed.value.equals(before);
+    public Result chooseTextScale(TextScale scale) { return prepare(scale, false); }
+    public Result chooseRestore() { return prepare(null, true); }
+    private Result prepare(TextScale scale, boolean restore) {
+        if (!isEnabled(Capability.TEXT_SCALE)) return Result.DENIED;
+        if (surface != Surface.IDLE && surface != Surface.TRANSCRIPT && surface != Surface.CLARIFICATION) return Result.DENIED;
+        if (surface == Surface.CLARIFICATION && !choicesAvailable) return Result.DENIED;
+        if (tooLong(editable)) return Result.DENIED;
+        boolean direct = surface == Surface.IDLE;
+        invalidate();
+        if (direct) {
+            provenance = Provenance.DIRECT_CONTROL; revision++;
+            editable = restore ? "Restore Granny's previous text size" : "Change Granny text size";
+        }
+        try { prepared = adapter.prepare(scale, restore); }
+        catch (RuntimeException failure) { prepared = null; }
+        if (prepared == null) {
+            surface = Surface.TRANSCRIPT; message = "Text size is unavailable. No change was dispatched."; return Result.DENIED;
+        }
+        consequence = (restore ? "Restore" : "Change") + " Granny text from " + prepared.before().label()
+                + " to " + prepared.after().label() + ". Android and other apps stay unchanged.";
+        surface = Surface.PREVIEW;
+        message = prepared.noChange() ? "That size is already current. Applying will not write another value."
+                : "Nothing has changed yet. Review this exact local change.";
+        return Result.ACCEPTED;
     }
-    private boolean priorStillMatches(TextScaleStore.StoredValue prior) { TextScaleStore.ReadResult r=outcomeObserver.observe(); return prior==null ? r.status==TextScaleStore.ReadResult.Status.ABSENT : r.status==TextScaleStore.ReadResult.Status.PRESENT && prior.equals(r.value); }
-    private static boolean isTextSizeRequest(String value) { return value.trim().equalsIgnoreCase("make text larger") || value.trim().equalsIgnoreCase("make granny text larger") || value.trim().equalsIgnoreCase("make this bigger"); }
+    public Result approve() { return approve(generation, revision, consequence); }
+    public Result approve(long g, long r, String shownConsequence) {
+        if (g != generation || r != revision || !Objects.equals(shownConsequence, consequence)) return Result.STALE;
+        if (surface != Surface.PREVIEW || prepared == null || !isEnabled(Capability.TEXT_SCALE)) return Result.DENIED;
+        permit = new Permit(generation, revision, editable, consequence, prepared);
+        prepared = null; surface = Surface.ACTIVE; message = "Waiting to save the approved local change. Stop is available.";
+        return Result.QUEUED;
+    }
+    public Result dispatchApproved() { return dispatchApproved(generation); }
+    public Result dispatchApproved(long g) {
+        if (g != generation || permit == null || surface != Surface.ACTIVE || !isEnabled(Capability.TEXT_SCALE)) return Result.STALE;
+        Permit active = permit; permit = null;
+        if (active.revision != revision || !active.request.equals(editable) || !active.consequence.equals(consequence)) return Result.STALE;
+        TextScaleStore.ReadResult before = observe();
+        if (g != generation) return Result.STALE;
+        if (!CapabilityPorts.matches(before, active.prepared.prior)) {
+            surface = Surface.TRANSCRIPT; message = "The saved size changed. No change was dispatched; review it again.";
+            safeCancel(); return Result.DENIED;
+        }
+        entered = true;
+        boolean acknowledged;
+        try { acknowledged = adapter.dispatch(active.prepared); }
+        catch (RuntimeException unknown) { acknowledged = false; }
+        if (g != generation) return Result.STALE;
+        TextScaleStore.ReadResult observed = observe();
+        if (g != generation) return Result.STALE;
+        entered = false;
+        if (acknowledged && CapabilityPorts.matches(observed, active.prepared.target)) {
+            surface = Surface.KNOWN;
+            message = active.prepared.noChange() ? "No change was needed. " + active.prepared.after().label() + " is already current."
+                    : "Granny text size is now " + active.prepared.after().label() + ". The preference was read back independently.";
+            return Result.KNOWN;
+        }
+        surface = Surface.UNKNOWN; message = "The text-size change could not be verified. Granny will not retry automatically.";
+        return Result.UNKNOWN;
+    }
+    public Result stop() { return stop(null); }
+    public Result stop(Runnable cleanup) {
+        boolean uncertain = entered || surface == Surface.UNKNOWN;
+        invalidate(); surface = uncertain ? Surface.UNKNOWN : Surface.IDLE;
+        message = uncertain ? "Stopped. The text-size result remains unknown." : "Cancelled before any new change. You can type or talk.";
+        runCleanup(cleanup); return Result.ACCEPTED;
+    }
+    public Result clearForBackground(Runnable cleanup) {
+        stop(cleanup); editable = ""; partial = ""; provenance = Provenance.TYPED;
+        return Result.ACCEPTED;
+    }
+    public Result dismissResult() {
+        if (surface != Surface.KNOWN && surface != Surface.UNKNOWN) return Result.DENIED;
+        invalidate(); surface = Surface.IDLE; editable = ""; message = "Type or talk to make a request.";
+        return Result.ACCEPTED;
+    }
+    public void restoreUnknownOutcome() {
+        invalidate(); editable = ""; surface = Surface.UNKNOWN; message = "The earlier text-size result is unknown.";
+    }
+    public Result reviewStatus() {
+        if (surface != Surface.UNKNOWN) return Result.DENIED;
+        TextScaleStore.ReadResult read = observe();
+        message = read.status == TextScaleStore.ReadResult.Status.PRESENT
+                ? "Current stored text size: " + read.value.current.label() + ". The earlier result remains unknown."
+                : "The earlier result remains unknown. No change or retry was requested.";
+        return Result.UNKNOWN;
+    }
+    public boolean isEnabled(Capability capability) { return capability == Capability.TEXT_SCALE && mode == BuildMode.SYNTHETIC_LAB; }
+    public CapabilityMetadata metadata(Capability capability) { return new CapabilityMetadata(capability, isEnabled(capability)); }
+    private void invalidate() {
+        generation++; permit = null; prepared = null; proposalPending = false; choicesAvailable = false;
+        partial = ""; consequence = ""; entered = false; safeCancel();
+    }
+    private void safeCancel() { try { adapter.cancel(); } catch (RuntimeException ignored) { /* Authority was already removed. */ } }
+    private void runCleanup(Runnable extra) {
+        try { if (extra != null) extra.run(); } finally { cancelCleanup.run(); }
+    }
+    private TextScaleStore.ReadResult observe() {
+        try { return Objects.requireNonNull(observer.observe()); }
+        catch (RuntimeException unavailable) { return TextScaleStore.ReadResult.unknown(); }
+    }
+    private static boolean tooLong(String text) { return text != null && text.codePointCount(0, text.length()) > 4096; }
+    private static String value(String text) { return text == null ? "" : text; }
     private static final class Permit {
-        final long generation, revision; final String consequence, exactRequest; final CapabilityPorts.Prepared prepared;
-        Permit(long generation, long revision, String consequence, String exactRequest, CapabilityPorts.Prepared prepared) { this.generation = generation; this.revision = revision; this.consequence = consequence; this.exactRequest=exactRequest; this.prepared=prepared; }
-        boolean matches(long generation, long revision, String consequence) { return this.generation == generation && this.revision == revision && this.consequence.equals(consequence); }
+        final long generation, revision;
+        final String request, consequence;
+        final CapabilityPorts.Prepared prepared;
+        Permit(long generation, long revision, String request, String consequence, CapabilityPorts.Prepared prepared) {
+            this.generation = generation; this.revision = revision; this.request = request;
+            this.consequence = consequence; this.prepared = prepared;
+        }
     }
-    private static boolean safeEquals(String left, String right) { return left == null ? right == null : left.equals(right); }
 }

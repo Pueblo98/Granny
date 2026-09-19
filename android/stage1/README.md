@@ -84,3 +84,12 @@ See the [session record](../../docs/10-execution/sessions/2026-09-20-c5-native-t
 and [exact tablet verification](../../docs/10-execution/t101-c5-tablet-verification.md).
 Host fake-store readbacks are distinct from actual disk/restart, Android layout,
 TalkBack and keyboard evidence. Those device cases are unrun.
+
+## Shared conversation integration
+
+The [native integration contract](../../docs/10-execution/t120-tablet-integration-handoff.md)
+now owns the bounded join between typed input, accepted voice revisions,
+shared conversation surfaces and C5 preference authority. The
+[integration record](../../docs/10-execution/sessions/2026-09-20-native-conversation-integration.md)
+records the exact committed speech dependency and all source/host checks.
+Physical tablet testing is on hold at Simon's direction.
