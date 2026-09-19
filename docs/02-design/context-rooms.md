@@ -2,10 +2,11 @@
 title: "Context Rooms — spatial organization around one assistant"
 status: accepted
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [design, interaction, context, organization, rooms]
 related:
   - conversation-first-plan.md
+  - shared-conversation-state-surfaces.md
   - context-room-visual-system.md
   - context-room-starter-catalog.md
   - context-room-asset-production.md
@@ -98,6 +99,13 @@ library, one Kitchen room, one cross-room source example, browse/search without
 chat and archive/delete-room review. More rooms, automation and real personal
 content wait until this slice is understandable and the typed boundaries pass
 fixture review.
+
+The accepted [shared conversation state surfaces](shared-conversation-state-surfaces.md)
+layer over Home or the current Room rather than replacing it with a Listening,
+Preview, Progress or Result page. For example, Talk in Kitchen expands the
+bottom composer while Kitchen remains the visible and semantic context. A
+surface may cover more of the viewport for long text or access needs, then
+returns to the same underlying place.
 
 ### Global Home
 
