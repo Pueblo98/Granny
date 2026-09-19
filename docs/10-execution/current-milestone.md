@@ -39,6 +39,21 @@ The task branch starts from the latest committed Explicit Scroll Row Home and
 merges current `origin/main`. The owner's later uncommitted Context Rooms work
 remains untouched and is not claimed as part of T-120.
 
+## Rooms system visual review — 2026-09-20
+
+The proposed [Rooms system iteration 1](../02-design/mockups/2026-09-20-rooms-system/iteration-1/README.md)
+now covers 17 missing library and lifecycle states: full library, search, All
+items/Unfiled, create/edit/organize with Undo, archive/restore, separate room and
+underlying-data deletion, cross-room disclosure, sensitive-source denial, and
+empty/loading/offline/missing-art fallbacks. It preserves Harbour Blue, open
+room portraits, direct browse rows and the stable conversation shell.
+
+This is the visual-review checkpoint Simon requested. No frame is accepted by
+generation alone, and canonical PRD/design-system propagation waits for his
+feedback. The next bounded step is to select, simplify or combine these
+structures without turning Rooms into a busier dashboard, then record only the
+accepted behavior and replicable UI rules in their canonical owners.
+
 ## Shared conversation state pack — 2026-09-20
 
 The first [shared state pack](../02-design/mockups/2026-09-20-shared-state-pack/iteration-1/README.md)
