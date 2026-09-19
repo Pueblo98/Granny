@@ -2,7 +2,7 @@
 title: "Stage 1 dependency-ordered backlog"
 status: proposed
 owner: Simon
-last_updated: 2026-09-18
+last_updated: 2026-09-19
 tags: [execution]
 related:
   - development-readiness.md
@@ -57,12 +57,12 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 
 - **Priority / discipline:** P0 — first safe coding slice / Agent/safety engineer; Simon owns acceptance.
 - **Dependencies / entry:** Read PRD/tool/policy/DoR; GATE-01 editorial coherence; synthetic-only contract scope. No device/provider or brand decision needed.
-- **Execution packet:** [T-103](task-packets.md#t-103-packet), 20 deterministic cases; [execution protocol](../03-agent/execution-protocol.md) and [admission contract](../04-architecture/capability-admission.md) resolve operation/journal/Stop boundaries. [Implementation](../../prototypes/t103-authority-core/README.md) and [C01-C20 evidence](../../prototypes/t103-authority-core/EVIDENCE.md) are delivered for review.
+- **Execution packet:** [T-103](task-packets.md#t-103-packet), 20 deterministic cases; [execution protocol](../03-agent/execution-protocol.md) and [admission contract](../04-architecture/capability-admission.md) resolve operation/journal/Stop boundaries. [Implementation](../../prototypes/t103-authority-core/README.md) and [C01-C20 evidence](../../prototypes/t103-authority-core/EVIDENCE.md) were accepted by Simon on 2026-09-19 for this bounded task.
 - **Trace / contract:** PRD-SAF-001–005, FR-004/012/013/016, NFR-001/003/004, DST-004; UC-003/006/011/019/025; J-002/003; EVAL-006/009/010.
 - **Bounded deliverable:** Implement minimal pure typed intent/prepared action/permit/receipt/evidence state machine using fake registry/observer/planner/executor/clock/ledger. One synthetic message effect and one reversible navigation. Exact recipient/content bound; deny wrong/stale/replayed/changed approvals. Stop prevents post-latch dispatch; crash restart quarantines unknown; action success without postcondition cannot complete.
 - **Acceptance / evidence:** Deterministic tests for valid once-only effect, 60s expiry, >2s stale observation, malformed/forged tool, screen injection, late model, cancel races, budget/loop cutoff, unknown outcome/no resend and provider swap. No actual network/files from model. Record tests and limitations; contract replay is not GATE-03/07 device evidence.
 - **Excluded / rollback:** No Android service, SDK/framework lock, backend/model calls, coordinates, personal data, credentials or production scaffold. Choose smallest reversible language/test setup available after environment inspection; no dependency installation without authority. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
-- **Status:** review — units A-D are implemented in the pure fake-only core; C01-C20 pass 20/20 with 147 explicit assertions on fixture `t103-fixture-v1`. Simon has not accepted T-103 completion. No Android, provider, network, MCP, real account/message or gate evidence is claimed.
+- **Status:** complete — Simon accepted the five bounded review points on 2026-09-19 after units A-D passed C01-C20 with 20/20 tests and 147 explicit assertions on fixture `t103-fixture-v1`. Completion is limited to the pure offline authority core; no Android, provider, network, MCP, real account/message or broader gate evidence is claimed.
 
 <a id="t-104"></a>
 ## T-104 — Prove sent-photo route as a vertical slice

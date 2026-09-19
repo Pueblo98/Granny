@@ -2,7 +2,7 @@
 title: "Stage 1 development-readiness gates and handoff"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [execution]
 related:
   - current-milestone.md
@@ -107,14 +107,14 @@ Before code, the task must identify:
 7. Feature disabled by default until gate admission, rollback/kill switch, unknown-effect recovery, and changed-doc/trace update list.
 8. Git branch/dirty-state check, no-secret/synthetic-data plan and actual validation command availability; no external writes without authorization.
 
-T-103 satisfies **specification-level** DoR for pure fake replay. The coding session must inspect available language/test tools and choose a reversible implementation/testing approach; no framework/vendor selection is implied. T-111 is an extension epic and explicitly fails per-task DoR until broken down.
+T-103 is complete and accepted for its **pure fake replay** scope. The dependency-free implementation passed its 20 deterministic cases; this does not select a framework/vendor or establish device behavior. T-111 is an extension epic and explicitly fails per-task DoR until broken down.
 
-The [T-103 packet](task-packets.md#t-103-packet) now supplies explicit fake ports, independent ledger, 20 boundary/adversarial cases and A–D execution units. [T-102](task-packets.md#t-102-packet) supplies the low-fi design package and annotation contract. These clarify how to start an explicitly requested task; they do not perform it or confer external access.
+The [T-103 packet](task-packets.md#t-103-packet) and [accepted evidence](../../prototypes/t103-authority-core/EVIDENCE.md) now supply explicit fake ports, an independent ledger, 20 boundary/adversarial cases and completed A-D units. [T-102](task-packets.md#t-102-packet) supplies the low-fi design package and annotation contract. Neither artifact confers external access or device authority.
 
 ## Exactly what may start next
 
-- **First safe coding slice:** [T-103](backlog.md#t-103), offline typed prepare/confirm/act/verify/cancel replay. PRD-SAF-001–005, PRD-FR-012/013, PRD-NFR-003/004; EVAL-006/010 plus provider-negative EVAL-009. Fake adapters and synthetic ledger only. No Android permission, microphone, network, real account or final brand dependency.
-- **Independent evidence work:** T-101 read-only reference inventory and route assessment with user-provided tablet access; RES-01/03 recruitment/prototype planning after ethics preparation; Simon's name/identity iteration.
+- **Next dependency-ordered work:** [T-101](backlog.md#t-101) desk route inventory and physical-inventory preparation. Desk research needs no tablet; physical commands require user-provided access and explicit authorization. T-104 waits for T-101 route/device evidence and the applicable device-safety boundary.
+- **Independent evidence work:** RES-01/03 recruitment/prototype planning after ethics preparation; Simon's name/identity iteration.
 - **Must wait:** actual external device actuation until fake invariants/device safety gate; real personal data/cloud until provider/consent/security review; final branded production UI until design/name maturity; MVP build/pilot/public distribution until named gates. No Stage 2/3 work.
 
 This mission wrote no application/runtime/backend scaffolding. Documentation validation tooling and static review boards are documentation artifacts, not product implementation.

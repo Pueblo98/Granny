@@ -2,7 +2,7 @@
 title: "First design and engineering task packets"
 status: proposed
 owner: Simon
-last_updated: 2026-09-18
+last_updated: 2026-09-19
 tags: [execution, handoff]
 related:
   - backlog.md
@@ -77,7 +77,7 @@ Then T-104/105/106 test admitted external workflows, T-107 local privacy, and T-
 
 **Outcome:** Demonstrate the local control contract against deterministic synthetic side effects before exposing real apps or data. PRD-SAF-001–005, FR-004/012/013/016, NFR-001/003/004, DST-004; UC-003/006/011/019/025; J-002/003; EVAL-006/008/009/010.
 
-**Implementation review:** the [pure offline core](../../prototypes/t103-authority-core/README.md) implements units A-D; its [evidence report](../../prototypes/t103-authority-core/EVIDENCE.md) records the current C01-C20 run, fixed schedules, privacy projection and limits. The [backend sprint handoff](t103-backend-sprint-handoff.md) remains the authorization/source record for that bounded implementation.
+**Accepted implementation:** the [pure offline core](../../prototypes/t103-authority-core/README.md) implements units A-D; its [evidence report](../../prototypes/t103-authority-core/EVIDENCE.md) records the C01-C20 run, fixed schedules, privacy projection and limits. Simon accepted the five bounded T-103 review points on 2026-09-19. The [backend sprint handoff](t103-backend-sprint-handoff.md) remains the authorization/source record for that bounded implementation.
 
 **Canonical contracts:** [tool types](../03-agent/tool-contracts.md), [transaction protocol](../03-agent/execution-protocol.md), [control budgets](../03-agent/device-control.md), [action matrix](../05-safety-privacy/action-policy.md), [privacy](../05-safety-privacy/safety-and-privacy.md), [admission](../04-architecture/capability-admission.md). If a packet and those owners disagree, report the conflict and correct the owner; do not create a second implementation contract in this file.
 
@@ -149,6 +149,8 @@ These are substeps of T-103, not separate capability commitments. Start with tes
 Pass means all required deterministic assertions hold, every actual test and exit result is recorded, synthetic canaries are absent from forbidden sinks, and the next agent can rerun the suite from the documented environment. Required report: implementation commit, test command, test count/case mapping, seed/order coverage, fixture version, failed/blocked cases, test-runtime environment and scope limitations.
 
 This completes only T-103. It does not pass Android GATE-03, distribution GATE-04 or integrated GATE-07; no actual person, app, mic, model or network was exercised. A design/UI prototype and physical Stop proof are still necessary. Proposed timing values are logical fake-clock boundaries, not measured p95 device performance.
+
+Simon accepted this bounded completion on 2026-09-19. The next dependency-ordered task is [T-101](backlog.md#t-101), beginning with the desk route inventory; T-104 still waits for T-101 route/device evidence and the applicable device-safety authority.
 
 <a id="t-108-packet"></a>
 ## T-108 packet — Comprehension and identity evidence

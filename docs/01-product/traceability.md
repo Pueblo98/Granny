@@ -2,7 +2,7 @@
 title: "Stage 1 requirements traceability"
 status: proposed
 owner: Simon
-last_updated: 2026-09-18
+last_updated: 2026-09-19
 tags: [traceability]
 related:
   - prd.md
@@ -30,7 +30,7 @@ Problem/job chain: PROB-01→JOB-01 delegation; PROB-02→JOB-02 understanding/r
 
 ## Offline authority replay evidence
 
-[T-103](../10-execution/backlog.md#t-103) is implemented for review as a [pure fake-port authority core](../../prototypes/t103-authority-core/README.md), separate from T-117 transport. [C01-C20 tests](../../prototypes/t103-authority-core/authority.test.mjs) and their [evidence report](../../prototypes/t103-authority-core/EVIDENCE.md) exercise the shared authorization, Stop, verification, dependency, provider-negative and privacy invariants linked from PRD-FR-004/005/012–014/016, PRD-SAF-001/003–005, PRD-NFR-001/003/004 and PRD-DST-004. This is executed offline subset evidence for EVAL-006/008/009/010; EVAL-002/005 and every complete canonical eval retain their own unrun status. In the table below, “not implemented” on a T-103 row continues to mean production/device implementation, while this section owns the bounded fixture exception.
+[T-103](../10-execution/backlog.md#t-103) is complete and accepted for its bounded scope as a [pure fake-port authority core](../../prototypes/t103-authority-core/README.md), separate from T-117 transport. [C01-C20 tests](../../prototypes/t103-authority-core/authority.test.mjs) and their [accepted evidence report](../../prototypes/t103-authority-core/EVIDENCE.md) exercise the shared authorization, Stop, verification, dependency, provider-negative and privacy invariants linked from PRD-FR-004/005/012–014/016, PRD-SAF-001/003–005, PRD-NFR-001/003/004 and PRD-DST-004. This is executed offline subset evidence for EVAL-006/008/009/010; EVAL-002/005 and every complete canonical eval retain their own unrun status. In the table below, “not implemented” on a T-103 row continues to mean production/device implementation, while this section owns the bounded fixture exception.
 
 ## Contract routing
 

@@ -1,6 +1,6 @@
 ---
 title: "T-103 offline authority core implementation"
-status: review
+status: accepted
 owner: Simon
 last_updated: 2026-09-19
 tags: [execution, session, agent, safety]
@@ -10,12 +10,12 @@ related:
   - ../../03-agent/execution-protocol.md
   - ../../06-evals/canonical-tasks.md
 record_type: session
-session_state: review
+session_state: complete
 record_basis: contemporaneous
 agent: Codex T-103 implementation session
 branch: feature/t103-offline-authority-core
 artifact_commit: 466d13c89347e007a1de63768f96315f0e02ec64
-next_action: Simon reviews the bounded T-103 evidence and decides whether to accept the task; synchronize the primary vault after its concurrent design edits are safely committed.
+next_action: Start T-101 with the desk route inventory and prepare the separately authorized physical device worksheet; do not start T-104 before its route/device prerequisites.
 changed_paths:
   - docs/01-product/traceability.md
   - docs/06-evals/canonical-tasks.md
@@ -67,6 +67,10 @@ Fixed ordering coverage: Stop before reserve, after journal/before admission and
 No live-provider command, private environment file, Android/device action, real app/account/message, personal data, HTTP/network route or MCP child exists in T-103. Canonical EVAL-006/008/009/010 and GATE-03/04/06/07 remain unpassed as complete evals/gates.
 
 ## Handoff
+
+### Acceptance
+
+On 2026-09-19 Simon reviewed and explicitly accepted all five bounded T-103 points: authority binding, independent outcome verification, Stop/restart behavior, privacy projection and the offline-only scope. This completes T-103 without passing Android, distribution, integrated-prototype or full canonical EVAL gates. The dependency-ordered next task is T-101; T-104 remains gated by its route/device evidence.
 
 Worktree: `/tmp/granny-t103-offline-authority-core`; branch: `feature/t103-offline-authority-core`; original base: `origin/main` at `ed439325845f6e7e0c0b41e0508c36eb5859b103`. Implementation commit `466d13c89347e007a1de63768f96315f0e02ec64` was pushed and independently matched its remote branch. The branch then merged current main, reran all required checks, and [PR #20](https://github.com/Pueblo98/Granny/pull/20) merged normally on 2026-09-19 as `4778c0f04fa83e9c785bac7146002021d13c8877` after all required checks passed.
 

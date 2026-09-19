@@ -1,8 +1,8 @@
 ---
 title: "T-103 offline authority core"
-status: review
+status: accepted
 owner: Simon
-last_updated: 2026-09-18
+last_updated: 2026-09-19
 tags: [prototype, agent, safety, tests]
 related:
   - ../../docs/10-execution/backlog.md
@@ -34,3 +34,5 @@ The command runs 20 top-level `node:test` cases, prints the C01-C20/EVAL mapping
 Fixture version `t103-fixture-v1` uses endpoints `person-a` and `person-b`, channel `fixture-chat`, bodies `Meet at six.` and `Meet at seven.`, selectable account/window/generation values, and `SYNTHETIC-PRIVATE-DO-NOT-EXPORT` for privacy assertions. Fake ledger behavior includes receipt-before-effect, effect-without-receipt, duplicate receipt, conflicting receipt, no effect and delayed effect.
 
 This artifact proves deterministic contract behavior only. It does not measure Stop latency, operate Android, validate a distribution route, contact a provider, use personal data, or pass GATE-03, GATE-04, GATE-06 or GATE-07.
+
+Simon accepted the five bounded T-103 review points on 2026-09-19. That acceptance completes this offline module only; the limits above remain unchanged.
