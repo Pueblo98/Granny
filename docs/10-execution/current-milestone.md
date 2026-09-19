@@ -65,9 +65,9 @@ Before this decision task, main and the local vault included the conversation ru
 
 Simon explicitly authorized [T-117](backlog.md#t-117), a bounded conversation-first browser/backend/MCP slice with fictional contacts, specific confirmation and verified unsent demo-store writes. [Runtime contract](../04-architecture/conversation-runtime-contract.md) and [session evidence](sessions/2026-09-15-mcp-backend-integration.md) own its actual implementation/test state. Backend and frontend coordinate through published board checkpoints. Dependency installation for the official MCP SDK was explicitly approved. This is an exception to earlier no-backend prototype statements, not T-103 completion, Android integration or promotion of GATE-03/04/06/07–09. Live synthetic Qwen calls retain prior caps and consent; broader data/release gates remain open.
 
-## T-103 offline authority core — delivered for review
+## T-103 offline authority core — accepted and complete
 
-Simon requested the complete T-103 backend sprint on 2026-09-17. The [pure offline core](../../prototypes/t103-authority-core/README.md) now implements units A-D with named fake ports, controlled time/generations, strict local admission, exact one-use authority, independent ledger verification, Stop/restart ordering, budgets and privacy projection. Its [C01-C20 report](../../prototypes/t103-authority-core/EVIDENCE.md) records 20/20 passing cases and 147 explicit assertions on fixture `t103-fixture-v1`; the existing 25 conversation-runtime tests also pass in the implementation worktree. T-103 remains at review until Simon accepts it. No Android, external app, real message, live provider, MCP execution path or product-gate promotion follows from this result.
+Simon requested the complete T-103 backend sprint on 2026-09-17 and accepted all five bounded review points on 2026-09-19. The [pure offline core](../../prototypes/t103-authority-core/README.md) implements units A-D with named fake ports, controlled time/generations, strict local admission, exact one-use authority, independent ledger verification, Stop/restart ordering, budgets and privacy projection. Its [C01-C20 report](../../prototypes/t103-authority-core/EVIDENCE.md) records 20/20 passing cases and 147 explicit assertions on fixture `t103-fixture-v1`; the existing 25 conversation-runtime tests also pass in the implementation worktree. T-103 is complete for this offline scope. No Android, external app, real message, live provider, MCP execution path or product-gate promotion follows from this acceptance.
 
 ## Active milestone — review the conversation-first browser experience
 
@@ -119,7 +119,7 @@ Current official Play policy does not permit a general-assistant AccessibilitySe
 
 ## Proposed next milestone
 
-Evidence-led foundation: MVP/control review T-100 is complete and T-103 awaits review. Next, review the offline authority evidence before any acceptance, then inventory device and policy routes under T-101 when separately authorized. Produce/test low-fi interaction and iterate naming/identity (T-102/108) within their authorization and evidence boundaries. Do not begin broad MVP implementation or personal-data automation.
+Evidence-led foundation: MVP/control review T-100 and the bounded offline T-103 core are complete. Next, inventory device and policy routes under T-101, beginning with its desk assessment and physical-inventory worksheet. T-104 waits for that route/device evidence. Produce/test low-fi interaction and iterate naming/identity (T-102/108) within their authorization and evidence boundaries. Do not begin broad MVP implementation or personal-data automation.
 
 Naming recommendation: Daykind / Handspan / Clearfold, all uncleared with documented concerns. Identity recommendation: test Open Day against challengers. Neither is accepted. That initial browser used provisional grayscale; the current conversation build adds reviewer-only territory comparisons. Figma remains a partial paused artifact.
 

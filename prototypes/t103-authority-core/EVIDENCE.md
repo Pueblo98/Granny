@@ -1,8 +1,8 @@
 ---
 title: "T-103 C01-C20 offline replay evidence"
-status: review
+status: accepted
 owner: Simon
-last_updated: 2026-09-18
+last_updated: 2026-09-19
 tags: [evidence, agent, safety, tests]
 related:
   - README.md
@@ -67,4 +67,4 @@ Active-session prepared content, observations and permit bindings remain transie
 
 ## Evidence limits
 
-This is self-validated offline fixture evidence for T-103 review. Canonical EVAL-006/008/009/010 include device, policy, provider or broader product evidence beyond these mapped cases and remain unpassed as complete evals. No Android component, external app, actual message, live model/provider, MCP child, network, personal data, participant evidence, measured p95 Stop latency or release capability was exercised.
+Simon accepted this offline fixture evidence for the bounded T-103 task on 2026-09-19. Canonical EVAL-006/008/009/010 include device, policy, provider or broader product evidence beyond these mapped cases and remain unpassed as complete evals. No Android component, external app, actual message, live model/provider, MCP child, network, personal data, participant evidence, measured p95 Stop latency or release capability was exercised.
