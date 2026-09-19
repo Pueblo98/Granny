@@ -1,167 +1,24 @@
 {
-  "nodes": [
-    {
-      "id": "overview",
-      "type": "file",
-      "file": "Cockpit.md",
-      "x": 0,
-      "y": 0,
-      "width": 520,
-      "height": 450
-    },
-    {
-      "id": "current",
-      "type": "file",
-      "file": "10-execution/current-milestone.md",
-      "x": 0,
-      "y": 510,
-      "width": 520,
-      "height": 400
-    },
-    {
-      "id": "gate",
-      "type": "file",
-      "file": "10-execution/cockpit-snapshot.md",
-      "subpath": "#Gates",
-      "x": 0,
-      "y": 970,
-      "width": 520,
-      "height": 540
-    },
-    {
-      "id": "sessions",
-      "type": "file",
-      "file": "10-execution/cockpit.base",
-      "x": 600,
-      "y": 0,
-      "width": 660,
-      "height": 450
-    },
-    {
-      "id": "board",
-      "type": "file",
-      "file": "10-execution/agent-board.md",
-      "x": 600,
-      "y": 510,
-      "width": 660,
-      "height": 480
-    },
-    {
-      "id": "feedback",
-      "type": "file",
-      "file": "10-execution/messages/2026-09-14-conversation-first.md",
-      "x": 600,
-      "y": 1050,
-      "width": 660,
-      "height": 460
-    },
-    {
-      "id": "questions",
-      "type": "file",
-      "file": "10-execution/open-questions.md",
-      "x": 1340,
-      "y": 0,
-      "width": 600,
-      "height": 450
-    },
-    {
-      "id": "backlog",
-      "type": "file",
-      "file": "10-execution/backlog.md",
-      "x": 1340,
-      "y": 510,
-      "width": 600,
-      "height": 480
-    },
-    {
-      "id": "guide",
-      "type": "file",
-      "file": "10-execution/cockpit-guide.md",
-      "x": 1340,
-      "y": 1050,
-      "width": 600,
-      "height": 460
-    },
-    {
-      "id": "label1",
-      "type": "text",
-      "text": "# WHERE WE ARE\nStage 1 only · linked source notes",
-      "x": 0,
-      "y": -140,
-      "width": 520,
-      "height": 100,
-      "color": "5"
-    },
-    {
-      "id": "label2",
-      "type": "text",
-      "text": "# WHAT SESSIONS BUILT / NEED\nSaved records · not live agent presence",
-      "x": 600,
-      "y": -140,
-      "width": 660,
-      "height": 100,
-      "color": "3"
-    },
-    {
-      "id": "label3",
-      "type": "text",
-      "text": "# DECIDE THE NEXT STEP\nApproval and evidence remain separate",
-      "x": 1340,
-      "y": -140,
-      "width": 600,
-      "height": 100,
-      "color": "6"
-    },
-    {
-      "id": "rooms",
-      "type": "file",
-      "file": "02-design/context-rooms.md",
-      "x": 2000,
-      "y": 510,
-      "width": 620,
-      "height": 540
-    }
-  ],
-  "edges": [
-    {
-      "id": "e1",
-      "fromNode": "feedback",
-      "fromSide": "right",
-      "toNode": "backlog",
-      "toSide": "left",
-      "label": "revise design task"
-    },
-    {
-      "id": "e2",
-      "fromNode": "questions",
-      "fromSide": "left",
-      "toNode": "board",
-      "toSide": "right",
-      "label": "route decisions"
-    },
-    {
-      "id": "e3",
-      "fromNode": "current",
-      "fromSide": "right",
-      "toNode": "sessions",
-      "toSide": "left",
-      "label": "inspect delivery evidence"
-    },
-    {
-      "id": "e4",
-      "fromNode": "current",
-      "fromSide": "right",
-      "toNode": "rooms",
-      "toSide": "left",
-      "label": "active experience direction"
-    },
-    {
-      "id": "e5",
-      "fromNode": "rooms",
-      "fromSide": "left",
-      "toNode": "backlog",
-      "toSide": "right",
-      "label": "T-119 plan"
-    }
-  ]
+	"nodes":[
+		{"id":"overview","type":"file","file":"Cockpit.md","x":0,"y":0,"width":520,"height":450},
+		{"id":"current","type":"file","file":"10-execution/current-milestone.md","x":0,"y":510,"width":520,"height":400},
+		{"id":"gate","type":"file","file":"10-execution/cockpit-snapshot.md","subpath":"#Gates","x":0,"y":970,"width":520,"height":540},
+		{"id":"sessions","type":"file","file":"10-execution/cockpit.base","x":600,"y":0,"width":660,"height":450},
+		{"id":"board","type":"file","file":"10-execution/agent-board.md","x":600,"y":510,"width":660,"height":480},
+		{"id":"feedback","type":"file","file":"10-execution/messages/2026-09-14-conversation-first.md","x":600,"y":1050,"width":660,"height":460},
+		{"id":"questions","type":"file","file":"10-execution/open-questions.md","x":1340,"y":0,"width":600,"height":450},
+		{"id":"backlog","type":"file","file":"10-execution/backlog.md","x":1340,"y":510,"width":600,"height":480},
+		{"id":"guide","type":"file","file":"10-execution/cockpit-guide.md","x":1340,"y":1050,"width":600,"height":460},
+		{"id":"label1","type":"text","text":"# WHERE WE ARE\nStage 1 only · linked source notes","x":0,"y":-140,"width":520,"height":100,"color":"5"},
+		{"id":"label2","type":"text","text":"# WHAT SESSIONS BUILT / NEED\nSaved records · not live agent presence","x":600,"y":-140,"width":660,"height":100,"color":"3"},
+		{"id":"label3","type":"text","text":"# DECIDE THE NEXT STEP\nApproval and evidence remain separate","x":1340,"y":-140,"width":600,"height":100,"color":"6"},
+		{"id":"rooms","type":"file","file":"02-design/context-rooms.md","x":2000,"y":510,"width":620,"height":540}
+	],
+	"edges":[
+		{"id":"e1","fromNode":"feedback","fromSide":"right","toNode":"backlog","toSide":"left","label":"revise design task"},
+		{"id":"e2","fromNode":"questions","fromSide":"left","toNode":"board","toSide":"right","label":"route decisions"},
+		{"id":"e3","fromNode":"current","fromSide":"right","toNode":"sessions","toSide":"left","label":"inspect delivery evidence"},
+		{"id":"e4","fromNode":"current","fromSide":"right","toNode":"rooms","toSide":"left","label":"active experience direction"},
+		{"id":"e5","fromNode":"rooms","fromSide":"left","toNode":"backlog","toSide":"right","label":"T-119 plan"}
+	]
 }

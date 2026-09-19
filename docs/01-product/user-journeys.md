@@ -159,7 +159,7 @@ No telephony/SIM is assumed: route is a tested calling application or supported 
 
 **UC-026; PRD-FR-022; proposed App V1, fictional-data M2 prototype first.**
 
-1. SCR-003 global Home keeps the stable conversation shell. The person opens a labeled Rooms route; Home does not become a room grid.
+1. SCR-003 global Home keeps the stable conversation shell and selected CMP-012 Explicit Scroll Row. The person opens a broad labeled portrait target or written See all rooms; Home does not become a tile grid and no Room is required before asking.
 2. SCR-016 lists a small fictional set with large names, purposes and meaningful visual reinforcement. The person opens Kitchen through the whole semantic row.
 3. SCR-017 visibly states **Kitchen** and preserves the same Talk, Type, Menu and Stop locations. A direct list/search shows canonical references without requiring conversation.
 4. “What do I need for soup?” resolves Kitchen references first. One relevant item from another room may appear only with source/provenance and an option to exclude or correct it.
@@ -167,7 +167,7 @@ No telephony/SIM is assumed: route is a tested calling application or supported 
 6. Returning Home clears current-room priority while preserving the same assistant. A general request works without choosing a room.
 7. Archive or Delete Kitchen inventories memberships and pending work. Delete room only rehomes room-only references; deleting underlying data starts a separate exact confirmation.
 
-Offline/model unavailable: SCR-016/017 direct browse/search and local room lifecycle remain usable. Large text reflows to a calm list; illustration is never the sole label. Cross-room retrieval denial returns no guessed context. A failure to resolve organization never blocks global conversation.
+Offline/model unavailable: CMP-012 and SCR-016/017 direct browse/search and local room lifecycle remain usable. Large text reflows the Home row to a calm vertical/direct-list treatment; illustration is never the sole label. Cross-room retrieval denial returns no guessed context. A failure to resolve organization never blocks global conversation.
 
-**Prototype view inventory:** global Home, Rooms entry, SCR-016 list/empty/create, SCR-017 Kitchen/browse/search/cross-room source, membership receipt/Undo, archive, delete-room inventory/result and underlying-data handoff.
+**Prototype view inventory:** selected global Home with no-room/one-room/all-fit/overflow row states, SCR-016 list/empty/create, SCR-017 Kitchen/browse/search/cross-room source, membership receipt/Undo, archive, delete-room inventory/result and underlying-data handoff.
 **Evidence:** EVAL-008 validates membership, provenance, restore and deletion boundaries; EVAL-012 validates one-assistant/scope comprehension, direct findability and large-text access. No participant or persistent-data evidence exists yet.

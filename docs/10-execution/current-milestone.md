@@ -47,13 +47,48 @@ personal-data storage or silently expand the MVP.
 
 The next visual-production input is now specified without generating assets or
 expanding T-119. The [visual system](../02-design/context-room-visual-system.md)
-defines five removable asset roles and a low-effort reviewed-pack chooser. The
-[starter catalog](../02-design/context-room-starter-catalog.md) supplies eight
-Kitchen and eight Fitness directions. The [production brief](../02-design/context-room-asset-production.md)
-defines contact sheets, the first four UI-ready packs, dimensions, file/manifest
-rules, prompts, safe zones, fallbacks and review checks. Granny may recommend a
-known local pack; arbitrary runtime generation and inferred personal taste are
-excluded. No image asset or frontend implementation is claimed by these notes.
+defines the room mark, five removable atmosphere roles, direct-browse symbols
+and a low-effort reviewed-pack chooser. The
+[starter catalog](../02-design/context-room-starter-catalog.md) links complete
+Kitchen, Fitness, Trips, Garden, Reading and Projects dossiers: 48 mark ideas,
+48 atmosphere packs and 48 collection-symbol concepts. The
+[production brief](../02-design/context-room-asset-production.md) stages twelve
+contact sheets and one UI-ready identity per room before later variants, then
+defines dimensions, file/manifest rules, prompts, safe zones, fallbacks and
+review checks. Granny may recommend a known local pack; arbitrary runtime
+generation and inferred personal taste are excluded. No image asset or
+frontend implementation is claimed by these notes.
+
+The [iteration-1 execution metaprompt](../02-design/context-room-iteration-1-metaprompt.md)
+now directs a fresh session to generate the first complete identity for each
+room one asset at a time: 14 files per room and 84 total, with one shared visual
+bible and no contact-sheet composites or later-pack expansion.
+
+## Font/color boards and local mockup iteration — 2026-09-19
+
+**Final/current selection — Harbour Blue:** Simon chose iteration 5 / 04 as the design system for now. [The selected image and one-to-one written reference](../02-design/mockups/2026-09-19-style-boards/final-harbour-blue/README.md) are filed together in a clearly marked final folder. [Selection record](sessions/2026-09-19-harbour-blue-selection.md) owns preservation and validation evidence. Main-board choice is resolved; implementation and access evidence remain separate. All earlier round summaries below are historical.
+
+**Home composition selected — Explicit Scroll Row:** Simon selected [round 4 option A](../02-design/mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md) as the Home direction to use and develop in future sessions because it is direct, accessible and visually strong. [ADR-0016](../09-decisions/ADR-0016-explicit-home-room-row.md) now carries the accepted composition: stable conversation anchors, one compact continuation when useful, open unframed room portraits, truthful written Previous/Next for overflow and direct See all rooms. It supersedes ADR-0014's conflicting zero-or-one-region limit for the Context Rooms App V1/T-119 extension while retaining the simpler MVP baseline. [Round 4](../02-design/mockups/2026-09-19-harbour-blue-home/round-4/README.md) and rounds 1–3 remain preserved comparison history. Selection does not prove Android geometry, access behavior or comprehension and does not authorize room interiors or frontend implementation by itself.
+
+**Selected Home implementation handoff prepared:** Simon subsequently authorized
+the next development session to implement that exact Home in the existing
+browser prototype, including real scroll/overflow behavior and honest logo,
+room-art and destination placeholders. The
+[bounded implementation metaprompt](../02-design/mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/FRONTEND-IMPLEMENTATION-METAPROMPT.md)
+requires technical inspection, responsive/list fallbacks, accessibility and
+regression checks, then stops before the full Rooms library, room interiors,
+persistence, backend context, Android or Figma work. This handoff is prepared;
+the implementation and its evidence have not run yet.
+
+**Iteration 5 — selected Linen foundation:** Simon selected Linen canvas with the existing white surface and dark ink, keeping Soft Plum as baseline while explicitly authorizing blue Send/accent alternatives. [Four final-shortlist boards](../02-design/mockups/2026-09-19-style-boards/iteration-5/README.md) hold the composition fixed, distinguish ordinary border from offset focus ring, and preserve red Stop. The assistant recommends Plum + Cobalt; Simon's main-board choice remains next. [Canonical selection](../02-design/brand-and-visual-identity.md#selected-foundation--linen) and [session evidence](sessions/2026-09-19-linen-final-shortlist.md) separate selected foundation from proposed action values and unrun access evidence. Earlier round summaries below are historical.
+
+**Iteration 4 — selected Soft Plum:** Simon chose [Soft Plum as the visual direction](../02-design/brand-and-visual-identity.md#selected-visual-direction--soft-plum), requesting a less grey, subtly warm off-white canvas and more positive same-family outlines. [Three narrow refinements](../02-design/mockups/2026-09-19-style-boards/iteration-4/README.md) hold layout, white surfaces and plum actions fixed. Canvas/outline shades, exact fonts and production tokens remain open; no gate changes. [Selection and delivery record](sessions/2026-09-19-soft-plum-refinement.md). Earlier iteration summaries below are historical.
+
+**Iteration 3 — historical:** Simon rejected iteration 2's overly colored chat-box/background pairings. Four neutral-foundation presets shared a warm-grey canvas, white composer/panel and common typography, with color limited to small actions. Multiple user-selectable presets were an exploration direction, not implemented settings or an accepted default. The intermediate folder is not retained in this checkout; [iteration 3 evidence](sessions/2026-09-19-style-boards-iteration-3.md) preserves the delivery record.
+
+**Iteration 2 — historical:** Simon's [feedback notebook](<../02-design/mockups/2026-09-19-style-boards/Notes - style boards.md>) drove the round. Four warmer font/color studies retained the rounded composer, blue focus/red state treatments and Bright Signal panel structure. Their intermediate folder is not retained in this checkout. [Iteration 1](../02-design/mockups/2026-09-19-style-boards/iteration-1/README.md) is archived intact; [the iteration-2 record](sessions/2026-09-19-style-boards-iteration-2.md) preserves file/evidence details. No palette/font or gate was accepted.
+
+Simon requested image-model style boards before the next landing/Home and context-panel variations. [Four boards](../02-design/mockups/2026-09-19-style-boards/README.md) explore the existing identity territories with the selected rounded composer; [all prior image rounds](../02-design/mockups/2026-09-17-chat-entry/README.md) are now embedded in a gallery. Exact shade additions remain proposed in the brand owner. Simon also directed mockup-only sessions to work directly in the root/main checkout without worktree/GitHub ceremony; [the scoped exception](git-workflow.md#mockup-only-local-work--2026-09-19) records that authority. [Session evidence](sessions/2026-09-19-style-boards.md) distinguishes file/link verification from in-app, font, Android and human evidence. No identity or product gate is accepted by these boards.
 
 ## Claude Design frontend handoff — 2026-09-18
 
@@ -61,11 +96,11 @@ The proposed Stage 1 design system is built and synced in Claude Design project
 **Granny Design System (proposed)** from `feature/design-system-build` commit
 `17658b0`. Simon requested the next Claude Design session begin developing the
 conversation frontend with the selected Codex-designed interaction, very few
-visible buttons and the canonical product principles. The [execution-ready
-frontend metaprompt](../02-design/claude-design-frontend-metaprompt.md) now
-starts with the zero-panel Home and complete fictional message slice, then
-extends the same interaction language to the other MVP flows and supporting
-states.
+visible buttons and the canonical product principles. The retired execution
+metaprompt started with the zero-panel Home and complete fictional message
+slice, then extended the same interaction language to the other MVP flows and
+supporting states. Its delivery record and exact source remain available in Git
+history; the browser prototype is now the active implementation medium.
 
 The metaprompt explicitly reconciles the two later accepted design decisions
 that are absent from the synced `0.1.0` registry: the Round conversation
@@ -78,13 +113,13 @@ implement Android code or move a product gate.
 
 **Composer shape selected:** Simon accepted [Round conversation](../02-design/brand-and-visual-identity.md#accepted-shape-direction--round-conversation) for compact, normal and expanded use, with a favicon direction. The selected reference is embedded in the brand note and linked from both design handoffs. Palette/type, implementation and device/user evidence remain open; [selection record](sessions/2026-09-17-round-conversation-selection.md) owns this documentation delivery.
 
-Simon rejects the browser UI as too button-heavy and generically AI-styled. Two separate briefs now serve the next work: [Claude Code builds and syncs the design system](../02-design/claude-code-design-system-handoff.md); [Claude Design composes the app](../02-design/claude-design-handoff.md) under accepted ADR-0013 bounded composition and [ADR-0014's stable conversation Home with zero or one context panel](../09-decisions/ADR-0014-stable-home-context-panel.md). They are separate files, not a bundle. Figma quota does not block the proposed Claude Code route. No system construction, sync or new app UI has been executed by preparing these briefs.
+**Historical 2026-09-17 handoff:** Simon rejected the browser UI as too button-heavy and generically AI-styled. The separate Claude Code/system and Claude Design/app briefs were prepared under ADR-0013 and the then-current ADR-0014 Home. ADR-0016 and the selected Explicit Scroll Row now supersede that Home input for future work; the old handoffs remain history rather than a current composition brief.
 
 Before this decision task, main and the local vault included the conversation runtime, UI/UX skills, brainstorm, bounded composition and separate design handoffs through PR #14 (cc97e48). Earlier unmerged/stale statements below are historical checkpoints. [The Home decision session](sessions/2026-09-17-context-panel-home.md) records the current scoped change; product gates remain unchanged.
 
 ## Simon class brainstorming input — 2026-09-17
 
-[Simon's class brainstorming session](../08-research/source-material/2026-09-17-class-brainstorming.md) is preserved as an attributed planning input. Compatible conversation, contextual-module, guidance/annotation, Android-target and orchestration ideas refine existing proposals without changing gates. On 2026-09-17 Simon retained consequence-based approval and the MVP/App V1/later split, accepted [automatic important-fact memory plus bounded adaptive communication](../09-decisions/ADR-0012-automatic-memory-and-adaptive-communication.md) for App V1, accepted ADR-0013 bounded composition, and accepted ADR-0014's one-panel Home direction. [OQ-14](open-questions.md#brainstorming-alignment-review--oq-14) is resolved for product direction; visual and human evidence remains open.
+[Simon's class brainstorming session](../08-research/source-material/2026-09-17-class-brainstorming.md) is preserved as an attributed planning input. Compatible conversation, contextual-module, guidance/annotation, Android-target and orchestration ideas refine existing proposals without changing gates. On 2026-09-17 Simon retained consequence-based approval and the MVP/App V1/later split, accepted [automatic important-fact memory plus bounded adaptive communication](../09-decisions/ADR-0012-automatic-memory-and-adaptive-communication.md) for App V1, accepted ADR-0013 bounded composition, and accepted the then-current ADR-0014 one-panel Home; ADR-0016 now supersedes that final Home detail for Context Rooms. [OQ-14](open-questions.md#brainstorming-alignment-review--oq-14) is resolved for product direction; human evidence remains open.
 
 ## Local backend/MCP experiment — 2026-09-15
 
@@ -134,7 +169,7 @@ The mission's documentation package is written for review. Only the stock-Androi
 
 ## Delivered in this milestone
 
-49 stable PRD requirements; explicit MVP/V1/later boundaries; four proto-personas and five jobs; 26 use cases and nine journeys; 17 screens/19 states/11 components; voice/access/content/Figma contract; brand foundation, 81 naming candidates, 30 live longlist, 12 scored candidates, three finalists and four reproducible identity territories with local boards; finite MVP typed capabilities plus proposed CAP-15, Android/local-cloud/trust boundaries; canonical action/privacy/memory/helper/room/threat policies; 17 unrun evals, metric/failure definitions and full requirement mapping; prioritized evidence program; nine gates, roadmap, DoR and bounded T-103/T-119 synthetic slices.
+49 stable PRD requirements; explicit MVP/V1/later boundaries; four proto-personas and five jobs; 26 use cases and nine journeys; 17 screens/19 states/12 components; voice/access/content/Figma contract; brand foundation, 81 naming candidates, 30 live longlist, 12 scored candidates, three finalists and four reproducible identity territories with local boards; finite MVP typed capabilities plus proposed CAP-15, Android/local-cloud/trust boundaries; canonical action/privacy/memory/helper/room/threat policies; 17 unrun evals, metric/failure definitions and full requirement mapping; prioritized evidence program; nine gates, roadmap, DoR and bounded T-103/T-119 synthetic slices.
 
 [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) is **accepted by Simon on 2026-09-14**, completing T-100 and passing GATE-02 for experiment scope only. ADR-0010/0011 remain **proposed**. Seven earlier accepted ADRs and deprecated ADR-0004 history remain unchanged. Supplied Dream Book/handoff/conversation and local Obsidian state are preserved.
 

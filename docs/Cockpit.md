@@ -13,10 +13,10 @@ related:
 # Development cockpit
 
 > [!important] Context Rooms direction — 2026-09-19
-> Simon accepted [Context Rooms](02-design/context-rooms.md) as optional recognizable spaces around one global assistant and directed future planning to use them. Home stays universal and uncluttered; Rooms add direct organization, scoped local/cross-room context and bounded atmosphere. [T-119](10-execution/backlog.md#t-119) is the next fictional-data design/contract slice; proposed App V1 placement, implementation and evidence remain gated under [ADR-0015](09-decisions/ADR-0015-context-rooms.md).
+> Simon accepted [Context Rooms](02-design/context-rooms.md) as optional recognizable spaces around one global assistant and selected [Explicit Scroll Row](02-design/mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md) as the Home composition for future design/development. Home stays universal and conversation-first; the selected row adds open portraits, written Previous/Next and direct See all rooms under [ADR-0016](09-decisions/ADR-0016-explicit-home-room-row.md). [T-119](10-execution/backlog.md#t-119) is the next fictional-data design/contract slice; proposed App V1 placement, implementation and evidence remain gated.
 
 > [!important] Latest review — 2026-09-17
-> Simon selected the [Round conversation bubble](02-design/brand-and-visual-identity.md#accepted-shape-direction--round-conversation) for future composers, including compact/normal/expanded use and favicon exploration. The linked note embeds the chosen image. Home/interface choices are recorded in ADR-0013/0014; use the separate Claude Code system and Claude Design app handoffs. The old browser composition remains rejected. Runtime checks remain synthetic evidence, not Android readiness.
+> Simon selected the [Round conversation bubble](02-design/brand-and-visual-identity.md#accepted-shape-direction--round-conversation) for future composers, including compact/normal/expanded use and favicon exploration. The old browser composition remains rejected. Home/interface choices are now recorded in ADR-0013/0016; runtime checks remain synthetic evidence, not Android readiness.
 
 > [!important] Stage 1 · Android tablet app
 > This is **Simon's development workspace**, not Granny's customer interface. Stage 2 OS and Stage 3 hardware are dormant.
@@ -46,7 +46,7 @@ No percentage-of-product score: written documentation, mock test passes and real
 ## Decide and review
 
 > [!todo] Current design feedback
-> Build the bounded T-119 Context Rooms slice on the conversation-first shell: global Home, Rooms library, one Kitchen room, direct browse/search, one disclosed cross-room source and safe room deletion. Final design/brand, persistent data and human/device evidence remain open.
+> Start the bounded T-119 Context Rooms slice from the selected Explicit Scroll Row: cover no-room/one-room/all-fit/overflow and responsive states, then the Rooms library, one Kitchen room, direct browse/search, one disclosed cross-room source and safe room deletion. Persistent data and human/device evidence remain open.
 
 - [Conversation-first experience](02-design/browser-prototype.md): browser review and coverage; [build handoff](10-execution/sessions/2026-09-14-conversation-build.md) records evidence and publication.
 - [Context Rooms plan](02-design/context-rooms.md): active experience direction; [T-119 packet](10-execution/task-packets.md#t-119-packet) defines the next bounded artifact and evidence.

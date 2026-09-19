@@ -17,7 +17,7 @@ related:
 
 ## Context Rooms follow-up — 2026-09-19
 
-Simon later replaced the unresolved “background/widgets/shelf” space with the accepted [Context Rooms](../02-design/context-rooms.md) direction. This does not reopen the stable Home choice below: Home remains the universal conversation anchor with at most one context panel. Rooms are a secondary direct organization layer around the same assistant. [ADR-0015](../09-decisions/ADR-0015-context-rooms.md), PRD-FR-022 and T-119 now own the active plan; the earlier shelf/dashboard comparisons below remain decision history.
+Simon later replaced the unresolved “background/widgets/shelf” space with the accepted [Context Rooms](../02-design/context-rooms.md) direction. On 2026-09-19 he then selected [ADR-0016's Explicit Scroll Row](../09-decisions/ADR-0016-explicit-home-room-row.md) for future Context Rooms Home work. It preserves the universal conversation anchor while superseding the at-most-one-region detail below. ADR-0015/0016, PRD-FR-022 and T-119 now own the active plan; the earlier shelf/dashboard comparisons remain decision history.
 
 ## Authority and use
 
@@ -105,4 +105,4 @@ These are design hypotheses for review, not findings about all older adults. W3C
 
 Keep Talk/Type, conversation, Menu and active-task Stop in fixed locations. Permit at most one large optional context panel below the invitation, only for verified, timely information that has a clear next action. Never use a carousel, tiled widget grid, advertising-like cards or automatic movement while the screen is open. If more items exist, a labeled Today page holds a short vertical list. The panel disappears when irrelevant; the person can Keep here, Hide and Reset Home. The agent may select its registered component automatically, but persistent placement follows a stable rule and never moves core controls.
 
-Simon accepted this current direction on 2026-09-17 “for now,” so [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md) records it as reversible after evidence rather than final visual approval. It keeps a recognizable Home while testing whether one glanceable item provides value without overload. Compare it with the pure quiet anchor using actual older adults across different experience, vision, dexterity and cognitive-access needs; age alone does not select a layout.
+Simon accepted this then-current direction on 2026-09-17 “for now,” so [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md) preserves that historical reversible decision. ADR-0016 now supersedes its region limit. Human comparison still needs actual older adults across different experience, vision, dexterity and cognitive-access needs; age alone does not select a layout.

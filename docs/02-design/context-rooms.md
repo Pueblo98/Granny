@@ -48,8 +48,11 @@ widgets, separate domain agents and literal room navigation:
 - the person may create, reorganize, archive and delete rooms with the
   assistant's help.
 
-The exact Home entry, room-library composition, default room set and visual
-style remain proposed. On 2026-09-19 Simon directed the wider notebook and
+The Home entry/composition is now selected under
+[ADR-0016](../09-decisions/ADR-0016-explicit-home-room-row.md): open room
+portraits with written Previous/Next and See all rooms sit beside a compact
+continuation when present. Room-library composition, default room set and
+production behavior remain proposed. On 2026-09-19 Simon directed the wider notebook and
 future plan to adopt this concept. Context Rooms are therefore the active
 fictional-data design direction under T-119, with a provisional App V1 product
 placement until evidence and a later release decision say otherwise. This does
@@ -98,11 +101,14 @@ fixture review.
 
 ### Global Home
 
-ADR-0014 remains in force. Home keeps the stable Round conversation composer,
-Talk, Type, Menu and active-task Stop. It does not display a permanent grid of
-rooms. A labeled **Rooms** route may live in Menu or another tested secondary
-entry. Home's one optional context panel may offer a single timely action such
-as **Continue in Kitchen**, but it cannot become a room carousel or shelf.
+[ADR-0016](../09-decisions/ADR-0016-explicit-home-room-row.md) supersedes
+ADR-0014's Home-region limit while retaining its stable Round conversation
+composer, Talk, Type, Menu, active-task Stop, privacy and focus rules. Home may
+show one compact action such as **Continue in Kitchen** plus one selected
+CMP-012 row of open room portraits. The row has live written names/purposes,
+truthful written **Previous**/**Next** controls when content overflows and a
+direct **See all rooms** route. It is not a permanent tile grid, boxed shelf,
+app launcher or automatic carousel.
 
 The person may always ask a general question from Home:
 
@@ -263,8 +269,11 @@ The proposed [visual asset system](context-room-visual-system.md) makes this
 low-effort: Granny recommends one reviewed local pack, while **Change look**
 and **Use plain room** remain available. The model never generates arbitrary
 room art at runtime or turns a room name into a personality inference. The
-[starter catalog](context-room-starter-catalog.md) supplies eight Kitchen and
-eight Fitness directions; these examples do not create default rooms.
+[starter catalog](context-room-starter-catalog.md) supplies six room
+dossiers—Kitchen, Fitness, Trips, Garden, Reading and Projects—with eight room
+marks, eight complete atmosphere packs and eight direct-browse symbols per
+room. These examples create a broad choice space; they do not create default
+rooms or expand the two-room T-119 functional fixture.
 
 ## Archiving and deleting a room
 
@@ -322,9 +331,11 @@ presets rather than arbitrary images behind text. Reduced motion, contrast,
 large type and speech settings remain global unless the person explicitly asks
 for a safe room-specific presentation preference.
 
-Each reviewed pack uses five removable asset roles: outside room portrait,
-inside backdrop, decor cluster, subtle surface motif and empty-state
-illustration. UI text and controls are never baked into the art. The
+Each reviewed identity uses a room mark plus five removable atmosphere roles:
+outside room portrait, inside backdrop, decor cluster, subtle surface motif
+and empty-state illustration. Each room archetype also has a shared set of
+eight collection symbols for direct browsing. Room names, collection labels,
+UI text and controls are never baked into the art. The
 [generation and handoff brief](context-room-asset-production.md) owns asset
 sizes, safe zones, manifest metadata, fallbacks and review order.
 
@@ -370,7 +381,9 @@ privacy/eval evidence and release admission.
 
 Use fictional content to build and compare:
 
-1. Global Home with no room grid and one secondary Rooms entry.
+1. Global Home using the selected Explicit Scroll Row, including compact
+   continuation, no-room/one-room/all-fit/overflow states and a direct Rooms
+   route; no tile grid.
 2. A room library with Kitchen and Trips plus a large-text list fallback.
 3. Kitchen with the stable conversation shell and bounded atmosphere.
 4. A local question that uses Kitchen context.
@@ -417,18 +430,19 @@ preference alone does not admit persistence or cross-room access.
 
 ## Review questions still open
 
-1. What is the least cluttered discoverable entry to Rooms from Home?
-2. Does the product start with zero rooms, examples, or a small user-chosen set?
-3. What should a room be called in product language: Room, Space, Place or
+1. Does the product start with zero rooms, examples, or a small user-chosen set?
+2. What should a room be called in product language: Room, Space, Place or
    something else after naming/language research?
-4. When should Granny use cross-room context silently, show a compact source
+3. When should Granny use cross-room context silently, show a compact source
    receipt or ask first?
-5. Which Kitchen/Fitness packs advance after contact-sheet and in-UI review,
-   and may any compatible layers be changed independently later?
-6. Are some rooms locally private by default, and how is that explained without
+4. Which marks and packs from the six starter dossiers advance after
+   contact-sheet and in-UI review, and may any compatible layers be changed
+   independently later?
+5. Are some rooms locally private by default, and how is that explained without
    turning rooms into a misleading security boundary?
-7. Which release first admits persistent room membership and real documents?
+6. Which release first admits persistent room membership and real documents?
 
 These questions guide iteration. They do not reopen the accepted principles of
-one assistant, global conversation, optional rooms, direct access, bounded
-atmosphere and policy-scoped cross-room context.
+one assistant, global conversation, optional rooms, the selected Explicit
+Scroll Row, direct access, bounded atmosphere and policy-scoped cross-room
+context.

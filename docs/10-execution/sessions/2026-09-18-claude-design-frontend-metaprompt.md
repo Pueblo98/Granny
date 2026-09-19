@@ -5,8 +5,6 @@ owner: Simon
 last_updated: 2026-09-18
 tags: [execution, session, design, handoff]
 related:
-  - ../../02-design/claude-design-frontend-metaprompt.md
-  - ../../02-design/claude-design-handoff.md
   - ../../02-design/product-design-spec.md
   - ../../02-design/design-system.md
   - ../../09-decisions/ADR-0013-bounded-interface-composition.md
