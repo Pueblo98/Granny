@@ -21,6 +21,13 @@ related:
 
 ## Selected Home checkpoint
 
+Simon's subsequent [footprint refinement](mockups/2026-09-20-room-footprint-refinement/README.md)
+removes the hidden-continuation width cap: Other rooms starts at the ordinary
+page margin and sizes three complete entries within its new width. Hero art
+now belongs to the outer page shell, reaches its right edge and uses a larger
+viewport-scaled footprint; masks blend artwork independently of its size.
+Chat portraits retain their aspect ratio at a substantially larger scale.
+
 The [responsive room repair](mockups/2026-09-20-room-layout-repair/README.md)
 replaces fixed artwork crops with a full content-sized hero layer and
 uncropped chat portraits. The room composer follows content in normal flow;

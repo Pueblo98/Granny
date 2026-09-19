@@ -34,13 +34,13 @@ try {
     await b.viewport(width,height); await room('kitchen');
     await b.evaluate(`document.documentElement.style.setProperty('--review-scale','${scale}');dispatchEvent(new Event('resize'))`); await settle();
     await geometry(`${width}x${height}@${scale}`);
-    if (width>700 && scale===1) check(await b.evaluate(`(()=>{const a=document.querySelector('.room-atmosphere').getBoundingClientRect(),s=document.querySelector('#room-surface').getBoundingClientRect();return Math.abs(a.width-s.width)<1&&Math.abs(a.height-s.height)<1&&getComputedStyle(document.querySelector('.room-backdrop')).maskImage!=='none';})()`),'hero follows full content bounds '+width+'x'+height);
+    if (width>700 && scale===1) check(await b.evaluate(`(()=>{const a=document.querySelector('.room-atmosphere').getBoundingClientRect(),s=document.querySelector('.app-shell').getBoundingClientRect(),i=document.querySelector('.room-backdrop img').getBoundingClientRect();return Math.abs(a.width-s.width)<1&&Math.abs(a.top-s.top)<1&&a.height>=innerHeight*.7&&i.width>=s.width*1.1&&getComputedStyle(document.querySelector('.room-backdrop')).maskImage!=='none';})()`),'hero artwork is full-bleed, viewport-scaled and independently masked '+width+'x'+height);
     if (width===1440 && height===900) { await b.evaluate('scrollTo(0,0);document.activeElement?.blur()'); await b.screenshot('kitchen-hero'); }
     if (width===1280) { await b.evaluate('scrollTo(0,document.body.scrollHeight)'); await b.screenshot('kitchen-short-composer'); }
     await b.click('#room-continue'); await geometry('detail '+width+'@'+scale);
     await b.click('#ask-room-item'); await b.click('#composer button[type=submit]'); await settle();
     await geometry('chat '+width+'@'+scale);
-    if (width>700 && scale===1) check(await b.evaluate(`(()=>{const i=document.querySelector('.room-chat-portrait img'),r=i.getBoundingClientRect();return getComputedStyle(i).objectFit==='contain' && Math.abs(r.width/r.height-i.naturalWidth/i.naturalHeight)<.01;})()`),'chat preserves complete portrait aspect ratio '+width+'x'+height);
+    if (width>700 && scale===1) check(await b.evaluate(`(()=>{const i=document.querySelector('.room-chat-portrait img'),r=i.getBoundingClientRect(),s=document.querySelector('.app-shell').getBoundingClientRect();return r.width>=s.width*.55&&getComputedStyle(i).objectFit==='contain' && Math.abs(r.width/r.height-i.naturalWidth/i.naturalHeight)<.01;})()`),'chat has a substantial footprint and complete portrait aspect ratio '+width+'x'+height);
     if (width===1440 && height===900) { await b.evaluate('scrollTo(0,0);document.activeElement?.blur()'); await b.screenshot('kitchen-chat'); }
   }
   await b.viewport(1440,900);
@@ -51,8 +51,11 @@ try {
     if(id!=='kitchen')check(await b.evaluate("!document.querySelector('#room-content').textContent.includes('Vegetable soup')"),id+' has no Kitchen continuation');
   }
   for (const width of [1440,840,360]) {
-    await b.viewport(width,900); await b.navigate('/'); await b.click('#hide-continuation'); await settle();
-    check(await b.evaluate(`(()=>{const r=document.querySelector('#rooms').getBoundingClientRect(),s=document.querySelector('#home-secondary').getBoundingClientRect();return Math.abs(r.x+r.width/2-s.x-s.width/2)<1&&r.width>Math.min(s.width,1000)-1&&document.activeElement.id==='request';})()`),'Hide centers Rooms and returns focus '+width);
+    await b.viewport(width,900); await b.navigate('/');
+    await b.evaluate("document.querySelector('#room-viewport').scrollLeft=160");
+    await b.click('#hide-continuation'); await settle();
+    check(await b.evaluate(`(()=>{const r=document.querySelector('#rooms').getBoundingClientRect(),s=document.querySelector('#home-secondary').getBoundingClientRect();return Math.abs(r.x-s.x)<1&&Math.abs(r.width-s.width)<1&&document.activeElement.id==='request';})()`),'Hide reclaims full available width from the normal outer margin '+width);
+    if(width>700) check(await b.evaluate(`(()=>{const v=document.querySelector('#room-viewport'),b=v.getBoundingClientRect(),cards=[...v.querySelectorAll('.room-entry')].slice(0,3),controls=document.querySelector('#room-controls').getBoundingClientRect();return v.scrollLeft===0&&cards.every(e=>{const r=e.getBoundingClientRect();return r.left>=b.left&&r.right<=b.right})&&controls.right<=b.right;})()`),'Hide fits three complete entries and contained controls '+width);
     if(width===1440){await b.evaluate('scrollTo(0,0);document.activeElement?.blur()');await b.screenshot('home-hidden');}
   }
   await b.evaluate("document.querySelector('#request').focus()"); await settle();

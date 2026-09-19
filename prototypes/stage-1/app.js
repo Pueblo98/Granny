@@ -1235,6 +1235,8 @@
   $('hide-continuation').addEventListener('click', () => {
     continuationVisible = false;
     $('continuation').hidden = true;
+    $('room-viewport').scrollLeft = 0;
+    updateRoomLayout();
     announce('Kitchen continuation hidden for this session.');
     focus(composerText);
   });

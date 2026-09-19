@@ -47,8 +47,16 @@ composition. Hiding Home continuation centers the remaining room region.
 The bubble body and pointer are one SVG contour, measured from the real form;
 the separated focus contour uses the same geometry. No overlay hides a seam.
 Run `node prototypes/stage-1/room-layout-browser-check.mjs` for the new
-130-assertion layout/continuation regression suite and reproducible screenshots.
+132-assertion layout/continuation regression suite and reproducible screenshots.
 See [repair evidence](../../docs/02-design/mockups/2026-09-20-room-layout-repair/README.md).
+
+Latest [footprint refinement](../../docs/02-design/mockups/2026-09-20-room-footprint-refinement/README.md)
+supersedes the repair's art bounds: the hero is now anchored to the outer page
+shell, not the padded room section. Artwork scale and fade are separate; the
+chat portrait occupies 60% of the shell instead of 27%. Hide removes the
+remaining 64rem width cap and fits three complete entries across the available
+page width, with gap-aware sizing and a reset scroll position. Narrow/large-text
+layouts still use a direct vertical list.
 
 Use the existing Node runtime (validated with Node 26.8.1):
 
