@@ -9,6 +9,7 @@ public final class ConversationSessionCoordinator {
     public enum Surface { IDLE, LISTENING, TRANSCRIPT, CLARIFICATION, PREVIEW, ACTIVE, KNOWN, UNKNOWN }
     public enum Provenance { TYPED, PARTIAL_VOICE, FINAL_VOICE, EDITED_TRANSCRIPT }
     public enum Capability { TEXT_SCALE, SCREEN_EXPLANATION }
+    public enum BuildMode { SYNTHETIC_LAB, CANDIDATE }
     public enum Result { ACCEPTED, STALE, DENIED, QUEUED, DISPATCHED, KNOWN, UNKNOWN }
     public interface InterpreterPort { Proposal propose(String exactRequest, long generation, long revision); }
     public static final class Proposal { public final String consequence; public Proposal(String consequence) { this.consequence = consequence; } }
@@ -49,6 +50,7 @@ public final class ConversationSessionCoordinator {
     private final CapabilityPorts.CapabilityAdapter adapter;
     private final CapabilityPorts.OutcomeObserver outcomeObserver;
     private final InterpreterPort interpreter;
+    private final BuildMode buildMode;
     private String place = "Home";
     private ReturnAnchor anchor = new ReturnAnchor("Home", "composer", 0);
     private Surface surface = Surface.IDLE;
@@ -63,7 +65,8 @@ public final class ConversationSessionCoordinator {
     private boolean restoreRequested;
 
     public ConversationSessionCoordinator(TextScaleController textScale) { this(textScale, null, null, () -> {}); }
-    public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore outcomeObserver) { this(textScale, new CapabilityPorts.C5Adapter(textScale, outcomeObserver), new CapabilityPorts.StoreObserver(outcomeObserver), null, () -> {}); }
+    public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore outcomeObserver) { this(textScale, outcomeObserver, BuildMode.SYNTHETIC_LAB); }
+    public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore outcomeObserver, BuildMode mode) { this(textScale, new CapabilityPorts.C5Adapter(textScale, outcomeObserver), new CapabilityPorts.StoreObserver(outcomeObserver), null, () -> {}, mode); }
     public ConversationSessionCoordinator(TextScaleController textScale, Runnable cancelCleanup) { this(textScale, null, null, cancelCleanup); }
     public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore outcomeObserver, Runnable cancelCleanup) {
         this(textScale, outcomeObserver, null, cancelCleanup);
@@ -71,8 +74,9 @@ public final class ConversationSessionCoordinator {
     public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore observer, InterpreterPort interpreter, Runnable cleanup) {
         this(textScale, new CapabilityPorts.C5Adapter(textScale, observer), new CapabilityPorts.StoreObserver(observer), interpreter, cleanup);
     }
-    public ConversationSessionCoordinator(TextScaleController textScale, CapabilityPorts.CapabilityAdapter adapter, CapabilityPorts.OutcomeObserver observer, InterpreterPort interpreter, Runnable cleanup) {
-        this.textScale = textScale; this.adapter = adapter; this.outcomeObserver = observer; this.interpreter = interpreter; this.cancelCleanup = cleanup;
+    public ConversationSessionCoordinator(TextScaleController textScale, CapabilityPorts.CapabilityAdapter adapter, CapabilityPorts.OutcomeObserver observer, InterpreterPort interpreter, Runnable cleanup) { this(textScale,adapter,observer,interpreter,cleanup,BuildMode.SYNTHETIC_LAB); }
+    public ConversationSessionCoordinator(TextScaleController textScale, CapabilityPorts.CapabilityAdapter adapter, CapabilityPorts.OutcomeObserver observer, InterpreterPort interpreter, Runnable cleanup, BuildMode mode) {
+        this.textScale = textScale; this.adapter = adapter; this.outcomeObserver = observer; this.interpreter = interpreter; this.cancelCleanup = cleanup; this.buildMode=mode;
     }
 
     public Snapshot snapshot() { return new Snapshot(place, anchor, surface, generation, revision, provenance,
@@ -97,6 +101,7 @@ public final class ConversationSessionCoordinator {
     public Result edit(String request) { return replace(request, Provenance.EDITED_TRANSCRIPT); }
     public Result editRequest(String request) { return edit(request); }
     private Result replace(String request, Provenance source) {
+        if (request != null && request.codePointCount(0, request.length()) > 4096) { surface=Surface.CLARIFICATION; message="Please use 4,096 characters or fewer."; return Result.DENIED; }
         invalidate(); editable = request == null ? "" : request; revision++; provenance = source;
         surface = Surface.TRANSCRIPT; message = "Review the words, then use this request."; return Result.ACCEPTED;
     }
@@ -131,7 +136,7 @@ public final class ConversationSessionCoordinator {
         return Result.ACCEPTED;
     }
     public Result approve() {
-        if (surface != Surface.PREVIEW || consequence.isEmpty()) return Result.DENIED;
+        if (surface != Surface.PREVIEW || consequence.isEmpty() || buildMode != BuildMode.SYNTHETIC_LAB) return Result.DENIED;
         if (pendingPrepared == null) return Result.DENIED;
         permit = new Permit(generation, revision, consequence, editable, pendingPrepared); surface = Surface.ACTIVE;
         message = "Ready to change Granny's text size. Stop is available."; return Result.QUEUED;
@@ -147,6 +152,7 @@ public final class ConversationSessionCoordinator {
         if (permit == null || !permit.matches(generation, revision, consequence)) return Result.STALE;
         Permit admitted = permit; permit = null;
         if (generation != admitted.generation) return Result.STALE;
+        if (!priorStillMatches(admitted.prepared.prior)) return Result.STALE;
         boolean applied = adapter.dispatch(admitted.prepared);
         if (generation != admitted.generation) return Result.STALE;
         if (generation != admitted.generation) return Result.STALE;
@@ -177,7 +183,7 @@ public final class ConversationSessionCoordinator {
     /** A read-only check never dispatches or upgrades an earlier unknown outcome. */
     public Result reviewStatus() { TextScaleStore.ReadResult read=outcomeObserver.observe(); message=read.status==TextScaleStore.ReadResult.Status.PRESENT ? "Current stored text size is " + read.value.current.label() + ". The earlier result remains unknown." : "The text-size result remains unknown."; surface=Surface.UNKNOWN; return Result.UNKNOWN; }
     public boolean isEnabled(Capability capability) { return capability == Capability.TEXT_SCALE; }
-    public CapabilityMetadata metadata(Capability capability) { return capability == Capability.TEXT_SCALE ? new CapabilityMetadata(capability, true, "private preference readback") : new CapabilityMetadata(capability, false, "unadmitted"); }
+    public CapabilityMetadata metadata(Capability capability) { return capability == Capability.TEXT_SCALE ? new CapabilityMetadata(capability, buildMode==BuildMode.SYNTHETIC_LAB, "private preference readback") : new CapabilityMetadata(capability, false, "unadmitted"); }
     private CapabilityPorts.Prepared pendingPrepared;
     private void invalidate() { generation++; permit = null; pendingPrepared=null; partial = ""; consequence = ""; restoreRequested = false; adapter.cancel(); }
     private boolean independentlyObserved(TextScaleStore.StoredValue before) {
@@ -185,6 +191,7 @@ public final class ConversationSessionCoordinator {
         TextScaleStore.ReadResult observed = outcomeObserver.observe();
         return observed.status == TextScaleStore.ReadResult.Status.PRESENT && observed.value.equals(before);
     }
+    private boolean priorStillMatches(TextScaleStore.StoredValue prior) { TextScaleStore.ReadResult r=outcomeObserver.observe(); return prior==null ? r.status==TextScaleStore.ReadResult.Status.ABSENT : r.status==TextScaleStore.ReadResult.Status.PRESENT && prior.equals(r.value); }
     private static boolean isTextSizeRequest(String value) { return value.trim().equalsIgnoreCase("make text larger") || value.trim().equalsIgnoreCase("make granny text larger") || value.trim().equalsIgnoreCase("make this bigger"); }
     private static final class Permit {
         final long generation, revision; final String consequence, exactRequest; final CapabilityPorts.Prepared prepared;
