@@ -24,10 +24,33 @@ public final class CaptureSessionStateMachine {
         generation = Math.max(0L, initialGeneration);
     }
 
+    CaptureSessionStateMachine(LabSessionLedger.Snapshot snapshot) {
+        this(snapshot.generation);
+        if (snapshot.phase == LabSessionLedger.Phase.REQUESTING) {
+            state = State.REQUESTING_CONSENT;
+        } else if (snapshot.phase == LabSessionLedger.Phase.ACTIVE) {
+            state = State.CAPTURING;
+        } else if (snapshot.phase == LabSessionLedger.Phase.STOPPING) {
+            state = State.STOPPING;
+        } else if (snapshot.phase == LabSessionLedger.Phase.RESULT) {
+            state = State.STOPPED;
+        }
+    }
+
     public synchronized long beginRequest() {
+        if (!canBeginRequest()) {
+            return -1L;
+        }
         generation += 1;
         state = State.REQUESTING_CONSENT;
         return generation;
+    }
+
+    public synchronized boolean canBeginRequest() {
+        return state == State.IDLE
+                || state == State.STOPPED
+                || state == State.DENIED
+                || state == State.UNAVAILABLE;
     }
 
     public synchronized boolean consentDenied(long candidateGeneration) {
@@ -84,6 +107,22 @@ public final class CaptureSessionStateMachine {
 
     public synchronized State state() {
         return state;
+    }
+
+    public synchronized void reconcile(LabSessionLedger.Snapshot snapshot) {
+        if (snapshot.generation < generation) {
+            return;
+        }
+        generation = snapshot.generation;
+        if (snapshot.phase == LabSessionLedger.Phase.REQUESTING) {
+            state = State.REQUESTING_CONSENT;
+        } else if (snapshot.phase == LabSessionLedger.Phase.ACTIVE) {
+            state = State.CAPTURING;
+        } else if (snapshot.phase == LabSessionLedger.Phase.STOPPING) {
+            state = State.STOPPING;
+        } else if (snapshot.phase == LabSessionLedger.Phase.RESULT) {
+            state = State.STOPPED;
+        }
     }
 
     public synchronized long generation() {

@@ -44,11 +44,10 @@ public final class CaptureSessionStateMachineTest {
     public void namedStopInvalidatesOnlyOutstandingChooserGeneration() {
         CaptureSessionStateMachine machine = new CaptureSessionStateMachine();
         long first = machine.beginRequest();
-        long second = machine.beginRequest();
 
-        assertFalse(machine.requestStop(first));
-        assertTrue(machine.requestStop(second));
-        assertFalse(machine.consentGranted(second));
+        assertTrue(machine.requestStop(first));
+        assertFalse(machine.requestStop(first - 1L));
+        assertFalse(machine.consentGranted(first));
         assertEquals(CaptureSessionStateMachine.State.STOPPING, machine.state());
     }
 
@@ -56,8 +55,11 @@ public final class CaptureSessionStateMachineTest {
     public void replacementRequestInvalidatesOldConsent() {
         CaptureSessionStateMachine machine = new CaptureSessionStateMachine();
         long first = machine.beginRequest();
-        long second = machine.beginRequest();
 
+        assertEquals(-1L, machine.beginRequest());
+        machine.requestStop();
+        machine.stopped();
+        long second = machine.beginRequest();
         assertFalse(machine.consentGranted(first));
         assertTrue(machine.consentGranted(second));
     }
@@ -84,5 +86,44 @@ public final class CaptureSessionStateMachineTest {
         assertEquals(4L, next);
         assertTrue(machine.consentGranted(next));
         assertFalse(machine.consentGranted(3L));
+    }
+
+    @Test
+    public void stopAfterLocalAdmissionCannotAdmitAnotherCapture() {
+        CaptureSessionStateMachine machine = new CaptureSessionStateMachine();
+        long generation = machine.beginRequest();
+
+        assertTrue(machine.consentGranted(generation));
+        assertTrue(machine.serviceStarted(generation));
+        machine.requestStop();
+
+        assertFalse(machine.serviceStarted(generation));
+        assertEquals(CaptureSessionStateMachine.State.STOPPING, machine.state());
+    }
+
+    @Test
+    public void concurrentRequestIsRefusedUntilTheCurrentSessionTerminates() {
+        CaptureSessionStateMachine machine = new CaptureSessionStateMachine();
+        long generation = machine.beginRequest();
+
+        assertFalse(machine.canBeginRequest());
+        assertEquals(-1L, machine.beginRequest());
+        assertTrue(machine.consentGranted(generation));
+        assertTrue(machine.serviceStarted(generation));
+        assertEquals(-1L, machine.beginRequest());
+        machine.stopped();
+        assertTrue(machine.canBeginRequest());
+    }
+
+    @Test
+    public void recreatedSurfaceRetainsActiveSessionExclusion() {
+        LabSessionLedger ledger = new LabSessionLedger();
+        assertTrue(ledger.requesting(7L, "Choose one app."));
+        assertTrue(ledger.active(7L, "standard"));
+
+        CaptureSessionStateMachine machine = new CaptureSessionStateMachine(ledger.snapshot());
+
+        assertFalse(machine.canBeginRequest());
+        assertEquals(-1L, machine.beginRequest());
     }
 }

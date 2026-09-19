@@ -41,6 +41,7 @@ public final class LabSessionLedgerTest {
     public void newerResultCanCloseSessionAfterActivityIsGone() {
         LabSessionLedger ledger = new LabSessionLedger();
 
+        assertTrue(ledger.requesting(3L, "Choose one app."));
         assertTrue(ledger.active(3L, "process-loss"));
         assertTrue(ledger.result(
                 3L,
@@ -51,5 +52,49 @@ public final class LabSessionLedgerTest {
         LabSessionLedger.Snapshot snapshot = ledger.snapshot();
         assertEquals(LabSessionLedger.Phase.RESULT, snapshot.phase);
         assertTrue(snapshot.displayText.contains("task was removed"));
+    }
+
+    @Test
+    public void stopBeforeDelayedStartIsAnIndependentNoCaptureOracle() {
+        LabSessionLedger ledger = new LabSessionLedger();
+
+        assertTrue(ledger.requesting(4L, "Choose one app."));
+        assertTrue(ledger.result(
+                4L,
+                "STOPPED",
+                "Capture stopped before projection started.",
+                "No projection was admitted."));
+
+        assertFalse("late START must not reopen a stopped generation",
+                ledger.active(4L, "standard"));
+        LabSessionLedger.Snapshot snapshot = ledger.snapshot();
+        assertEquals(LabSessionLedger.Phase.RESULT, snapshot.phase);
+        assertTrue(snapshot.displayText.contains("before projection started"));
+    }
+
+    @Test
+    public void firstTerminalResultCannotBeRewrittenByLateSuccess() {
+        LabSessionLedger ledger = new LabSessionLedger();
+
+        assertTrue(ledger.requesting(5L, "Choose one app."));
+        assertTrue(ledger.result(5L, "STOPPED", "Stopped.", "No capture."));
+        assertFalse(ledger.result(5L, "EXPLAINED", "Late success.", "Incorrect."));
+
+        assertTrue(ledger.snapshot().displayText.contains("Stopped."));
+    }
+
+    @Test
+    public void staleStopCannotCloseTheNewerCapture() {
+        LabSessionLedger ledger = new LabSessionLedger();
+
+        assertTrue(ledger.requesting(6L, "Choose one app."));
+        assertTrue(ledger.active(6L, "standard"));
+        assertFalse(ledger.requestStop(5L));
+
+        assertEquals(LabSessionLedger.Phase.ACTIVE, ledger.snapshot().phase);
+        assertTrue(ledger.requestStop(6L));
+        assertEquals(LabSessionLedger.Phase.STOPPING, ledger.snapshot().phase);
+        assertTrue(ledger.result(6L, "STOPPED", "Cleanup acknowledged.", "No projection started."));
+        assertEquals(LabSessionLedger.Phase.RESULT, ledger.snapshot().phase);
     }
 }

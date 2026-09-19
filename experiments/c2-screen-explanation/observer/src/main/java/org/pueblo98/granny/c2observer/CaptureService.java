@@ -36,12 +36,12 @@ public final class CaptureService extends Service {
     public static final String EXTRA_STATUS = "status";
     public static final String EXTRA_MESSAGE = "message";
     public static final String EXTRA_UNCERTAINTY = "uncertainty";
+    public static final String EXTRA_GENERATION = "generation";
 
     private static final String ACTION_START = "org.pueblo98.granny.c2observer.START";
     private static final String ACTION_STOP = "org.pueblo98.granny.c2observer.STOP";
     private static final String EXTRA_RESULT_CODE = "resultCode";
     private static final String EXTRA_RESULT_DATA = "resultData";
-    private static final String EXTRA_GENERATION = "generation";
     private static final String EXTRA_TRIAL = "trial";
     private static final String CHANNEL_ID = "c2_capture_active";
     private static final int NOTIFICATION_ID = 2102;
@@ -52,6 +52,8 @@ public final class CaptureService extends Service {
     private final FreshFrameGate freshFrameGate = new FreshFrameGate();
     private final CaptureGeometry geometry = new CaptureGeometry();
     private final LifecycleEvidenceGate lifecycleEvidenceGate = new LifecycleEvidenceGate();
+    private final CaptureStartAdmission startAdmission =
+            new CaptureStartAdmission(LabSessionLedger.process());
     private HandlerThread workerThread;
     private Handler worker;
     private MediaProjection projection;
@@ -70,6 +72,7 @@ public final class CaptureService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction()) && worker != null) {
+                startAdmission.requestStop(generation);
                 worker.post(() -> finish(
                         "STOPPED",
                         "Capture stopped when the screen turned off.",
@@ -94,8 +97,9 @@ public final class CaptureService extends Service {
         context.startForegroundService(intent);
     }
 
-    public static void requestStop(Context context) {
+    public static void requestStop(Context context, long generation) {
         Intent intent = new Intent(context, CaptureService.class).setAction(ACTION_STOP);
+        intent.putExtra(EXTRA_GENERATION, generation);
         context.startService(intent);
     }
 
@@ -121,56 +125,92 @@ public final class CaptureService extends Service {
             return START_NOT_STICKY;
         }
         if (ACTION_STOP.equals(intent.getAction())) {
+            long requestedGeneration = intent.getLongExtra(EXTRA_GENERATION, 0L);
+            if (!startAdmission.requestStop(requestedGeneration)) {
+                return START_NOT_STICKY;
+            }
+            generation = requestedGeneration;
             worker.post(() -> finish("STOPPED", "Capture stopped. No explanation was produced.",
                     "A stopped session is never resumed automatically.", true));
             return START_NOT_STICKY;
         }
         if (!ACTION_START.equals(intent.getAction())) {
-            finish("UNAVAILABLE", "Unknown capture request was refused.",
-                    "Only the fixed local start and stop actions are accepted.", false);
             return START_NOT_STICKY;
         }
 
-        generation = intent.getLongExtra(EXTRA_GENERATION, 0L);
-
-        startForeground(
-                NOTIFICATION_ID,
-                buildNotification(),
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
-
+        long requestedGeneration = intent.getLongExtra(EXTRA_GENERATION, 0L);
+        if (finished.get()) {
+            if (LabSessionLedger.process().result(
+                    requestedGeneration,
+                    "UNAVAILABLE",
+                    "A previous capture service is still closing.",
+                    "No projection was started; try again after cleanup completes.")) {
+                publishResult(
+                        requestedGeneration,
+                        "UNAVAILABLE",
+                        "A previous capture service is still closing.",
+                        "No projection was started; try again after cleanup completes.");
+            }
+            stopSelf(startId);
+            return START_NOT_STICKY;
+        }
         int resultCode = intent.getIntExtra(EXTRA_RESULT_CODE, ActivityResultCodes.CANCELLED);
         Intent resultData = intent.getParcelableExtra(EXTRA_RESULT_DATA, Intent.class);
         if (resultCode != ActivityResultCodes.OK || resultData == null) {
-            finish("UNAVAILABLE", "Android did not provide a valid one-use capture grant.",
-                    "No frame was captured.", true);
+            if (rejectStart(requestedGeneration, "Android did not provide a valid one-use capture grant.",
+                    "No frame was captured.")) {
+                stopSelf(startId);
+            }
             return START_NOT_STICKY;
         }
 
+        CaptureTrialPlan plan;
         try {
-            configureTrial(intent.getStringExtra(EXTRA_TRIAL));
+            plan = CaptureTrialPlan.from(intent.getStringExtra(EXTRA_TRIAL));
         } catch (IllegalArgumentException error) {
-            finish("UNAVAILABLE", "Unknown lifecycle trial was refused.",
-                    "Only the fixed synthetic C2 trial modes are accepted.", true);
+            if (rejectStart(requestedGeneration, "Unknown lifecycle trial was refused.",
+                    "Only the fixed synthetic C2 trial modes are accepted.")) {
+                stopSelf(startId);
+            }
             return START_NOT_STICKY;
         }
-        LabSessionLedger.process().active(
-                generation,
-                intent.getStringExtra(EXTRA_TRIAL) == null
-                        ? CaptureTrialPlan.STANDARD
-                        : intent.getStringExtra(EXTRA_TRIAL));
+        String trial = intent.getStringExtra(EXTRA_TRIAL) == null
+                ? CaptureTrialPlan.STANDARD
+                : intent.getStringExtra(EXTRA_TRIAL);
+        if (!startAdmission.admitProjection(requestedGeneration, trial)) {
+            return START_NOT_STICKY;
+        }
+        generation = requestedGeneration;
+        holdOpenMillis = plan.holdOpenMillis;
+        requireResize = plan.requireResize;
+        try {
+            startForeground(
+                    NOTIFICATION_ID,
+                    buildNotification(),
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
+        } catch (RuntimeException error) {
+            finish("UNAVAILABLE", "Capture could not enter its required visible foreground state.",
+                    error.getClass().getSimpleName() + "; no compatibility claim is made.", false);
+            return START_NOT_STICKY;
+        }
 
         worker.post(() -> {
-            try {
-                beginProjection(resultCode, resultData);
-            } catch (RuntimeException error) {
-                finish("UNAVAILABLE", "Capture could not start on this configuration.",
-                        error.getClass().getSimpleName() + "; no compatibility claim is made.", true);
-            }
+            startAdmission.runIfCaptureAllowed(generation, () -> {
+                try {
+                    beginProjection(resultCode, resultData);
+                } catch (RuntimeException error) {
+                    finish("UNAVAILABLE", "Capture could not start on this configuration.",
+                            error.getClass().getSimpleName() + "; no compatibility claim is made.", true);
+                }
+            });
         });
         return START_NOT_STICKY;
     }
 
     private void beginProjection(int resultCode, Intent resultData) {
+        if (finished.get() || !startAdmission.canCapture(generation)) {
+            return;
+        }
         captureStartedAtMillis = SystemClock.elapsedRealtime();
         MediaProjectionManager manager = getSystemService(MediaProjectionManager.class);
         if (manager == null) {
@@ -183,6 +223,7 @@ public final class CaptureService extends Service {
         projection.registerCallback(new MediaProjection.Callback() {
             @Override
             public void onStop() {
+                startAdmission.requestStop(generation);
                 finish("STOPPED", "Android ended the capture session.",
                         "No capture continues after system revocation or lock.", false);
             }
@@ -228,6 +269,18 @@ public final class CaptureService extends Service {
                 true), timeoutMillis);
     }
 
+    private boolean rejectStart(long requestedGeneration, String message, String uncertainty) {
+        if (LabSessionLedger.process().result(
+                requestedGeneration,
+                "UNAVAILABLE",
+                message,
+                uncertainty)) {
+            publishResult(requestedGeneration, "UNAVAILABLE", message, uncertainty);
+            return true;
+        }
+        return false;
+    }
+
     private void configureTrial(String requestedTrial) {
         CaptureTrialPlan plan = CaptureTrialPlan.from(requestedTrial);
         holdOpenMillis = plan.holdOpenMillis;
@@ -241,7 +294,7 @@ public final class CaptureService extends Service {
     }
 
     private void resizeCapture(int width, int height) {
-        if (finished.get()) {
+        if (finished.get() || !startAdmission.canCapture(generation)) {
             return;
         }
         CaptureGeometry.Decision decision = geometry.update(width, height);
@@ -279,7 +332,7 @@ public final class CaptureService extends Service {
     }
 
     private void onImageAvailable(ImageReader reader) {
-        if (finished.get()) {
+        if (finished.get() || !startAdmission.canCapture(generation)) {
             return;
         }
         try (Image image = reader.acquireLatestImage()) {
@@ -317,7 +370,9 @@ public final class CaptureService extends Service {
     }
 
     private void maybeFinishPending() {
-        if (pendingInterpretation == null || !lifecycleEvidenceGate.canFinish(requireResize)) {
+        if (!startAdmission.canCapture(generation)
+                || pendingInterpretation == null
+                || !lifecycleEvidenceGate.canFinish(requireResize)) {
             return;
         }
         long elapsed = SystemClock.elapsedRealtime() - captureStartedAtMillis;
@@ -368,12 +423,7 @@ public final class CaptureService extends Service {
 
         LabSessionLedger.process().result(generation, status, message, uncertainty);
 
-        Intent result = new Intent(ACTION_RESULT)
-                .setPackage(getPackageName())
-                .putExtra(EXTRA_STATUS, status)
-                .putExtra(EXTRA_MESSAGE, message)
-                .putExtra(EXTRA_UNCERTAINTY, uncertainty);
-        sendBroadcast(result);
+        publishResult(generation, status, message, uncertainty);
         stopForeground(STOP_FOREGROUND_REMOVE);
         stopSelf();
         if (workerThread != null) {
@@ -381,12 +431,22 @@ public final class CaptureService extends Service {
         }
     }
 
+    private void publishResult(long resultGeneration, String status, String message, String uncertainty) {
+        Intent result = new Intent(ACTION_RESULT)
+                .setPackage(getPackageName())
+                .putExtra(EXTRA_GENERATION, resultGeneration)
+                .putExtra(EXTRA_STATUS, status)
+                .putExtra(EXTRA_MESSAGE, message)
+                .putExtra(EXTRA_UNCERTAINTY, uncertainty);
+        sendBroadcast(result);
+    }
+
     private Notification buildNotification() {
         Intent stopIntent = new Intent(this, CaptureService.class).setAction(ACTION_STOP);
         PendingIntent stop = PendingIntent.getService(
                 this,
                 0,
-                stopIntent,
+                stopIntent.putExtra(EXTRA_GENERATION, generation),
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         return new Notification.Builder(this, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_menu_view)
@@ -412,6 +472,7 @@ public final class CaptureService extends Service {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
+        startAdmission.requestStop(generation);
         if (worker != null) {
             worker.post(() -> finish(
                     "STOPPED",
