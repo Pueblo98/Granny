@@ -8,10 +8,6 @@
   const state = P.create();
   const $ = id => document.getElementById(id);
   const thread = $('thread'), composerText = $('request');
-  const homeFixtures = window.GrannyFixtures?.home || {
-    continuation : {},
-    rooms : []
-  };
   // Connected execution belongs exclusively to the backend. Scripted task
   // state/timers are never used to advance or verify a connected request.
   let runtime = null, runtimeMode = false, runtimeView = null,
@@ -24,9 +20,19 @@
                  aliasDraft = null, continuationVisible = true,
                  homeView = 'home', homeReturn = null,
                  homeReturnScroll = 0, homeFixture = 'default',
-                 roomScrollFrame = 0, homeListReturnRoom = '';
+                 roomScrollFrame = 0;
   const focus = element =>
       element?.isConnected && element.focus({preventScroll : true});
+  const roomUI = window.GrannyRoomUI.create($('room-content'), {
+    home: backToHome,
+    open: (destination, focusId) => openHomeDestination(destination, document.activeElement, focusId),
+    changed: renderRooms,
+    compose: text => {
+      if (text !== null) composerText.value = text;
+      focus(composerText);
+    },
+    announce
+  });
 
   function atBottom() {
     return window.innerHeight + window.scrollY >=
@@ -90,11 +96,13 @@
            !(state.turns && state.turns.length);
   }
   function currentHomeRooms() {
-    const rooms = (homeFixtures.rooms || []).map(room => ({...room}));
+    const rooms = roomUI.rooms.map(room => ({...room, asset: room.portrait || room.mark}));
     if (homeFixture === 'no-rooms')
       return [];
     if (homeFixture === 'one-room')
       return rooms.slice(0, 1);
+    if (homeFixture === 'overflow')
+      return rooms.slice(0, 3); // Stable three-entry first/middle/last review fixture.
     if (homeFixture === 'image-failure' && rooms[0])
       rooms[0].asset = '/assets/missing-room-placeholder.svg';
     return rooms;
@@ -111,7 +119,8 @@
     image.alt = '';
     image.setAttribute('aria-hidden', 'true');
     image.addEventListener('error', () => {
-      image.remove();
+      // Preserve the portrait slot: failed decoration must not move labels.
+      image.style.visibility = 'hidden';
       b.classList.add('image-missing');
     }, {once : true});
     b.append(image, node('strong', '', room.name),
@@ -194,6 +203,7 @@
             .getPropertyValue('--review-scale')) || 1;
     const listMode = innerWidth <= 700 || (state.scale || 1) * reviewScale >= 2;
     document.body.dataset.homeList = String(listMode);
+    document.body.dataset.largeText = String((state.scale || 1) * reviewScale >= 2);
     if (listMode)
       $('room-viewport').scrollLeft = 0;
     requestAnimationFrame(updateRoomPosition);
@@ -222,35 +232,34 @@
             : names[0]) + '.');
     }));
   }
-  function homeDestinationTitle() {
-    if (homeView === 'kitchen')
-      return 'Kitchen';
-    if (homeView === 'rooms')
-      return 'All rooms';
-    if (homeView.startsWith('room:')) {
-      const id = homeView.slice(5);
-      return (homeFixtures.rooms || []).find(room => room.id === id)?.name ||
-             'Room';
+  function openHomeDestination(destination, source, focusId) {
+    const previousRoom = homeView.startsWith('room:') ? homeView.slice(5) : '';
+    if (homeView === 'home') {
+      homeReturn = {id: source?.id || '', focusKey: source?.dataset?.focusKey || ''};
+      homeReturnScroll = scrollY;
     }
-    return '';
-  }
-  function openHomeDestination(destination, source) {
-    homeReturn = {
-      id : source?.id || '',
-      focusKey : source?.dataset?.focusKey || ''
-    };
-    homeReturnScroll = scrollY;
-    homeListReturnRoom = '';
-    homeView = destination;
+    homeView = destination === 'kitchen' ? 'room:kitchen' : destination;
+    menuPanel = '';
+    $('menu').hidden = true;
+    $('menu-button').setAttribute('aria-expanded', 'false');
+    roomUI.enter(homeView);
     render();
-    focus(thread.querySelector('.home-placeholder h1'));
+    requestAnimationFrame(() => {
+      if (focusId) $(focusId)?.focus();
+      else if (destination === 'rooms' && previousRoom)
+        $('library-room-' + previousRoom)?.focus();
+      else {
+        $('room-content').querySelector('h1, h2')?.focus();
+        window.scrollTo(0, 0);
+      }
+    });
   }
   function backToHome() {
     const returned = homeReturn;
     const position = homeReturnScroll;
     homeView = 'home';
     homeReturn = null;
-    homeListReturnRoom = '';
+    roomUI.show('home');
     render();
     requestAnimationFrame(() => {
       const target = (returned?.id && $(returned.id)) ||
@@ -262,57 +271,7 @@
     });
   }
   function renderHomeDestination() {
-    if (homeView === 'home' || homeView === 'introduction')
-      return;
-    const title = homeDestinationTitle();
-    const surface = node('section', 'home-placeholder');
-    surface.dataset.homeDestination = homeView;
-    const heading = node('h1', '', title);
-    heading.tabIndex = -1;
-    surface.append(heading);
-    if (homeView === 'kitchen') {
-      surface.append(node('p', '',
-          'This is a fictional placeholder. The Kitchen interior belongs to the next T-119 slice.'),
-          node('p', 'notice',
-              'No saved soup, room history, personal data or persistent content exists here.'));
-    } else if (homeView === 'rooms') {
-      surface.append(node('p', '',
-          'A simple list is provided as the non-gesture route for this Home checkpoint. The complete Rooms library is not implemented.'));
-      const list = node('div', 'room-library-list');
-      const rooms = currentHomeRooms();
-      rooms.forEach(room => {
-        const entry = button(room.name, () => {
-          homeListReturnRoom = room.id;
-          homeView = 'room:' + room.id;
-          render();
-          focus(thread.querySelector('.home-placeholder h1'));
-        }, '', 'library-room-' + room.id);
-        entry.id = 'library-room-' + room.id;
-        entry.dataset.roomId = room.id;
-        entry.append(node('span', '', room.purpose));
-        list.append(entry);
-      });
-      if (!rooms.length)
-        list.append(node('p', 'notice',
-                         'No rooms are available in this fictional fixture.'));
-      surface.append(list);
-    } else {
-      const room = (homeFixtures.rooms || [])
-          .find(item => homeView === 'room:' + item.id);
-      surface.append(node('p', '', room?.purpose || 'Fictional room placeholder.'),
-          node('p', 'notice',
-              'This Home checkpoint does not implement a room interior, separate assistant or persistent room data.'));
-      if (homeListReturnRoom) {
-        const roomId = homeListReturnRoom;
-        surface.append(button('Back to all rooms', () => {
-          homeView = 'rooms';
-          render();
-          requestAnimationFrame(() => focus($('library-room-' + roomId)));
-        }, '', 'back-all-rooms'));
-      }
-    }
-    surface.append(button('Back to Home', backToHome, 'primary', 'back-home'));
-    thread.append(surface);
+    roomUI.show(homeView);
   }
   function turn(role, text) {
     const c = node('article', 'turn ' + role);
@@ -839,11 +798,25 @@
     $('continuation').hidden = !continuationVisible ||
                                  homeFixture === 'continuation-hidden';
     document.body.dataset.home = String(emptyHome);
+    const browsing = homeView === 'rooms' || homeView === 'create-room';
+    $('room-content').hidden = !!menuPanel || runtimeMode ||
+        (!browsing && !homeView.startsWith('room:'));
+    const skipLink = document.querySelector('.skip-link');
+    skipLink.href = $('room-content').hidden ? '#conversation' : '#room-content';
+    skipLink.textContent = $('room-content').hidden ? 'Skip to conversation' : 'Skip to room content';
+    $('conversation').hidden = browsing && !menuPanel && !runtimeMode;
+    document.querySelector('.composer-wrap').hidden = browsing && !menuPanel && !runtimeMode;
+    document.body.dataset.roomView = String(homeView.startsWith('room:') && !menuPanel && !runtimeMode);
+    document.body.dataset.roomPriority = !runtimeMode && homeView.startsWith('room:') ? homeView.slice(5) : '';
+    document.body.dataset.roomRoute = String(homeView.startsWith('room:') || browsing);
+    $('room-home').hidden = homeView === 'home' || homeView === 'introduction';
+    $('rooms-button').disabled = runtimeMode;
+    $('rooms-button').title = runtimeMode ? 'Return to the scripted prototype in Menu to browse fictional rooms.' : '';
     $('mode-notice').hidden = !runtimeMode && !runtimeQuarantined;
     $('mode-notice').textContent = runtimeQuarantined
       ? 'An earlier connected draft outcome is unknown. No retry or new connected session is available in this tab. Switching views does not undo a draft.'
       : (runtimeProviderMode === 'live' ? 'Live model · fictional text goes to OpenRouter · unsent demo drafts only' : 'Connected local demo · fictional people · unsent drafts only');
-    composerText.placeholder = 'Ask me anything…';
+    composerText.placeholder = roomUI.current && !runtimeMode ? 'Ask Granny in ' + roomUI.current.name + '…' : 'Ask me anything…';
     if (runtimeMode) renderRuntime();
     (!runtimeMode ? state.turns || [] : []).forEach(t => {
       const article = turn(t.role, t.text);
@@ -1106,12 +1079,12 @@
             state.task.stage));
   }
   function clearLocalView() {
+    roomUI.clearConversation();
     composerText.value = '';
     editor = null;
     menuPanel = '';
     homeView = 'home';
     homeReturn = null;
-    homeListReturnRoom = '';
     editingAliasId = null;
     aliasDraft = null;
     $('menu').hidden = true;
@@ -1119,7 +1092,6 @@
   }
   function returnToConversation() {
     menuPanel = '';
-    homeView = 'home';
     render();
     focus(panelReturn || composerText);
     window.scrollTo(0, panelScroll);
@@ -1127,8 +1099,10 @@
   function fullReset() {
     if (runtimeMode) { leaveRuntime(fullReset); return; }
     clearLocalView();
+    roomUI.reset();
     continuationVisible = true;
     homeFixture = 'default';
+    document.body.dataset.roomArt = '';
     dispatch('reset');
     document.documentElement.style.setProperty('--review-scale', '1');
     if ($('review-panel')) {
@@ -1137,6 +1111,7 @@
       $('review-screen').value = 'display-settings';
       $('review-home-fixture').value = 'default';
       $('review-scale').value = '1';
+      $('review-room-art').value = '';
       $('review-send').checked = false;
     }
     renderRooms();
@@ -1170,9 +1145,9 @@
       return;
     }
     composerText.setCustomValidity('');
-    homeView = 'home';
-    homeReturn = null;
     if (runtimeMode) {
+      homeView = 'home';
+      homeReturn = null;
       if (runtimeQuarantined || runtimeView?.connection !== 'connected' || runtimeView?.stopping) {
         announce('Keep your words here until the connection and draft outcome are known.');
         return;
@@ -1226,10 +1201,18 @@
       composerText.value = '';
       return;
     }
+    if (homeView.startsWith('room:') && !hasWork() &&
+        window.GrannyIntent.parse(text).kind === 'unsupported') {
+      roomUI.reply(text);
+      composerText.value = '';
+      focus(composerText);
+      return;
+    }
     const submit = () => {
       composerText.value = '';
       menuPanel = '';
       editor = null;
+      roomUI.globalConversation();
       dispatch('submit', text);
     };
     if (hasWork())
@@ -1254,6 +1237,9 @@
   });
   $('see-all-rooms').addEventListener(
       'click', event => openHomeDestination('rooms', event.currentTarget));
+  $('rooms-button').addEventListener(
+      'click', event => openHomeDestination('rooms', event.currentTarget));
+  $('room-home').addEventListener('click', backToHome);
   $('rooms-previous').addEventListener(
       'click', event => moveRooms(-1, event.currentTarget));
   $('rooms-next').addEventListener(
@@ -1266,6 +1252,7 @@
     dialogReturn = source;
     $('talk-dialog').returnValue = '';
     $('talk-title').textContent = 'Listening · simulated';
+    if (homeView.startsWith('room:')) $('talk-text').value = 'What is in this room?';
     $('talk-dialog').showModal();
   }
   $('talk').addEventListener('click', () => openTalk($('talk')));
@@ -1342,7 +1329,6 @@
         }
         if ([ 'text', 'history', 'help', 'preferences', 'privacy', 'connection' ].includes(
                 what)) {
-          homeView = 'home';
           menuPanel = what;
           render();
           const heading =
@@ -1361,6 +1347,13 @@
     panel.innerHTML =
         '<h2>Review tools</h2><p>Reviewer-only metadata: J-001/002/003/005/006/007 · five fictional workflows. Fixed date: 14 September 2026. Home, continuation and room fixtures are fictional, in-memory and separate from model context.</p><label>Sample <select id="review-sample"><option value="Tell David I’ll call after dinner.">Message</option><option value="Find photos from Sophie on yesterday">Photos</option><option value="Explain screen display-settings">Explain</option><option value="Play Nina Simone">Media</option><option value="Make Granny text larger">Readability</option></select></label><label>Screen fixture <select id="review-screen"><option value="display-settings">Confusing display settings</option><option value="signin">Protected sign-in</option><option value="unknown">Unknown screen</option></select></label><label>Delay <select id="review-delay"><option value="0">No delay</option><option value="650" selected>650 ms</option><option value="1500">1.5 seconds</option></select></label><label>Outcome fixture <select id="review-fault"><option value="">None</option><option value="unknown">Unknown</option><option value="partial">Partial</option><option value="offline">Offline</option><option value="permission">Permission</option><option value="auth">Authentication</option><option value="paywall">Paywall</option><option value="unavailable">Unavailable</option><option value="noPhotos">No photo matches</option><option value="uncertainDate">Uncertain photo date</option></select></label><label>Home fixture <select id="review-home-fixture"><option value="default">Natural fit / overflow</option><option value="continuation-hidden">Continuation hidden</option><option value="no-rooms">No rooms</option><option value="one-room">One room</option><option value="all-fit">All rooms fit</option><option value="overflow">Forced overflow</option><option value="image-failure">Portrait failure</option></select></label><label>Review text scale <select id="review-scale"><option value="1">100%</option><option value="2">200%</option></select></label><label><input type="checkbox" id="review-send"> Hypothetical fictional send</label><div><button type="button" id="review-inject">Inject selected outcome now</button><button type="button" id="review-expire">Expire preview</button><button type="button" id="review-clock">Advance test clock</button><button type="button" id="review-reset">Full reset</button></div>';
     document.body.append(panel);
+    const artLabel = node('label', '', 'Room artwork ');
+    const artSelect = node('select'); artSelect.id = 'review-room-art';
+    for (const [value, text] of [['', 'Selected artwork'], ['hidden', 'Artwork disabled']]) {
+      const option = node('option', '', text); option.value = value; artSelect.append(option);
+    }
+    artSelect.addEventListener('change', () => { document.body.dataset.roomArt = artSelect.value; });
+    artLabel.append(artSelect); panel.append(artLabel);
     $('review-sample')
         .addEventListener('change',
                           e => { composerText.value = e.target.value; });

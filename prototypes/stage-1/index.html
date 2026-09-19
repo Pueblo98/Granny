@@ -12,6 +12,10 @@
   <script src="model.js" defer></script>
   <script src="scheduler.js" defer></script>
   <script src="cloud.js" defer></script>
+  <script src="room-fixtures.js" defer></script>
+  <script src="room-create.js" defer></script>
+  <script src="room-library.js" defer></script>
+  <script src="room-ui.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -25,7 +29,11 @@
         <strong>Granny</strong>
         <span>Design prototype</span>
       </div>
-      <button type="button" class="quiet-button" id="menu-button" aria-expanded="false" aria-controls="menu">Menu</button>
+      <nav class="header-actions" aria-label="Main navigation">
+        <button type="button" class="quiet-button" id="room-home" hidden>Home</button>
+        <button type="button" class="quiet-button" id="rooms-button">Rooms</button>
+        <button type="button" class="quiet-button" id="menu-button" aria-expanded="false" aria-controls="menu">Menu</button>
+      </nav>
     </header>
 
     <div class="menu" id="menu" hidden>
@@ -41,6 +49,7 @@
     </div>
 
     <p id="mode-notice" class="notice mode-notice" hidden></p>
+    <div id="room-content" tabindex="-1" hidden></div>
 
     <section class="conversation" id="conversation" tabindex="-1" aria-label="Conversation">
       <div class="welcome" id="welcome">
@@ -84,7 +93,7 @@
         <div class="continuation-copy">
           <p class="eyebrow">Continue in Kitchen</p>
           <h2>Vegetable soup</h2>
-          <p>Kitchen · Recipes and cooking plans</p>
+          <p>Kitchen · Recipes, lists and cooking plans</p>
         </div>
         <div class="continuation-actions">
           <button type="button" class="primary" id="open-kitchen">Open Kitchen</button>
