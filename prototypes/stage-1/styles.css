@@ -391,7 +391,6 @@ body:not([data-home="true"]) .composer-wrap {
 }
 
 .composer {
-  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-rows: auto minmax(56px, auto);
@@ -403,33 +402,6 @@ body:not([data-home="true"]) .composer-wrap {
   border: 2px solid var(--line);
   border-radius: 44px;
   background: var(--paper);
-}
-
-.composer::after {
-  position: absolute;
-  z-index: 2;
-  bottom: -16px;
-  left: 66px;
-  width: 34px;
-  height: 30px;
-  border-bottom: 2px solid var(--line);
-  border-left: 2px solid var(--line);
-  border-bottom-left-radius: 7px;
-  background: var(--paper);
-  content: "";
-  transform: skew(-30deg) rotate(-16deg);
-  transform-origin: top left;
-}
-
-.composer::before {
-  position: absolute;
-  z-index: 3;
-  bottom: -3px;
-  left: 54px;
-  width: 62px;
-  height: 10px;
-  background: var(--paper);
-  content: "";
 }
 
 .composer:focus-within {
@@ -445,7 +417,6 @@ body:not([data-home="true"]) .composer-wrap {
 }
 
 .composer textarea {
-  z-index: 1;
   grid-column: 1;
   width: 100%;
   min-height: 58px;

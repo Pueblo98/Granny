@@ -81,6 +81,7 @@ try {
   check(await b.evaluate("document.querySelector('#room-controls').hidden && document.querySelector('#room-viewport').dataset.overflow==='false'"), 'expanded all-fit state has no false movement controls');
   check(await noHorizontalOverflow('expanded Home'), 'expanded Home has no page-level horizontal overflow');
   check(await b.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--canvas').trim()==='#fbf6ee' && getComputedStyle(document.documentElement).getPropertyValue('--focus').trim()==='#4930a1'"), 'Harbour Blue canvas and focus tokens');
+  check(await b.evaluate("(() => { const composer=document.querySelector('#composer'); const input=document.querySelector('#request'); return getComputedStyle(composer,'::before').content==='none' && getComputedStyle(composer,'::after').content==='none' && getComputedStyle(composer).overflow==='visible' && getComputedStyle(input).resize==='none'; })()"), 'composer has no generated tail or native textarea resize handle and does not rely on clipping');
   await b.screenshot('selected-home-expanded');
 
   await b.click('#composer button[type=submit]');
