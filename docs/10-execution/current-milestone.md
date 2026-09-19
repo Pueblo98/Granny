@@ -24,6 +24,20 @@ state is linear, accessible on device or capable of acting in another app.
 Review should test whether the safety detail stays clear without overwhelming
 the calm conversation surface before implementation fidelity is expanded.
 
+Simon subsequently clarified and accepted the [shared state-surface
+contract](../02-design/shared-conversation-state-surfaces.md): these mockups
+specify essential state hierarchy, copy and controls, not seven full-page
+destinations. Home or the current Room remains underneath; the bottom composer
+expands or one temporary task surface appears above it, with a larger focused
+sheet allowed only when content or access needs require it.
+
+The [shared-state implementation metaprompt](../02-design/mockups/2026-09-20-shared-state-pack/iteration-1/SHARED-STATE-IMPLEMENTATION-METAPROMPT.md)
+now gives the active frontend session an executable handoff for all seven
+references. It requires reusable bottom-connected state surfaces over both Home
+and Rooms, deterministic fictional fixtures, responsive/accessibility coverage
+and preservation of existing safety behavior; it does not authorize backend,
+Android, real microphone or external-app work.
+
 ## T-101 route and partial physical inventory — 2026-09-19
 
 The [current-source route assessment](../08-research/2026-09-19-t101-route-inventory.md) now covers all five ADR-0009 experiments and prepares the non-identifying physical inventory and smallest synthetic experiments. It finds a go route for Granny-local text, conditional routes for scoped screen explanation and named media integration, conditional honest message compose handoff but no send claim, and no ordinary candidate route for sent-photo provenance. Only screen explanation and media remain plausible external candidates; screen explanation has bounded but non-admitting device evidence and media remains unrun, so the accepted two-external-workflow kill criterion is at high risk.
