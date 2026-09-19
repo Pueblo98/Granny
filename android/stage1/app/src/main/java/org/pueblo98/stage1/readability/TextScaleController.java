@@ -46,6 +46,7 @@ public final class TextScaleController {
     private TextScale preview;
     private PersistenceState persistenceState;
     private String message;
+    private boolean uncertainOutcome;
 
     public TextScaleController(TextScaleStore store) {
         this.store = store;
@@ -56,7 +57,7 @@ public final class TextScaleController {
         return new Snapshot(
                 current,
                 preview,
-                stored != null && stored.previous != null,
+                stored != null && stored.previous != null && canWrite(),
                 persistenceState,
                 message);
     }
@@ -65,6 +66,10 @@ public final class TextScaleController {
     public void reload() {
         preview = null;
         load();
+        if (uncertainOutcome) {
+            persistenceState = PersistenceState.UNKNOWN;
+            message = "Text size could not be confirmed saved. It will not be retried automatically.";
+        }
     }
 
     public boolean preview(TextScale requested) {
@@ -143,7 +148,9 @@ public final class TextScaleController {
     }
 
     private boolean canWrite() {
-        return persistenceState == PersistenceState.HEALTHY || persistenceState == PersistenceState.ABSENT;
+        return !uncertainOutcome
+                && (persistenceState == PersistenceState.HEALTHY
+                || persistenceState == PersistenceState.ABSENT);
     }
 
     private long nextVersion() {
@@ -204,6 +211,7 @@ public final class TextScaleController {
     }
 
     private void latchUncertain(PersistenceState state, String outcomeMessage) {
+        uncertainOutcome = true;
         persistenceState = state;
         preview = null;
         message = outcomeMessage;

@@ -15,7 +15,7 @@ public final class TextScaleControllerTest {
         assertEquals(1.15f, TextScale.COMFORTABLE.multiplier(), 0.0f);
         assertEquals(1.3f, TextScale.LARGE.multiplier(), 0.0f);
         assertEquals(1.5f, TextScale.EXTRA_LARGE.multiplier(), 0.0f);
-        assertEquals("Extra large", TextScale.EXTRA_LARGE.label());
+        assertEquals("Largest", TextScale.EXTRA_LARGE.label());
     }
 
     @Test
@@ -103,6 +103,8 @@ public final class TextScaleControllerTest {
         assertEquals(TextScale.DEFAULT, unknownController.snapshot().current);
         assertEquals(TextScaleController.PersistenceState.UNKNOWN, unknownController.snapshot().persistenceState);
         assertNull(unknownController.snapshot().preview);
+        unknownController.reload();
+        assertFalse(unknownController.preview(TextScale.EXTRA_LARGE));
     }
 
     @Test
@@ -116,6 +118,8 @@ public final class TextScaleControllerTest {
         assertEquals(TextScale.DEFAULT, controller.snapshot().current);
         assertEquals(TextScaleController.PersistenceState.UNKNOWN, controller.snapshot().persistenceState);
         assertNull(controller.snapshot().preview);
+        controller.reload();
+        assertFalse(controller.preview(TextScale.EXTRA_LARGE));
     }
 
     @Test

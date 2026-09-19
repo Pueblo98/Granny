@@ -57,10 +57,10 @@ public final class SharedPreferencesTextScaleStore implements TextScaleStore {
                     return WriteResult.WRITTEN;
                 }
                 UNCERTAIN_PREFERENCES.add(preferences);
-                return WriteResult.FAILED;
+                return WriteResult.UNKNOWN;
             } catch (RuntimeException exception) {
                 UNCERTAIN_PREFERENCES.add(preferences);
-                return WriteResult.FAILED;
+                return WriteResult.UNKNOWN;
             }
         }
     }

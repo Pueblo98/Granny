@@ -2,10 +2,10 @@ package org.pueblo98.stage1.readability;
 
 /** The only text-size choices offered by the bounded Granny-owned C5 setting. */
 public enum TextScale {
-    DEFAULT(1.0f, "Default"),
-    COMFORTABLE(1.15f, "Comfortable"),
-    LARGE(1.3f, "Large"),
-    EXTRA_LARGE(1.5f, "Extra large");
+    DEFAULT(1.0f, "Standard"),
+    COMFORTABLE(1.15f, "Larger"),
+    LARGE(1.3f, "Larger still"),
+    EXTRA_LARGE(1.5f, "Largest");
 
     private final float multiplier;
     private final String label;
