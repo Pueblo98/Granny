@@ -40,6 +40,16 @@ synchronized the Home branch's later committed six-room checkpoint and current
 `origin/main`. Those pre-existing commits retain their own sessions and are not
 claimed as T-120 output; their source worktrees were not edited by this task.
 
+The [tablet integration metaprompt](t120-tablet-integration-handoff.md) now
+directs the next Android implementation session to use this shell as the
+product-app base, join typed and spoken input through one shared conversation
+coordinator and prove one reversible Granny-local capability before admitting
+another tablet route. It keeps the C2 observer lab-only and disabled in the
+product capability registry while its package-identity and independent
+retention/egress evidence remains unresolved. The handoff authorizes repository
+implementation and tests only; physical-device actions and mixed-code main
+integration remain separate.
+
 ## Shared conversation state pack — 2026-09-20
 
 The first [shared state pack](../02-design/mockups/2026-09-20-shared-state-pack/iteration-1/README.md)

@@ -8,6 +8,7 @@ related:
   - ../../docs/09-decisions/ADR-0011-explicit-activation-and-access.md
   - ../../docs/10-execution/backlog.md
   - ../../docs/10-execution/task-packets.md
+  - ../../docs/10-execution/t120-tablet-integration-handoff.md
 ---
 
 # T-120 native on-device voice shell
@@ -21,6 +22,12 @@ It is not a complete Granny app. It has no planner, external app adapter,
 message send, model, cloud speech, TTS voice selection, background capture,
 wake word, persistent transcript or analytics. Submitting a request only
 freezes and displays the exact local text revision.
+
+The [tablet integration metaprompt](../../docs/10-execution/t120-tablet-integration-handoff.md)
+is the implementation handoff for joining this shell to the accepted shared
+conversation states and one reversible Granny-local tablet function. It keeps
+the C2 MediaProjection observer isolated and unavailable until its separate
+admission evidence exists.
 
 ## Boundary
 
