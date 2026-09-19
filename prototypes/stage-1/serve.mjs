@@ -8,7 +8,10 @@ const types = { "/": ["index.html","text/html"], "/index.html": ["index.html","t
   "/cloud.js": ["cloud.js","text/javascript"],
   "/assets/garden.svg": ["assets/garden.svg","image/svg+xml"],
   "/assets/seaside.svg": ["assets/seaside.svg","image/svg+xml"],
-  "/assets/meal.svg": ["assets/meal.svg","image/svg+xml"] };
+  "/assets/meal.svg": ["assets/meal.svg","image/svg+xml"],
+  "/assets/room-fitness-placeholder.svg": ["assets/room-fitness-placeholder.svg","image/svg+xml"],
+  "/assets/room-trips-placeholder.svg": ["assets/room-trips-placeholder.svg","image/svg+xml"],
+  "/assets/room-reading-placeholder.svg": ["assets/room-reading-placeholder.svg","image/svg+xml"] };
 export function serve(port = 4173) {
   const server = http.createServer(async (req,res) => {
     const path = new URL(req.url, "http://127.0.0.1").pathname, item = Object.hasOwn(types, path) ? types[path] : null;

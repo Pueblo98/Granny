@@ -43,7 +43,9 @@ try {
   await b.viewport(840, 1100); await fresh();
   check(await b.evaluate("!document.querySelector('#review-panel')"), 'review tools absent from participant DOM');
   check(await b.evaluate("![...document.querySelectorAll('[tabindex]')].some(e=>e.tabIndex>0)"), 'natural keyboard order');
-  check(await b.evaluate("document.querySelectorAll('#welcome .task-card').length===0"), 'no feature Home');
+  check(await b.evaluate("document.querySelector('#welcome h1').textContent==='What would you like to do?' && document.querySelector('#request').placeholder==='Ask me anything…'"), 'selected Home invitation and composer copy');
+  check(await b.evaluate("document.querySelector('#stop-dock').hidden && document.querySelector('#stop-button').hidden"), 'idle Home has no Stop');
+  check(await b.evaluate("document.querySelectorAll('#room-list .room-entry').length===3 && document.querySelector('#continuation') && document.querySelector('#see-all-rooms')"), 'one continuation and explicit room row');
   await geometry('portrait home'); await b.screenshot('home-portrait');
   await request('Tell David I’ll call after dinner.');
   check(await stage() === 'clarify-person', 'direct intent, no category selection');
@@ -199,7 +201,7 @@ try {
   }
   await b.click('#stop-button');
   await select('#review-scale','1'); await b.viewport(840,1100);
-  for (const territory of ['open-day','bright-signal']) { await select('#review-territory',territory); await b.screenshot(territory); }
+  await b.screenshot('harbour-blue-active-task');
 
   await fresh();
   await b.click('#talk'); check(await b.evaluate("!!document.querySelector('#talk-dialog[open]')"), 'simulated Talk opens');
@@ -248,16 +250,11 @@ try {
   check((await text()).includes('Original exact words.') && !(await text()).includes('Uncommitted edit stays here.'),'cancel editing restores original exact draft');
   check(await stage()==='expired','cancel editing does not restore old approval authority');
   await b.viewport(840,1100); await fresh(true); await message();
-  const colors=[];
-  for (const territory of ['neutral','open-day','bright-signal']) {
-    await select('#review-territory',territory);
-    colors.push(await b.evaluate("getComputedStyle(document.body).backgroundColor"));
-    await b.evaluate("document.querySelector('#current-task').scrollIntoView({block:'start'})");
-    await b.screenshot('comparison-message-'+territory);
-  }
-  check(new Set(colors).size===3,'three proposed treatments actually differ on identical interaction');
-  await fresh(true); await select('#review-territory','open-day'); await request('Show me the photos Sophie sent yesterday'); await finish();
-  await b.evaluate('scrollTo(0,0)'); await b.screenshot('walkthrough-photos-open-day');
+  check(await b.evaluate("getComputedStyle(document.body).backgroundColor==='rgb(251, 246, 238)'"), 'Harbour Blue Linen canvas stays active in conversation');
+  await b.evaluate("document.querySelector('#current-task').scrollIntoView({block:'start'})");
+  await b.screenshot('harbour-blue-message');
+  await fresh(true); await request('Show me the photos Sophie sent yesterday'); await finish();
+  await b.evaluate('scrollTo(0,0)'); await b.screenshot('walkthrough-photos-harbour-blue');
   check(await b.evaluate("localStorage.length===0 && sessionStorage.length===0"), 'no persistent web storage');
   check(await b.evaluate("(async()=>!(await indexedDB.databases()).length)()"), 'no IndexedDB');
   check(await b.evaluate("(async()=>!(await navigator.serviceWorker.getRegistrations()).length)()"), 'no service worker');

@@ -92,7 +92,8 @@ try {
   check(await b.evaluate('document.querySelector("#current-task").dataset.stage === "creating"'), 'no scripted timer manufactures backend completion');
   await emit('progress', 'verifying', {phase:'verifying'}, 2);
   await waitState('verifying');
-  check(await b.evaluate('document.activeElement.id === "request" && document.querySelector("#request").selectionStart === 3 && window.scrollY === 0'), 'runtime progress preserves focus selection and scroll');
+  const progressFocus = await b.evaluate('({active:document.activeElement.id,selection:document.querySelector("#request").selectionStart,scroll:window.scrollY})');
+  check(progressFocus.active === 'request' && progressFocus.selection === 3 && progressFocus.scroll === 0, 'runtime progress preserves focus selection and scroll: ' + JSON.stringify(progressFocus));
   await b.screenshot('connected-verifying-tablet');
   await emit('result', 'completed', {draftId:'00000000-0000-4000-8000-000000000007',recipientId:first.recipient.id,channelId:first.channel.id,
     body:'<b>Keep these exact words</b>', effect:'demo_draft_created',verified:true,sent:false,message:'Draft created in the demo. Not sent.'}, 2);

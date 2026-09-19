@@ -8,6 +8,10 @@
   const state = P.create();
   const $ = id => document.getElementById(id);
   const thread = $('thread'), composerText = $('request');
+  const homeFixtures = window.GrannyFixtures?.home || {
+    continuation : {},
+    rooms : []
+  };
   // Connected execution belongs exclusively to the backend. Scripted task
   // state/timers are never used to advance or verify a connected request.
   let runtime = null, runtimeMode = false, runtimeView = null,
@@ -17,7 +21,10 @@
   let scheduler, pending = null, dialogReturn = null, menuPanel = '',
                  lastAnnouncement = '', restoreFocus = false, editor = null,
                  editingAliasId = null, panelReturn = null, panelScroll = 0,
-                 aliasDraft = null;
+                 aliasDraft = null, continuationVisible = true,
+                 homeView = 'home', homeReturn = null,
+                 homeReturnScroll = 0, homeFixture = 'default',
+                 roomScrollFrame = 0, homeListReturnRoom = '';
   const focus = element =>
       element?.isConnected && element.focus({preventScroll : true});
 
@@ -26,7 +33,7 @@
            document.documentElement.scrollHeight - 100;
   }
   function scrollIfReadingEnd(wasAtBottom) {
-    if (wasAtBottom)
+    if (wasAtBottom && document.activeElement !== composerText)
       requestAnimationFrame(() => window.scrollTo({
         top : document.documentElement.scrollHeight,
         behavior : 'auto'
@@ -77,6 +84,235 @@
     b.dataset.focusKey = focusKey || label;
     b.addEventListener('click', fn);
     return b;
+  }
+  function idleHome() {
+    return homeView === 'home' && !runtimeMode && !menuPanel && !state.task &&
+           !(state.turns && state.turns.length);
+  }
+  function currentHomeRooms() {
+    const rooms = (homeFixtures.rooms || []).map(room => ({...room}));
+    if (homeFixture === 'no-rooms')
+      return [];
+    if (homeFixture === 'one-room')
+      return rooms.slice(0, 1);
+    if (homeFixture === 'image-failure' && rooms[0])
+      rooms[0].asset = '/assets/missing-room-placeholder.svg';
+    return rooms;
+  }
+  function roomButton(room, context = 'home') {
+    const b = button('', () => openHomeDestination('room:' + room.id, b),
+                     'room-entry', 'room-' + room.id);
+    b.id = context === 'home' ? 'room-' + room.id : '';
+    b.dataset.roomId = room.id;
+    b.setAttribute('aria-label', room.name + ' — ' + room.purpose);
+    const image = document.createElement('img');
+    image.className = 'room-art';
+    image.src = room.asset;
+    image.alt = '';
+    image.setAttribute('aria-hidden', 'true');
+    image.addEventListener('error', () => {
+      image.remove();
+      b.classList.add('image-missing');
+    }, {once : true});
+    b.append(image, node('strong', '', room.name),
+             node('span', '', room.purpose));
+    return b;
+  }
+  function renderRooms() {
+    const rooms = currentHomeRooms();
+    const list = $('room-list');
+    list.replaceChildren(...rooms.map(room => roomButton(room)));
+    $('empty-rooms').hidden = rooms.length !== 0;
+    document.body.dataset.homeFixture = homeFixture;
+    $('room-viewport').scrollLeft = 0;
+    requestAnimationFrame(updateRoomLayout);
+  }
+  function visibleRoomNames() {
+    const viewport = $('room-viewport');
+    const bounds = viewport.getBoundingClientRect();
+    const entries = [...viewport.querySelectorAll('.room-entry')];
+    let visible = entries.filter(entry => {
+      const rect = entry.getBoundingClientRect();
+      const center = (rect.left + rect.right) / 2;
+      return center >= bounds.left + 8 && center <= bounds.right - 8;
+    });
+    if (!visible.length && entries.length)
+      visible = [entries.reduce((best, entry) =>
+        Math.abs((entry.getBoundingClientRect().left +
+                  entry.getBoundingClientRect().right) / 2 -
+                 (bounds.left + bounds.right) / 2) <
+                Math.abs((best.getBoundingClientRect().left +
+                          best.getBoundingClientRect().right) / 2 -
+                         (bounds.left + bounds.right) / 2)
+            ? entry : best, entries[0])];
+    return visible.map(entry =>
+      currentHomeRooms().find(room => room.id === entry.dataset.roomId)?.name)
+        .filter(Boolean);
+  }
+  function updateRoomPosition() {
+    const viewport = $('room-viewport');
+    if (!$('home-secondary') || $('home-secondary').hidden)
+      return;
+    const listMode = document.body.dataset.homeList === 'true';
+    const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    const overflow = !listMode && max > 2;
+    const previous = $('rooms-previous'), next = $('rooms-next');
+    $('room-controls').hidden = !overflow;
+    $('rooms-position').hidden = !overflow;
+    viewport.dataset.overflow = String(overflow);
+    previous.disabled = false;
+    next.disabled = false;
+    if (!overflow) {
+      previous.setAttribute('aria-disabled', 'true');
+      next.setAttribute('aria-disabled', 'true');
+      $('rooms-position').textContent = currentHomeRooms().length > 1
+          ? 'All rooms are visible. Previous and Next are not needed.'
+          : currentHomeRooms().length === 1
+              ? 'The only room is visible. Previous and Next are not needed.'
+              : 'There are no rooms to move through.';
+      viewport.dataset.range = currentHomeRooms().map(room => room.name).join('–');
+      return;
+    }
+    const atStart = viewport.scrollLeft <= 2;
+    const atEnd = viewport.scrollLeft >= max - 2;
+    previous.setAttribute('aria-disabled', String(atStart));
+    next.setAttribute('aria-disabled', String(atEnd));
+    const names = visibleRoomNames();
+    const range = names.length > 1
+        ? names[0] + ' through ' + names[names.length - 1]
+        : names[0] || 'rooms';
+    viewport.dataset.range = range;
+    $('rooms-position').textContent = atStart
+        ? 'Showing ' + range + '. Start of row — Previous unavailable.'
+        : atEnd
+            ? 'Showing ' + range + '. End of row — Next unavailable.'
+            : 'Showing ' + range + '. Previous and Next available.';
+  }
+  function updateRoomLayout() {
+    const reviewScale = Number.parseFloat(
+        getComputedStyle(document.documentElement)
+            .getPropertyValue('--review-scale')) || 1;
+    const listMode = innerWidth <= 700 || (state.scale || 1) * reviewScale >= 2;
+    document.body.dataset.homeList = String(listMode);
+    if (listMode)
+      $('room-viewport').scrollLeft = 0;
+    requestAnimationFrame(updateRoomPosition);
+  }
+  function moveRooms(direction, control) {
+    const viewport = $('room-viewport');
+    const entries = [...viewport.querySelectorAll('.room-entry')];
+    const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    if (control.getAttribute('aria-disabled') === 'true' ||
+        !entries.length || max <= 2)
+      return;
+    const current = viewport.scrollLeft;
+    const origin = entries[0].offsetLeft;
+    const positions = entries.map(entry => entry.offsetLeft - origin);
+    const target = direction > 0
+        ? positions.find(position => position > current + 4) ?? max
+        : [...positions].reverse().find(position => position < current - 4) ?? 0;
+    viewport.scrollTo({left : Math.max(0, Math.min(max, target)), behavior : 'auto'});
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      updateRoomPosition();
+      focus(control);
+      const names = visibleRoomNames();
+      if (names.length)
+        announce('Rooms now showing ' + (names.length > 1
+            ? names[0] + ' through ' + names[names.length - 1]
+            : names[0]) + '.');
+    }));
+  }
+  function homeDestinationTitle() {
+    if (homeView === 'kitchen')
+      return 'Kitchen';
+    if (homeView === 'rooms')
+      return 'All rooms';
+    if (homeView.startsWith('room:')) {
+      const id = homeView.slice(5);
+      return (homeFixtures.rooms || []).find(room => room.id === id)?.name ||
+             'Room';
+    }
+    return '';
+  }
+  function openHomeDestination(destination, source) {
+    homeReturn = {
+      id : source?.id || '',
+      focusKey : source?.dataset?.focusKey || ''
+    };
+    homeReturnScroll = scrollY;
+    homeListReturnRoom = '';
+    homeView = destination;
+    render();
+    focus(thread.querySelector('.home-placeholder h1'));
+  }
+  function backToHome() {
+    const returned = homeReturn;
+    const position = homeReturnScroll;
+    homeView = 'home';
+    homeReturn = null;
+    homeListReturnRoom = '';
+    render();
+    requestAnimationFrame(() => {
+      const target = (returned?.id && $(returned.id)) ||
+          (returned?.focusKey && [...document.querySelectorAll('[data-focus-key]')]
+            .find(item => item.dataset.focusKey === returned.focusKey)) ||
+          composerText;
+      focus(target);
+      window.scrollTo(0, position);
+    });
+  }
+  function renderHomeDestination() {
+    if (homeView === 'home' || homeView === 'introduction')
+      return;
+    const title = homeDestinationTitle();
+    const surface = node('section', 'home-placeholder');
+    surface.dataset.homeDestination = homeView;
+    const heading = node('h1', '', title);
+    heading.tabIndex = -1;
+    surface.append(heading);
+    if (homeView === 'kitchen') {
+      surface.append(node('p', '',
+          'This is a fictional placeholder. The Kitchen interior belongs to the next T-119 slice.'),
+          node('p', 'notice',
+              'No saved soup, room history, personal data or persistent content exists here.'));
+    } else if (homeView === 'rooms') {
+      surface.append(node('p', '',
+          'A simple list is provided as the non-gesture route for this Home checkpoint. The complete Rooms library is not implemented.'));
+      const list = node('div', 'room-library-list');
+      const rooms = currentHomeRooms();
+      rooms.forEach(room => {
+        const entry = button(room.name, () => {
+          homeListReturnRoom = room.id;
+          homeView = 'room:' + room.id;
+          render();
+          focus(thread.querySelector('.home-placeholder h1'));
+        }, '', 'library-room-' + room.id);
+        entry.id = 'library-room-' + room.id;
+        entry.dataset.roomId = room.id;
+        entry.append(node('span', '', room.purpose));
+        list.append(entry);
+      });
+      if (!rooms.length)
+        list.append(node('p', 'notice',
+                         'No rooms are available in this fictional fixture.'));
+      surface.append(list);
+    } else {
+      const room = (homeFixtures.rooms || [])
+          .find(item => homeView === 'room:' + item.id);
+      surface.append(node('p', '', room?.purpose || 'Fictional room placeholder.'),
+          node('p', 'notice',
+              'This Home checkpoint does not implement a room interior, separate assistant or persistent room data.'));
+      if (homeListReturnRoom) {
+        const roomId = homeListReturnRoom;
+        surface.append(button('Back to all rooms', () => {
+          homeView = 'rooms';
+          render();
+          requestAnimationFrame(() => focus($('library-room-' + roomId)));
+        }, '', 'back-all-rooms'));
+      }
+    }
+    surface.append(button('Back to Home', backToHome, 'primary', 'back-home'));
+    thread.append(surface);
   }
   function turn(role, text) {
     const c = node('article', 'turn ' + role);
@@ -587,7 +823,7 @@
   }
   function render(editing) {
     const prior = document.activeElement;
-    const heldFocus = thread.contains(prior);
+    const heldFocus = thread.contains(prior) || $('home-secondary').contains(prior);
     const focusKey = prior?.dataset?.focusKey;
     const focusId = prior?.id;
     const selection = heldFocus && typeof prior.selectionStart === 'number'
@@ -595,14 +831,19 @@
                           : null;
     const position = scrollY;
     thread.replaceChildren();
-    $('welcome').hidden = runtimeMode || !!(state.turns && state.turns.length);
+    const emptyHome = idleHome();
+    const introductionView = homeView === 'introduction';
+    $('welcome').hidden = !emptyHome && !introductionView;
+    $('introduction').hidden = !introductionView;
+    $('home-secondary').hidden = !emptyHome;
+    $('continuation').hidden = !continuationVisible ||
+                                 homeFixture === 'continuation-hidden';
+    document.body.dataset.home = String(emptyHome);
     $('mode-notice').hidden = !runtimeMode && !runtimeQuarantined;
     $('mode-notice').textContent = runtimeQuarantined
       ? 'An earlier connected draft outcome is unknown. No retry or new connected session is available in this tab. Switching views does not undo a draft.'
       : (runtimeProviderMode === 'live' ? 'Live model · fictional text goes to OpenRouter · unsent demo drafts only' : 'Connected local demo · fictional people · unsent drafts only');
-    composerText.placeholder = runtimeMode
-      ? 'For example: Tell David Brother "Meet at six." via Example Messages'
-      : 'For example: Tell David I’ll call after dinner.';
+    composerText.placeholder = 'Ask me anything…';
     if (runtimeMode) renderRuntime();
     (!runtimeMode ? state.turns || [] : []).forEach(t => {
       const article = turn(t.role, t.text);
@@ -610,6 +851,8 @@
         article.append(resultView(t, true));
       thread.append(article);
     });
+    if (!runtimeMode)
+      renderHomeDestination();
     if (state.task && !runtimeMode) {
       const task = state.task,
             editingTask = !!(editor && editor.taskId === task.id),
@@ -844,7 +1087,7 @@
                                                String(state.scale || 1));
     if (heldFocus) {
       const target = (focusId && $(focusId)) || (focusKey && [
-                       ...thread.querySelectorAll('[data-focus-key]')
+                       ...document.querySelectorAll('[data-focus-key]')
                      ].find(n => n.dataset.focusKey === focusKey));
       focus(target || thread.querySelector('#current-task h2') || composerText);
       if (target && selection && typeof target.setSelectionRange === 'function')
@@ -852,6 +1095,8 @@
     }
     window.scrollTo(0, position);
     restoreFocus = false;
+    if (emptyHome)
+      requestAnimationFrame(updateRoomLayout);
   }
   function hasWork() {
     if (runtimeMode) return active() || !!runtimeEditor;
@@ -864,6 +1109,9 @@
     composerText.value = '';
     editor = null;
     menuPanel = '';
+    homeView = 'home';
+    homeReturn = null;
+    homeListReturnRoom = '';
     editingAliasId = null;
     aliasDraft = null;
     $('menu').hidden = true;
@@ -871,6 +1119,7 @@
   }
   function returnToConversation() {
     menuPanel = '';
+    homeView = 'home';
     render();
     focus(panelReturn || composerText);
     window.scrollTo(0, panelScroll);
@@ -878,18 +1127,20 @@
   function fullReset() {
     if (runtimeMode) { leaveRuntime(fullReset); return; }
     clearLocalView();
+    continuationVisible = true;
+    homeFixture = 'default';
     dispatch('reset');
-    document.body.dataset.territory = 'neutral';
     document.documentElement.style.setProperty('--review-scale', '1');
     if ($('review-panel')) {
       $('review-delay').value = '650';
       $('review-fault').value = '';
       $('review-screen').value = 'display-settings';
-      $('review-territory').value = 'neutral';
+      $('review-home-fixture').value = 'default';
       $('review-scale').value = '1';
       $('review-send').checked = false;
     }
-    $('introduction').hidden = false;
+    renderRooms();
+    $('introduction').hidden = true;
     focus(composerText);
   }
   function ask(title, text, fn, source) {
@@ -912,8 +1163,15 @@
     return false;
   }
   function newRequest(text) {
-    if (!text.trim())
+    if (!text.trim()) {
+      composerText.setCustomValidity('Type a request before choosing Send.');
+      composerText.reportValidity();
+      announce('Type a request before choosing Send.');
       return;
+    }
+    composerText.setCustomValidity('');
+    homeView = 'home';
+    homeReturn = null;
     if (runtimeMode) {
       if (runtimeQuarantined || runtimeView?.connection !== 'connected' || runtimeView?.stopping) {
         announce('Keep your words here until the connection and draft outcome are known.');
@@ -985,6 +1243,25 @@
     event.preventDefault();
     newRequest(composerText.value);
   });
+  composerText.addEventListener('input', () => composerText.setCustomValidity(''));
+  $('open-kitchen').addEventListener(
+      'click', event => openHomeDestination('kitchen', event.currentTarget));
+  $('hide-continuation').addEventListener('click', () => {
+    continuationVisible = false;
+    $('continuation').hidden = true;
+    announce('Kitchen continuation hidden for this session.');
+    focus(composerText);
+  });
+  $('see-all-rooms').addEventListener(
+      'click', event => openHomeDestination('rooms', event.currentTarget));
+  $('rooms-previous').addEventListener(
+      'click', event => moveRooms(-1, event.currentTarget));
+  $('rooms-next').addEventListener(
+      'click', event => moveRooms(1, event.currentTarget));
+  $('room-viewport').addEventListener('scroll', () => {
+    cancelAnimationFrame(roomScrollFrame);
+    roomScrollFrame = requestAnimationFrame(updateRoomPosition);
+  }, {passive : true});
   function openTalk(source) {
     dialogReturn = source;
     $('talk-dialog').returnValue = '';
@@ -1001,8 +1278,9 @@
       dispatch('stop');
   });
   $('intro-skip').addEventListener('click', () => {
-    $('introduction').hidden = true;
-    composerText.focus();
+    homeView = 'home';
+    render();
+    focus(composerText);
   });
   $('talk-dialog').addEventListener('close', () => {
     const result = $('talk-dialog').returnValue;
@@ -1042,10 +1320,10 @@
           return;
         }
         if (what === 'introduction') {
-          $('welcome').hidden = false;
-          $('introduction').hidden = false;
-          $('menu').hidden = true;
-          $('intro-talk').focus();
+          homeView = 'introduction';
+          menuPanel = '';
+          render();
+          focus($('intro-talk'));
           return;
         }
         if (what === 'new') {
@@ -1064,6 +1342,7 @@
         }
         if ([ 'text', 'history', 'help', 'preferences', 'privacy', 'connection' ].includes(
                 what)) {
+          homeView = 'home';
           menuPanel = what;
           render();
           const heading =
@@ -1080,7 +1359,7 @@
     panel.id = 'review-panel';
     panel.setAttribute('aria-label', 'Reviewer tools');
     panel.innerHTML =
-        '<h2>Review tools</h2><p>Reviewer-only metadata: J-001/002/003/005/006/007 · five fictional workflows. Fixed date: 14 September 2026. Local illustrations: Sophie Daughter / 13 Sep / Example Photos; Sophie Book club / 12 Sep / Example Messages (mark-read).</p><label>Sample <select id="review-sample"><option value="Tell David I’ll call after dinner.">Message</option><option value="Find photos from Sophie on yesterday">Photos</option><option value="Explain screen display-settings">Explain</option><option value="Play Nina Simone">Media</option><option value="Make Granny text larger">Readability</option></select></label><label>Screen fixture <select id="review-screen"><option value="display-settings">Confusing display settings</option><option value="signin">Protected sign-in</option><option value="unknown">Unknown screen</option></select></label><label>Delay <select id="review-delay"><option value="0">No delay</option><option value="650" selected>650 ms</option><option value="1500">1.5 seconds</option></select></label><label>Outcome fixture <select id="review-fault"><option value="">None</option><option value="unknown">Unknown</option><option value="partial">Partial</option><option value="offline">Offline</option><option value="permission">Permission</option><option value="auth">Authentication</option><option value="paywall">Paywall</option><option value="unavailable">Unavailable</option><option value="noPhotos">No photo matches</option><option value="uncertainDate">Uncertain photo date</option></select></label><label>Territory <select id="review-territory"><option value="neutral">Neutral</option><option value="open-day">Open Day</option><option value="bright-signal">Bright Signal</option></select></label><label>Review text scale <select id="review-scale"><option value="1">100%</option><option value="2">200%</option></select></label><label><input type="checkbox" id="review-send"> Hypothetical fictional send</label><div><button type="button" id="review-inject">Inject selected outcome now</button><button type="button" id="review-expire">Expire preview</button><button type="button" id="review-clock">Advance test clock</button><button type="button" id="review-reset">Full reset</button></div>';
+        '<h2>Review tools</h2><p>Reviewer-only metadata: J-001/002/003/005/006/007 · five fictional workflows. Fixed date: 14 September 2026. Home, continuation and room fixtures are fictional, in-memory and separate from model context.</p><label>Sample <select id="review-sample"><option value="Tell David I’ll call after dinner.">Message</option><option value="Find photos from Sophie on yesterday">Photos</option><option value="Explain screen display-settings">Explain</option><option value="Play Nina Simone">Media</option><option value="Make Granny text larger">Readability</option></select></label><label>Screen fixture <select id="review-screen"><option value="display-settings">Confusing display settings</option><option value="signin">Protected sign-in</option><option value="unknown">Unknown screen</option></select></label><label>Delay <select id="review-delay"><option value="0">No delay</option><option value="650" selected>650 ms</option><option value="1500">1.5 seconds</option></select></label><label>Outcome fixture <select id="review-fault"><option value="">None</option><option value="unknown">Unknown</option><option value="partial">Partial</option><option value="offline">Offline</option><option value="permission">Permission</option><option value="auth">Authentication</option><option value="paywall">Paywall</option><option value="unavailable">Unavailable</option><option value="noPhotos">No photo matches</option><option value="uncertainDate">Uncertain photo date</option></select></label><label>Home fixture <select id="review-home-fixture"><option value="default">Natural fit / overflow</option><option value="continuation-hidden">Continuation hidden</option><option value="no-rooms">No rooms</option><option value="one-room">One room</option><option value="all-fit">All rooms fit</option><option value="overflow">Forced overflow</option><option value="image-failure">Portrait failure</option></select></label><label>Review text scale <select id="review-scale"><option value="1">100%</option><option value="2">200%</option></select></label><label><input type="checkbox" id="review-send"> Hypothetical fictional send</label><div><button type="button" id="review-inject">Inject selected outcome now</button><button type="button" id="review-expire">Expire preview</button><button type="button" id="review-clock">Advance test clock</button><button type="button" id="review-reset">Full reset</button></div>';
     document.body.append(panel);
     $('review-sample')
         .addEventListener('change',
@@ -1096,9 +1375,11 @@
     $('review-fault').addEventListener('change', e => dispatch('reviewer', {
                                                    fault : e.target.value
                                                  }));
-    $('review-territory').addEventListener('change', e => {
-      document.body.dataset.territory = e.target.value;
-      dispatch('reviewer', {territory : e.target.value});
+    $('review-home-fixture').addEventListener('change', e => {
+      homeFixture = e.target.value;
+      continuationVisible = homeFixture !== 'continuation-hidden';
+      renderRooms();
+      render();
     });
     $('review-send').addEventListener('change', e => dispatch('reviewer', {
                                                   sendMode : e.target.checked
@@ -1106,6 +1387,7 @@
     $('review-scale').addEventListener('change', e => {
       document.documentElement.style.setProperty('--review-scale',
                                                  e.target.value);
+      updateRoomLayout();
     });
     $('review-inject')
         .addEventListener(
@@ -1140,7 +1422,12 @@
         String($('composer').offsetHeight > innerHeight * 0.42);
   };
   new ResizeObserver(fitComposer).observe($('composer'));
-  window.addEventListener('resize', fitComposer);
+  new ResizeObserver(updateRoomLayout).observe($('room-viewport'));
+  window.addEventListener('resize', () => {
+    fitComposer();
+    updateRoomLayout();
+  });
+  renderRooms();
   render();
   fitComposer();
   if (scheduler && scheduler.sync)

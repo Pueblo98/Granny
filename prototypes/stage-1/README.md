@@ -2,7 +2,7 @@
 title: "Run the Stage 1 browser design prototype"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-19
 tags: [prototype, design]
 related:
   - ../../docs/02-design/browser-prototype.md
@@ -11,7 +11,7 @@ related:
 
 # Stage 1 browser design prototype
 
-A dependency-free browser frontend for Granny's five scripted MVP workflows, with a separate opt-in connected local demo-draft mode. This is **not the Android application, production agent, or T-103 runtime**. Scripted external actions/results are fictional fixtures; the connected backend can create real local demo drafts for fictional contacts, never send messages. Never enter personal data.
+A dependency-free browser frontend for the selected Explicit Scroll Row Home and Granny's five scripted MVP workflows, with a separate opt-in connected local demo-draft mode. This is **not the Android application, production agent, full Rooms library, room interior, or T-103 runtime**. `Granny` remains a codename/placeholder marker. Scripted external actions/results are fictional fixtures; the connected backend can create real local demo drafts for fictional contacts, never send messages. Never enter personal data.
 
 Current connected runtime: [versioned local backend/MCP contract](../../docs/04-architecture/conversation-runtime-contract.md). Scripted remains default; local demo uses a stub model with actual MCP/store operations. Explicit live synthetic consent is available only when the backend enables it; the one live proposal check failed, so model reliability is not established.
 
@@ -25,18 +25,20 @@ node prototypes/stage-1/serve.mjs
 
 Open **http://127.0.0.1:4173** on the same computer. Keep the terminal running; Ctrl+C stops it. An optional second argument selects another port if 4173 is occupied. There is no install/build step, account, cloud service or paid design tool.
 
-The server binds only 127.0.0.1 and serves an exact allowlist of runtime scripts/styles and three original fictional SVG illustrations. Test files and repository files are excluded. This is a local preview server, not a backend. Do not bind to 0.0.0.0, deploy publicly or add uploads/analytics.
+The server binds only 127.0.0.1 and serves an exact allowlist of runtime scripts/styles, three original fictional workflow illustrations and three plain local room-placeholder SVGs. Test files and repository files are excluded. This is a local preview server, not a backend. Do not bind to 0.0.0.0, deploy publicly or add uploads/analytics.
 
 ## Review
 
-- Start with the conversation: type a goal or open **Talk (simulated)**. Supported requests need no category selection. Talk never uses a microphone or speech API.
+- Start on Home: review the Round writing surface, optional Kitchen continuation, and open Fitness/Trips/Reading row. When the rendered row overflows, written Previous/Next controls move it; when everything fits they disappear. **See all rooms** provides a direct vertical fallback.
+- Type a goal or open **Talk (simulated)** without choosing a Room. Supported requests need no category selection. Talk never uses a microphone or speech API.
+- Open Kitchen, a room or See all rooms to inspect the clearly labelled fictional placeholders and return-focus behavior. No room interior, search, creation, personal history or persistence is implemented in this checkpoint.
 - Try “Tell David I’ll call after dinner.” Resolve the person/channel, edit the exact preview, then choose **Open this draft**. Default outcome is a fictional **unsent** draft.
 - Try “Show me the photos Sophie sent yesterday.”, “What am I looking at?”, “Play some Nina Simone.” and “Make this easier to read.” Results and controls appear in the same conversation. Screen help asks for a supplied fictional screen; no actual screen is observed.
 - Demonstration progression is automatic, normally 650 ms per stage. These are scripted timings, not measured model/Android latency. Stop, edits, reset and task replacement invalidate pending callbacks.
 - Menu reveals the secondary settings/help/privacy/history functions. Scripted data lives in this tab's memory; no browser persistence or account exists. Connected mode has separate server-side synthetic state, described below. Do not enter personal data.
-- Open **http://127.0.0.1:4173/?review=1** for separate reviewer controls. Participant mode never inserts these controls into its DOM/focus order. Reviewer choices expose fixtures, outcomes, timing/expiry, enlarged text and proposed visual territories; hypothetical sends are explicitly simulations.
+- Open **http://127.0.0.1:4173/?review=1** for separate reviewer controls. Participant mode never inserts these controls into its DOM/focus order. Reviewer choices expose continuation hidden, no/one/all-fit/overflow/image-failure Home fixtures plus workflow outcomes, timing/expiry and enlarged text; hypothetical sends are explicitly simulations.
 
-Start with the [review script and coverage/gaps](../../docs/02-design/browser-prototype.md). English, name, interaction and neutral/Open Day/Bright Signal styling remain proposals. No final font, palette or public name is selected.
+Start with the [review script and coverage/gaps](../../docs/02-design/browser-prototype.md). Harbour Blue and the Round/Explicit Scroll Row composition are the selected browser checkpoint, not final brand acceptance or a public name. Reviewed local Bricolage Grotesque and DM Sans files are not present, so the implementation uses a documented system-sans fallback and does not claim exact type fidelity.
 
 ## Connected local demo (separate opt-in)
 
@@ -69,6 +71,7 @@ node prototypes/stage-1/model.test.mjs
 node prototypes/stage-1/scheduler.test.mjs
 node prototypes/stage-1/cloud.test.mjs
 node prototypes/stage-1/serve.test.mjs
+node prototypes/stage-1/home-browser-check.mjs
 node prototypes/stage-1/browser-check.mjs
 node prototypes/stage-1/runtime-browser-check.mjs
 python3 scripts/validate-docs.py
@@ -93,8 +96,8 @@ Observed combined review endpoint: **http://127.0.0.1:4181/**, served from /tmp/
 | File | Role |
 |---|---|
 | [index.html](index.html) | Accessible app/reviewer shell, restrictive content policy |
-| [styles.css](styles.css) | Responsive conversation and proposed semantic territory values |
-| [fixtures.js](fixtures.js) | Fictional contacts, photo provenance, supplied screens and media metadata |
+| [styles.css](styles.css) | Responsive Harbour Blue Home, conversation, large-text and focus treatment |
+| [fixtures.js](fixtures.js) | Fictional Home/room placeholders, contacts, photo provenance, supplied screens and media metadata |
 | [intent.js](intent.js) | Modest documented rule-based request/slot interpretation; no general AI |
 | [model.js](model.js) | In-memory conversation/task transitions, approval versions, local preferences |
 | [scheduler.js](scheduler.js) | Cancellable bounded demonstration delays and preview expiry |
@@ -105,6 +108,7 @@ Observed combined review endpoint: **http://127.0.0.1:4181/**, served from /tmp/
 | [scheduler.test.mjs](scheduler.test.mjs) | Controlled-clock stale callback, Stop/reset/edit and expiry cases |
 | [cloud.test.mjs](cloud.test.mjs) | Deterministic frontend transport/event/approval regressions, not backend evidence |
 | [serve.test.mjs](serve.test.mjs) | Exact allowlist, methods, traversal and response-header checks |
+| [home-browser-check.mjs](home-browser-check.mjs) | Selected Home copy, routes, real overflow, focus, fixture, responsive, storage and microphone checks |
 | [browser-check.mjs](browser-check.mjs) | Real browser clicks, layout, focus, storage and request checks |
 | [runtime-browser-check.mjs](runtime-browser-check.mjs) | Connected rendering with explicit wire fixtures; not MCP integration evidence |
 | [runtime-integration-check.mjs](runtime-integration-check.mjs) | Real browser-to-local-runtime draft path against an explicitly supplied loopback server |

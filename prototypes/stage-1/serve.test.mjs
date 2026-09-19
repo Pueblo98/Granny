@@ -7,14 +7,25 @@ test('loopback server exposes exactly the intended runtime assets and no write r
   try {
     assert.equal(server.address().address, '127.0.0.1');
     const paths = ['/', '/index.html', '/styles.css', '/fixtures.js', '/intent.js', '/model.js', '/scheduler.js', '/cloud.js', '/app.js',
-      '/assets/garden.svg', '/assets/seaside.svg', '/assets/meal.svg'];
+      '/assets/garden.svg', '/assets/seaside.svg', '/assets/meal.svg',
+      '/assets/room-fitness-placeholder.svg',
+      '/assets/room-trips-placeholder.svg',
+      '/assets/room-reading-placeholder.svg'];
     for (const path of paths) {
       const response = await fetch(base + path);
       assert.equal(response.status, 200, path);
       assert.equal(response.headers.get('cache-control'), 'no-store');
       assert.match(response.headers.get('permissions-policy'), /microphone=\(\), camera=\(\)/);
       assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
-      assert((await response.text()).length > 0);
+      const body = await response.text();
+      assert(body.length > 0);
+      if (path === '/') {
+        assert.match(body, /default-src 'none'/);
+        assert.match(body, /connect-src 'self'/);
+        assert.match(body, /img-src 'self' data:/);
+        assert.match(body, /media-src 'none'/);
+        assert.match(body, /form-action 'none'/);
+      }
       const head = await fetch(base + path, { method: 'HEAD' });
       assert.equal(head.status, 200); assert.equal(await head.text(), '');
     }
