@@ -72,6 +72,17 @@ public final class ConversationSessionCoordinatorTest {
         ConversationSessionCoordinator c=coordinator(); c.typed("make text larger"); long g=c.snapshot().generation; long r=c.snapshot().revision; c.stop();
         assertEquals(ConversationSessionCoordinator.Result.STALE,c.deliverProposal(g,r,new ConversationSessionCoordinator.Proposal("Choose a size.")));
     }
+    @Test public void oldQueuedDispatchCannotUseNewPermit() {
+        ConversationSessionCoordinator c=coordinator(); c.typed("make text larger"); c.submit(); c.chooseTextScale(TextScale.LARGE); c.approve(); long old=c.snapshot().generation;
+        c.edit("make this bigger"); c.submit(); c.chooseTextScale(TextScale.EXTRA_LARGE); c.approve();
+        assertEquals(ConversationSessionCoordinator.Result.STALE,c.dispatchApproved(old));
+    }
+    @Test public void registryMetadataFailsClosedForScreenExplanation() {
+        ConversationSessionCoordinator c=coordinator();
+        assertTrue(c.metadata(ConversationSessionCoordinator.Capability.TEXT_SCALE).enabled);
+        assertFalse(c.metadata(ConversationSessionCoordinator.Capability.SCREEN_EXPLANATION).enabled);
+        assertEquals("unadmitted",c.metadata(ConversationSessionCoordinator.Capability.SCREEN_EXPLANATION).outcomeOracle);
+    }
     private static ConversationSessionCoordinator coordinator() { FakeStore store = new FakeStore(); return new ConversationSessionCoordinator(new TextScaleController(store), store); }
     private static final class FakeStore implements TextScaleStore {
         StoredValue value; int writes; boolean readbackMismatch;
