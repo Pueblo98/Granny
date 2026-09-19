@@ -54,6 +54,12 @@ public final class MainActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        renderLatestSessionState();
+    }
+
+    @Override
     protected void onDestroy() {
         mainHandler.removeCallbacksAndMessages(null);
         unregisterReceiver(resultReceiver);
@@ -173,13 +179,17 @@ public final class MainActivity extends Activity {
         if (invalidateBeforeResult) {
             mainHandler.postDelayed(() -> {
                 if (stateMachine.requestStop(requestedGeneration)) {
-                    showStatus("C2-07 control fired. Any result from the open Android consent chooser must now be ignored.");
+                    recordAndShowResult(
+                            "STOPPED",
+                            "C2-07 control fired. Any result from the open Android consent chooser must now be ignored.",
+                            "No capture grant from this chooser may start a session.");
                 }
             }, CONSENT_INVALIDATION_DELAY_MILLIS);
             showStatus("C2-07 armed. Wait at least 3 seconds in Android's chooser, then choose the fixture or cancel. The result must be ignored.");
         } else {
             showStatus(trialInstruction(trial));
         }
+        LabSessionLedger.process().requesting(activeGeneration, status.getText().toString());
         startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_CAPTURE);
     }
 
@@ -191,7 +201,10 @@ public final class MainActivity extends Activity {
         }
         if (resultCode != RESULT_OK || data == null) {
             if (stateMachine.consentDenied(activeGeneration)) {
-                showStatus("Capture not started. Android consent was denied or cancelled.");
+                recordAndShowResult(
+                        "NOT_STARTED",
+                        "Capture not started. Android consent was denied or cancelled.",
+                        "No capture grant was retained.");
             } else {
                 showStatus("Late consent result was ignored because the session was stopped or replaced.");
             }
@@ -203,8 +216,8 @@ public final class MainActivity extends Activity {
         }
         CaptureService.start(this, resultCode, data, activeGeneration, activeTrial);
         stateMachine.serviceStarted(activeGeneration);
-        showStatus("Capture requested for " + activeTrial
-                + ". Share-one-app is mandatory. Use the red Stop button or notification Stop action; never select the full display.");
+        LabSessionLedger.process().active(activeGeneration, activeTrial);
+        renderLatestSessionState();
     }
 
     private String trialInstruction(String trial) {
@@ -238,6 +251,26 @@ public final class MainActivity extends Activity {
 
     private void showStatus(String value) {
         status.setText(value == null ? "No result." : value);
+    }
+
+    private void recordAndShowResult(String resultStatus, String message, String uncertainty) {
+        LabSessionLedger.process().result(
+                activeGeneration,
+                resultStatus,
+                message,
+                uncertainty);
+        renderLatestSessionState();
+    }
+
+    private void renderLatestSessionState() {
+        if (status == null) {
+            return;
+        }
+        LabSessionLedger.Snapshot snapshot = LabSessionLedger.process().snapshot();
+        if (snapshot.phase != LabSessionLedger.Phase.IDLE && snapshot.displayText != null) {
+            activeGeneration = Math.max(activeGeneration, snapshot.generation);
+            showStatus(snapshot.displayText);
+        }
     }
 
     private Button button(String value) {

@@ -13,8 +13,9 @@ related:
 
 # T-101 C2 synthetic screen-explanation scaffold
 
-Status: **repaired device run closes the bounded C2-06 regression; C2 remains
-not admitted because lifecycle containment is incomplete**.
+Status: **a second source-only repair addresses the observed lifecycle/state
+defects and passes host checks; it is unrun on Android and C2 remains not
+admitted**.
 
 This lab-only Android 16 scaffold prepares the smallest C2 experiment from the
 [T-101 route inventory](../../docs/08-research/2026-09-19-t101-route-inventory.md#c2--one-session-screen-explanation).
@@ -31,9 +32,10 @@ reproducible protected-content failure and an aborted Stop attempt.
   samples a bounded marker band into in-memory color summaries, requires a
   temporally separated same-scene marker transition, maps only known fixture
   colors to fixed explanations, and releases the projection.
-- Twenty-nine passing pure local JUnit tests for consent/Stop generation,
+- Thirty-two passing pure local JUnit tests for consent/Stop generation,
   capture geometry, bounded marker sampling, marker classification, freshness
-  gating, lifecycle-trial allowlisting and private-canary suppression.
+  gating, lifecycle-trial allowlisting, process-local result recovery and
+  private-canary suppression.
 
 The observer cannot OCR, identify arbitrary apps, click, recover, authenticate,
 read accessibility trees, contact a model, use a network, save a screenshot or
@@ -50,7 +52,7 @@ is not proof of the selected package or of generic screen understanding.
 | Runtime libraries | Android platform APIs only | No Compose, model, analytics, OCR or networking SDK |
 | Declared permissions | `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_MEDIA_PROJECTION` in observer only | No internet, storage, microphone, account, notification-listener or accessibility permission |
 | Retention | Transient down-sampled marker-band color summaries plus one fixed interpretation | No bitmap/file/database/log payload |
-| Stop | Observer button, foreground-service notification action and Android projection callback | Repaired visibility and latency remain unrun device evidence |
+| Stop | Observer button, foreground-service notification action, screen-off/task-removal handlers and Android projection callback | The newest handlers remain unrun device evidence |
 | Outcome | Fixed fixture explanation, withheld, stopped or unavailable | No automated recovery or external action |
 
 Android's official documentation requires per-session user consent, a
@@ -219,6 +221,39 @@ sharing active until manual Stop. Therefore:
 
 Both repaired APKs were uninstalled and debugging was restored. Do not rerun
 these artifacts as if C2-09/10/12 were passing.
+
+## Post-verification lifecycle/state repair — 2026-09-19
+
+The next source-only repair responds directly to the repaired-run evidence:
+
+- a runtime screen-off receiver explicitly stops and releases the projection;
+- `stopWithTask` is replaced by explicit `onTaskRemoved()` shutdown so the
+  service records and executes cleanup rather than relying on implicit service
+  destruction;
+- a process-local ledger retains only fixed content-free state/result text, so
+  a recreated activity can recover an active or completed lab result instead
+  of misleadingly returning to `Not started`; and
+- ledger generations reject stale results from an older session.
+
+The ledger stores no frames, marker samples, package identity, projection grant,
+intent or user content. A clean offline build completed all 92 tasks. Eight
+JUnit suites pass **32/32** cases with no failure or skip; lint reports zero
+errors and the same eight lab-only version/icon warnings. The fixture artifact
+is byte-identical to the previous repaired build. Both APKs verify with APK
+Signature Scheme v2 and the same ordinary debug certificate:
+
+| APK | Lifecycle-repair SHA-256 | Device state |
+|---|---|---|
+| `fixture-debug.apk` | `044a693583f95ad6bb98e2038019546871cea36b39b570ae07217bc03a070678` | Unrun for this source revision |
+| `observer-debug.apk` | `efc6b8d8e62fd5e413ae9d1e5143bc37fda621d5395b2ae64c1f114b9ae3d576` | Unrun |
+
+Manifest inspection remains unchanged: the fixture declares no permission and
+the observer declares only `FOREGROUND_SERVICE` and
+`FOREGROUND_SERVICE_MEDIA_PROJECTION`. Host checks cannot establish prompt
+screen-off/task-removal cleanup, Android indicator behavior, recovered rotation
+results, package identity, retention or egress. No tablet action occurred for
+this repair, and a later device run requires fresh exact authorization for its
+commit and artifact hashes.
 
 ## Install and teardown procedure used
 

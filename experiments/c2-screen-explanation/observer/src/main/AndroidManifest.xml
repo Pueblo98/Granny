@@ -28,6 +28,6 @@
             android:name=".CaptureService"
             android:exported="false"
             android:foregroundServiceType="mediaProjection"
-            android:stopWithTask="true" />
+            android:stopWithTask="false" />
     </application>
 </manifest>

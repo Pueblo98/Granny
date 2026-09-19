@@ -5,8 +5,10 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ServiceInfo;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
@@ -61,6 +63,21 @@ public final class CaptureService extends Service {
     private boolean requireResize;
     private boolean completionScheduled;
     private FixtureMarkerInterpreter.Interpretation pendingInterpretation;
+    private long generation;
+    private boolean screenOffReceiverRegistered;
+
+    private final BroadcastReceiver screenOffReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction()) && worker != null) {
+                worker.post(() -> finish(
+                        "STOPPED",
+                        "Capture stopped when the screen turned off.",
+                        "The session must be re-authorized after unlock.",
+                        true));
+            }
+        }
+    };
 
     public static void start(
             Context context,
@@ -89,6 +106,11 @@ public final class CaptureService extends Service {
         workerThread.start();
         worker = new Handler(workerThread.getLooper());
         createNotificationChannel();
+        registerReceiver(
+                screenOffReceiver,
+                new IntentFilter(Intent.ACTION_SCREEN_OFF),
+                Context.RECEIVER_EXPORTED);
+        screenOffReceiverRegistered = true;
     }
 
     @Override
@@ -108,6 +130,8 @@ public final class CaptureService extends Service {
                     "Only the fixed local start and stop actions are accepted.", false);
             return START_NOT_STICKY;
         }
+
+        generation = intent.getLongExtra(EXTRA_GENERATION, 0L);
 
         startForeground(
                 NOTIFICATION_ID,
@@ -129,6 +153,11 @@ public final class CaptureService extends Service {
                     "Only the fixed synthetic C2 trial modes are accepted.", true);
             return START_NOT_STICKY;
         }
+        LabSessionLedger.process().active(
+                generation,
+                intent.getStringExtra(EXTRA_TRIAL) == null
+                        ? CaptureTrialPlan.STANDARD
+                        : intent.getStringExtra(EXTRA_TRIAL));
 
         worker.post(() -> {
             try {
@@ -337,6 +366,8 @@ public final class CaptureService extends Service {
             activeProjection.stop();
         }
 
+        LabSessionLedger.process().result(generation, status, message, uncertainty);
+
         Intent result = new Intent(ACTION_RESULT)
                 .setPackage(getPackageName())
                 .putExtra(EXTRA_STATUS, status)
@@ -380,10 +411,26 @@ public final class CaptureService extends Service {
     }
 
     @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        if (worker != null) {
+            worker.post(() -> finish(
+                    "STOPPED",
+                    "Capture stopped when the observer task was removed.",
+                    "No capture continues without the lab task.",
+                    true));
+        }
+        super.onTaskRemoved(rootIntent);
+    }
+
+    @Override
     public void onDestroy() {
         if (!finished.get()) {
             finish("STOPPED", "Capture service ended.",
                     "No automatic restart is allowed.", true);
+        }
+        if (screenOffReceiverRegistered) {
+            unregisterReceiver(screenOffReceiver);
+            screenOffReceiverRegistered = false;
         }
         super.onDestroy();
     }
