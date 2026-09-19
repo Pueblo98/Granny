@@ -119,6 +119,7 @@ try {
   await b.evaluate("document.querySelector('#room-fitness').focus()");
   await key('Enter');
   check(await b.evaluate("document.querySelector('#room-surface[data-room-id=fitness] h1').textContent==='Fitness'"), 'room target opens labelled fictional interior');
+  await b.waitFor("document.activeElement===document.querySelector('#room-content h1, #room-content h2')");
   await b.evaluate("document.querySelector('#room-home').focus()");
   await key('Enter');
   await b.waitFor("document.activeElement.id==='room-fitness'");

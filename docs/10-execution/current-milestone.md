@@ -35,9 +35,10 @@ attached, so exact Samsung recognizer, locale, acoustic, lifecycle, latency,
 accessibility and correction-effort evidence remains unrun under RES-06 and
 EVAL-005/007/009/012; no gate passes from the decision or scaffold.
 
-The task branch starts from the latest committed Explicit Scroll Row Home and
-merges current `origin/main`. The owner's later uncommitted Context Rooms work
-remains untouched and is not claimed as part of T-120.
+The task branch started from the committed Explicit Scroll Row Home, then
+synchronized the Home branch's later committed six-room checkpoint and current
+`origin/main`. Those pre-existing commits retain their own sessions and are not
+claimed as T-120 output; their source worktrees were not edited by this task.
 
 ## Shared conversation state pack — 2026-09-20
 

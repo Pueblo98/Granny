@@ -53,6 +53,8 @@ changed_paths:
   - docs/10-execution/open-questions.md
   - docs/10-execution/task-packets.md
   - docs/README.md
+  - prototypes/stage-1/home-browser-check.mjs
+  - prototypes/stage-1/rooms-browser-check.mjs
 ---
 
 # Native on-device voice shell and cleanup boundary
@@ -66,9 +68,17 @@ slice and its host-testable boundary. It may prepare but does not silently run
 the physical-device microphone matrix, retain personal speech, add cloud audio
 or start adjacent external-control work.
 
-The branch starts from committed `feature/explicit-scroll-row-home` at
-`1e81dd7`, then merges `origin/main` at `ee386ed`. The separate Home worktree's
-uncommitted Context Rooms files remain untouched.
+The branch started from committed `feature/explicit-scroll-row-home` at
+`1e81dd7`, then merged `origin/main`. Before handoff it also synchronized the
+Home branch's later committed six-room checkpoint and current `origin/main`;
+those commits retain their own session ownership. The separate source
+worktrees were never edited by T-120.
+
+Final synchronization exposed two pre-existing browser-check races: each
+asserted focus before the room UI's documented animation-frame focus move had
+completed. The checks now await that scheduled focus before exercising the
+next keyboard step. This changes test timing only; product behavior and fixture
+claims are unchanged.
 
 ## What changed
 
@@ -102,6 +112,10 @@ audio store. Backup and device transfer exclude all app domains.
   provider SDK or model library.
 - `aapt2 dump permissions` against the built APK reports only
   `android.permission.RECORD_AUDIO`.
+- After synchronizing both upstreams, the Stage 1 unit suite passes 102 cases;
+  browser, Home, Rooms and runtime smoke checks pass 132, 158, 346 and 37
+  assertions respectively. The two focus-check waits now synchronize with the
+  existing animation-frame focus contract instead of racing it.
 - `adb devices` reports no attached device. Physical recognizer, microphone,
   permission UI, offline, acoustic, lifecycle, TalkBack, rotation and human
   correction evidence remains unrun.
