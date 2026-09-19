@@ -20,7 +20,8 @@ rebuilt. The same Granny assistant remains available inside every room.
 
 Worktree: `/home/lgtw/Work/granny-worktrees/explicit-scroll-row-home`;
 branch `feature/explicit-scroll-row-home`, starting implementation `1e81dd7`.
-Captures show the September 20 working-tree implementation. The
+Inspected implementation commit: `360e299312e7ca09b0ae3f304d72ce18d874cb7b`.
+Captures show that September 20 implementation. The
 [session](../../../10-execution/sessions/2026-09-19-context-rooms-frontend.md)
 owns final publication evidence. No source mockup was overwritten.
 
@@ -162,4 +163,3 @@ Source use is an explicit, reversible fictional UI demonstration.
 **Simon's main review question:** does the four-symbol overview make direct
 browsing discoverable while leaving the composer clearly available, especially
 when a smaller window becomes one vertical sequence?
-

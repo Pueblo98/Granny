@@ -252,7 +252,8 @@ Chrome 151.0.7922.173; Node 26.8.1; no dependencies installed.
 | `python3 -m unittest discover -s scripts -p 'test_*.py'` | PASS, 47 tests; expected negative-fixture Git diagnostic is not a failure |
 
 `python3 scripts/check_handoff.py --base origin/main` and `git diff --check`
-passed; handoff coverage is repeated with `--head HEAD` after commit. Changed
+passed; handoff coverage also passed with `--head HEAD` after implementation
+commit `360e299312e7ca09b0ae3f304d72ce18d874cb7b`. Changed
 runtime scripts also passed `node --check`. The refreshed 4173 endpoint was
 independently opened in Chromium: Garden rendered, all its displayed artwork
 loaded, and there were no browser exceptions.
@@ -264,8 +265,11 @@ are no known pre-existing test failures being waived.
 
 ## Publication, limits and next review
 
-Retain the dedicated worktree and publish only its scoped task branch to the
-verified `Pueblo98/Granny` origin; verify remote SHA equals HEAD. No main merge
+Implementation `360e299312e7ca09b0ae3f304d72ce18d874cb7b` was committed and
+pushed to the [task branch](https://github.com/Pueblo98/Granny/tree/feature/explicit-scroll-row-home).
+`git ls-remote` independently returned that exact SHA. The only following
+change records this publication/inspected-commit evidence; runtime code and
+screenshots are unchanged. Retain the dedicated worktree. No main merge
 or PR integration is authorized for this mixed-code task. The primary `main`
 checkout and its dirty mockup/cockpit/milestone/private files remain untouched.
 During this long-running session another task advanced the shared
