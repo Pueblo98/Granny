@@ -10,11 +10,11 @@ related:
   - ../../09-decisions/ADR-0016-explicit-home-room-row.md
   - ../../02-design/mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md
 record_type: session
-session_state: review
+session_state: complete
 record_basis: contemporaneous
 agent: Codex
 branch: docs/consolidate-design-checkpoint-2026-09-19
-next_action: "Validate and integrate the accumulated documentation/mockup checkpoint, then start the bounded selected-Home implementation from updated origin/main."
+next_action: "Start the bounded selected-Home implementation from updated origin/main after this documentation-only PR is integrated."
 changed_paths:
   - docs/02-design/claude-code-design-system-handoff.md
   - docs/02-design/claude-design-frontend-metaprompt.md
@@ -73,16 +73,31 @@ publication.
 
 ## Evidence
 
-Pre-commit review found no secret-like credential material in the scoped text,
-and `git diff --check` passed after normalizing trailing whitespace in prompt
-records and adding repository metadata around Simon's preserved notebook text.
-The cockpit snapshot and full clean-checkout validation remain to be repeated
-after merging current `origin/main`. Documentation checks do not establish
-browser, Android, accessibility-technology or human evidence.
+Pre-commit review found no secret-like credential material in the scoped text.
+All 38 added PNGs reported `image/png`; the largest added file is 1,706,835
+bytes. `527ac32` records the local checkpoint. Merge commit `29d1b94` combines
+it with `origin/main` at `c146d23`, preserving the newer T-101 partial physical
+inventory alongside ADR-0016 and CMP-012.
+
+Clean-worktree validation after that merge passed:
+
+- `python3 scripts/cockpit.py --check` — 60 records, 13 Canvas nodes/5 edges
+  and three Base views/embeds; structural check only.
+- `python3 scripts/validate-docs.py` — 193 Markdown files, 16 ADRs, 49
+  requirements/trace rows and zero errors.
+- `python3 -m unittest discover -s scripts -p 'test_*.py'` — 47 tests passed;
+  the fixture's expected `fatal: Needed a single revision` diagnostic appeared
+  while the suite completed `OK`.
+- `python3 scripts/check_handoff.py --base origin/main --head HEAD` — passed.
+- `git diff --check` — passed; the task worktree was clean.
+
+These checks do not establish browser, Android, accessibility-technology or
+human evidence. Prototype runtime behavior remains unchanged and will be
+verified by the separately authorized implementation session.
 
 ## Handoff
 
-Current work awaits clean-checkout validation and normal documentation-only PR
-integration. The intended next action after that integration is the separately
-authorized bounded T-119 Home implementation from the resulting `origin/main`
-commit.
+The documentation checkpoint is complete and ready for the normal
+documentation-only PR/check/merge path. After integration, the separately
+authorized bounded T-119 Home implementation can start from the resulting
+`origin/main` commit without copying dependencies from the primary checkout.
