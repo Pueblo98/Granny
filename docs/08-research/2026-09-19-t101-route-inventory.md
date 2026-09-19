@@ -21,7 +21,7 @@ related:
 
 This is the Step A source/desk artifact for [T-101](../10-execution/backlog.md#t-101), accessed **2026-09-19**. It covers all five experiments accepted by [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) and prepares Steps B and C. A later [partial manual physical inventory](2026-09-19-t101-physical-inventory.md) fills the non-identifying Step B values that Simon could read safely. The combined record does **not** establish app compatibility, device timing, Play approval, user comprehension or a supported configuration.
 
-Step A accessed no tablet, account, app, provider or store. Step B later used only Simon's manual transcription of visible Settings values; Codex did not connect to or operate the tablet. No command, ADB action, install, update, developer-setting or permission change, sign-in, external-app actuation, personal-data inspection or Android scaffold occurred. Physical inventory is **partial and user-reported**; every synthetic-device experiment remains **unrun**. T-101 therefore remains in progress, and GATE-03/04 plus the device/real-data portion of GATE-06 remain open.
+Step A accessed no tablet, account, app, provider or store. Step B later used only Simon's manual transcription of visible Settings values; Codex did not connect to or operate the tablet during that inventory. Subsequent separately authorized C2 lab runs used only reviewed synthetic packages and content-free observations; they did not inspect personal apps, accounts or data. Physical inventory remains **partial and user-reported**, and C1/C3/C4/C5 remain unrun on device. T-101 therefore remains in progress, and GATE-03/04 plus the device/real-data portion of GATE-06 remain open.
 
 Disposition terms in this note are route-planning terms, not admission:
 
@@ -165,7 +165,7 @@ Always exclude serial number, IMEI, MAC, Android ID, advertising ID, SSID, IP ad
 4. Leave developer options, USB debugging, restricted settings, permissions/app-ops, accessibility services, accounts, defaults and network configuration unchanged. Existing state is observed only if separately authorized.
 5. Record missing access as missing; never infer API/One UI/app support from the marketing label.
 
-## Step C — smallest synthetic experiments (planned, unrun)
+## Step C — smallest synthetic experiments
 
 All fixtures use opaque endpoints and fabricated content. Each experiment is a separate authorization and admission question. Candidate capabilities remain disabled by default; lab adapters are absent from candidate builds. No SDK/install/account/service/permission action is authorized by this plan.
 
@@ -180,6 +180,8 @@ All fixtures use opaque endpoints and fabricated content. Each experiment is a s
 - **Invalidation:** OS/app/recipe/locale/access profile, permission/policy or semantic-tree change; any wrong provenance, mark-read surprise or Stop failure suspends route.
 
 ### C2 — one-session screen explanation
+
+**Device disposition, 2026-09-19:** four bounded, content-free [device runs](2026-09-19-t101-c2-device-evidence.md) used reviewed fixture and observer packages on `TBL-01`; each ended with both packages uninstalled and debugging restored. Across the repaired runs, C2-06's synthetic stale-prior-frame regression closed twice, visible Stop passed, prompt lock cleanup was observed, rotation produced recoverable explicit resize evidence, and the ordered C2-10→C2-12 regression recovered the new task-removal result after ending sharing. The remaining idle Stop label is unclear, and the observations do not satisfy independent package/source, retention or egress oracles. Current API review leaves selected-package identity unresolved: MediaProjection supplies chosen content but the API 36 observer does not independently receive the selected package.
 
 - **Fixture/input:** local synthetic screen app with known normal, malicious-instruction, stale, private-canary and `FLAG_SECURE` screens; request one app-window explanation.
 - **Expected effect:** capture only the selected window after per-session consent, identify fixture package/source, explain present labels with uncertainty and offer guidance; protected screen returns unavailable.
@@ -227,4 +229,4 @@ All fixtures use opaque endpoints and fabricated content. Each experiment is a s
 
 Step B is now partial: the safe manually visible fields above are recorded, while API level, complete display/window data, offline speech, app packages/versions, accounts, grants, network profile and build/adapter identity remain unknown or absent. Do not fill those gaps with commands or personal-account inspection under this authorization.
 
-The recommended next bounded authorization is **C2 only**, because scoped screen explanation is one of only two plausible external workflow families and can use local synthetic content without personal accounts. It must separately authorize the exact local fixture/test build, Android scaffolding, install/teardown, per-session projection consent, synthetic app actuation, permitted storage, deny/revoke/Stop/secure-screen cases and zero network/egress. C5 is lower risk but does not reduce the two-external-workflow kill risk. Each other C1–C5 experiment still requires its own device/build/fixture/account/grant/network/actuation/retention authority. T-104 remains blocked until the sent-photo route and applicable device-safety boundary have actual evidence.
+The generation-seeding repair passed 33 host cases and then closed the bounded stale-result regression in an authorized ordered C2-10→C2-12 device run. A source-only repair now makes the Stop control active only during capture and passes 36 host cases, but its rendered behavior is unrun on Android. More importantly, selected-package identity and independent retention/egress evidence remain unresolved, so C2 is not admitted. C5 is lower risk but does not reduce the two-external-workflow kill risk. Each other C1–C5 experiment still requires its own device/build/fixture/account/grant/network/actuation/retention authority. T-104 remains blocked until the sent-photo route and applicable device-safety boundary have actual evidence.
