@@ -57,6 +57,13 @@ Pre-publication checks from the isolated worktree:
 - `git diff --check` — exit 0; no whitespace errors.
 - Targeted `rg` scans over every changed path for private-key blocks, common GitHub/Google/OpenAI/Bearer token shapes, populated serial/IMEI/Android-ID/SSID fields and email addresses — exit 1 with no matches. The complete diff was also reviewed for personal data and unsupported device/store claims.
 
+Publication and integration:
+
+- Scoped artifact commit `413c1a77e8bb003d64f106228c6872f99f9687db` was pushed to `origin/docs/t101-route-inventory`; `git ls-remote` matched that SHA.
+- Current `origin/main` advanced during review through Context Rooms propagation. The task branch merged it in `0b637b6e47fbccbcdadb6f1f80c79f3a73a83a39`, preserving both changes; the full validation suite and GitHub checks passed again.
+- [PR #25](https://github.com/Pueblo98/Granny/pull/25) merged normally as `50f2d4bc6ae983d7c9a64afbc2ffcf8bd23a9ff1` after Repository maintenance, runtime and GitGuardian checks passed.
+- After an explicit fetch, the primary checkout was on `main` at the exact merge and matched `origin/main`. `check_vault.py` passed for the route inventory, this record and cockpit snapshot. Unrelated untracked mockups, notes and `.claude/` content remained untouched.
+
 ## Handoff
 
 The bounded desk-and-planning session is complete; T-101 itself is not. GATE-03/04 and GATE-06 device/real-data conditions remain open. The exact next authorization is physical access to `TBL-01` plus explicit permission for manual read-only collection of the listed non-identifying fields. Any transport commands, installs, grants/settings changes, synthetic accounts, provider/network use or external-app actuation require a later exact authorization.
