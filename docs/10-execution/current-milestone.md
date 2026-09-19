@@ -2,7 +2,7 @@
 title: "Current milestone — Context Rooms on the conversation-first shell"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [execution]
 related:
   - development-readiness.md
@@ -12,6 +12,17 @@ related:
 ---
 
 # Current milestone — Context Rooms on the conversation-first shell
+
+## Shared conversation state pack — 2026-09-20
+
+The first [shared state pack](../02-design/mockups/2026-09-20-shared-state-pack/iteration-1/README.md)
+applies Harbour Blue to one fictional message-draft slice: listening, editable
+transcript, recipient clarification, exact consequence preview, active work
+with visible Stop, verified prepared-not-sent and unknown-outcome recovery. It
+is a seven-frame design reference, not implementation or evidence that every
+state is linear, accessible on device or capable of acting in another app.
+Review should test whether the safety detail stays clear without overwhelming
+the calm conversation surface before implementation fidelity is expanded.
 
 ## T-101 route and partial physical inventory — 2026-09-19
 
