@@ -83,6 +83,17 @@ public final class ConversationSessionCoordinatorTest {
         assertFalse(c.metadata(ConversationSessionCoordinator.Capability.SCREEN_EXPLANATION).enabled);
         assertEquals("unadmitted",c.metadata(ConversationSessionCoordinator.Capability.SCREEN_EXPLANATION).outcomeOracle);
     }
+    @Test public void emptyRequestKeepsTypingPathUsable() {
+        ConversationSessionCoordinator c=coordinator(); c.typed("   ");
+        assertEquals(ConversationSessionCoordinator.Result.DENIED,c.submit());
+        assertEquals(ConversationSessionCoordinator.Surface.CLARIFICATION,c.snapshot().surface);
+    }
+    @Test public void directHomeSizeChoiceCreatesPreviewWithoutExternalRoute() {
+        ConversationSessionCoordinator c=coordinator();
+        assertEquals(ConversationSessionCoordinator.Result.ACCEPTED,c.chooseTextScale(TextScale.COMFORTABLE));
+        assertEquals(ConversationSessionCoordinator.Surface.PREVIEW,c.snapshot().surface);
+        assertTrue(c.metadata(ConversationSessionCoordinator.Capability.TEXT_SCALE).enabled);
+    }
     private static ConversationSessionCoordinator coordinator() { FakeStore store = new FakeStore(); return new ConversationSessionCoordinator(new TextScaleController(store), store); }
     private static final class FakeStore implements TextScaleStore {
         StoredValue value; int writes; boolean readbackMismatch;
