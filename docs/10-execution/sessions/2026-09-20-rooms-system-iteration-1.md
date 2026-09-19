@@ -16,7 +16,28 @@ branch: design/rooms-system-iteration-1
 base_commit: 6f5896d
 next_action: Simon reviews the 17 proposed Rooms-system structures; only selected patterns are then propagated into canonical PRD, screen and component instructions.
 changed_paths:
-  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/01-full-rooms-library.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/02-search-all-rooms.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/03-all-items-and-unfiled.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/04-create-room.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/05-rename-and-purpose.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/06-organize-item.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/07-move-item-undo.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/08-archive-room.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/09-restore-room.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/10-delete-room-only.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/11-delete-underlying-items.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/12-cross-room-source.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/13-sensitive-source-denied.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/14-empty-library.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/15-loading.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/16-offline.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/17-missing-artwork.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/README.md
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/comparison.png
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/manifest.json
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/prompts.md
+  - docs/02-design/mockups/2026-09-20-rooms-system/iteration-1/rejected/12-cross-room-source-trips-scenery-rejected.png
   - docs/02-design/mockups/README.md
   - docs/10-execution/current-milestone.md
   - docs/10-execution/sessions/2026-09-20-rooms-system-iteration-1.md
