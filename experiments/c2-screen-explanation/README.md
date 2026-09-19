@@ -13,7 +13,7 @@ related:
 
 # T-101 C2 synthetic screen-explanation scaffold
 
-Status: **source prepared; not built, installed or executed**.
+Status: **host build and local unit tests pass; not installed or device-executed**.
 
 This lab-only Android 16 scaffold prepares the smallest C2 experiment from the
 [T-101 route inventory](../../docs/08-research/2026-09-19-t101-route-inventory.md#c2--one-session-screen-explanation).
@@ -28,8 +28,8 @@ or evidence that MediaProjection works on `TBL-01`.
 - `observer`: a lab-only app that requests one Android MediaProjection session,
   samples at most a 16×16 grid from one in-memory frame, maps only known fixture
   colors to fixed bounded explanations, and releases the projection immediately.
-- Pure local JUnit tests for consent/Stop generation handling, fail-closed
-  marker classification and private-canary suppression.
+- Ten passing pure local JUnit tests for consent/Stop generation handling,
+  fail-closed marker classification and private-canary suppression.
 
 The observer cannot OCR, identify arbitrary apps, click, recover, authenticate,
 read accessibility trees, contact a model, use a network, save a screenshot or
@@ -76,31 +76,57 @@ Current setup sources, accessed 2026-09-19:
 - The service deliberately stops after one sampled frame and does not resize an
   active projection surface. C2-10 can currently establish only fail-closed or
   unavailable behavior; it cannot establish successful resize handling.
-- Source syntax and Android API compatibility remain unverified until the exact
-  toolchain is separately authorized and the project builds.
+- Source syntax and API 36 compilation are verified on the recorded host
+  toolchain. Android lifecycle, rendering and MediaProjection behavior remain
+  unverified until an authorized device run.
 
 These are experiment findings and preparation gaps, not reasons to weaken the
 oracle or infer support. C2 cannot pass until the relevant gaps are resolved and
 the device matrix is actually run.
 
-## Why the project is intentionally unbuilt
+## Host build evidence — 2026-09-19
 
-The inspected host has no Java, Android SDK, Gradle or ADB. Dependency/toolchain
-installation and network downloads were not authorized. No Gradle wrapper is
-checked in because it could not be generated and verified with an installed
-Gradle distribution. The current files select AGP 9.4.0, whose official
-compatibility table requires Gradle 9.6.0, SDK Build Tools 36.0.0 and JDK 17.
+After Simon accepted the Android SDK License Agreement and authorized local SDK
+installation, the isolated host toolchain used:
 
-After separate host-toolchain authority, the bounded build sequence is:
+- Eclipse Temurin JDK `17.0.20.1+1`; archive SHA-256
+  `3808d1d15e3ec6bd5b84057fb5d84c33d8a1536a258146bcea2e603fc726e08e`;
+- Gradle `9.6.0`; distribution SHA-256
+  `bbaeb2fef8710818cf0e261201dab964c572f92b942812df0c3620d62a529a01`;
+- Android command-line tools `22.0`; archive SHA-256
+  `4e4c464f145a7512b57d088ac6c278c03c9eea610886b35a5e0804e74eedf583`;
+- Android SDK Platform 16 / API 36 revision 2, Build Tools `36.0.0`, and
+  Platform-Tools `37.0.1`; and
+- Android Gradle Plugin `9.4.0` plus JUnit `4.13.2` from the declared build.
+
+The generated wrapper pins Gradle 9.6.0 and its distribution checksum. The
+final clean host command was:
 
 ```text
-gradle wrapper --gradle-version 9.6.0
-./gradlew :observer:testDebugUnitTest :fixture:assembleDebug :observer:assembleDebug
+./gradlew --no-daemon clean :observer:testDebugUnitTest \
+  :fixture:assembleDebug :observer:assembleDebug lintDebug
 ```
 
-The first invocation will require access to the official Google/Maven/Gradle
-repositories unless every artifact is already cached. A successful compile or
-unit test is static/offline evidence only, not device evidence.
+It completed 92 tasks successfully. Both five-case JUnit suites passed with no
+failures or skips. Lint reported zero errors, four fixture warnings and three
+observer warnings. The remaining warnings are deliberate lab limits: exact API
+36 targeting rather than current API 37, the compatible pinned Gradle version,
+and absent production icons. Explicit extraction rules now exclude all app
+files from cloud backup and device transfer.
+
+The locally produced, uncommitted debug APKs were signed by the ordinary
+Android debug certificate with SHA-256 digest
+`8849d40201dbc7ebb49178c37c93837af8f973f40e3f383748bf7af8ce174f53`:
+
+| APK | SHA-256 | Inspected declared permissions |
+|---|---|---|
+| `fixture-debug.apk` | `b4c4a6bd5ba090067ab1c92dc70f329336f5042301796ed01d8f762ebc93fd1d` | none |
+| `observer-debug.apk` | `e89c3393247625f8bae05323734c753171fa7fd3130a2f2dc7a092f26500542e` | `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_MEDIA_PROJECTION` |
+
+`apksigner` verified APK Signature Scheme v2 for both. These artifacts remain
+ignored build output in the isolated worktree; neither APK nor signing material
+is committed. Successful compilation, lint and pure unit tests are static and
+offline-fixture evidence only, not Android runtime or device evidence.
 
 ## Prepared future device-run matrix
 
@@ -133,7 +159,7 @@ The proposed transport is USB ADB on exactly one human-confirmed `TBL-01`.
 This plan is not authority to install ADB, enable Developer options/USB
 debugging, trust a computer or execute these commands.
 
-After separate approval and successful builds, review the APK digests and then:
+After separate device approval, review the recorded commit/APK digests and then:
 
 ```text
 adb devices
@@ -166,20 +192,16 @@ clearing other apps or resetting the tablet.
 A later run requires explicit approval for all of the following, not a generic
 "continue":
 
-1. Install JDK 17, Android SDK Platform/Build Tools 36, Gradle 9.6 and ADB from
-   official sources; generate/inspect the wrapper and download the declared
-   build/test dependencies.
-2. Build and hash exactly these two debug APKs from a named commit.
-3. On `TBL-01` only, manually enable Developer options and USB debugging, trust
+1. On `TBL-01` only, manually enable Developer options and USB debugging, trust
    the named development computer, run only the reviewed commands above and
    install only the two reviewed APKs.
-4. Run C2-01 through C2-12 using only the fixture scenes, with no network,
+2. Run C2-01 through C2-12 using only the fixture scenes, with no network,
    cloud, personal accounts/content, accessibility service or other app.
-5. Permit only Android's per-session MediaProjection consent; do not grant
+3. Permit only Android's per-session MediaProjection consent; do not grant
    broader permissions or select the full display.
-6. Retain only content-free case results, versions, timing and failure labels;
+4. Retain only content-free case results, versions, timing and failure labels;
    never screenshots, pixels, canary text or transport identifiers.
-7. Uninstall only the two test packages and restore debugging settings as
+5. Uninstall only the two test packages and restore debugging settings as
    described above.
 
 This does not authorize T-104, public distribution, Play contact, accessibility
