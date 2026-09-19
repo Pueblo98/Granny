@@ -9,13 +9,14 @@ related:
   - ../task-packets.md
   - ../../09-decisions/ADR-0016-explicit-home-room-row.md
   - ../../02-design/mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md
+  - ../../02-design/mockups/2026-09-19-harbour-blue-home/frontend-checkpoint-1/README.md
   - ../../02-design/browser-prototype.md
 record_type: session
-session_state: active
+session_state: complete
 record_basis: contemporaneous
 agent: Codex
 branch: feature/explicit-scroll-row-home
-next_action: "Implement and validate the selected Home while preserving the five scripted workflows and local-only security boundary."
+next_action: "Review the published task branch and checkpoint evidence; mixed code/documentation integration still requires current authority."
 changed_paths:
   - prototypes/stage-1/index.html
   - prototypes/stage-1/styles.css
@@ -35,6 +36,7 @@ changed_paths:
   - docs/02-design/mockups/2026-09-19-harbour-blue-home/frontend-checkpoint-1/home-expanded.png
   - docs/02-design/mockups/2026-09-19-harbour-blue-home/frontend-checkpoint-1/home-narrow-large-text.png
   - docs/10-execution/sessions/2026-09-19-explicit-scroll-row-home.md
+  - docs/10-execution/cockpit-snapshot.md
 ---
 
 # Session — Explicit Scroll Row Home implementation
@@ -139,10 +141,143 @@ Three read-only Terra audits run in parallel before production edits:
 The lead agent retains product interpretation, all shared frontend edits,
 integration review, authoritative validation and final handoff.
 
+Useful first-wave findings were reconciled rather than copied verbatim:
+
+- All three audits agreed that `model.js`, scheduler/cloud boundaries, Stop,
+  dialogs, Menu destinations, local server/CSP and workflow regressions were
+  sound foundations, while the old boxed shell, default introduction card,
+  sticky footer and grey/territory styling were rejected presentation.
+- The visual/access review required real measured overflow, visible end-state
+  reasons, a direct narrow/large-text list, removable art and unclipped violet
+  focus. The selected raster was explicitly not treated as proof that three
+  visible rooms overflow.
+- The test review recommended an isolated Home browser suite so the long
+  workflow/safety suite remained intact. It also identified physical keyboard,
+  range announcement, image-failure, reviewer isolation, 300% geometry and
+  no-capture/no-persistence cases.
+
+## Implementation
+
+Implementation commit `e5d5790` keeps the proven task model and adds a small
+renderer-owned Home state around it:
+
+- Rebuilt the idle shell with the selected invitation, Harbour Blue/Linen
+  roles and broad Round composer. Talk and Send remain written native controls;
+  the paper-plane mark is decorative. Empty Send reports native validation and
+  a polite explanation without creating work.
+- Added one in-memory Kitchen continuation. Hide removes it until reload/full
+  reset and returns focus to the composer. Kitchen is an honest fictional
+  placeholder with no saved soup, history or persistence.
+- Added Fitness, Trips and Reading as broad semantic room buttons with live
+  names/purposes and hand-authored, decorative local SVG placeholders. Image
+  failure removes the art only.
+- Measured row overflow from rendered geometry. Written controls are hidden
+  when everything fits; true overflow exposes focusable `aria-disabled`
+  first/middle/last states, a visible reason and exactly one polite foreground
+  announcement per movement. Pointer/wheel scrolling remains supplementary.
+- Added a vertical `See all rooms` list and labelled room placeholders. Direct
+  routes restore Home/source focus; a room opened from the list can return to
+  the same list item before returning Home.
+- Kept composer-first source/keyboard order while placing the continuation and
+  row above it at expanded landscape. At 700 CSS pixels or less, 200% app text
+  or combined 300% text, Rooms become a direct vertical list and the entire
+  page remains ordinarily scrollable.
+- Replaced the obsolete Neutral/Open Day/Bright Signal reviewer selector with
+  deterministic Home fixtures: continuation hidden, no rooms, one room,
+  all-fit, forced overflow and portrait failure. Participant mode contains no
+  reviewer DOM.
+- Extended only the exact static-server allowlist for the three placeholder
+  assets. CSP, Permissions Policy, loopback binding, no-write routes and
+  no-storage/no-external-request contracts remain in force.
+
+### Final reused / adapted / replaced / removed inventory
+
+**Reused:** `model.js`, `scheduler.js`, `cloud.js`, intent parsing, task/result
+renderers, exact confirmation/expiry/Stop logic, dialogs, Menu destinations,
+focus-key/selection retention and the five scripted workflows. Their 67 model,
+7 scheduler, 27 client, 132 workflow-browser and 37 connected wire-fixture
+checks remain active.
+
+**Adapted:** `index.html` shell/composer semantics; `app.js` empty/thread/Menu
+composition, focus return and scroll handling; `fixtures.js` local Home data;
+reviewer controls; static asset allowlist; README/handoff documentation; and
+the existing browser check's idle/tokens assertions.
+
+**Replaced:** the old boxed 900-pixel white shell, grey palette, generic
+rectangular sticky composer and first-run visual emphasis with the spacious
+Linen canvas, selected hierarchy and responsive Round writing surface. The
+stylesheet was refactored coherently rather than layering duplicate rules over
+the rejected presentation.
+
+**Removed:** obsolete Open Day/Bright Signal executable territory CSS,
+reviewer selector and screenshot loop; default display of the competing
+introduction card; shadow/gradient footer styling; and the image-failure
+fallback frame. The Introduction, privacy/reset, preferences, history, help,
+connected demo and every scripted/safety path remain reachable and tested.
+
+## Second-wave review
+
+Three Terra agents independently reviewed the completed diff without editing:
+
+- Visual comparison found no blocker and confirmed the selected hierarchy,
+  honest all-fit row and 300% vertical fallback. The lead removed the native
+  textarea resize grip, refined the balloon-tail join and used opaque Surface.
+  Missing polished continuation art and exact fonts remain documented limits,
+  not invented assets.
+- Accessibility/interaction review confirmed source order, Stop semantics,
+  native room targets, image failure and focus return. Its actionable findings
+  were resolved by making first/end reasons visible, adding list-context
+  return, directly describing Talk as simulated and testing reduced motion.
+- Regression review confirmed the suite was substantive but requested stronger
+  proof. The Home check now asserts actual `scrollLeft` and foreground-range
+  changes, native keyboard activation, fresh-session continuation restoration,
+  all-fit geometry, static-only paths/no API, cookies, delivered CSP and
+  microphone/speech interception from document initialization.
+
+No sub-agent edited shared production files, spawned another agent, published
+a branch or made product decisions.
+
+## Review evidence
+
+[Frontend checkpoint 1](../../02-design/mockups/2026-09-19-harbour-blue-home/frontend-checkpoint-1/README.md)
+embeds a 1440×900 participant Home and a full-page 600-pixel-wide combined
+300% text state, both captured from implementation commit `e5d5790`. It records
+fixture state, visual comparison, placeholder inventory, exact checks and
+known limits without overwriting the selected source.
+
 ## Validation
 
-Pending implementation and review.
+Final validation used the repository's existing Node 26.8.1, Chromium
+151.0.7922.173 and Python environment; no dependency was installed:
+
+- `node prototypes/stage-1/model.test.mjs` — 67 passed.
+- `node prototypes/stage-1/scheduler.test.mjs` — 7 passed.
+- `node prototypes/stage-1/cloud.test.mjs` — 27 passed.
+- `node prototypes/stage-1/serve.test.mjs` — 1 passed, including CSP,
+  Permissions Policy, exact allowlist, traversal and write-method rejection.
+- `node prototypes/stage-1/home-browser-check.mjs` — 156 assertions, zero
+  browser errors, expected static loopback requests only.
+- `node prototypes/stage-1/browser-check.mjs` — 132 assertions, zero browser
+  errors; all five scripted workflows and active Stop passed.
+- `node prototypes/stage-1/runtime-browser-check.mjs` — 37 assertions, zero
+  browser errors; frontend wire fixtures only, not real MCP/backend evidence.
+- `python3 scripts/cockpit.py --write` and `--check` — passed after this session
+  was marked complete.
+- `python3 scripts/validate-docs.py` — passed with zero errors.
+- `python3 -m unittest discover -s scripts -p 'test_*.py'` — 47 passed.
+- `python3 scripts/check_handoff.py --base origin/main --head HEAD` — passed.
+- `git diff --check` — passed.
+
+These checks establish browser-fixture behavior only. CSS pixels do not prove
+Android dp/sp or physical targets. TalkBack, switch access, native Android
+reflow/IME/navigation/Stop, older-adult comprehension, final name/logo/font/art
+acceptance and complete Rooms/persistence behavior remain unrun or out of
+scope.
 
 ## Handoff
 
-Session active.
+The bounded selected-Home checkpoint is complete on
+`feature/explicit-scroll-row-home`. The branch is ready for publication and
+review, but this mixed code/documentation task is not authorized to merge to
+`main`. The dirty primary checkout and its concurrent Context Rooms asset work
+were not modified or synchronized.
