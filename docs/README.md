@@ -2,7 +2,7 @@
 title: "Stage 1 documentation map"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [navigation]
 related:
   - 10-execution/current-milestone.md
@@ -32,7 +32,7 @@ Latest Simon-authored planning input: [class brainstorming capture](08-research/
 | Long-term intent / principles | [Vision](00-vision/product-vision.md), [principles](00-vision/product-principles.md); mixed-stage source is context only |
 | What is required, for whom, in which release? | [PRD](01-product/prd.md), [scope/capability map](01-product/scope-and-roadmap.md), [proto-personas/jobs](01-product/personas.md) |
 | What happens end to end? | [25 use cases](01-product/use-cases.md), [8 journeys](01-product/user-journeys.md), [requirement traceability](01-product/traceability.md) |
-| What does the user see/control in every state? | [Product design spec](02-design/product-design-spec.md), [semantic components](02-design/design-system.md) |
+| What does the user see/control in every state? | [Product design spec](02-design/product-design-spec.md), [semantic components](02-design/design-system.md), [Context Rooms direction](02-design/context-rooms.md) |
 | How does it speak and remain accessible? | [Voice/content](02-design/voice-ux.md), [accessibility](02-design/accessibility.md) |
 | What is the brand and name option space? | [Brand/4 identities](02-design/brand-and-visual-identity.md), [naming/screening/iteration](02-design/naming-exploration.md), [local boards](02-design/identity-review.html) |
 | Where do we design and review the app now? | [Browser design/handoff](02-design/browser-prototype.md), [run the prototype](../prototypes/stage-1/README.md), [token handoff](../design-tokens/README.md); [Figma](02-design/figma.md) is paused, final identity unaccepted |
@@ -44,7 +44,7 @@ Latest Simon-authored planning input: [class brainstorming capture](08-research/
 | How do we prove quality and classify failure? | [Canonical evals](06-evals/canonical-tasks.md), [metrics/strategy](06-evals/eval-strategy.md), [failure taxonomy](06-evals/failure-taxonomy.md) |
 | What stock hardware is actually known? | [Reference tablet](07-hardware/reference-hardware.md); exact inventory pending, Stage 3 inactive |
 | What evidence exists and what comes next? | [Source register](08-research/README.md), [Android feasibility](08-research/android-stage-1-feasibility.md), [research program](08-research/research-plan.md) |
-| What is accepted versus proposed? | [ADR index](09-decisions/README.md); eleven accepted records including the MVP control posture, automatic-memory/adaptive-communication, bounded-composition and one-panel Home decisions, two proposals, one deprecated historical record |
+| What is accepted versus proposed? | [ADR index](09-decisions/README.md); twelve accepted records including the MVP control posture, automatic-memory/adaptive-communication, bounded-composition, one-panel Home and Context Rooms decisions, two proposals, one deprecated historical record |
 | How do agents maintain this system? | [AGENTS](../AGENTS.md), [session lifecycle skill](../.agents/skills/granny-session-lifecycle/SKILL.md), [automated maintenance and visibility checks](10-execution/cockpit-guide.md#automated-maintenance-contract), and [UI/UX skill provenance](10-execution/ui-ux-skills.md); [CLAUDE](../CLAUDE.md) delegates to AGENTS |
 | How is work isolated and published? | [Git worktrees, push verification and reviewed integration](10-execution/git-workflow.md); [repository reconciliation metaprompt](10-execution/repository-reconciliation-metaprompt.md) for branch/PR audits; standing task-branch pushes plus checked documentation-only PR/main integration and safe vault synchronization |
 | How do we move from specs to bounded work? | [Delivery workflows and repo skills](10-execution/operating-workflows.md), [first task packets](10-execution/task-packets.md) |

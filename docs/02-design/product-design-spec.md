@@ -2,9 +2,10 @@
 title: "Stage 1 Product Design Specification"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [design, interaction]
 related:
+  - context-rooms.md
   - design-system.md
   - accessibility.md
   - voice-ux.md
@@ -25,6 +26,8 @@ Simon authorized implementation of the [conversation-first plan](conversation-fi
 Granny opens as an ordinary Android application, not a replacement OS. MVP does not require the default launcher role. Home, task, history and settings are app-owned. External apps, Android navigation, permission dialogs, IME, authentication, status/navigation bars and capture selectors remain system/app-owned. Optional launcher role is a separate V1 feasibility choice, not deeper authority.
 
 Home has one invitation, a persistent labeled text composer, labeled Talk and quiet Menu. It may show zero or one optional context panel under [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md), without moving the core anchors. Supported typed requests resolve directly through a documented prototype grammar. Clarification asks one question only for unresolved slots; content/results and exact previews appear inline. Menu exposes Today, History, Settings, Privacy, People and Help; typed secondary requests reach the same local functions. No capability grid, carousel, widget stack or mandatory category picker.
+
+[Context Rooms](context-rooms.md) are an accepted optional secondary direction under [ADR-0015](../09-decisions/ADR-0015-context-rooms.md), not a replacement for this Home. A future Rooms entry may open a direct browsable organization layer while global chat remains universal. Exact entry, screen/component IDs and release placement stay open; no room grid or decorative floor plan is added to SCR-003 by this decision.
 
 ```text
 Conversation: request → clarify if needed → inline exact preview → activity → result
@@ -89,7 +92,7 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Focus, semantics, keyboard/switch and speech:** Stable Stop when active → Header/Menu → thread/invitation → composer/Talk/submit → optional context panel. Updates preserve reading position and input focus; the panel does not insert ahead of current focus, announce repeatedly or autofocus any action.
 **Orientation/window:** shared reflow; core anchors do not move while Home is open. At narrow width or large text the panel follows the input region as one vertical block; content scrolls before controls shrink.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Design review question:** Can the person express a goal and understand or dismiss the single contextual item without learning a feature taxonomy or mistaking it for required work?
+**Design review question:** Can the person express a goal and understand or dismiss the single contextual item without learning a feature taxonomy or mistaking it for required work? A later Rooms prototype must also prove that its secondary entry does not compete with this starting point.
 
 <a id="scr-004"></a>
 ### SCR-004 — Listening, transcript and interpretation

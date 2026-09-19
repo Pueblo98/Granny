@@ -2,7 +2,7 @@
 title: "Stage 1 decision queue and evidence unknowns"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [execution]
 related:
   - development-readiness.md
@@ -42,9 +42,15 @@ T-113 refined execution/journal/Stop and admission contracts without accepting n
 
 **Resolved direction; evidence remains open:** [Simon's 2026-09-17 class brainstorm](../08-research/source-material/2026-09-17-class-brainstorming.md) reinforces conversation-led entry, contextual result modules, optional guidance/annotations, Android delivery and an orchestrator posture. Simon retained consequence-based approval and the MVP/App V1/later split, accepted automatic important-fact capture plus bounded adaptive communication in [ADR-0012](../09-decisions/ADR-0012-automatic-memory-and-adaptive-communication.md), accepted [bounded semantic interface composition](../09-decisions/ADR-0013-bounded-interface-composition.md), and selected the recommended stable conversation Home with zero or one optional context panel in [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md). Exact visual treatment and older-adult comprehension/access evidence remain open; a quiet anchor is the documented fallback.
 
+## Context Rooms direction — OQ-15
+
+**Core direction accepted; access, release and evidence remain open:** Simon accepted [ADR-0015](../09-decisions/ADR-0015-context-rooms.md) on 2026-09-19. [Context Rooms](../02-design/context-rooms.md) are optional recognizable spaces around one global assistant: Home remains universal, room context foregrounds related references, policy-scoped cross-room retrieval remains available, direct browse/search is mandatory, visual atmosphere is bounded and deleting a room does not silently delete underlying data.
+
+Open decisions are the least cluttered Rooms entry, zero/default/user-created starting set, product term, cross-room source disclosure threshold, private-room semantics, allowed visual variation and first admitted release. Resolve them through a fictional-data design prototype and EVAL-008/012 extensions before adding requirements, SCR/CMP IDs or real persistent data. This direction does not reopen ADR-0014 or add a room grid to Home.
+
 ## Simon's minimum next decision packet
 
-OQ-01 and OQ-02's control posture were accepted together on 2026-09-14; actual route admission remains evidence-gated. OQ-14's six product conflicts now have explicit direction. Remaining decisions include ADR-0010/0011 and the [name feedback table](../02-design/naming-exploration.md) / [four identity boards](../02-design/identity-review.html). Choosing Home does not imply accepting its final visuals, name/legal clearance or all token values. Fake contract replay T-103 can proceed in a separately requested coding session without these brand/market choices.
+OQ-01 and OQ-02's control posture were accepted together on 2026-09-14; actual route admission remains evidence-gated. OQ-14's six product conflicts and OQ-15's core Context Rooms direction now have explicit direction. Remaining decisions include ADR-0010/0011, the [name feedback table](../02-design/naming-exploration.md), the [four identity boards](../02-design/identity-review.html) and OQ-15's access/release questions. Choosing Home or Rooms does not imply accepting final visuals, name/legal clearance, token values or persistent-data admission. Fake contract replay T-103 can proceed independently of those brand/context choices.
 
 Unknowns must produce dated evidence or remain unknown. Only update an ADR to accepted with Simon's explicit decision and authority/date; never convert a tentative preference, lack of objection or a successful synthetic test into acceptance.
 

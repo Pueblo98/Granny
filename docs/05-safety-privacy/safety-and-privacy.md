@@ -2,11 +2,12 @@
 title: "Stage 1 Privacy and Data Policy"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [privacy, safety]
 related:
   - action-policy.md
   - threat-model.md
+  - ../02-design/context-rooms.md
   - ../03-agent/memory-system.md
 ---
 
@@ -42,6 +43,14 @@ All durations are proposed product defaults, not observed behavior or legal mand
 No cloud synchronization, raw recordings, automatic memory extraction, ad analytics or remote helper access in MVP. App V1 automatic memory remains local and typed under ADR-0012; it does not change egress consent. A user's selection of a screenshot may contain third-party private content; explain scope and redact before egress. Do not send the whole screen because a model could use more context.
 
 Home's optional context panel follows [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md). It may reference only data and capabilities already admitted for the active release. It does not show message bodies, contact details, health/financial facts, private-memory values or another person's content unsolicited; use a generic description and explicit open action. Hide removes the current item from Home selection, Keep here is an explicit persistence choice, and Reset Home clears Home pins/suppression state without deleting the underlying task, reminder, artifact or memory. No panel impression, click or absence becomes advertising, profiling or family/helper telemetry.
+
+### Context Rooms boundary
+
+[Context Rooms](../02-design/context-rooms.md) are local organizational and retrieval scopes, not separate agents, consent grants or security principals. Opening a room prioritizes its references; it does not transmit the room, load every item, widen an adapter grant or authorize an effect. Cross-room retrieval selects the minimum relevant references after sensitivity, scope and egress checks and carries source/room provenance. Sensitive material never appears unsolicited on global Home, and an item's room membership cannot make prohibited memory or third-party content admissible.
+
+Room creation, membership and atmosphere are private local settings until a later release explicitly admits synchronization or sharing. A proposed private-room flag may further restrict retrieval but must not be represented as encryption or account isolation without implementation evidence. There is no shared/family room entitlement in MVP or by default in later releases.
+
+Deleting a room previews shared references, room-only references, room settings, pending work and external originals outside Granny's authority. **Delete room only** removes the container and moves room-only references to Unfiled by default; it does not delete canonical items, memories or files in another app. **Delete underlying data** is a separate exact destructive flow using the existing tombstone, derivative invalidation and verification rules. The model may prepare either change but trusted local policy/storage commits it; touch access, Stop and truthful partial/unknown results remain available.
 
 ## Data flow and deletion semantics
 
