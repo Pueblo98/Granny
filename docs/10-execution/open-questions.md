@@ -34,6 +34,8 @@ T-113 refined execution/journal/Stop and admission contracts without accepting n
 
 ## Current interaction review — OQ-13
 
+**Shape decision, Simon, 2026-09-17:** [Round conversation](../02-design/brand-and-visual-identity.md#accepted-shape-direction--round-conversation) is selected for future compact/normal/expanded composers and favicon exploration. This resolves composer shape only; the broader identity territories under OQ-07, remaining visual values and human/accessibility evidence remain open. Earlier review text below is historical context, not a request to reopen the selected shape.
+
 **Confirmed direction and implementation authority; final design open:** Simon authorized the [conversation-first build](../02-design/conversation-first-plan.md) on 2026-09-14 and asked to continue its working message checkpoint direction on 2026-09-15. One conversation, talk/type input, contextual content, exact inline/expanded approval and stable Stop are being explored across five simulations. Next assess the integrated experience and proposed Open Day/Bright Signal comparison. This does not accept final brand values, widen autonomy or pass GATE-05. Evidence of older-adult comprehension remains unrun.
 
 ## Brainstorming alignment review — OQ-14

@@ -13,7 +13,28 @@ related:
 
 # Current milestone — conversation-first browser experience
 
+## Claude Design frontend handoff — 2026-09-18
+
+The proposed Stage 1 design system is built and synced in Claude Design project
+**Granny Design System (proposed)** from `feature/design-system-build` commit
+`17658b0`. Simon requested the next Claude Design session begin developing the
+conversation frontend with the selected Codex-designed interaction, very few
+visible buttons and the canonical product principles. The [execution-ready
+frontend metaprompt](../02-design/claude-design-frontend-metaprompt.md) now
+starts with the zero-panel Home and complete fictional message slice, then
+extends the same interaction language to the other MVP flows and supporting
+states.
+
+The metaprompt explicitly reconciles the two later accepted design decisions
+that are absent from the synced `0.1.0` registry: the Round conversation
+composer and ADR-0014/CMP-010 Home context panel. It directs Claude Design to
+log those as system deltas instead of silently inventing one-off app tokens.
+This handoff does not itself create the frontend, accept proposed brand values,
+implement Android code or move a product gate.
+
 ## Current design feedback and vault synchronization — 2026-09-17
+
+**Composer shape selected:** Simon accepted [Round conversation](../02-design/brand-and-visual-identity.md#accepted-shape-direction--round-conversation) for compact, normal and expanded use, with a favicon direction. The selected reference is embedded in the brand note and linked from both design handoffs. Palette/type, implementation and device/user evidence remain open; [selection record](sessions/2026-09-17-round-conversation-selection.md) owns this documentation delivery.
 
 Simon rejects the browser UI as too button-heavy and generically AI-styled. Two separate briefs now serve the next work: [Claude Code builds and syncs the design system](../02-design/claude-code-design-system-handoff.md); [Claude Design composes the app](../02-design/claude-design-handoff.md) under accepted ADR-0013 bounded composition and [ADR-0014's stable conversation Home with zero or one context panel](../09-decisions/ADR-0014-stable-home-context-panel.md). They are separate files, not a bundle. Figma quota does not block the proposed Claude Code route. No system construction, sync or new app UI has been executed by preparing these briefs.
 

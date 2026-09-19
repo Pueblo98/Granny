@@ -18,6 +18,8 @@ related:
 
 ## Direction and authority
 
+**Selected shape, Simon, 2026-09-17:** [Round conversation](brand-and-visual-identity.md#accepted-shape-direction--round-conversation) is the accepted composer direction moving forward, in compact/normal/expanded sizes, with the same silhouette to explore for a favicon. This resolves the shape choice without accepting the rejected browser composition, changing behavior or authorizing implementation in this documentation session.
+
 **Latest feedback, Simon, 2026-09-17:** the implemented UI remains too button-heavy and generically AI-styled. Simon wants a separate Claude design session after settling product questions. [The handoff](claude-design-handoff.md) prepares that session and the requested system. This supersedes earlier positive checkpoint feedback as the current visual review disposition. Do not extend or polish the current composition under the old build request. Semantic safety/accessibility contracts remain; [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md) accepts bounded composition and [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md) now selects a stable conversation Home with zero or one optional context panel.
 
 **Confirmed direction:** Simon rejected the feature-button browser Home on 2026-09-14 and requested a minimal chatbot-like experience with less visible interface and more functionality inside the conversation. The cockpit-first planning task is complete.
