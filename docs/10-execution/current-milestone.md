@@ -13,11 +13,13 @@ related:
 
 # Current milestone — Context Rooms on the conversation-first shell
 
-## T-101 desk route inventory — 2026-09-19
+## T-101 route and partial physical inventory — 2026-09-19
 
 The [current-source route assessment](../08-research/2026-09-19-t101-route-inventory.md) now covers all five ADR-0009 experiments and prepares the non-identifying physical inventory and smallest synthetic experiments. It finds a go route for Granny-local text, conditional routes for scoped screen explanation and named media integration, conditional honest message compose handoff but no send claim, and no ordinary candidate route for sent-photo provenance. Only screen explanation and media remain plausible external candidates, both unrun, so the accepted two-external-workflow kill criterion is at high risk.
 
-This is desk evidence only. No tablet, command, install, account, grant, provider or external app was used. T-101 remains in progress; GATE-03/04 and GATE-06 device/real-data conditions remain open. The next bounded step is Simon-authorized Step B read-only physical inventory on the supplied pseudonymous tablet; T-104 still waits for actual sent-photo route and device-safety evidence.
+Simon then manually read non-identifying Settings values from `TBL-01`: Samsung `SM-X238U` / Galaxy Tab A11+ 5G, Android 16, One UI 8.0, build/patch, English (United States), partial display/input/access state and installed-app versions. The [physical record](../08-research/2026-09-19-t101-physical-inventory.md) is user-reported and incomplete; Codex did not connect to or operate the tablet. No command, install, update, grant, account/content inspection, external-app actuation or capability experiment occurred.
+
+T-101 remains in progress; GATE-03/04 and GATE-06 device/real-data conditions remain open. The recommended next bounded experiment is C2 one-session screen explanation with local synthetic content because it addresses one of the two remaining plausible external workflows. It requires separate Android-scaffold/install/per-session-capture/actuation/teardown authority; it is not authorized by the inventory. T-104 still waits for actual sent-photo route and device-safety evidence.
 
 ## Active Context Rooms plan — 2026-09-19
 
@@ -179,7 +181,7 @@ Current official Play policy does not permit a general-assistant AccessibilitySe
 
 ## Proposed next milestone
 
-Evidence-led foundation: MVP/control review T-100 and the bounded offline T-103 core are complete. T-101 Step A and the Step B/C plans are prepared; next, obtain explicit tablet access for the read-only physical inventory, then separately authorize the selected synthetic experiments. T-104 waits for sent-photo route/device evidence. Produce/test low-fi interaction and iterate naming/identity (T-102/108) within their authorization and evidence boundaries. Do not begin broad MVP implementation or personal-data automation.
+Evidence-led foundation: MVP/control review T-100 and the bounded offline T-103 core are complete. T-101 Step A and the Step C plans are prepared; a partial user-reported Step B inventory now identifies the reference tablet, while unresolved configuration fields and all runtime cases remain unrun. Next, separately authorize one selected synthetic experiment; C2 is recommended for thesis-risk reduction. T-104 waits for sent-photo route/device evidence. Produce/test low-fi interaction and iterate naming/identity (T-102/108) within their authorization and evidence boundaries. Do not begin broad MVP implementation or personal-data automation.
 
 Naming recommendation: Daykind / Handspan / Clearfold, all uncleared with documented concerns. Identity recommendation: test Open Day against challengers. Neither is accepted. That initial browser used provisional grayscale; the current conversation build adds reviewer-only territory comparisons. Figma remains a partial paused artifact.
 
