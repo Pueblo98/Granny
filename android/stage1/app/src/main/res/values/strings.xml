@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Stage 1 voice shell</string>
     <string name="title">Talk to your assistant</string>
-    <string name="privacy_explanation">Speech stays with Android\'s on-device recognizer. Review the words before using them.</string>
+    <string name="privacy_explanation">Speech input uses Android\'s on-device recognizer. Spoken readback uses an installed voice that reports no network requirement. Nothing is read automatically.</string>
     <string name="transcript_hint">Your request appears here, or type it yourself</string>
     <string name="talk">Talk</string>
     <string name="done_listening">Done listening</string>
@@ -22,4 +22,24 @@
     <string name="size_current">Current display size</string>
     <string name="size_not_selected">Not selected</string>
     <string name="preview_size_selected">✓ Preview %1$s — selected</string>
+    <string name="spoken_readback_heading">Spoken readback</string>
+    <string name="spoken_readback_scope">Granny reads the visible request only after you choose Read aloud. Stop speaking keeps the text on screen and does not change the microphone.</string>
+    <string name="read_request_aloud">Read request aloud</string>
+    <string name="stop_speaking">Stop speaking</string>
+    <string name="repeat_readback">Repeat readback</string>
+    <string name="sound_off">Sound off</string>
+    <string name="sound_on">Sound on</string>
+    <string name="sound_state_on">Spoken output enabled</string>
+    <string name="sound_state_off">Spoken output disabled</string>
+    <string name="speech_rate_heading">Speech rate</string>
+    <string name="preview_speech_rate">Choose %1$s rate</string>
+    <string name="preview_speech_rate_selected">✓ %1$s rate — selected</string>
+    <string name="preview_selected_rate">Preview selected rate</string>
+    <string name="apply_speech_rate">Apply speech rate</string>
+    <string name="restore_speech_rate">Restore previous speech rate</string>
+    <string name="cancel_speech_rate_preview">Cancel speech-rate preview</string>
+    <string name="speech_rate_sample">This is how Granny will sound at the selected speech rate.</string>
+    <string name="speech_rate_selected">Rate selected for preview</string>
+    <string name="speech_rate_current">Current speech rate</string>
+    <string name="speech_rate_not_selected">Rate not selected</string>
 </resources>

@@ -12,6 +12,12 @@ import java.util.Map;
 import org.pueblo98.stage1.readability.TextScale;
 import org.pueblo98.stage1.readability.TextScaleController;
 import org.pueblo98.stage1.readability.SharedPreferencesTextScaleStore;
+import org.pueblo98.stage1.speech.AndroidTextToSpeechOutput;
+import org.pueblo98.stage1.speech.SharedPreferencesSpeechSettingsStore;
+import org.pueblo98.stage1.speech.SpeechOutputAdapter;
+import org.pueblo98.stage1.speech.SpeechOutputController;
+import org.pueblo98.stage1.speech.SpeechRate;
+import org.pueblo98.stage1.speech.SpeechSettingsController;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -30,13 +36,14 @@ import org.pueblo98.stage1.voice.TranscriptHypotheses;
 import org.pueblo98.stage1.voice.VoiceRecognizerAdapter;
 import org.pueblo98.stage1.voice.VoiceSessionController;
 
-/** Bounded tap-to-talk shell for T-120; it does not connect to a planner or external action. */
+/** Bounded T-120/T-121 voice and readback shell; no planner or external action is connected. */
 public final class MainActivity extends Activity implements VoiceRecognizerAdapter.Listener {
     private static final int MICROPHONE_PERMISSION_REQUEST = 120;
     private static final long NO_SPEECH_PROMPT_MS = 10_000L;
     private static final long MAX_LISTENING_MS = 30_000L;
 
     private final VoiceSessionController controller = new VoiceSessionController();
+    private final SpeechOutputController speechController = new SpeechOutputController();
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private final Map<TextView, Float> baseTextSizes = new LinkedHashMap<>();
@@ -48,6 +55,18 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private final Map<Button, TextScale> sizeChoices = new LinkedHashMap<>();
     private boolean retainedTextScale;
     private VoiceRecognizerAdapter recognizer;
+    private SpeechOutputAdapter speechOutput;
+    private SpeechSettingsController speechSettings;
+    private TextView speechStatus;
+    private TextView speechSettingsStatus;
+    private Button readAloudButton;
+    private Button stopSpeakingButton;
+    private Button repeatButton;
+    private Button soundButton;
+    private Button previewRateButton;
+    private Button applyRateButton;
+    private Button restoreRateButton;
+    private final Map<Button, SpeechRate> rateChoices = new LinkedHashMap<>();
     private TextView statusView;
     private TextView provisionalView;
     private EditText transcriptEditor;
@@ -60,6 +79,66 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private boolean permissionDeniedThisProcess;
     private boolean rendering;
 
+    private final SpeechOutputAdapter.Listener speechListener = new SpeechOutputAdapter.Listener() {
+        @Override
+        public void onAvailabilityChanged(
+                SpeechOutputAdapter.Availability availability, String explanation) {
+            runOnUiThread(() -> {
+                speechController.availabilityChanged(
+                        availability == SpeechOutputAdapter.Availability.AVAILABLE, explanation);
+                renderSpeech();
+                renderButtonsOnly();
+            });
+        }
+
+        @Override
+        public void onStarted(long generation) {
+            runOnUiThread(() -> {
+                if (speechController.started(generation)) {
+                    renderSpeech();
+                    renderButtonsOnly();
+                }
+            });
+        }
+
+        @Override
+        public void onCompleted(long generation) {
+            runOnUiThread(() -> {
+                SpeechOutputController.Snapshot before = speechController.snapshot();
+                if (speechController.completed(generation)) {
+                    if (before.purpose == SpeechOutputController.Purpose.RATE_PREVIEW) {
+                        SpeechRate preview = speechSettings.snapshot().previewRate;
+                        if (preview != null) {
+                            speechSettings.markPreviewHeard(preview);
+                        }
+                    }
+                    renderSpeech();
+                    renderButtonsOnly();
+                }
+            });
+        }
+
+        @Override
+        public void onStopped(long generation) {
+            runOnUiThread(() -> {
+                if (speechController.stopped(generation)) {
+                    renderSpeech();
+                    renderButtonsOnly();
+                }
+            });
+        }
+
+        @Override
+        public void onError(long generation, String recoveryMessage) {
+            runOnUiThread(() -> {
+                if (speechController.error(generation, recoveryMessage)) {
+                    renderSpeech();
+                    renderButtonsOnly();
+                }
+            });
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +147,10 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         textScale = retainedTextScale ? (TextScaleController) retained
                 : new TextScaleController(new SharedPreferencesTextScaleStore(
                         getSharedPreferences("granny_text_scale", MODE_PRIVATE)));
+        speechSettings = new SpeechSettingsController(new SharedPreferencesSpeechSettingsStore(
+                getSharedPreferences("granny_speech_settings", MODE_PRIVATE)));
         recognizer = new AndroidOnDeviceVoiceRecognizer(this);
+        speechOutput = new AndroidTextToSpeechOutput(this, speechListener);
         getWindow().setDecorFitsSystemWindows(false);
         setContentView(buildContent());
         render();
@@ -120,6 +202,10 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!rendering && transcriptEditor.isEnabled()) {
                     controller.edit(s.toString());
+                    if (speechController.contentChanged(controller.snapshot().revision)) {
+                        speechOutput.stop();
+                    }
+                    renderSpeech();
                     renderButtonsOnly();
                 }
             }
@@ -138,6 +224,12 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
                         textScale.cancelPreview();
                         renderTextSize();
                         renderButtonsOnly();
+                    } else if (speechController.isActive()) {
+                        stopSpeaking("Speech stopped. The text remains on screen.");
+                    } else if (speechSettings.snapshot().previewRate != null) {
+                        speechSettings.cancelPreview();
+                        renderSpeech();
+                        renderButtonsOnly();
                     } else {
                         stopEverything("Stopped. You can talk again or type.");
                     }
@@ -154,6 +246,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         content.addView(typeButton, spaced(matchWrap(), gap));
         content.addView(useButton, spaced(matchWrap(), gap));
 
+        addSpeechControls(content, gap);
         addTextSizeControls(content, gap);
 
         TextView boundary = new TextView(this);
@@ -182,6 +275,183 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private void registerTextSize(TextView view, float baseSp) {
         baseTextSizes.put(view, baseSp);
         view.setTextSize(TypedValue.COMPLEX_UNIT_SP, baseSp);
+    }
+
+    private void addSpeechControls(LinearLayout content, int gap) {
+        TextView heading = new TextView(this);
+        heading.setText(R.string.spoken_readback_heading);
+        heading.setAccessibilityHeading(true);
+        registerTextSize(heading, 28);
+        content.addView(heading, spaced(matchWrap(), gap * 2));
+
+        TextView scope = new TextView(this);
+        scope.setText(R.string.spoken_readback_scope);
+        registerTextSize(scope, 18);
+        content.addView(scope, spaced(matchWrap(), gap));
+
+        speechStatus = new TextView(this);
+        registerTextSize(speechStatus, 20);
+        speechStatus.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
+        content.addView(speechStatus, spaced(matchWrap(), gap));
+
+        readAloudButton = button(R.string.read_request_aloud, view -> startReadback(false));
+        stopSpeakingButton = button(
+                R.string.stop_speaking,
+                view -> stopSpeaking("Speech stopped. The text remains on screen."));
+        repeatButton = button(R.string.repeat_readback, view -> startReadback(true));
+        content.addView(readAloudButton, spaced(matchWrap(), gap));
+        content.addView(stopSpeakingButton, spaced(matchWrap(), gap));
+        content.addView(repeatButton, spaced(matchWrap(), gap));
+
+        speechSettingsStatus = new TextView(this);
+        registerTextSize(speechSettingsStatus, 20);
+        speechSettingsStatus.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
+        content.addView(speechSettingsStatus, spaced(matchWrap(), gap));
+
+        soundButton = button(R.string.sound_off, view -> toggleSound());
+        content.addView(soundButton, spaced(matchWrap(), gap));
+
+        for (SpeechRate choice : SpeechRate.values()) {
+            Button select = button(R.string.speech_rate_heading, view -> {
+                stopSpeaking(null);
+                speechSettings.preview(choice);
+                renderSpeech();
+                renderButtonsOnly();
+            });
+            select.setText(getString(R.string.preview_speech_rate, choice.label()));
+            rateChoices.put(select, choice);
+            content.addView(select, spaced(matchWrap(), gap));
+        }
+
+        previewRateButton = button(R.string.preview_selected_rate, view -> previewSpeechRate());
+        applyRateButton = button(R.string.apply_speech_rate, view -> {
+            speechSettings.applyRate();
+            renderSpeech();
+            renderButtonsOnly();
+        });
+        restoreRateButton = button(R.string.restore_speech_rate, view -> {
+            stopSpeaking(null);
+            speechSettings.restoreRate();
+            renderSpeech();
+            renderButtonsOnly();
+        });
+        content.addView(previewRateButton, spaced(matchWrap(), gap));
+        content.addView(applyRateButton, spaced(matchWrap(), gap));
+        content.addView(restoreRateButton, spaced(matchWrap(), gap));
+    }
+
+    private void startReadback(boolean repeat) {
+        SpeechSettingsController.Snapshot settings = speechSettings.snapshot();
+        VoiceSessionController.Snapshot voice = controller.snapshot();
+        if (!settings.soundEnabled) {
+            renderSpeech();
+            return;
+        }
+        SpeechOutputController.Request request = repeat
+                ? speechController.repeat(voice.revision, settings.currentRate.multiplier())
+                : speechController.beginReadback(
+                        voice.displayText, voice.revision, settings.currentRate.multiplier());
+        startSpeechRequest(request);
+    }
+
+    private void previewSpeechRate() {
+        SpeechSettingsController.Snapshot settings = speechSettings.snapshot();
+        SpeechRate rate = settings.previewRate;
+        if (rate == null || !settings.soundEnabled) {
+            renderSpeech();
+            return;
+        }
+        SpeechOutputController.Request request = speechController.beginRatePreview(
+                getString(R.string.speech_rate_sample), rate.multiplier());
+        startSpeechRequest(request);
+    }
+
+    private void startSpeechRequest(SpeechOutputController.Request request) {
+        if (request == null) {
+            renderSpeech();
+            renderButtonsOnly();
+            return;
+        }
+        if (!speechOutput.speak(
+                request.generation, request.exactText, request.rate, speechListener)) {
+            speechController.error(
+                    request.generation,
+                    "Spoken readback could not start. Continue with the written text.");
+        }
+        renderSpeech();
+        renderButtonsOnly();
+    }
+
+    private void stopSpeaking(String reason) {
+        boolean active = speechController.stop(reason);
+        if (active) {
+            speechOutput.stop();
+        }
+        renderSpeech();
+        renderButtonsOnly();
+    }
+
+    private void toggleSound() {
+        boolean enable = !speechSettings.snapshot().soundEnabled;
+        if (!enable) {
+            stopSpeaking("Speech stopped because Sound off was selected. Written text remains available.");
+        }
+        speechSettings.setSoundEnabled(enable);
+        renderSpeech();
+        renderButtonsOnly();
+    }
+
+    private void renderSpeech() {
+        if (speechStatus == null) {
+            return;
+        }
+        SpeechOutputController.Snapshot output = speechController.snapshot();
+        SpeechSettingsController.Snapshot settings = speechSettings.snapshot();
+        VoiceSessionController.Snapshot voice = controller.snapshot();
+        boolean outputAvailable = output.phase != SpeechOutputController.Phase.INITIALIZING
+                && output.phase != SpeechOutputController.Phase.UNAVAILABLE;
+        boolean outputActive = speechController.isActive();
+        boolean captureActive = voice.phase == VoiceSessionController.Phase.STARTING
+                || voice.phase == VoiceSessionController.Phase.LISTENING
+                || voice.phase == VoiceSessionController.Phase.STOPPING
+                || voice.phase == VoiceSessionController.Phase.REQUESTING_PERMISSION;
+        boolean writable = settings.persistenceState
+                == SpeechSettingsController.PersistenceState.HEALTHY
+                || settings.persistenceState == SpeechSettingsController.PersistenceState.ABSENT;
+
+        speechStatus.setText(output.message);
+        speechSettingsStatus.setText(settings.message);
+        readAloudButton.setEnabled(outputAvailable && settings.soundEnabled && !outputActive
+                && !captureActive && !voice.displayText.isBlank());
+        stopSpeakingButton.setVisibility(outputActive ? View.VISIBLE : View.GONE);
+        repeatButton.setEnabled(outputAvailable && settings.soundEnabled && !outputActive
+                && !captureActive && output.canRepeat);
+        soundButton.setEnabled(writable);
+        soundButton.setText(settings.soundEnabled ? R.string.sound_off : R.string.sound_on);
+        soundButton.setStateDescription(getString(
+                settings.soundEnabled ? R.string.sound_state_on : R.string.sound_state_off));
+
+        for (Map.Entry<Button, SpeechRate> entry : rateChoices.entrySet()) {
+            Button choice = entry.getKey();
+            boolean selected = entry.getValue() == settings.previewRate;
+            choice.setEnabled(outputAvailable && settings.soundEnabled && !outputActive
+                    && !captureActive && writable);
+            choice.setSelected(selected);
+            choice.setText(getString(
+                    selected ? R.string.preview_speech_rate_selected : R.string.preview_speech_rate,
+                    entry.getValue().label()));
+            choice.setStateDescription(selected
+                    ? getString(R.string.speech_rate_selected)
+                    : entry.getValue() == settings.currentRate
+                            ? getString(R.string.speech_rate_current)
+                            : getString(R.string.speech_rate_not_selected));
+        }
+        previewRateButton.setEnabled(outputAvailable && settings.soundEnabled && !outputActive
+                && !captureActive && settings.previewRate != null && writable);
+        applyRateButton.setEnabled(!outputActive && settings.previewRate != null
+                && settings.previewHeard && writable);
+        restoreRateButton.setEnabled(!outputActive && !captureActive
+                && settings.restoreAvailable && writable);
     }
 
     private void addTextSizeControls(LinearLayout content, int gap) {
@@ -237,7 +507,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         boolean voiceBusy = controller.snapshot().phase == VoiceSessionController.Phase.STARTING
                 || controller.snapshot().phase == VoiceSessionController.Phase.LISTENING
                 || controller.snapshot().phase == VoiceSessionController.Phase.STOPPING
-                || controller.snapshot().phase == VoiceSessionController.Phase.REQUESTING_PERMISSION;
+                || controller.snapshot().phase == VoiceSessionController.Phase.REQUESTING_PERMISSION
+                || speechController.isActive();
         boolean writable = snapshot.persistenceState == TextScaleController.PersistenceState.HEALTHY
                 || snapshot.persistenceState == TextScaleController.PersistenceState.ABSENT;
         for (Map.Entry<Button, TextScale> entry : sizeChoices.entrySet()) {
@@ -257,6 +528,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
 
     private void startTalk() {
         textScale.cancelPreview();
+        speechSettings.cancelPreview();
+        stopSpeaking("Speech stopped because listening started.");
         cancelTimers();
         recognizer.cancel();
 
@@ -320,12 +593,15 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
 
     private void startTyping() {
         textScale.cancelPreview();
+        speechSettings.cancelPreview();
+        stopSpeaking("Speech stopped because the request is being edited.");
         VoiceSessionController.Snapshot snapshot = controller.snapshot();
         cancelTimers();
         recognizer.cancel();
         controller.beginTyping(snapshot.displayText.isBlank()
                 ? snapshot.provisionalText
                 : snapshot.displayText);
+        speechController.contentChanged(controller.snapshot().revision);
         render();
         transcriptEditor.requestFocus();
         InputMethodManager input = getSystemService(InputMethodManager.class);
@@ -337,8 +613,12 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private void stopEverything(String reason) {
         cancelTimers();
         recognizer.cancel();
+        if (speechController.stop("Speech stopped. The text remains on screen.")) {
+            speechOutput.stop();
+        }
         controller.stop(reason);
         textScale.cancelPreview();
+        speechSettings.cancelPreview();
         pendingPermissionGeneration = -1;
         render();
     }
@@ -412,6 +692,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         }
         rendering = false;
         renderTextSize();
+        renderSpeech();
         renderButtonsOnly();
     }
 
@@ -424,8 +705,14 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         doneButton.setVisibility(
                 snapshot.phase == VoiceSessionController.Phase.LISTENING ? View.VISIBLE : View.GONE);
         boolean sizePending = textScale.snapshot().preview != null;
-        stopButton.setText(sizePending && !capture ? R.string.cancel_size_preview : R.string.stop);
-        stopButton.setVisibility(capture || sizePending
+        boolean speechActive = speechController.isActive();
+        boolean ratePending = speechSettings.snapshot().previewRate != null;
+        stopButton.setText(sizePending && !capture && !speechActive
+                ? R.string.cancel_size_preview
+                : ratePending && !capture && !speechActive
+                        ? R.string.cancel_speech_rate_preview
+                        : R.string.stop);
+        stopButton.setVisibility(capture || sizePending || speechActive || ratePending
                 || snapshot.phase == VoiceSessionController.Phase.REQUESTING_PERMISSION
                 ? View.VISIBLE : View.GONE);
         typeButton.setVisibility(snapshot.phase == VoiceSessionController.Phase.FINAL
@@ -450,7 +737,9 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         } else {
             textScale.reload();
         }
+        speechSettings.reload();
         renderTextSize();
+        renderSpeech();
         renderButtonsOnly();
     }
 
@@ -458,7 +747,12 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     protected void onStop() {
         super.onStop();
         if (!isChangingConfigurations()) textScale.cancelPreview();
+        speechSettings.cancelPreview();
+        if (speechController.clear()) {
+            speechOutput.stop();
+        }
         renderTextSize();
+        renderSpeech();
         renderButtonsOnly();
         VoiceSessionController.Phase phase = controller.snapshot().phase;
         if (phase == VoiceSessionController.Phase.STARTING
@@ -472,6 +766,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     protected void onDestroy() {
         cancelTimers();
         recognizer.destroy();
+        speechOutput.destroy();
         super.onDestroy();
     }
 

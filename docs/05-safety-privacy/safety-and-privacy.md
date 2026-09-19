@@ -2,7 +2,7 @@
 title: "Stage 1 Privacy and Data Policy"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [privacy, safety]
 related:
   - action-policy.md
@@ -29,6 +29,7 @@ All durations are proposed product defaults, not observed behavior or legal mand
 |---|---|---|---|
 | Raw microphone audio for active intent | Device buffer; chosen speech processor only with separate consent | Tap-to-talk and OS grant; memory only, discard after final transcription or capture failure; ≤30s capture | Stop discards buffer; no raw audio history/export; provider retention must be separately disclosed/tested |
 | Transcript/typed request/local draft | Local active session; minimized planner payload if consented | Explicit task; clear at task end unless user still reviewing, or 15-minute inactivity/lock/process loss; absolute session cap 1 hour | Edit supersedes old version; cancel clears permits; no default transcript archive |
+| Explicit spoken-readback text | Process memory and the selected installed Android TTS service | Exact visible revision only after Read/Repeat; clear repeat copy on edit, lifecycle exit or route loss; no app audio file | Stop interrupts output and preserves written text; no network voice fallback; engine offline/retention behavior requires device evidence |
 | Semantic tree / screenshot / selected image | Scoped local observer; selected redacted slice to provider if consented | User-started scope; in-memory only; discard after step/task or protected boundary/revocation | No screenshot gallery/audit; grant does not authorize training or export |
 | Selected file URI / attachment references | Local scoped content grant; approved adapter | Only task-needed URI; release when no longer required; persistent grant only explicitly selected V1 use | Delete references/caches; user app's original files remain |
 | Explicit UI/voice preferences | Local private store | Explicit setting choice until changed/deleted | Review/edit/restore; export local settings if requested |
@@ -84,4 +85,9 @@ Before real users: name support owner and reachable channel/hours, install prove
 
 Suspected wrong-person send/data exposure: disable affected capability locally; preserve minimal content-free event; tell user the known effect and uncertainty; prevent repeated action; investigate using synthetic reproduction. Do not upload raw personal screen/audio by default. Restore capability only after root cause, updated eval and reviewer approval. Account recovery belongs to owning account provider; support never asks for passwords/OTP or takes invisible control.
 
-**Current state:** policy specified, not implemented or validated. Encryption, backup, provider retention, deletion, consent comprehension and helper boundaries need EVAL-008/010/016/017 and RES-08 before their release gates.
+**Current state:** T-120/T-121 implement bounded process-memory transcript and
+explicit spoken-readback controls with host evidence only. The rest of this
+policy is specified, not implemented or validated. Installed TTS engine egress,
+encryption, backup, provider retention, deletion, consent comprehension and
+helper boundaries still need their named device/eval/research evidence before
+release gates.
