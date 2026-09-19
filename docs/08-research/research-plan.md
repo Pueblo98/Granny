@@ -2,7 +2,7 @@
 title: "Stage 1 evidence and research program"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-19
 tags: [research]
 related:
   - android-stage-1-feasibility.md
@@ -51,11 +51,11 @@ Use synthetic contacts, content and accounts for prototype tasks. Do not ask par
 ## RES-03 — Understandable control and recovery
 
 - **Status:** planned / unrun (desk sources linked separately).
-- **Hypothesis:** People can distinguish prepare, external handoff, verified completion and unknown outcome, and can stop without being blamed.
+- **Hypothesis:** People can distinguish prepare, external handoff, verified completion and unknown outcome, can stop without being blamed, and can understand optional Context Rooms without losing the global assistant/Home model.
 - **Method / participants / environment:** Two formative rounds of 5–6 proposed participants each, separate from family; low-fidelity prototype followed by revised interaction; include P-02 access profiles.
-- **Artifact / protocol:** Think-aloud only where not disrupting task; ask teach-back before commit/after result; wrong-person, timeout and partial tasks; artifact confusion map and frame revisions.
-- **Decision criterion:** Proposed ≥90% correct consequence/outcome explanations and find Stop within5s; any high-consequence misunderstanding blocks that flow and triggers redesign/retest. Report n and caveats.
-- **Order / owner / trace / gate:** Design/research lead; after initial jobs, before polished identity selection; PRD-OUT-002/ACC-004/SAF-002; GATE-05.
+- **Artifact / protocol:** Think-aloud only where not disrupting task; ask teach-back before commit/after result; wrong-person, timeout and partial tasks. In the separate T-119 round, test Home → Rooms → Kitchen, one cross-room source, direct item finding with the model unavailable, return Home and room-versus-data deletion. Artifact confusion map and frame revisions.
+- **Decision criterion:** Proposed ≥90% correct consequence/outcome explanations and find Stop within5s; proposed ≥90% correctly identify one assistant/current scope/source and every participant distinguishes room deletion from underlying-data deletion before destructive support. Any high-consequence misunderstanding blocks that flow and triggers redesign/retest. Report n and caveats.
+- **Order / owner / trace / gate:** Design/research lead; after initial jobs, before polished identity selection; PRD-OUT-002/FR-022/ACC-004/SAF-002; GATE-05.
 - **Ethics / privacy:** Disclose Wizard-of-Oz; all messages fictional; adult can reject delegation; no shame/leading coaching; accessible study material.
 
 <a id="res-04"></a>
@@ -106,11 +106,11 @@ Use synthetic contacts, content and accounts for prototype tasks. Do not ask par
 ## RES-08 — Memory, family and support preserve user primacy
 
 - **Status:** planned / unrun (desk sources linked separately).
-- **Hypothesis:** Explicit limited memory and adult-approved helper proposals create value without surveillance or coerced consent.
+- **Hypothesis:** Explicit limited memory, Context Room organization and adult-approved helper proposals create value without surveillance, coerced consent or hidden cross-context disclosure.
 - **Method / participants / environment:** Separate adult interviews and 6–8 proposed helper interviews, not joint answers on private interests; memory cards, export/deletion teach-back and helper-permission scenarios; privacy reviewer tests data flows.
-- **Artifact / protocol:** Artifact allowed/undesired memory classes and helper scopes; adversarial buyer-control, revocation, lost device, support impersonation; synthetic deletion/restore/egress tests.
+- **Artifact / protocol:** Artifact allowed/undesired memory classes, room/private-scope expectations and helper scopes; adversarial cross-room leak, wrong membership, room deletion/restore, buyer-control, revocation, lost device, support impersonation; synthetic deletion/restore/egress tests.
 - **Decision criterion:** Adults can explain stored/shared data and revoke; no helper needs private history to provide proposed setup support. If desired value requires surveillance, reject scope rather than normalize it. V1 facts/helper stay gated.
-- **Order / owner / trace / gate:** Privacy/research lead; early concept then storage tests; PRD-PRV-001–006; GATE-06/09 and V1.
+- **Order / owner / trace / gate:** Privacy/research lead; early concept then storage tests; PRD-FR-022/PRV-001–006; GATE-06/09 and V1.
 - **Ethics / privacy:** Recruit adult privately where safe; no disclosure of one party's interview to other; compensation not conditioned on agreement; specialist safeguarding advice for coercion cases.
 
 <a id="res-09"></a>

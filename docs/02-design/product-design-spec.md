@@ -19,7 +19,7 @@ related:
 
 ## Current conversation composition
 
-Simon authorized implementation of the [conversation-first plan](conversation-first-plan.md) on 2026-09-14 and continued the message checkpoint direction on 2026-09-15. The proposed screen IDs below now describe logical surfaces within one conversation, with secondary settings/dialogs where useful. Exact confirmation, Stop, privacy and accessibility obligations remain. This browser exploration does not accept production interaction/identity or prove Android capability.
+Simon authorized implementation of the [conversation-first plan](conversation-first-plan.md) on 2026-09-14 and continued the message checkpoint direction on 2026-09-15. On 2026-09-19 he adopted [Context Rooms](context-rooms.md) as the next experience direction. The proposed screen IDs below describe logical surfaces around one conversation, including the global Home and optional room context. Exact confirmation, Stop, privacy and accessibility obligations remain. Browser exploration does not accept production interaction/identity or prove Android capability.
 
 ## Experience architecture
 
@@ -27,12 +27,13 @@ Granny opens as an ordinary Android application, not a replacement OS. MVP does 
 
 Home has one invitation, a persistent labeled text composer, labeled Talk and quiet Menu. It may show zero or one optional context panel under [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md), without moving the core anchors. Supported typed requests resolve directly through a documented prototype grammar. Clarification asks one question only for unresolved slots; content/results and exact previews appear inline. Menu exposes Today, History, Settings, Privacy, People and Help; typed secondary requests reach the same local functions. No capability grid, carousel, widget stack or mandatory category picker.
 
-[Context Rooms](context-rooms.md) are an accepted optional secondary direction under [ADR-0015](../09-decisions/ADR-0015-context-rooms.md), not a replacement for this Home. A future Rooms entry may open a direct browsable organization layer while global chat remains universal. Exact entry, screen/component IDs and release placement stay open; no room grid or decorative floor plan is added to SCR-003 by this decision.
+[Context Rooms](context-rooms.md) are the accepted active design direction under [ADR-0015](../09-decisions/ADR-0015-context-rooms.md), not a replacement for this Home. A tested secondary Rooms entry opens SCR-016; SCR-017 keeps the same conversation shell while foregrounding one room. T-119 prototypes these surfaces with fictional data. Production placement is proposed for App V1; no room grid or decorative floor plan is added to SCR-003.
 
 ```text
 Conversation: request → clarify if needed → inline exact preview → activity → result
                    └→ inline photos / screen explanation / media / text preview
 Menu → local settings / people / privacy / history / help → same conversation
+Menu/secondary route → SCR-016 Rooms → SCR-017 current room → same conversation
 ```
 
 **Back** moves one app navigation level; from a pending confirmation it cancels that approval and preserves local draft. **Granny Home** cancels automation then goes to SCR-003; it is distinct from Android Home. **Android Home/Recents** retain ordinary Android behavior; returning never resumes automation silently. **Stop** latches task cancellation, including pending speech/capture, and reconciles already-dispatched effects. **Take over** performs Stop and leaves external app state intact. **Cancel** exits an uncommitted preview or input. **Stop speaking** only mutes output and is explicitly labeled; it does not mean microphone off.
@@ -262,6 +263,34 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
 **Design review question:** Support copy should not demand model/API vocabulary.
 
+<a id="scr-016"></a>
+### SCR-016 — Rooms library and creation
+
+**Purpose/links:** J-009 / PRD-FR-022.
+**Entry/exit:** Home/Menu or tested secondary Rooms route → open room, create room or return Home.
+**Hierarchy/content:** Rooms heading, explanation that rooms bring related things closer, calm list of CMP-011 entries, Unfiled/All items access and optional Create room.
+**Controls:** Whole labeled room row; Search all; Create room; Archive/manage; Home/Back. No permanent Home grid, carousel or decorative floor-plan navigation.
+**Data/sensitivity:** Room name/purpose, safe visual preset, coarse item/recent state; private item detail hidden until explicit open.
+**Loading/empty/disabled/error/interrupted:** Empty explains that Home still handles everything; offline direct local browse works; failed resolver does not remove the library; uncertain suggested placement remains Unfiled.
+**Focus, semantics, keyboard/switch and speech:** Heading → explanatory text → Search/Create → room rows → Unfiled/Home; visual motif decorative when the written name/purpose conveys identity.
+**Orientation/window:** At large text use one vertical list; no masonry, map or horizontal shelf. Row content wraps before actions split.
+**Telemetry/eval:** Coarse screen/control events only; EVAL-008/012 and T-119 fixture.
+**Design review question:** Find the least-cluttered entry that remains discoverable without making Rooms compete with Talk/Type.
+
+<a id="scr-017"></a>
+### SCR-017 — Current Context Room
+
+**Purpose/links:** J-009 / PRD-FR-022.
+**Entry/exit:** SCR-016 room row or one Home continuation → browse/ask/manage → Rooms or global Home.
+**Hierarchy/content:** Persistent written room name/purpose and scope cue, bounded atmosphere, room-relevant recent/list/search content, CMP-011 source cues and the same Round conversation composer.
+**Controls:** Talk, Type, Menu and active Stop in shared positions; Browse/search; View source/Exclude source; Add/move; Manage/archive/delete room; Rooms/Home.
+**Data/sensitivity:** Minimum admitted current-room references plus only relevant cross-room/global context with source, revision and sensitivity metadata.
+**Loading/empty/disabled/error/interrupted:** Empty room still supports conversation; model/network failure leaves direct browse/search; cross-room denial returns no guessed content; deletion conflict opens exact inventory and separate underlying-data flow.
+**Focus, semantics, keyboard/switch and speech:** Room heading and scope cue announce once; source cue precedes source actions; returning from item/source restores position; core controls match Home semantics/order.
+**Orientation/window:** Atmosphere never consumes the reading column or reduces contrast; large text collapses supporting metadata before written identity or controls.
+**Telemetry/eval:** No item names/content in audit; EVAL-008/012 and T-119 fixture.
+**Design review question:** Does the person understand current scope, one assistant and escape to global Home without coaching?
+
 ## Authoritative interaction-state model
 
 The local session coordinator owns state; the model cannot assign completed. This table defines allowed outgoing edges. Any active nonterminal state may additionally transition to interrupted/cancelled on local user request, permission lost when a dependency is revoked, authentication required on a recognized protected boundary, or offline/degraded on dependency loss. An unrecoverable local denial/error may transition to failed safely only when absence of unintended effects is known; otherwise use partially completed with explicit unknown effect. Those exceptional edges revoke pending permits before rendering. All other unlisted transitions are rejected and audited.
@@ -298,4 +327,4 @@ Success/result components distinguish attempted, prepared, opened, sent, deliver
 
 ## Browser-first design and implementation handoff
 
-[Browser design/handoff](browser-prototype.md) names current views, controls, test scenarios and limitations. The [Figma package](figma.md) remains optional historical execution guidance. Low-fidelity interaction review precedes comparison of four concrete identity territories on identical Home and confirmation structures. All numerical design values remain proposed until Simon's decision and device/accessibility evidence. Local feasibility UI may use provisional neutral tokens; production styling requires GATE-05. Screen IDs and state names survive changes in visual style.
+[Browser design/handoff](browser-prototype.md) names the existing conversation views, controls, test scenarios and limitations. T-119 extends that shell with SCR-016/017 and CMP-011 using fictional data before persistent implementation. The [Figma package](figma.md) remains optional historical execution guidance. Low-fidelity interaction review precedes comparison of four concrete identity territories on identical Home, room and confirmation structures. All numerical design values remain proposed until Simon's decision and device/accessibility evidence. Local feasibility UI may use provisional neutral tokens; production styling requires GATE-05. Screen IDs and state names survive changes in visual style.

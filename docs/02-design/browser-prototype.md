@@ -2,7 +2,7 @@
 title: "Stage 1 conversation browser prototype and handoff"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-19
 tags: [design, prototype, handoff]
 related:
   - conversation-first-plan.md
@@ -17,6 +17,10 @@ related:
 ---
 
 # Conversation-first browser experience
+
+## Planned Context Rooms extension
+
+The current executable prototype still covers the conversation shell and five scripted workflows described below. Simon adopted [Context Rooms](context-rooms.md) as the next experience direction on 2026-09-19. [T-119](../10-execution/backlog.md#t-119) will add a fictional-data global Home → Rooms library → Kitchen slice, direct browse/search, one disclosed cross-room source and safe room deletion. Until that task is separately implemented and tested, this page must not imply those screens already exist.
 
 Current connected runtime: [versioned local backend/MCP contract](../04-architecture/conversation-runtime-contract.md). Scripted remains default; local demo uses a stub model with actual MCP/store operations. Explicit live synthetic consent is available only when the backend enables it; the one live proposal check failed, so model reliability is not established.
 
@@ -50,7 +54,7 @@ A new consequential request never queues behind old work. The interface resolves
 | J-006; SCR-006/011/008; CMP-007/009 | Scope clarification → real local size preview → Apply → Restore | External-app guidance only, pending composer/draft retained, full-thread/menu/confirmation scaling |
 | J-007; SCR-001/002/009/010/011/012/015; CMP-002/007/008/009 | Brief introduction and no-microphone entry; Menu/settings/help/people/privacy/history | Explicit preference and alias correction/deletion, minimal-history deletion, reset/new-session distinction, focus return |
 
-The corresponding PRD/UC/EVAL routes remain in [traceability](../01-product/traceability.md). Code/test links cover the browser simulation only. No canonical EVAL-001–017 or production T-103–109 task is passed by this artifact.
+The corresponding PRD/UC/EVAL routes remain in [traceability](../01-product/traceability.md). Code/test links cover the browser simulation only. No canonical EVAL-001–017 or production T-103–109/T-119 task is passed by this artifact.
 
 CMP-003 now uses a persistent exact inline preview with an expanded reading/editing surface where needed; it never truncates the consequence. CMP-001 Stop remains reachable during work. CMP-004 announces meaningful state once without displaying internal planning. CMP-005 choices use stable fixture identity and visible differentiators. CMP-006 distinguishes prepared/opened/sent/partial/unknown/stopped, and CMP-009 embeds actual local content/state.
 

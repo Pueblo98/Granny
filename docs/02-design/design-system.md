@@ -2,7 +2,7 @@
 title: "Stage 1 Design System Contracts"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [design, tokens]
 related:
   - product-design-spec.md
@@ -94,6 +94,11 @@ Rows show descriptive labels and state; cards group related content without maki
 ### CMP-010 — Home context panel
 
 One large semantic region for a single verified, timely or explicitly kept item. Allowed content is a short descriptive heading, state/source when needed, one clear next action, and secondary Keep here or Hide controls; Reset Home stays in Menu. The panel contains a registered content component, never model-defined actions, and never stacks multiple cards, paginates or auto-rotates. Sensitive details stay hidden until explicit open. Absent is a complete normal state. Expiry or invalid evidence removes the panel without moving the fixed Talk/Type/Menu anchors or stealing focus. Renderer-owned reflow places the whole panel after the input region at large text/narrow widths.
+
+<a id="cmp-011"></a>
+### CMP-011 — Context Room identity, entry and source cue
+
+One semantic family with three registered variants: **room entry** (written name, short purpose, optional decorative motif and concise state), **current-room identity** (persistent name/purpose plus plain scope cue) and **cross-room source cue** (source room, reason used and View source/Exclude source). The whole room-entry row is one target; icon/illustration never replaces its label. Atmosphere is decorative and cannot alter control meaning, action colors, focus order, target sizes or the Round composer. Source cues appear whenever another room materially affects meaning, privacy or correction. At large text all variants become a vertical reading sequence and preserve the room name, scope and source actions. EVAL-008/012.
 
 ## Transient surfaces
 

@@ -2,7 +2,7 @@
 title: "Stage 1 delivery workflows and documentation stewardship"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [execution, workflow]
 related:
   - development-readiness.md
@@ -13,7 +13,7 @@ related:
 
 # Delivery operating system
 
-Current design medium: local browser prototype, explicitly authorized by Simon on 2026-09-14. Build native HTML/CSS interactions in prototypes/stage-1, keep reviewer controls separate, use only fictional fixtures and preserve the no-capture/no-egress boundary. Do not re-enter Figma merely because a skill or historical frame inventory mentions it. The [browser handoff](../02-design/browser-prototype.md) owns run/check/review instructions; this is not authorization for a web product, Android actuation or production agent code.
+Current design medium: local browser prototype, explicitly authorized by Simon on 2026-09-14. Context Rooms are the active next experience direction; use T-119 only after an implementation request. Build native HTML/CSS interactions in prototypes/stage-1, keep reviewer controls separate, use only fictional fixtures and preserve the no-capture/no-egress boundary. Do not re-enter Figma merely because a skill or historical frame inventory mentions it. The [browser handoff](../02-design/browser-prototype.md) owns run/check/review instructions; this is not authorization for a web product, Android actuation or production agent code.
 
 This document owns **how work moves**, not what the product does. [AGENTS](../../AGENTS.md) owns agent instructions; [readiness](development-readiness.md) owns gate status and Definition of Ready; [backlog](backlog.md) owns T-ID status. The accepted experiment scope is ADR-0009. Detailed contracts remain proposed until specifically accepted; no workflow auto-approves a product choice or external action.
 
@@ -55,7 +55,7 @@ Exit: changed behavior has testable criteria, known safety disposition and desig
 
 ### WF-02 — Design handoff and critique
 
-Use the [browser-first design contract](../02-design/browser-prototype.md) and the T-102/108 [packet](task-packets.md). The Figma contract applies only when separate Figma work is requested. Fix interaction flow before territory styling. Review negative paths on the same copy/layout; test voice and touch separately. Annotate Android-owned UI and unproven Stop surfaces rather than making them look guaranteed.
+Use the [browser-first design contract](../02-design/browser-prototype.md) and the T-102/108/119 [packets](task-packets.md). For Context Rooms, preserve global Home and run the named direct-findability/source/deletion cases before visual atmosphere. The Figma contract applies only when separate Figma work is requested. Fix interaction flow before territory styling. Review negative paths on the same copy/layout; test voice and touch separately. Annotate Android-owned UI and unproven Stop surfaces rather than making them look guaranteed.
 
 Exit: designer can enumerate required frames/components and the engineer can identify which values are neutral, proposed or accepted. A visual preference does not change confirmation class, timing semantics or recipient preview. Capture missing coverage as a specific frame or contract issue, not “make it simpler”.
 
@@ -125,4 +125,4 @@ Use [Cockpit](../Cockpit.md) and its [guide](cockpit-guide.md) for delivery reco
 
 Keep ownership small: behavior in canonical specs, execution detail in packets, reusable procedures here, evidence in dated records only when collected. Templates are forms, not completed artifacts. Use relative standard Markdown links; keep private Obsidian state ignored. Run the repo checker and its regression tests before committing documentation-tool changes; external links are reviewed by source relevance, not silently declared current by an offline checker.
 
-Stop this refinement pass when a fresh designer can start a named low-fi package and an engineer can start the fake T-103 slice without guessing interfaces, oracle, scope or authority. Missing real-world evidence must remain visible; writing more planning prose cannot remove it.
+Stop this refinement pass when a fresh designer can start T-119 and an engineer can start the fake T-103 slice without guessing interfaces, oracle, scope or authority. Missing real-world evidence must remain visible; writing more planning prose cannot remove it.

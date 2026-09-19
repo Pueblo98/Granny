@@ -13,7 +13,9 @@ related:
 
 # Documentation map
 
-**Start here for development oversight:** [Cockpit](Cockpit.md) · [visual map](Development.canvas) · [session/message views](10-execution/cockpit.base) · [agent board](10-execution/agent-board.md). [Cockpit guide](10-execution/cockpit-guide.md) owns update/refresh rules. [Conversation-first build](02-design/conversation-first-plan.md) is the active browser experience revision; [its record](10-execution/sessions/2026-09-14-conversation-build.md) separates implemented simulation, review and production evidence.
+**Active experience direction:** [Context Rooms](02-design/context-rooms.md) · [accepted decision](09-decisions/ADR-0015-context-rooms.md) · [T-119 prototype packet](10-execution/task-packets.md#t-119-packet). Preserve one global assistant and quiet Home; prototype optional rooms with fictional data before persistent implementation.
+
+**Start here for development oversight:** [Cockpit](Cockpit.md) · [visual map](Development.canvas) · [session/message views](10-execution/cockpit.base) · [agent board](10-execution/agent-board.md). [Cockpit guide](10-execution/cockpit-guide.md) owns update/refresh rules. [Conversation-first build](02-design/conversation-first-plan.md) remains the shell foundation; Context Rooms is the next design/contract slice. [Its earlier build record](10-execution/sessions/2026-09-14-conversation-build.md) separates implemented simulation, review and production evidence.
 
 **Stage 1 stock-Android tablet app only.** Granny is a temporary codename. Vision, App MVP, App V1, later App, future Stage 2 OS and future Stage 3 hardware are separate scopes in [product scope](01-product/scope-and-roadmap.md). docs/ is the Obsidian vault; the whole Git repository is the project source of truth. Ignored Obsidian JSON is private local user state.
 
@@ -31,7 +33,7 @@ Latest Simon-authored planning input: [class brainstorming capture](08-research/
 |---|---|
 | Long-term intent / principles | [Vision](00-vision/product-vision.md), [principles](00-vision/product-principles.md); mixed-stage source is context only |
 | What is required, for whom, in which release? | [PRD](01-product/prd.md), [scope/capability map](01-product/scope-and-roadmap.md), [proto-personas/jobs](01-product/personas.md) |
-| What happens end to end? | [25 use cases](01-product/use-cases.md), [8 journeys](01-product/user-journeys.md), [requirement traceability](01-product/traceability.md) |
+| What happens end to end? | [26 use cases](01-product/use-cases.md), [9 journeys](01-product/user-journeys.md), [requirement traceability](01-product/traceability.md) |
 | What does the user see/control in every state? | [Product design spec](02-design/product-design-spec.md), [semantic components](02-design/design-system.md), [Context Rooms direction](02-design/context-rooms.md) |
 | How does it speak and remain accessible? | [Voice/content](02-design/voice-ux.md), [accessibility](02-design/accessibility.md) |
 | What is the brand and name option space? | [Brand/4 identities](02-design/brand-and-visual-identity.md), [naming/screening/iteration](02-design/naming-exploration.md), [local boards](02-design/identity-review.html) |

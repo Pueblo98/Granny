@@ -2,7 +2,7 @@
 title: "Stage 1 Figma execution and handoff contract"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [design]
 related:
   - product-design-spec.md
@@ -172,7 +172,7 @@ Worked annotation example (proposed, not an existing frame): `J-003/SCR-007/conf
 
 Separate reviews: interaction coverage first, accessible component behavior second, identity preference third, implementation fidelity after actual code exists. A reviewer records precise missing frame/variant or contradictory behavior. Simon's identity selection does not approve an unreviewed workflow; engineering acceptance of layout does not confer name clearance. Research preparation and actual collection follow [research protocols](../08-research/research-protocols.md).
 
-CMP-001 Stop/Take over, 002 microphone/transcript, 003 consequence preview, 004 activity, 005 choices, 006 outcome, 007 buttons/forms, 008 guidance/permissions, 009 lists/media/settings and 010 Home context panel compose all screens. Component names `Granny/Confirmation/prepare`, properties `state`, `inputMode`, `consequence`, `sizeProfile`, `themeCandidate`; identity name is a property, not four forked behavior libraries.
+CMP-001 Stop/Take over, 002 microphone/transcript, 003 consequence preview, 004 activity, 005 choices, 006 outcome, 007 buttons/forms, 008 guidance/permissions, 009 lists/media/settings, 010 Home context panel and 011 Context Room identity/entry/source cue compose all screens. Component names `Granny/Confirmation/prepare`, properties `state`, `inputMode`, `consequence`, `sizeProfile`, `themeCandidate`; identity name is a property, not four forked behavior libraries.
 
 Use auto-layout with wrapping text; no fixed-height text containers, truncation of recipients or scrolling-hidden Stop. Layout constraints: 360/600/840dp logical widths; portrait and landscape; 100/130/200% font scenarios. These are design reference units, not proof of Android reflow. Touch bounds ≥56dp, main/Stop ≥64dp, 12dp gaps. Annotate nonvisual label/role/state, focus order, status live announcements, switch/keyboard route, focus restoration, reduced-motion equivalent and sensitive regions.
 

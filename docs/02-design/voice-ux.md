@@ -2,7 +2,7 @@
 title: "Stage 1 Voice and Content Contract"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [design, voice]
 related:
   - product-design-spec.md
@@ -13,6 +13,8 @@ related:
 # Voice and content contract
 
 Proposed behavior for [screen states](product-design-spec.md) and PRD-FR-001/004/007/009/016, PRD-ACC-003/004. Warm, specific adult language; identify as software, do not pretend human emotions, kinship, medical authority or a need for continued conversation.
+
+Context Rooms keep the same voice and personality. Granny names the current room when scope matters, identifies a material cross-room source and never speaks as a separate Kitchen/Fitness specialist. A person can ask any general request from Home or inside a room; unnecessary room selection is not a clarification step.
 
 ## Activation, transcription and interruption
 
@@ -62,6 +64,9 @@ An admitted automatic fact uses a compact, non-blocking receipt such as “Remem
 | J-007 memory empty | “There is no saved contact alias for Sophie here.” | Add an alias / Done |
 | J-008 call prepared | “Start a call to Sophie using [app]?” | Start call / Change / Cancel |
 | J-008 unavailable | “There isn't a supported calling app set up on this tablet.” | Open apps / Home |
+| J-009 room entry | “Kitchen brings your recipes and cooking lists closer. You can still ask me anything.” | Browse Kitchen / Ask Granny / Rooms / Home |
+| J-009 cross-room source | “I also used your Travel packing list because it mentions the portable blender.” | View source / Exclude this source |
+| J-009 delete room | “Delete the Kitchen room? Your recipes and lists will stay available in Unfiled unless you choose a separate data deletion.” | Delete room only / Archive / Cancel |
 | Any interrupted | “I stopped. [Precisely state completed or uncertain effect.]” | Continue manually / Review status |
 | Any expired preview | “Please review this again before I continue.” | Renew preview / Change it / Cancel |
 | Any offline | “The connection is unavailable. You can still change Granny's settings or use the tablet yourself.” | Settings / Continue manually |

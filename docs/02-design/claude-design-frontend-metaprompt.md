@@ -2,7 +2,7 @@
 title: "Claude Design metaprompt — build the Stage 1 conversation frontend"
 status: proposed
 owner: Simon
-last_updated: 2026-09-18
+last_updated: 2026-09-19
 tags: [design, handoff, interaction, frontend, claude-design]
 related:
   - claude-design-handoff.md
@@ -13,6 +13,8 @@ related:
   - voice-ux.md
   - ../09-decisions/ADR-0013-bounded-interface-composition.md
   - ../09-decisions/ADR-0014-stable-home-context-panel.md
+  - context-rooms.md
+  - ../09-decisions/ADR-0015-context-rooms.md
 ---
 
 # Claude Design frontend build metaprompt
@@ -76,10 +78,12 @@ Read the current product contracts before composing:
 - docs/02-design/accessibility.md
 - docs/02-design/voice-ux.md
 - docs/02-design/conversation-first-plan.md
+- docs/02-design/context-rooms.md
 - docs/05-safety-privacy/action-policy.md
 - docs/05-safety-privacy/safety-and-privacy.md
 - docs/09-decisions/ADR-0013-bounded-interface-composition.md
 - docs/09-decisions/ADR-0014-stable-home-context-panel.md
+- docs/09-decisions/ADR-0015-context-rooms.md
 
 If repository browsing is unavailable, the requirements below are sufficient
 to begin the core shell and message flow. Record inaccessible sources in the
@@ -124,6 +128,15 @@ There is no capability grid, carousel, widget shelf, dashboard, permanent
 sidebar, shortcut ribbon or pile of suggested prompts. Do not make the person
 manage a layout. Additional timely items, if any, belong behind a labeled Today
 route as a short stable list. Core controls do not move while Home is open.
+
+Context Rooms are the accepted next experience layer. Home still handles any
+request and must not become a room grid. A secondary labeled Rooms route opens
+a calm directly browsable library. Inside a room the same assistant, Round
+composer, controls, action policy and communication personality remain. The
+room foregrounds related references and may use a bounded atmosphere; relevant
+cross-room context is minimum-necessary and visibly sourced when it affects
+meaning, privacy or correction. Conversation is never the only way to find an
+item. Deleting a room is separate from deleting its underlying data.
 
 Use bounded semantic composition. The agent may select, fill and order only
 registered components and typed slots. The app owns their semantics, action
@@ -523,6 +536,18 @@ Phase 4 — Harden
   structure. Do not change layout or copy between themes.
 - Distill back to one primary working frontend plus a small comparison sheet.
 
+Phase 5 — Build the bounded Context Rooms slice
+- Preserve global Home and add a secondary SCR-016 Rooms library, not a grid on
+  Home or a decorative floor plan.
+- Build one SCR-017 Kitchen room with CMP-011 written identity, purpose,
+  bounded atmosphere, direct browse/search and the same Round composer.
+- Demonstrate one source-carrying cross-room result with View source and Exclude
+  source, plus local membership receipt/Undo.
+- Show archive, Delete room only and separate underlying-data deletion with a
+  fictional inventory. Model/offline failure must leave direct browsing usable.
+- Use only fictional in-memory data. Mark durable storage and App V1 admission
+  as unimplemented and evidence-gated.
+
 Do not create three unrelated app concepts. The structural direction and
 composer shape are settled. Variation is useful only for unresolved visual
 territory review and must keep behavior constant.
@@ -532,7 +557,7 @@ REQUIRED DELIVERABLES
 Return all of the following in the Claude Design project:
 
 1. One editable, linked Stage 1 frontend flow using the synced system.
-2. A frame index mapped to SCR-001 through SCR-015 where applicable, clearly
+2. A frame index mapped to SCR-001 through SCR-017 where applicable, clearly
    marking MVP, App V1 and deferred states.
 3. The complete message-flow checkpoint mapped to J-003 and CMP-001–007.
 4. Integrated photo, explain/recover, media and readability flows mapped to
@@ -553,6 +578,9 @@ Return all of the following in the Claude Design project:
     content and structure, with all values still labeled proposed.
 12. A handoff note with exact project references, system version, missing
     states, unresolved product questions and tests that remain unrun.
+13. A T-119 Context Rooms flow mapped to PRD-FR-022, UC-026, J-009,
+    SCR-016/017 and CMP-011, including global return, direct findability,
+    cross-room provenance and delete-room-versus-delete-data review.
 
 DEFINITION OF A GOOD RESULT
 
@@ -578,8 +606,9 @@ Before handing off, perform an anti-template review:
 - Does the design still work with long content, large type and keyboard open?
   Fix the composition before polishing.
 
-Start now with Phase 1 and Phase 2. Build the actual editable shell and David
-message slice before returning the first checkpoint.
+If the editable shell and David message slice are absent, start with Phase 1
+and Phase 2. If they already exist, verify them, then continue through Phase 5
+and return the first Context Rooms checkpoint with actual editable references.
 ```
 
 ## Known handoff limits

@@ -167,6 +167,41 @@ Read RES-01/03/06/09, EVAL-012, J-001/002/003/005/006/007; [research protocols](
 
 **Deliverable:** Exact prototype manifest plus approved protocol before collection; after actual sessions, deidentified results with sample and negative cases. If participant access is absent, deliver the browser preparation artifacts and leave human evidence unrun. Missing Figma access is no longer a blocker. No speculative participant quotes.
 
+<a id="t-119-packet"></a>
+## T-119 packet — Context Rooms fictional experience and contract
+
+**Question:** Can one recognizable room narrow context and improve direct organization without crowding Home, fragmenting the assistant, surprising the person with cross-room data or trapping content behind conversation?
+
+**Read first:** PRD-FR-022; UC-026/J-009; SCR-003/016/017; CMP-011; CAP-15; [Context Rooms](../02-design/context-rooms.md); ADR-0014/0015; action/privacy policy; EVAL-008/012. Keep implementation in the browser/design medium unless a separate native task is authorized.
+
+**Deterministic fictional fixture:**
+
+- rooms: Kitchen and Trips; Unfiled is a system collection, not a personality;
+- canonical items: vegetable-soup recipe, grocery list, portable-blender note, packing list and one unfiled clipping;
+- memberships: recipe/list in Kitchen, packing list/blender in Trips, one safe multi-room reference;
+- sensitivity/source/revision metadata on every reference; no real documents or external URLs;
+- resolver variants: current-room match, relevant cross-room source, denied sensitive source, stale membership, offline/model unavailable and no result;
+- lifecycle variants: create/rename, add/move/remove with diff, receipt/Undo, archive/restore, delete room only, move then delete and separate underlying-data handoff.
+
+**Required review cases:**
+
+1. Global Home remains the quiet universal entry with zero room grid.
+2. A labeled Rooms route opens a calm large-text list and works without voice.
+3. Kitchen preserves the same Round composer, Granny personality, Stop and Menu semantics.
+4. Browse/search finds the soup recipe with the model disabled.
+5. A Kitchen request retrieves room-local material before relevant global context.
+6. The blender example uses one Trips source with View source and Exclude source.
+7. Denied/sensitive cross-room material does not enter the prompt or UI.
+8. Add/move/remove applies only the reviewed versioned membership diff and supports Undo.
+9. Uncertain organization remains Unfiled and directly findable.
+10. Archive/restore changes visibility without deleting canonical items.
+11. Delete room inventories shared/room-only references and pending work, invalidates room-scoped plans/permits and rehomes room-only references.
+12. Underlying-data deletion is a separate named preview; cancelling it leaves data intact.
+13. 200% text, keyboard, focus-return, reduced-motion and decorative-image removal retain room/scope/source understanding.
+14. Returning Home clears current-room priority; a general task never requires room selection.
+
+**Evidence and completion:** Automated checks may prove deterministic fixture/state/semantics and zero forbidden egress/persistence. Screenshot review may assess visual hierarchy. Only a separate approved RES-03/08 study can support human comprehension or value. Report exact artifact version, cases/assertions, viewport/access modes and gaps. Passing T-119 does not admit App V1 storage or pass GATE-05/06/08.
+
 ## Restart prompts
 
 These are scoped examples, not standing authorization:
@@ -175,3 +210,4 @@ These are scoped examples, not standing authorization:
 - “Use $granny-design-handoff to refine T-102 browser views and their annotation manifest, run the browser checks, and stop before device or provider integration.”
 - “Use $granny-evidence-review to assess whether this supplied run supports a named gate. Keep review read-only and distinguish fixture from device evidence.”
 - “Use $granny-spec-change to update a named requirement and affected trace/contracts; keep consequential choices proposed unless I explicitly approve them.”
+- “Use $granny-design-handoff and $granny-ui-craft to implement T-119 from its packet with fictional in-memory data; preserve global Home and stop before persistent storage, Android or real-data work.”

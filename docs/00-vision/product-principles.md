@@ -2,7 +2,7 @@
 title: Product Principles
 status: proposed
 owner: Simon
-last_updated: 2026-09-10
+last_updated: 2026-09-19
 tags:
   - vision
   - principles
@@ -28,6 +28,7 @@ These principles are extracted from the working Dream Book and planning conversa
 10. **Accessibility is architecture, not polish.** Voice, touch, readability, semantics, timing, and recovery shape the system from the start.
 11. **Remember appropriately.** Store only useful, permissioned context with correction, inspection, deletion, and sharing controls.
 12. **Earn autonomy.** Broader initiative follows explicit delegation and demonstrated reliability; uncertainty narrows action.
+13. **Organize by recognition without trapping.** Optional Context Rooms may bring related material closer, but Home, direct browse/search and one consistent assistant remain available.
 
 ## Technical corollaries
 

@@ -1,6 +1,6 @@
 ---
 title: "Context Rooms — spatial organization around one assistant"
-status: proposed
+status: accepted
 owner: Simon
 last_updated: 2026-09-19
 tags: [design, interaction, context, organization, rooms]
@@ -45,10 +45,13 @@ widgets, separate domain agents and literal room navigation:
 - the person may create, reorganize, archive and delete rooms with the
   assistant's help.
 
-The exact Home entry, room-library composition, default room set, visual style,
-release assignment and implementation remain proposed. This document makes the
-concept reviewable; it does not add Rooms to the current MVP, implement storage
-or claim that the metaphor improves cognition or dementia outcomes.
+The exact Home entry, room-library composition, default room set and visual
+style remain proposed. On 2026-09-19 Simon directed the wider notebook and
+future plan to adopt this concept. Context Rooms are therefore the active
+fictional-data design direction under T-119, with a provisional App V1 product
+placement until evidence and a later release decision say otherwise. This does
+not add Rooms to the five-workflow MVP, implement storage or claim that the
+metaphor improves cognition or dementia outcomes.
 
 ## Why this is different from widgets, folders and multiple agents
 
@@ -83,6 +86,12 @@ available when relevant**. A room name or decorative scene must never be the
 only indication of scope.
 
 ## Experience structure
+
+The first planned slice is deliberately small: global Home, a direct Rooms
+library, one Kitchen room, one cross-room source example, browse/search without
+chat and archive/delete-room review. More rooms, automation and real personal
+content wait until this slice is understandable and the typed boundaries pass
+fixture review.
 
 ### Global Home
 
@@ -337,15 +346,16 @@ for a safe room-specific presentation preference.
 ## Scope and staged build plan
 
 Context Rooms are an accepted product direction but are not silently added to
-the current MVP. Persistent collections, cross-room retrieval and deletion
-need a release decision, typed storage contract and privacy/eval evidence.
+the current MVP. Production placement is proposed for App V1; persistent
+collections, cross-room retrieval and deletion still need typed storage,
+privacy/eval evidence and release admission.
 
 ### Phase A — design prototype
 
 Use fictional content to build and compare:
 
 1. Global Home with no room grid and one secondary Rooms entry.
-2. A room library with three labeled spaces and a large-text list fallback.
+2. A room library with Kitchen and Trips plus a large-text list fallback.
 3. Kitchen with the stable conversation shell and bounded atmosphere.
 4. A local question that uses Kitchen context.
 5. A cross-room question that visibly uses one item from another room.

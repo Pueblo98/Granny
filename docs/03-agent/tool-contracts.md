@@ -2,7 +2,7 @@
 title: "Stage 1 Typed Capability Contracts"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [agent, interfaces]
 related:
   - device-control.md
@@ -51,6 +51,13 @@ ComponentPlan = {schemaVersion, taskId, planVersion,
                  regions: [{componentId, componentVersion, variant,
                             typedSlotsRef, allowedActionRefs[], orderHint}],
                  focusStartRef?, contentVersion}
+RoomContextEnvelope = {currentRoomRef?, queryPurpose, sourceRefs[],
+                       sourceRoomRefs[], sensitivityRefs[], generatedAt,
+                       resolverVersion, scopeRef}
+RoomChangeProposal = {proposalId, expectedRoomRevision?,
+                      operation: Create|AddReference|MoveReference|RemoveReference|
+                                 Archive|Restore|DeleteContainer,
+                      roomRef?, itemRefs[], destinationRef?, expiresAt}
 ```
 
 UUIDs are session/install-scoped internal IDs, never device serials. Content references resolve only inside scope-aware local stores; raw personal values do not go into audit. Prepared/element content digests are private transient values, not exportable anonymous identifiers. The execution protocol defines exact-content encoding and prohibits durable personal-content hashes/permits. HumanObserved is a test oracle, not production claim. UserReported is presented as “You said…” and does not upgrade independent task verification. Model confidence alone cannot produce Verified. Outputs cannot create new executable capabilities.
@@ -101,4 +108,22 @@ ReplayPort.feed(RecordedSyntheticObservation, ClockTick, UserEvent) -> Trace
 
 Provider adapters cannot receive permits, native nodes, credentials or arbitrary network destinations. Transport/credentials are infrastructure-owned. Replay uses synthetic fixtures, fake clock and deterministic receipt/action drivers; it cannot dispatch to real apps. Evaluation injects permission loss, stale nodes, duplicate callback, process death, provider outage, user touch, lock and malicious observed text.
 
-V1 capabilities (calls, reminders, documents, helper proposals, ADR-0012 automatic important-fact memory/adaptive communication) require separate schema additions with PRD-FR-018–020/PRV-003/005 and EVAL-013–017 before task admission. No unrestricted placeholder API should be implemented “for later.”
+V1 capabilities (calls, reminders, documents, Context Rooms, helper proposals and ADR-0012 automatic important-fact memory/adaptive communication) require their named schemas with PRD-FR-018–020/022, PRD-PRV-003/005 and EVAL-008/012/013–017 before task admission. No unrestricted placeholder API should be implemented “for later.”
+
+<a id="cap-15"></a>
+## CAP-15 — Context Room organization and retrieval (proposed App V1)
+
+CAP-15 is a namespace of closed typed operations, not a generic room-store API:
+
+| Operation | Input → output | Class and invariant |
+|---|---|---|
+| `rooms.list/get/search` | room/query/scope refs → labeled rooms or provenance-carrying canonical item refs | POL-00; local bounded reads; whole-store prompt export and raw content enumeration denied |
+| `rooms.context.resolve` | goal + current room + allowed scopes → `RoomContextEnvelope` | POL-00; minimum necessary current-room first, relevant cross-room second; sensitivity/egress policy filters before planner |
+| `rooms.change.prepare/apply` | `RoomChangeProposal` → exact diff then receipt | POL-02 for create/add/move/remove/archive/restore; expected revisions, visible receipt/Undo and canonical item preservation |
+| `rooms.deleteContainer` | inventory + exact room revision → verified container deletion receipt | POL-03; invalidates room-scoped plans/permits, rehomes room-only refs and never deletes canonical content |
+
+Underlying item/memory deletion calls the owning typed capability through a
+separate prepared action. Room membership cannot widen file permission, memory
+admission, helper access, egress or external-action authority. T-119 may model
+CAP-15 against a deterministic in-memory fixture only; persistent storage needs
+an admitted data design, EVAL-008/012 evidence and a separately ready task.

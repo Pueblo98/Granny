@@ -2,7 +2,7 @@
 title: Product Vision
 status: draft
 owner: Simon
-last_updated: 2026-09-13
+last_updated: 2026-09-19
 tags:
   - vision
   - product
@@ -37,7 +37,7 @@ Modern computing assumes users will learn application boundaries, interface conv
 
 The full vision has six product layers:
 
-1. a calm senior-first launcher and touch interface;
+1. a calm conversation-first touch interface with optional recognizable Context Rooms for organization;
 2. a natural voice companion with visible listening/acting states;
 3. broad, reliable operation of Android and third-party apps;
 4. consent-aware relationship, preference, routine, and life-story memory;
@@ -60,7 +60,7 @@ but must not be imported into the app's requirements.
 
 ## Differentiation
 
-The defensible product is the integrated system—not a particular model: senior-first experience, reliable device control, relationship memory, life-story artifacts, permissioned family support, safety/confirmation logic, and eventually dedicated hardware. General voice capability is expected to become commonplace.
+The defensible product is the integrated system—not a particular model: a consistent assistant across global conversation and recognizable Context Rooms, reliable device control, relationship memory, life-story artifacts, permissioned family support, safety/confirmation logic, and eventually dedicated hardware. General voice capability is expected to become commonplace.
 
 ## Scope boundaries
 
@@ -73,8 +73,10 @@ See [scope and roadmap](../01-product/scope-and-roadmap.md) for current proposal
 ## Current phase
 
 Stage 1 app definition, user/platform research, design-system foundations,
-safety policy, and documentation. Figma exploration and controlled stock-Android
-feasibility tests come next; substantial implementation does not.
+safety policy and documentation. The active experience plan prototypes Context
+Rooms with fictional data on the conversation-first shell while controlled
+stock-Android feasibility remains separate; substantial production
+implementation does not follow from the design plan.
 
 ## Constraints
 
