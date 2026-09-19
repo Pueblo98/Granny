@@ -16,7 +16,17 @@ branch: docs/shared-state-pack-iteration-1
 base_commit: ee386eda0f0e4b47394bb3a84b1d782f51ffdb3e
 next_action: Simon reviews whether the seven states preserve calm while exposing exact safety information; refine selected issues before frontend implementation.
 changed_paths:
-  - docs/02-design/mockups/2026-09-20-shared-state-pack/iteration-1/
+  - docs/02-design/mockups/2026-09-20-shared-state-pack/iteration-1/01-listening.png
+  - docs/02-design/mockups/2026-09-20-shared-state-pack/iteration-1/02-editable-transcript.png
+  - docs/02-design/mockups/2026-09-20-shared-state-pack/iteration-1/03-which-david.png
+  - docs/02-design/mockups/2026-09-20-shared-state-pack/iteration-1/04-exact-draft-preview.png
+  - docs/02-design/mockups/2026-09-20-shared-state-pack/iteration-1/05-active-task-stop.png
+  - docs/02-design/mockups/2026-09-20-shared-state-pack/iteration-1/06-prepared-not-sent.png
+  - docs/02-design/mockups/2026-09-20-shared-state-pack/iteration-1/07-unknown-outcome.png
+  - docs/02-design/mockups/2026-09-20-shared-state-pack/iteration-1/README.md
+  - docs/02-design/mockups/2026-09-20-shared-state-pack/iteration-1/comparison.png
+  - docs/02-design/mockups/2026-09-20-shared-state-pack/iteration-1/manifest.json
+  - docs/02-design/mockups/2026-09-20-shared-state-pack/iteration-1/prompts.md
   - docs/02-design/mockups/README.md
   - docs/10-execution/current-milestone.md
   - docs/10-execution/sessions/2026-09-20-shared-state-pack-iteration-1.md
