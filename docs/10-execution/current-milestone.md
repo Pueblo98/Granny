@@ -13,6 +13,12 @@ related:
 
 # Current milestone — Context Rooms on the conversation-first shell
 
+## T-101 desk route inventory — 2026-09-19
+
+The [current-source route assessment](../08-research/2026-09-19-t101-route-inventory.md) now covers all five ADR-0009 experiments and prepares the non-identifying physical inventory and smallest synthetic experiments. It finds a go route for Granny-local text, conditional routes for scoped screen explanation and named media integration, conditional honest message compose handoff but no send claim, and no ordinary candidate route for sent-photo provenance. Only screen explanation and media remain plausible external candidates, both unrun, so the accepted two-external-workflow kill criterion is at high risk.
+
+This is desk evidence only. No tablet, command, install, account, grant, provider or external app was used. T-101 remains in progress; GATE-03/04 and GATE-06 device/real-data conditions remain open. The next bounded step is Simon-authorized Step B read-only physical inventory on the supplied pseudonymous tablet; T-104 still waits for actual sent-photo route and device-safety evidence.
+
 ## Active Context Rooms plan — 2026-09-19
 
 Simon accepted [ADR-0015](../09-decisions/ADR-0015-context-rooms.md): optional
@@ -126,7 +132,7 @@ Current official Play policy does not permit a general-assistant AccessibilitySe
 
 ## Proposed next milestone
 
-Evidence-led foundation: MVP/control review T-100 and the bounded offline T-103 core are complete. Next, inventory device and policy routes under T-101, beginning with its desk assessment and physical-inventory worksheet. T-104 waits for that route/device evidence. Produce/test low-fi interaction and iterate naming/identity (T-102/108) within their authorization and evidence boundaries. Do not begin broad MVP implementation or personal-data automation.
+Evidence-led foundation: MVP/control review T-100 and the bounded offline T-103 core are complete. T-101 Step A and the Step B/C plans are prepared; next, obtain explicit tablet access for the read-only physical inventory, then separately authorize the selected synthetic experiments. T-104 waits for sent-photo route/device evidence. Produce/test low-fi interaction and iterate naming/identity (T-102/108) within their authorization and evidence boundaries. Do not begin broad MVP implementation or personal-data automation.
 
 Naming recommendation: Daykind / Handspan / Clearfold, all uncleared with documented concerns. Identity recommendation: test Open Day against challengers. Neither is accepted. That initial browser used provisional grayscale; the current conversation build adds reviewer-only territory comparisons. Figma remains a partial paused artifact.
 

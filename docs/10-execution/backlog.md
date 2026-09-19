@@ -39,7 +39,7 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; T-119 is th
 - **Bounded deliverable:** Record anonymous exact tablet/OS/apps, supported APIs/permissions/verification needs, visible Stop candidates and build/distribution matrix; use synthetic accounts only in subsequent approved device spike.
 - **Acceptance / evidence:** Dated device worksheet and per-flow go/conditional/no-go evidence; no inferred telephony or accessibility exception; GATE-03/04 gaps precise.
 - **Excluded / rollback:** No root/AOSP/device-owner, personal account inspection or store submission. Gate actual actuation separately. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
-- **Status:** planned; no code, test result or assigned staffed team claimed.
+- **Status:** in progress — [Step A desk inventory and Step B/C worksheets](../08-research/2026-09-19-t101-route-inventory.md) prepared 2026-09-19. Physical/device/integration evidence is unrun: no tablet access or actuation was authorized. T-101 is not complete; GATE-03/04/06 device conditions remain open.
 
 <a id="t-102"></a>
 ## T-102 — Prototype conversation/input/permission and access interaction
