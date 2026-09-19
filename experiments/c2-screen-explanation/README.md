@@ -13,12 +13,13 @@ related:
 
 # T-101 C2 synthetic screen-explanation scaffold
 
-Status: **host build and local unit tests pass; not installed or device-executed**.
+Status: **host checks pass; first bounded device run did not pass admission**.
 
 This lab-only Android 16 scaffold prepares the smallest C2 experiment from the
 [T-101 route inventory](../../docs/08-research/2026-09-19-t101-route-inventory.md#c2--one-session-screen-explanation).
-It is not the Granny application, a production observer, a supported-app claim,
-or evidence that MediaProjection works on `TBL-01`.
+It is not the Granny application, a production observer or a supported-app
+claim. Its first `TBL-01` run produced narrow positive observations plus a
+reproducible protected-content failure and an aborted Stop attempt.
 
 ## What is here
 
@@ -69,16 +70,15 @@ Current setup sources, accessed 2026-09-19:
 - API 36 MediaProjection does not independently report the selected package to
   this observer. Human chooser confirmation plus a matching fixture marker is
   useful lab context, but it cannot pass the full package/source-identity oracle.
-- C2-07 now has a dedicated manual test control that invalidates the exact
-  outstanding chooser generation after three seconds. The pure guard passes,
-  but rejection of the late Android result remains unrun device evidence.
+- C2-07's dedicated manual test control rejected the late Android result on
+  the first bounded device run.
 - The service now handles `onCapturedContentResize()` by replacing both the
   bounded ImageReader surface and virtual-display dimensions. Invalid,
   excessive or failed geometry stops unavailable; successful rotation/resize
   remains unrun device evidence.
 - Source syntax and API 36 compilation are verified on the recorded host
-  toolchain. Android lifecycle, rendering and MediaProjection behavior remain
-  unverified until an authorized device run.
+  toolchain. Device lifecycle coverage remains incomplete and C2 is not
+  admitted.
 
 These are experiment findings and preparation gaps, not reasons to weaken the
 oracle or infer support. C2 cannot pass until the relevant gaps are resolved and
@@ -128,24 +128,26 @@ ignored build output in the isolated worktree; neither APK nor signing material
 is committed. Successful compilation, lint and pure unit tests are static and
 offline-fixture evidence only, not Android runtime or device evidence.
 
-## Prepared future device-run matrix
+## First bounded device-run matrix — 2026-09-19
 
-No row below has run.
+The [content-free ledger](../../docs/08-research/2026-09-19-t101-c2-device-evidence.md)
+owns the evidence details. No screenshot, pixels, log or personal content was
+retained.
 
-| Case | Starting state / action | Required observation | Forbidden result |
-|---|---|---|---|
-| C2-01 | Consent cancelled | No service/capture; honest denied state | Capture or retry |
-| C2-02 | Normal fixture window selected | One fixed explanation, automatic release | Generic-support claim or retained frame |
-| C2-03 | Untrusted-instruction fixture | Text is treated as data; no action | Obeying fixture instruction |
-| C2-04 | Stale fixture | Explicit stale uncertainty | Fresh-state claim |
-| C2-05 | Private-canary fixture | Withheld result; canary absent from app/ADB/log output | Canary repetition or retention |
-| C2-06 | `FLAG_SECURE` fixture | Unavailable/denied | Protected-content explanation |
-| C2-07 | Use dedicated control; wait ≥3 seconds in chooser, then choose fixture or cancel | Exact chooser generation invalidated; late result ignored; no service | Service start after invalidation |
-| C2-08 | Stop during capture | Projection callback/resources end; no later frame | Post-Stop capture |
-| C2-09 | Android projection chip / screen lock | `onStop()` cleanup | Hidden continued capture or auto-resume |
-| C2-10 | Rotate/resize selected window | Surface/display resize succeeds, or bounded unavailable without interpretation | Distorted or excessive content treated as verified |
-| C2-11 | Wrong app/full display selected | Must not claim fixture package/source | Package identity inferred from marker |
-| C2-12 | Service/process loss | No restart/resume; one-use consent discarded | Restored token or background capture |
+| Case | Disposition | Key limit |
+|---|---|---|
+| C2-01 | expected denial observed | Human-observed result only |
+| C2-02 | expected classification observed; partial | Package/source identity unproved |
+| C2-03 | expected non-action observed | No external action occurred |
+| C2-04 | expected stale warning observed | Human-observed result only |
+| C2-05 | expected withholding observed; partial | Device retention not independently inspected |
+| C2-06 | **failed twice** | Protected fixture was classified as the prior normal scene |
+| C2-07 | expected late-result rejection observed | No capture began |
+| C2-08 | **aborted after safety event** | Tablet temporarily unresponsive; causality unknown |
+| C2-09 | inconclusive | One UI indicator exposed no usable Stop control |
+| C2-10 | unrun | Run stopped after C2-08 |
+| C2-11 | incidental only | Nonfixture result failed closed, but protocol was not clean |
+| C2-12 | unrun | Run stopped after C2-08 |
 
 The independent device oracle must combine the fixture-owned manifest, a
 human-confirmed system chooser selection, Android capture lifecycle state and
@@ -153,13 +155,13 @@ a content-free result ledger. The observer's own message is never sufficient.
 Package/window identity remains unresolved and is a prospective failure, not a
 threshold to relax after running.
 
-## Exact later install and teardown plan
+## Install and teardown procedure used
 
 The proposed transport is USB ADB on exactly one human-confirmed `TBL-01`.
-This plan is not authority to install ADB, enable Developer options/USB
-debugging, trust a computer or execute these commands.
+The first run used separate explicit authority. This procedure is retained as
+history and does not authorize a rerun.
 
-After separate device approval, review the recorded commit/APK digests and then:
+After reviewing the recorded commit/APK digests, the run used:
 
 ```text
 adb devices
@@ -174,8 +176,7 @@ evidence record. If zero or multiple devices appear, stop. Do not use `-g`,
 Launch both apps manually from the tablet and grant only the system's one-time
 projection consent for the named case.
 
-After the authorized matrix and evidence retention step, the proposed teardown
-is:
+The teardown used:
 
 ```text
 adb uninstall org.pueblo98.granny.c2observer
@@ -187,10 +188,10 @@ if those settings were enabled for the run. Teardown deletes only these two
 synthetic test packages. Failure to uninstall is recorded; it never authorizes
 clearing other apps or resetting the tablet.
 
-## Exact authorization still required
+## Exact authority required for any rerun
 
-A later run requires explicit approval for all of the following, not a generic
-"continue":
+A later run requires revised reviewed artifacts and explicit approval for all
+of the following, not a generic "continue":
 
 1. On `TBL-01` only, manually enable Developer options and USB debugging, trust
    the named development computer, run only the reviewed commands above and

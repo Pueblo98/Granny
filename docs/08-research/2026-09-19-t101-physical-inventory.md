@@ -45,16 +45,16 @@ Samsung's [official Galaxy Tab A11+ 5G listing](https://www.samsung.com/us/table
 | Synthetic account fixture | Unobserved / not prepared | Personal account state deliberately not inspected |
 | Grants / app-ops | Unobserved | No permission or special-access screen was changed |
 | Network profile | Unobserved | No SSID, address or account/network detail collected |
-| Granny build / adapter | None supplied or inspected | No Android scaffold, APK, adapter, recipe or policy artifact exists for this run |
+| Granny build / adapter | C2 lab fixture/observer only; reviewed APKs installed for the bounded run and removed afterward | Not the Granny app or an admitted adapter; see the [content-free evidence ledger](2026-09-19-t101-c2-device-evidence.md) |
 
 ## Interpretation and decision criterion
 
 The manual inventory removes uncertainty about the physical model family, Android/One UI release, build, patch dates, locale and several access settings. It also shows that the current tablet lacks the proposed WhatsApp and Spotify target apps and has no prepared synthetic account or Granny build. Those facts narrow experiment setup; they do not make an app unsupported, select an install source or authorize installation.
 
-No target app was actuated and no observation/action/postcondition/Stop path ran. The physical row is therefore **partial**, all Step C cases remain **not executed**, and T-101 remains in progress. Configuration changes, app installs/updates or a later independently captured inventory invalidate the affected rows.
+The later bounded C2 run exercised only the two synthetic lab apps. It produced narrow positive observations plus a reproducible protected-content failure, an aborted Stop attempt after temporary tablet unresponsiveness, incomplete lifecycle cases and unresolved independent oracles. The physical row remains **partial** and T-101 remains in progress. Configuration changes, app installs/updates or a later independently captured inventory invalidate the affected rows.
 
 ## Follow-through
 
-The next useful thesis-risk experiment is the planned one-session scoped screen explanation (`C2`), because it tests one of only two still-plausible external workflow families without requiring personal accounts. Its [lab-only scaffold](../../experiments/c2-screen-explanation/README.md) now compiles and passes 14 host unit cases, including deterministic consent-result invalidation and bounded resize logic; the two debug APKs were hashed and statically inspected but not installed or device-executed. It still requires a separate exact device-run authorization for reviewed commit/APK digests, USB/ADB/debugging changes, install/teardown, per-session capture consent and C2-01–C2-12. Until that authority is granted, installs, capture, permission changes, app actuation and runtime network/egress remain prohibited.
+The one-session scoped screen-explanation experiment (`C2`) has now had one bounded [device run](2026-09-19-t101-c2-device-evidence.md). The reviewed packages were removed and debugging was restored. C2 is not admitted: protected content was misclassified twice, the Stop attempt ended in a safety stop, lifecycle/resize/process-loss coverage is incomplete and package identity remains unresolved. Any repair or rerun needs separate source and device authority; this record does not authorize it.
 
 The alternative lowest-risk own-app experiment is `C5` text scale, but it does not reduce the accepted two-external-workflow kill risk. `C1`, `C3` external handoff and `C4` additionally need controlled target apps/accounts or providers. Bluetooth control is outside ADR-0009's five T-101 experiments and requires its own later scope.
