@@ -13,7 +13,7 @@ related:
 # Development cockpit
 
 > [!important] Latest review — 2026-09-17
-> Simon rejected the browser UI as too button-heavy and generically AI-styled. Settle Home/interface choices, then use the [Claude design handoff](02-design/claude-design-handoff.md). Figma connection works; authoring is blocked by MCP quota. Integrated runtime checks remain synthetic evidence, not design acceptance or Android readiness.
+> Simon selected the [Round conversation bubble](02-design/brand-and-visual-identity.md#accepted-shape-direction--round-conversation) for future composers, including compact/normal/expanded use and favicon exploration. The linked note embeds the chosen image. Home/interface choices are recorded in ADR-0013/0014; use the separate Claude Code system and Claude Design app handoffs. The old browser composition remains rejected. Runtime checks remain synthetic evidence, not Android readiness.
 
 > [!important] Stage 1 · Android tablet app
 > This is **Simon's development workspace**, not Granny's customer interface. Stage 2 OS and Stage 3 hardware are dormant.

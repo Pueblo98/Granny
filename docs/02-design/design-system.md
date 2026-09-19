@@ -76,6 +76,8 @@ Outcome enum controls icon, heading and language: verified complete, prepared/ha
 <a id="cmp-007"></a>
 ### CMP-007 — Buttons and form controls
 
+**Accepted composer shape, Simon, 2026-09-17:** use [Round conversation](brand-and-visual-identity.md#accepted-shape-direction--round-conversation), including its compact and expanded reference, for future composer specimens. Carry the same rounded speech-balloon silhouette through normal sizing. Shape acceptance does not promote the PNG's colors, copy or typography to tokens; the contracts below still apply.
+
 One primary next action per decision region; secondary buttons text+outline, no low-contrast essential labels. Switches state explicit On/Off and explain scope. Slider includes −/+ alternatives and numeric/current value. Text fields have persistent labels, clear correction and no submit from incidental focus. Disabled reason in same region. Loading freezes duplicate actions, retains Cancel.
 
 <a id="cmp-008"></a>

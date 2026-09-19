@@ -2,7 +2,7 @@
 title: "Brand and Visual Identity Exploration"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-17
 tags: [design, brand]
 related:
   - naming-exploration.md
@@ -13,7 +13,21 @@ related:
 
 # Brand and visual identity
 
-Granny is a **temporary codename**, not the final wordmark or assistant persona. [Naming exploration](naming-exploration.md) owns candidates/screening. This document owns brand promise and proposed identity territories. None is accepted or user-validated.
+Granny is a **temporary codename**, not the final wordmark or assistant persona. [Naming exploration](naming-exploration.md) owns candidates/screening. This document owns brand promise, the accepted composer shape below and proposed identity territories. The territory palettes/typefaces remain unaccepted and not user-validated.
+
+## Accepted shape direction — Round conversation
+
+**Simon selected Round conversation on 2026-09-17 as the direction to use moving forward.** His instruction: “lets stick with the round conversation i really like it and i think its perfect in both comapct normal and would even work in flavicon”. This is explicit shape approval, not merely a recommendation from the image-generation session.
+
+![Selected Round conversation composer, expanded and compact](mockups/2026-09-17-chat-entry/round-5/01-round-conversation.png)
+
+Use this exact **round-5 / 01 — Round conversation** reference: a full, smoothly rounded speech balloon with a short lower-left tail and an obvious writing area. Carry its recognizable silhouette through compact, normal and expanded composer sizes. The image shows compact and expanded studies; intermediate proportions remain to be specified. Keep the shape easy to find, playful and modern, without school stationery, coding-terminal styling or decorative clutter. Preserve room for readable text and labeled controls as the body grows or shrinks.
+
+The same silhouette is the selected direction to explore for a **favicon**. Derive a simplified standalone mark from it; this approval does not claim that a favicon, final logo or Android adaptive icon has been produced or tested at small sizes.
+
+This supersedes the earlier open composer-shape exploration. The original conversation bubble led here; soft ticket was a liked alternative but is not selected. Ribbon and soft terminal were rejected. Margin was too school-like and insufficiently discoverable; correspondence was too basic. Round conversation, rather than the later cushion or tucked-tail alternatives, is the chosen reference.
+
+**Approval boundary:** shape direction and its compact/normal/expanded use are accepted. Mockup lilac/plum colors, typography, exact geometry, animation and copy remain provisional. No input behavior, confirmation rule, Home contract or product gate changes. The PNG is a generated visual reference, not implemented UI, editable vector source, accessibility evidence or participant research. [Component contracts](design-system.md#cmp-007) continue to govern implementation.
 
 ## Foundation
 
