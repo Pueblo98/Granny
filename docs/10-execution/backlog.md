@@ -2,7 +2,7 @@
 title: "Stage 1 dependency-ordered backlog"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [execution]
 related:
   - development-readiness.md
@@ -223,6 +223,17 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; T-119 is th
 - **Acceptance:** Same assistant/personality and control anchors; selected open portrait row rather than a tile grid; written Previous/Next and See all rooms remain reachable without gesture; item findable without conversation; whole-room context never loaded; material cross-room source visible and excludable; deletion preserves canonical items and invalidates room-scoped authority; EVAL-008/012 fixture assertions and relevant browser/doc checks pass.
 - **Status:** planned — specification and packet ready; the bounded selected-Home browser implementation is authorized for a fresh session but has not started. No Context Rooms prototype, human study or persistent implementation exists.
 - **Excluded / rollback:** No personal data, browser/device persistence, provider egress, sharing/helper access, production database, Android automation, separate room agents, cognitive/dementia benefit claim or MVP expansion. Disable/remove the fictional route without changing global Home if the model fails review.
+
+<a id="t-120"></a>
+## T-120 — Integrate native on-device voice capture and conservative cleanup
+
+- **Scope / authority:** Simon accepted [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md) and explicitly requested the bounded native integration on 2026-09-20. This authorizes an own-app Android shell, host tests and preparation of an exact-device voice matrix; it does not authorize ambient capture, cloud speech, a cleanup language model, participant recording or unrelated external automation.
+- **Trace / owner:** PRD-FR-001/003/013/016, PRD-ACC-003, PRD-PRV-001; UC-013/014/015/017/022; J-007; SCR-004; CMP-002; Android shell/voice/privacy boundaries; EVAL-005/006/007/009 and RES-06.
+- **Dependencies / entry:** Latest committed conversation Home is the design dependency; current `origin/main` supplies the verified API 36/AGP 9.4/Gradle 9.6/JDK 17 toolchain. The exact reference tablet runs Android 16, while on-device recognizer/locale/formatting behavior remains unmeasured. No final brand or planner/model is required.
+- **Deliverables:** Platform-only Android shell under `android/stage1`; runtime microphone request only from Talk; availability-gated `createOnDeviceSpeechRecognizer`; visible idle/requesting/listening/stopping/final/error states; provisional and editable final transcript; Done listening, Stop and typed fallback; formatted/raw hypothesis selection; conservative deterministic cleanup; generation-based stale-callback rejection; no network permission, raw-audio store, transcript archive or model dependency.
+- **Acceptance:** Clean host unit tests cover state transitions, Stop/session replacement, stale callbacks, hypothesis selection and cleanup idempotence/safety; assemble and lint pass. A later exact-device run records recognizer/locale/configuration, permission denial/revoke, partial/final behavior, offline use, quiet/noisy speech, names/numbers/dates, lifecycle Stop and correction effort without retaining raw voice. Host checks cannot pass RES-06 or GATE-05/06/07.
+- **Status:** review — the platform-only shell, recognizer adapter, editable Talk/Type flow and 16 host contract cases are implemented on `feature/t120-native-voice`; debug assembly and lint pass, the runtime dependency graph is empty and the built APK declares only `RECORD_AUDIO`. No Android device was attached, so recognizer availability, permission UI, microphone, offline, acoustic, lifecycle, access and correction-effort evidence remains unrun.
+- **Excluded / rollback:** No wake word, background service, generic remote recognizer fallback, Whisper/bundled ASR, small cleanup LLM, cloud/realtime audio, TTS voice selection, message send or external app action. Remove/disable the voice adapter and retain Type as the complete fallback if the route fails evidence.
 
 ## Session handoff
 

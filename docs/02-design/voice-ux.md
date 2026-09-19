@@ -2,7 +2,7 @@
 title: "Stage 1 Voice and Content Contract"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [design, voice]
 related:
   - product-design-spec.md
@@ -18,9 +18,13 @@ Context Rooms keep the same voice and personality. Granny names the current room
 
 ## Activation, transcription and interruption
 
-In the authorized [conversation browser prototype](browser-prototype.md), Talk presents a deliberately simulated listening/transcript path, never browser speech or microphone capture. Typed supported intents progress directly without a mandatory confirmation of interpretation or category picker. Explicit transcript submission and chat submission request interpretation only; exact external consequences still use their dedicated active preview control. Incidental “yes” is not approval. All live audio/native behavior below remains a production proposal and unrun evidence.
+In the authorized [conversation browser prototype](browser-prototype.md), Talk presents a deliberately simulated listening/transcript path, never browser speech or microphone capture. Typed supported intents progress directly without a mandatory confirmation of interpretation or category picker. Explicit transcript submission and chat submission request interpretation only; exact external consequences still use their dedicated active preview control. Incidental “yes” is not approval. [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md) now accepts the native activation/recognition route below; actual device recognition, acoustic and access evidence remains unrun until T-120 is exercised on the exact configuration.
 
 MVP is tap-to-talk, not wake-word or ambient listening. Talk changes to Listening with words/icon and optional short cue; Done listening ends capture. Proposed cap 30s, with gentle no-speech prompt at 10s and typed alternative. Partial text is provisional; final text can be edited. No hidden capture after app exits, lock, Stop or revoked permission. Speaker mute and microphone off are distinct.
+
+The first Android slice uses only an available on-device `SpeechRecognizer`; no network recognizer fallback is allowed. On-device unavailability, unsupported locale, permission denial or recognition failure returns to the editable typed path. Where Android returns formatted and raw final hypotheses, the formatted hypothesis may seed the visible transcript and the raw hypothesis remains ephemeral session evidence. Otherwise the single final hypothesis is used for both.
+
+Initial cleanup is deliberately narrow: collapse repeated whitespace, remove whitespace before ordinary punctuation and ensure readable spacing after punctuation. It may use Android's own formatted hypothesis, but it does not remove arbitrary words, infer a user's intended tone or rewrite names, numbers, dates, recipients or message meaning. No cleanup language model is part of T-120. The user can edit the visible final transcript; submission binds that exact revision and invalidates any older interpretation or approval.
 
 Barge-in works only during an explicitly active listening period and must be tested against speaker echo/noise; do not advertise always-listening interruption. Touch Stop is always the independent path for active automation. While reading a preview, Repeat restates it; the user activates Talk to respond. A speech-stop recognizer may cancel but never authorize a consequence from background audio. Unknown/ambiguous approval remains clarification.
 

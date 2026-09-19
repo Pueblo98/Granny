@@ -1,8 +1,8 @@
 ---
-title: "Current milestone — Context Rooms on the conversation-first shell"
+title: "Current milestone — Context Rooms and the first native voice shell"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [execution]
 related:
   - development-readiness.md
@@ -11,7 +11,33 @@ related:
   - ../01-product/prd.md
 ---
 
-# Current milestone — Context Rooms on the conversation-first shell
+# Current milestone — Context Rooms and the first native voice shell
+
+## T-120 native on-device voice decision and implementation — 2026-09-20
+
+Simon accepted [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md):
+Stage 1 starts with explicit tap-to-talk and Android's on-device
+`SpeechRecognizer`, retains a complete typed path and defers Whisper-class,
+cloud/realtime and small cleanup-model routes. Initial cleanup is limited to
+Android formatted/raw hypotheses plus deterministic whitespace and punctuation
+spacing; the final visible transcript remains editable and no transcript
+rewriting grants action authority.
+
+[T-120](backlog.md#t-120) is in review. Its [first own-app Android
+shell](../../android/stage1/README.md) requests microphone access only from
+Talk, uses only `createOnDeviceSpeechRecognizer`, fails to Type when on-device
+recognition is unavailable, rejects stale callbacks after Stop/session
+replacement and retains no raw audio or default transcript history. Sixteen
+pure host cases pass with debug assembly and lint; the APK permission dump
+contains only `RECORD_AUDIO` and its runtime dependency graph is empty. Host
+evidence proves only that bounded local contract. No Android device was
+attached, so exact Samsung recognizer, locale, acoustic, lifecycle, latency,
+accessibility and correction-effort evidence remains unrun under RES-06 and
+EVAL-005/007/009/012; no gate passes from the decision or scaffold.
+
+The task branch starts from the latest committed Explicit Scroll Row Home and
+merges current `origin/main`. The owner's later uncommitted Context Rooms work
+remains untouched and is not claimed as part of T-120.
 
 ## T-101 route and partial physical inventory — 2026-09-19
 

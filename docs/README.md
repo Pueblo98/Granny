@@ -2,7 +2,7 @@
 title: "Stage 1 documentation map"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [navigation]
 related:
   - 10-execution/current-milestone.md
@@ -20,6 +20,8 @@ related:
 **Start here for development oversight:** [Cockpit](Cockpit.md) · [visual map](Development.canvas) · [session/message views](10-execution/cockpit.base) · [agent board](10-execution/agent-board.md). [Cockpit guide](10-execution/cockpit-guide.md) owns update/refresh rules. [Conversation-first build](02-design/conversation-first-plan.md) remains the shell foundation; Context Rooms is the next design/contract slice. [Its earlier build record](10-execution/sessions/2026-09-14-conversation-build.md) separates implemented simulation, review and production evidence.
 
 **Stage 1 stock-Android tablet app only.** Granny is a temporary codename. Vision, App MVP, App V1, later App, future Stage 2 OS and future Stage 3 hardware are separate scopes in [product scope](01-product/scope-and-roadmap.md). docs/ is the Obsidian vault; the whole Git repository is the project source of truth. Ignored Obsidian JSON is private local user state.
+
+Native voice slice: Simon accepted [explicit tap-to-talk and Android on-device recognition](09-decisions/ADR-0011-explicit-activation-and-access.md) on 2026-09-20. [T-120](10-execution/backlog.md#t-120) owns the first bounded own-app shell, conservative non-model cleanup and host/device evidence split. Whisper-class, cleanup-LLM, cloud and ambient routes remain excluded from this slice.
 
 Local backend/MCP experiment: [versioned runtime contract](04-architecture/conversation-runtime-contract.md) · [startup/tests](../prototypes/conversation-runtime/README.md) · [T-117 evidence](10-execution/sessions/2026-09-15-mcp-backend-integration.md). Next offline engineering handoff: [complete T-103 authority-core sprint](10-execution/t103-backend-sprint-handoff.md). Actual local execution uses fictional data; production Android gates remain unchanged.
 
