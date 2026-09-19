@@ -2,10 +2,11 @@
 title: "Stage 1 Design System Contracts"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [design, tokens]
 related:
   - product-design-spec.md
+  - shared-conversation-state-surfaces.md
   - brand-and-visual-identity.md
   - accessibility.md
   - figma.md
@@ -40,6 +41,14 @@ All components have stable IDs and share enabled/focused/pressed/selected/loadin
 The model may emit only a typed composition plan referencing registered CMP IDs, versioned variants, typed content slots and allowed action references. The app renderer validates the whole plan, supplies native semantics and owns focus/source order. Unknown IDs/variants/slots, invalid nesting, duplicate consequential controls, hidden required fields, unsafe order or content beyond component bounds reject the plan and use a known fallback.
 
 Composition can choose which relevant components appear and how nonconsequential content flows within the current task. It cannot create executable code/event handlers, rename a registered consequence, bypass preview/confirmation, remove Stop, move stable Talk/Type/Menu anchors or convert observed content into a control. At large text/narrow width, renderer-owned reflow overrides model ordering when required for reading/focus. Temporary task components may appear automatically. The MVP Home permits CMP-010 as its optional context region; the selected Context Rooms Home may combine one compact CMP-010 continuation with one renderer-owned CMP-012 row under ADR-0016.
+
+Listening, transcript, clarification, consequence, activity and outcome
+components follow the accepted [shared conversation state-surface
+contract](shared-conversation-state-surfaces.md). They normally expand from the
+stable bottom composer or appear as one temporary surface above it. They do not
+create seven destination pages or erase the current Home/Room context. A
+safety-critical or large-text variant may temporarily occupy most of the
+viewport while preserving its origin and return state.
 
 <a id="cmp-001"></a>
 ### CMP-001 — Stop / Cancel / Take over
