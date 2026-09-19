@@ -2,7 +2,7 @@
 title: "Stage 1 Agent Behavior Contract"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [agent, contract]
 related:
   - tool-contracts.md
@@ -29,6 +29,8 @@ related:
 Model reasoning need not be exposed or logged. User-visible progress is goal/step/evidence. State belongs to local coordinator in [product design](../02-design/product-design-spec.md).
 
 Presentation is a separate typed proposal under [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md). The model may select registered component IDs, versions, typed slots and allowed action references for the current task. It cannot supply executable UI, event handlers, policy semantics, novel consequential labels or authority. Schema rejection uses a renderer-owned safe fallback and never blocks Stop or typed input.
+
+Context Rooms change retrieval priority, never assistant identity or authority. The intent record carries `currentRoomRef?`; the local resolver supplies minimum relevant current-room, cross-room and global references with provenance after sensitivity/policy filtering. The planner cannot request a whole-room dump, infer that room membership grants sharing/consent or hide a material cross-room source. If resolution fails, it continues with admitted task context or says context is unavailable while direct browse/search remains usable.
 
 Guidance mode explains only externally meaningful state: the requested goal, the verified current step, what the person can do next and why a handoff or question is needed. Default progress remains concise; an explicit request can expand into tutorial steps. Visual arrows/highlights must be generated from an admitted semantic target or a user-supplied bounded image region, never from free-form model coordinates or hidden reasoning. If the target cannot be freshly resolved or a safe visible guidance surface cannot be maintained, provide a truthful manual handoff without annotation.
 

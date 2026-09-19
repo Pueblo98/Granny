@@ -2,7 +2,7 @@
 title: "UI/UX skill setup and upstream provenance"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [execution, skills, design, android]
 related:
   - operating-workflows.md
@@ -40,7 +40,7 @@ The pinned hashes record reviewed source, not an automatic update channel. Updat
 
 ## Recommended design sequence
 
-1. Read the current design request, [conversation-first plan](../02-design/conversation-first-plan.md) and selected J/SCR/CMP owners through `granny-design-handoff`.
+1. Read the current design request, [Context Rooms](../02-design/context-rooms.md), [conversation-first plan](../02-design/conversation-first-plan.md) and selected J/SCR/CMP owners through `granny-design-handoff`; T-119 is the current room-specific packet.
 2. Use `granny-ui-craft` to shape or compare three structurally different directions with behavior/copy/access requirements held constant.
 3. Implement only the authorized browser slice, using fictional fixtures and explicit simulation labels.
 4. Use `granny-ui-craft` critique/hardening against source plus rendered compact/medium/expanded views; run existing model/browser/document checks.

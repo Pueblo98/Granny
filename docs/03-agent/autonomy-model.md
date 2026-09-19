@@ -2,7 +2,7 @@
 title: "Agent Autonomy and Permit Integration"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-19
 tags: [agent, autonomy]
 related:
   - ../05-safety-privacy/action-policy.md
@@ -24,5 +24,7 @@ Examples: changing Granny text is local reversible; inserting a draft in another
 ## Denials and delegation
 
 Denied scope is a typed result, not a prompt asking the model to try harder. Offer a truthful manual path from SCR-014. No alternate coordinates/provider/helper may bypass denial. Unknown effects default restricted. Routines and remote assistance remain disabled in MVP/V1; a proposed future interface is not authority to expose it.
+
+A Context Room is an organization and retrieval scope, not a permit. Entering Kitchen cannot authorize file access, cross-room disclosure, external action or deletion. The model may propose a reversible membership diff; local policy validates and commits it. Deleting a room container is POL-03 and separately names what remains. Deleting canonical items or memories requires its own exact preview and authority.
 
 Runtime tests: EVAL-003/006/010/016. UX comprehension: EVAL-012. [Traceability](../01-product/traceability.md) binds these to PRD-SAF and PRD-PRV requirements.

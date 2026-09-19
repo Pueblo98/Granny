@@ -2,7 +2,7 @@
 title: "Simon class brainstorming alignment"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [execution, planning, brainstorming]
 related:
   - ../08-research/source-material/2026-09-17-class-brainstorming.md
@@ -14,6 +14,10 @@ related:
 ---
 
 # Simon class brainstorming alignment
+
+## Context Rooms follow-up — 2026-09-19
+
+Simon later replaced the unresolved “background/widgets/shelf” space with the accepted [Context Rooms](../02-design/context-rooms.md) direction. This does not reopen the stable Home choice below: Home remains the universal conversation anchor with at most one context panel. Rooms are a secondary direct organization layer around the same assistant. [ADR-0015](../09-decisions/ADR-0015-context-rooms.md), PRD-FR-022 and T-119 now own the active plan; the earlier shelf/dashboard comparisons below remain decision history.
 
 ## Authority and use
 
@@ -83,7 +87,7 @@ This decision controls the agent's design vocabulary wherever Home lands.
 
 The Home decision says **where and when** modules persist. ADR-0013 now answers what the agent may construct: registered components and typed slots, with renderer-owned semantics and policy-owned actions. Temporary task composition may happen automatically. Home still decides whether any module survives the task and how much persistent change happens without asking.
 
-All six rows now have explicit direction. The remaining work is visual design and access/comprehension evidence, not another Home-model decision.
+All six rows now have explicit direction. Context Rooms subsequently answered how longer-lived domain material can stay recognizable without returning to a widget dashboard. The remaining work is T-119 visual/contract design and access/comprehension evidence, not another Home-model decision.
 
 ## Additional low-clutter Home directions
 

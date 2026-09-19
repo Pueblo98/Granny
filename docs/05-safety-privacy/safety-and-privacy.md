@@ -50,6 +50,8 @@ Home's optional context panel follows [ADR-0014](../09-decisions/ADR-0014-stable
 
 Room creation, membership and atmosphere are private local settings until a later release explicitly admits synchronization or sharing. A proposed private-room flag may further restrict retrieval but must not be represented as encryption or account isolation without implementation evidence. There is no shared/family room entitlement in MVP or by default in later releases.
 
+T-119 uses deterministic fictional references and in-memory membership only. Its design/runtime mock must have no personal files, provider egress, browser persistence or implied production encryption. Proposed App V1 storage remains blocked until a storage/backup/tombstone design and EVAL-008/012 evidence are reviewed.
+
 Deleting a room previews shared references, room-only references, room settings, pending work and external originals outside Granny's authority. **Delete room only** removes the container and moves room-only references to Unfiled by default; it does not delete canonical items, memories or files in another app. **Delete underlying data** is a separate exact destructive flow using the existing tombstone, derivative invalidation and verification rules. The model may prepare either change but trusted local policy/storage commits it; touch access, Stop and truthful partial/unknown results remain available.
 
 ## Data flow and deletion semantics

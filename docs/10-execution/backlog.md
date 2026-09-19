@@ -15,9 +15,9 @@ related:
 
 Planning package complete for review; T-100's experiment/control decision is accepted, while other product choices and runtime evidence remain open. T-113 covers documentation/workflow refinement; other tasks remain **planned, not implemented work** unless individually marked. [Readiness](development-readiness.md) owns gates and Definition of Ready. [Traceability](../01-product/traceability.md) supplies exact requirement links. P0 = kill-risk/foundation, P1 = controlled prototype, P2 = MVP/pilot, P3 = V1 after learning. Change-task commits are pushed under the [Git workflow's standing authority](git-workflow.md). Dependency installation, main merges and other external-service changes are not implied.
 
-Order: T-100/101 decision/evidence + T-102/108 interaction/research; independently T-103 fake contract replay → admitted T-104/105/106 + local T-107 → T-109 integrated evidence → T-110 gated MVP/pilot → T-111 V1. T-112 stays deferred. Product/visual decisions need not block fake safety tests; missing route evidence does block real external automation.
+Order: T-100/101 decision/evidence + T-102/108 interaction/research; T-119 is the next fictional Context Rooms experience/contract slice; independently T-103 fake contract replay → admitted T-104/105/106 + local T-107 → T-109 integrated evidence → T-110 gated MVP/pilot → T-111 V1. T-112 stays deferred. Product/visual decisions need not block fake safety tests; missing route evidence does block real external automation.
 
-[Task packets](task-packets.md) now detail T-101/102/103/108; [delivery workflows](operating-workflows.md) own preparation, implementation, review and evidence procedures. T-113 records the documentation/workflow refinement, not execution of those downstream tasks.
+[Task packets](task-packets.md) now detail T-101/102/103/108/119; [delivery workflows](operating-workflows.md) own preparation, implementation, review and evidence procedures. T-113 records the documentation/workflow refinement, not execution of those downstream tasks.
 
 <a id="t-100"></a>
 ## T-100 — Review MVP/control decision brief
@@ -212,6 +212,17 @@ Order: T-100/101 decision/evidence + T-102/108 interaction/research; independent
 - **Acceptance:** Each skill passes the packaging validators; repository/cockpit/documentation checks and documentation-tool tests pass; only reviewed resources enter Git; no executable third-party launcher/hook, global configuration, dependency install, product UI change or unrelated user edit is included.
 - **Status:** complete — reviewed packages and provenance are integrated; five changed skill entrypoints and repository documentation validate. Current documentation-tool regressions pass after integration. This is tooling setup, not design implementation or a gate pass.
 - **Excluded:** Browser redesign implementation, Android scaffold/build/device action, Figma mutation, product or brand acceptance, automatic upstream updates, main integration and Stage 2/3.
+
+<a id="t-119"></a>
+## T-119 — Prototype Context Rooms experience and typed context contract
+
+- **Scope / authority:** Simon adopted Context Rooms as the active experience direction and asked the notebook/future plan to align on 2026-09-19. This task prepares one bounded fictional-data design/contract slice; implementation begins only when separately requested.
+- **Trace / owner:** PRD-FR-022; UC-026/J-009; SCR-003/016/017; CMP-007/009/011; CAP-15; ADR-0015; EVAL-008/012; design + agent/context + privacy owners.
+- **Dependencies / entry:** Preserve ADR-0014 Home and the Round conversation shell; reuse registered components; no real storage/provider/device route. Read the [task packet](task-packets.md#t-119-packet), [Context Rooms](../02-design/context-rooms.md) and action/privacy policy.
+- **Deliverables:** Editable/reviewable global Home → Rooms → Kitchen slice; deterministic fictional room/item fixture; direct browse/search with model unavailable; current-room/cross-room/global context envelope and visible provenance; membership diff/receipt/Undo; archive and delete-room inventory/result; accessibility/responsive annotations and exact unrun evidence.
+- **Acceptance:** Same assistant/personality and control anchors; no room grid on Home; item findable without conversation; whole-room context never loaded; material cross-room source visible and excludable; deletion preserves canonical items and invalidates room-scoped authority; EVAL-008/012 fixture assertions and relevant browser/doc checks pass.
+- **Status:** planned — specification and packet ready; no Context Rooms prototype, human study or persistent implementation exists.
+- **Excluded / rollback:** No personal data, browser/device persistence, provider egress, sharing/helper access, production database, Android automation, separate room agents, cognitive/dementia benefit claim or MVP expansion. Disable/remove the fictional route without changing global Home if the model fails review.
 
 ## Session handoff
 

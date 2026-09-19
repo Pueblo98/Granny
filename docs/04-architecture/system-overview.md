@@ -147,11 +147,11 @@ Each anchor is a stable architecture owner referenced from [traceability](../01-
 <a id="rooms"></a>
 ### Context Room index and resolver
 
-**Responsibility / state / APIs:** Versioned Room and RoomMembership records, canonical item references, current-room priority, scoped cross-room candidate retrieval, source receipts, Unfiled/archive/delete transitions.
-**Placement/trust:** Proposed local typed service beside memory/privacy; the model may propose queries or membership diffs but cannot read the whole store or commit changes directly.
+**Responsibility / state / APIs:** CAP-15 versioned Room and RoomMembership records, canonical item references, current-room priority, scoped cross-room candidate retrieval, source receipts, Unfiled/archive/delete transitions.
+**Placement/trust:** Active T-119 fixture boundary and proposed App V1 local typed service beside memory/privacy; the model may propose queries or membership diffs but cannot read the whole store or commit changes directly.
 **Permissions/data:** References and provenance only by default; item content remains in its owning store and enters a task through existing sensitivity/scope/egress checks.
 **Offline/failure isolation:** Direct room browse/search and local membership changes remain available offline; failed resolution returns no context rather than guessed content; deleting a room invalidates room-scoped plans/permits and preserves canonical items unless separately deleted.
-**Dependencies:** shell, planner, memory, privacy, policy, audit.
+**Dependencies:** shell, planner, memory, privacy, policy, audit; no production persistence before T-119 and EVAL-008/012 review.
 
 <a id="privacy"></a>
 ### Privacy/egress boundary

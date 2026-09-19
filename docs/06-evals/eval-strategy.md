@@ -2,7 +2,7 @@
 title: "Stage 1 evaluation strategy and metrics"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-19
 tags: [evals]
 related:
   - canonical-tasks.md
@@ -52,6 +52,9 @@ Paired comparison with each participant's current method is within-person where 
 | Delegation preference | Participants choosing delegation for ≥1 valued job / participants offered real choice | Proposed ≥70%; guidance preference legitimate and may reshape product |
 | Thesis coverage | Useful external workflows independently delegated / proposed signature set | ≥2 before claiming thesis evidence; internal settings/handoff alone insufficient |
 | Privacy minimization | Unapproved fields/egress events / inspected storage/export/network events | 0 leaks; absence in sampled logs not proof of all-system absence |
+| Room direct findability | Referenced items found through touch browse/search without model help / assigned room-find tasks | Report by access profile and text scale; inability to recover without chat blocks room admission |
+| Room scope/source comprehension | Correct unaided explanation of current room, one-assistant identity and material cross-room source / room teach-back trials | Proposed ≥90%; any belief that room membership grants sharing/action authority triggers redesign |
+| Room deletion comprehension | Correct distinction between Delete room and Delete underlying data / deletion-preview trials | 100% before destructive production support; T-119 is fictional and cannot establish release safety |
 
 ## Failure review and reporting
 
