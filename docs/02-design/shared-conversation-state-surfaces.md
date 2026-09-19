@@ -5,6 +5,7 @@ owner: Simon
 last_updated: 2026-09-20
 tags: [design, interaction, conversation, states, rooms]
 related:
+  - mockups/2026-09-20-shared-state-pack/iteration-1/SHARED-STATE-IMPLEMENTATION-METAPROMPT.md
   - conversation-first-plan.md
   - context-rooms.md
   - product-design-spec.md
@@ -272,3 +273,6 @@ capture, Stop effectiveness, independent outcome verification, 200% reflow or
 older-adult comprehension. An implementation can look different while still
 conforming if it preserves the state’s required information, hierarchy,
 controls, semantics and underlying Home/Room continuity.
+
+The active frontend implementation handoff is the
+[shared-state implementation metaprompt](mockups/2026-09-20-shared-state-pack/iteration-1/SHARED-STATE-IMPLEMENTATION-METAPROMPT.md).
