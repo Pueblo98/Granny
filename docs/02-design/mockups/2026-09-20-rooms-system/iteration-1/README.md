@@ -5,6 +5,7 @@ owner: Simon
 last_updated: 2026-09-20
 tags: [design, mockups, context-rooms, harbour-blue]
 related:
+  - ROOMS-SYSTEM-IMPLEMENTATION-METAPROMPT.md
   - prompts.md
   - manifest.json
   - ../../../context-rooms.md
@@ -26,6 +27,14 @@ landscape-tablet references plus a derived comparison sheet.
 Simon has not yet selected these structures. Review the images first; only the
 parts Simon accepts should later be translated into replicable PRD, screen and
 component instructions. A polished raster does not change the product contract.
+
+**Implementation handoff, Simon, 2026-09-20:** after reviewing this round,
+Simon authorized the active frontend session to implement the complete
+fictional Rooms-system slice. Use the bounded
+[implementation metaprompt](ROOMS-SYSTEM-IMPLEMENTATION-METAPROMPT.md). This
+authorizes prototype implementation of the references; it does not turn the
+rasters into production evidence or authorize persistence, backend retrieval or
+native Android work.
 
 ![Rooms system iteration 1 comparison sheet with labels outside the product screens](comparison.png)
 

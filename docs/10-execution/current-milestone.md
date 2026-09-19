@@ -54,6 +54,15 @@ feedback. The next bounded step is to select, simplify or combine these
 structures without turning Rooms into a busier dashboard, then record only the
 accepted behavior and replicable UI rules in their canonical owners.
 
+Simon subsequently authorized the active frontend session to implement the
+complete fictional Rooms slice from a bounded
+[implementation metaprompt](../02-design/mockups/2026-09-20-rooms-system/iteration-1/ROOMS-SYSTEM-IMPLEMENTATION-METAPROMPT.md).
+The handoff requires reusable in-memory Room/item/membership state, direct
+browse/search, reversible organization, separated deletion scopes, disclosed or
+denied cross-room sources, degraded fixtures and regression/accessibility
+coverage. It does not authorize persistent personal data, backend retrieval,
+Android work or automatic main integration.
+
 ## Shared conversation state pack — 2026-09-20
 
 The first [shared state pack](../02-design/mockups/2026-09-20-shared-state-pack/iteration-1/README.md)
