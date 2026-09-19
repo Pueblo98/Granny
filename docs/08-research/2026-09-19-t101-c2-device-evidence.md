@@ -106,3 +106,34 @@ Both repaired packages were uninstalled. The human revoked debugging
 authorization, disabled USB debugging and Developer options, unplugged the
 cable and reported the tablet responsive. T-101 remains in progress and
 GATE-03/04/06 remain unchanged.
+
+## Lifecycle-repair verification run
+
+Simon then authorized commit
+`817008aa90b23663c5eef8ed7b42e7706d13ec55` and its two exact APK digests for
+C2-08/09/10/12 only. Exactly one redacted transport count was observed. Both
+installs and both uninstalls returned `Success`; no screenshot, raw content,
+shell command, transport identifier, personal app/account/data, full-screen
+capture or network egress was used.
+
+| Case | Lifecycle-repair result | Content-free observation and limit |
+|---|---|---|
+| C2-08 | **passed bounded Stop oracle** | The red Lab Stop returned `STOPPED` with no explanation; the tablet remained responsive. |
+| C2-09 | **passed observable lock-cleanup oracle** | Lock/unlock returned `STOPPED — Android ended the capture session`; the sharing indicator was gone after unlock. The observation cannot attribute which cleanup callback won the race. |
+| C2-10 | **passed bounded resize/recovery oracle** | Sharing remained active during one rotation, then returned the fixed `EXPLAINED` Wi-Fi-off result with explicit bounded-resize evidence; sharing ended afterward. |
+| C2-12 | **does not pass truthful state recovery** | Removing the observer task ended sharing, but reopening displayed the stale prior C2-10 result rather than a new task-removal result. Projection containment was observed; result provenance was wrong. |
+
+The sequence exposes a narrower generation defect: after C2-10 recreated the
+activity, its new in-memory consent state machine restarted at a lower
+generation than the process ledger. The later C2-12 ledger updates were
+rejected as stale, leaving the prior result visible. This is a source diagnosis,
+not a revised device result, until a repaired artifact runs under fresh exact
+authority.
+
+C2 remains **not admitted**. Lock, resize, visible Stop and task-removal
+projection cleanup now have bounded positive observations, but truthful
+C2-12 result recovery fails, selected-package identity remains absent, and
+runtime retention/egress remain uninstrumented. Both packages were uninstalled.
+The human revoked debugging authorization, disabled USB debugging and Developer
+options, unplugged the cable and reported restoration complete. T-101 remains
+in progress and GATE-03/04/06 remain unchanged.

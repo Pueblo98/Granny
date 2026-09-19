@@ -244,16 +244,30 @@ Signature Scheme v2 and the same ordinary debug certificate:
 
 | APK | Lifecycle-repair SHA-256 | Device state |
 |---|---|---|
-| `fixture-debug.apk` | `044a693583f95ad6bb98e2038019546871cea36b39b570ae07217bc03a070678` | Unrun for this source revision |
-| `observer-debug.apk` | `efc6b8d8e62fd5e413ae9d1e5143bc37fda621d5395b2ae64c1f114b9ae3d576` | Unrun |
+| `fixture-debug.apk` | `044a693583f95ad6bb98e2038019546871cea36b39b570ae07217bc03a070678` | Ran only under the later exact lifecycle authority |
+| `observer-debug.apk` | `efc6b8d8e62fd5e413ae9d1e5143bc37fda621d5395b2ae64c1f114b9ae3d576` | Ran only under the later exact lifecycle authority |
 
 Manifest inspection remains unchanged: the fixture declares no permission and
 the observer declares only `FOREGROUND_SERVICE` and
-`FOREGROUND_SERVICE_MEDIA_PROJECTION`. Host checks cannot establish prompt
+`FOREGROUND_SERVICE_MEDIA_PROJECTION`. Host checks alone cannot establish
 screen-off/task-removal cleanup, Android indicator behavior, recovered rotation
-results, package identity, retention or egress. No tablet action occurred for
-this repair, and a later device run requires fresh exact authorization for its
-commit and artifact hashes.
+results, package identity, retention or egress. A later exact-authority run
+produced the bounded observations below.
+
+## Lifecycle verification — 2026-09-19
+
+The exact lifecycle-repair artifacts produced positive bounded C2-08 Stop,
+C2-09 lock cleanup and C2-10 resize/result-recovery observations. Removing the
+observer task in C2-12 also ended sharing. However, reopening the Lab displayed
+the stale prior C2-10 result instead of a new task-removal result.
+
+The ordered case sequence exposed a source defect: rotation recreated the
+activity, whose new consent state machine restarted its generation below the
+process ledger's generation. The later C2-12 ledger updates were rejected as
+stale, leaving prior result text visible. C2-12 therefore does not pass truthful
+result recovery even though projection cleanup was observed. Both APKs were
+uninstalled and debugging was restored. Repair and host-test generation seeding
+before any new exact device request; do not reinterpret this run as admission.
 
 ## Install and teardown procedure used
 
