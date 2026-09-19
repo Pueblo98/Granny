@@ -2,7 +2,7 @@
 title: "Stage 1 decision queue and evidence unknowns"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [execution]
 related:
   - development-readiness.md
@@ -21,7 +21,7 @@ No clarification blocks completing the documentation. Routine reversible choices
 | OQ-02 · accepted posture + open evidence | Simon accepted API/integration-led candidate, evidence-gated static recipes and separate synthetic dynamic lab on 2026-09-14; actual distribution viability remains unknown | Private pilot has install/support friction and no Play assurance; genuine disability-specific product is a material audience change, not a label | [Policy evidence](../08-research/android-stage-1-feasibility.md); GATE-04 still Needs evidence; Android/policy |
 | OQ-03 · evidence | Inventory actual Samsung tablet; propose API34 synthetic test floor plus current stable and second OEM before expansion | Wider support costs testing; named marketing model may be inaccurate | RES-04/T-101; exact min/target SDK and support matrix remain unselected |
 | OQ-04 · Simon + evidence | Local policy/Stop/data authority, replaceable cloud/local proposals; [ADR-0010](../09-decisions/ADR-0010-local-authority-and-data.md) | Local-only lowers egress but capability unknown; cloud-owned authority risks outage/overcapture | RES-05/08; GATE-06/08; provider terms/cost budget before real data |
-| OQ-05 · Simon | Tap-to-talk with complete touch path and stronger access targets; [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md) | Always-on may reduce initiation but privacy/background/acoustic risk unproven | RES-03/06; GATE-05; wake word deferred separately from public name |
+| OQ-05 · resolved decision + open evidence | Simon accepted tap-to-talk/full touch and Android on-device recognition with conservative non-model cleanup on 2026-09-20; [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md) | Always-on remains deferred; bundled local ASR is the next comparison only if measured native recognition fails | T-120; RES-03/06; EVAL-005/007/009/012; GATE-05/06/07; exact device/locale/acoustic evidence unrun |
 | OQ-06 · Simon | Name architecture: one provisional masterbrand/product/companion, company legal name unconstrained; finalists Daykind, Handspan, Clearfold | Daykind warm daily presence; Handspan agency with dictionary/crowding concerns; Clearfold clarity/platform with known paper-mark lead—hold legal review | [Iteration kit](../02-design/naming-exploration.md); RES-09; no availability claim; no commitment before market/language/mark screening |
 | OQ-07 · current visual system selected + open production evidence | Simon selected Harbour Blue, iteration 5 / 04, as the design system for now on 2026-09-19; main-board and displayed palette choice is resolved | Earlier Soft Plum and assistant shortlist recommendations are superseded; retain iterations as history | [FINAL image and written reference](../02-design/mockups/2026-09-19-style-boards/final-harbour-blue/README.md); production font files, dimensions, logo, dark/unshown states and GATE-05 evidence remain open |
 | OQ-08 · Simon | Select initial pilot market/language and recruitment context; English is prototype language only | One market reduces linguistic/support load; multilingual launch multiplies consent/voice/name/legal work | RES-01/06/09; specialist privacy/consumer/trademark review scoped after choice; no Spain inference |
@@ -77,7 +77,7 @@ The initialization queue used three-digit OQ IDs. They are preserved here as ali
 | OQ-006 data/retention/rights | Privacy policy now specified; OQ-04/09 and RES-05/08 |
 | OQ-007 helper scope/revocation | OQ-09; explicit proposal, evidence unrun |
 | OQ-008 threats/account recovery | Threat model now specified; EVAL-008/010/016, no runtime proof |
-| OQ-009 activation | OQ-05; tap-to-talk proposed, no physical control dependency |
+| OQ-009 activation | OQ-05 resolved by accepted ADR-0011; tap-to-talk, no physical control dependency; device/access evidence remains open |
 | OQ-010 access targets | OQ-05/07; measured color arithmetic only, access/user tests absent |
 | OQ-011 initiative/quiet hours | Proactive execution excluded MVP/V1; later App new decision required |
 | OQ-012 exact tablet | OQ-03/11; inventory absent |

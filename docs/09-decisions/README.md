@@ -2,7 +2,7 @@
 title: "Decision records and authority"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [decisions]
 related:
   - ../_templates/adr.md
@@ -26,7 +26,7 @@ ADRs record consequential scope, distribution, authority/data, platform and inte
 | [ADR-0008](ADR-0008-docs-obsidian-vault.md) | accepted | docs/ is Obsidian vault; repository remains full source of truth |
 | [ADR-0009](ADR-0009-mvp-and-control-posture.md) | accepted | Five MVP experiments; policy-bounded candidate vs synthetic dynamic lab; Simon approved 2026-09-14, feasibility/release gates remain open |
 | [ADR-0010](ADR-0010-local-authority-and-data.md) | proposed | Local independent authority and minimized replaceable cloud; App V1 memory behavior is separately accepted in ADR-0012 |
-| [ADR-0011](ADR-0011-explicit-activation-and-access.md) | proposed | Tap-to-talk/full touch, stronger measurable access baseline |
+| [ADR-0011](ADR-0011-explicit-activation-and-access.md) | accepted | Tap-to-talk/full touch; initial Android on-device recognition with conservative non-model cleanup |
 | [ADR-0012](ADR-0012-automatic-memory-and-adaptive-communication.md) | accepted | App V1 automatically saves allowed important facts; setup preference anchors bounded silent communication adaptation |
 | [ADR-0013](ADR-0013-bounded-interface-composition.md) | accepted | Agent composes registered semantic components through typed plans; arbitrary generated controls remain unavailable |
 | [ADR-0014](ADR-0014-stable-home-context-panel.md) | deprecated | Historical stable-anchor/one-panel Home, superseded for Context Rooms composition by ADR-0016 |

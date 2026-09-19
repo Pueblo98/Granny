@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stage 1 voice shell</string>
+    <string name="title">Talk to your assistant</string>
+    <string name="privacy_explanation">Speech stays with Android\'s on-device recognizer. Review the words before using them.</string>
+    <string name="transcript_hint">Your request appears here, or type it yourself</string>
+    <string name="talk">Talk</string>
+    <string name="done_listening">Done listening</string>
+    <string name="stop">Stop</string>
+    <string name="type_instead">Type instead</string>
+    <string name="use_request">Use this request</string>
+    <string name="test_boundary">Test shell: Use this request keeps the text on this screen. It does not send a message or take an action.</string>
+    <string name="hearing_format">Hearing: %1$s</string>
+</resources>

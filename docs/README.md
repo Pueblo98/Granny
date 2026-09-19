@@ -21,6 +21,8 @@ related:
 
 **Stage 1 stock-Android tablet app only.** Granny is a temporary codename. Vision, App MVP, App V1, later App, future Stage 2 OS and future Stage 3 hardware are separate scopes in [product scope](01-product/scope-and-roadmap.md). docs/ is the Obsidian vault; the whole Git repository is the project source of truth. Ignored Obsidian JSON is private local user state.
 
+Native voice slice: Simon accepted [explicit tap-to-talk and Android on-device recognition](09-decisions/ADR-0011-explicit-activation-and-access.md) on 2026-09-20. [T-120](10-execution/backlog.md#t-120) owns the first bounded own-app shell, conservative non-model cleanup and host/device evidence split. Whisper-class, cleanup-LLM, cloud and ambient routes remain excluded from this slice.
+
 Local backend/MCP experiment: [versioned runtime contract](04-architecture/conversation-runtime-contract.md) · [startup/tests](../prototypes/conversation-runtime/README.md) · [T-117 evidence](10-execution/sessions/2026-09-15-mcp-backend-integration.md). Next offline engineering handoff: [complete T-103 authority-core sprint](10-execution/t103-backend-sprint-handoff.md). Actual local execution uses fictional data; production Android gates remain unchanged.
 
 Latest Simon-authored planning input: [class brainstorming capture](08-research/source-material/2026-09-17-class-brainstorming.md) · [resolved OQ-14 alignment packet](10-execution/brainstorming-alignment.md). All six product conflicts have explicit direction; visual and human evidence remains open.

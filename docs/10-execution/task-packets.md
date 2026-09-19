@@ -2,7 +2,7 @@
 title: "First design and engineering task packets"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [execution, handoff]
 related:
   - backlog.md
@@ -212,6 +212,78 @@ must fall back without changing controls, context or room availability.
     vertical/direct-list treatment without hiding the composer.
 
 **Evidence and completion:** Automated checks may prove deterministic fixture/state/semantics and zero forbidden egress/persistence. Screenshot review may assess visual hierarchy. Only a separate approved RES-03/08 study can support human comprehension or value. Report exact artifact version, cases/assertions, viewport/access modes and gaps. Passing T-119 does not admit App V1 storage or pass GATE-05/06/08.
+
+<a id="t-120-packet"></a>
+## T-120 packet — Native on-device voice shell and cleanup boundary
+
+**Requested mode and outcome:** Implement Simon's accepted 2026-09-20
+ADR-0011 route. From the own-app Home shell, the user can tap Talk, make one
+foreground utterance through Android's on-device recognizer, see provisional
+and final text, stop or finish capture, edit the final text and submit that
+exact visible revision for later interpretation. Type remains complete when
+voice is denied or unavailable. This slice covers PRD-FR-001/003/013/016,
+ACC-003 and PRV-001 through UC-013/014/015/017/022, J-007, SCR-004 and CMP-002.
+
+**Entry and boundary:** Build from the latest committed conversation Home plus
+current `origin/main`; do not touch the owner's dirty Context Rooms worktree.
+Use the repository's existing API 36 / AGP 9.4 / Gradle 9.6 / JDK 17 toolchain
+and JUnit 4. The first shell may use Android Views and manual dependency
+injection because no production UI or DI framework has been selected. The
+recognizer is behind an interface so a later implementation can replace it.
+No Internet permission, provider SDK, model artifact, new repository-wide
+framework or persistent user store is admitted.
+
+**Recognizer contract:**
+
+- Call `SpeechRecognizer.isOnDeviceRecognitionAvailable` before exposing the
+  working voice path and create the recognizer with
+  `createOnDeviceSpeechRecognizer`; never substitute the generic recognizer.
+- Request `RECORD_AUDIO` only after Talk. Denial, permanent denial or revoke
+  leaves the editable Type path and does not nag in a loop.
+- Request free-form speech and partial results. On API 33+ request quality
+  formatting; implementations may ignore it. A partial is visibly
+  provisional and never submitted automatically.
+- Done listening calls `stopListening`; Stop/session replacement/lifecycle exit
+  calls `cancel` and invalidates the generation before destroying the wrapper.
+  Late callbacks from an older generation cannot change visible or submitted
+  state.
+- The adapter reports idle, requesting permission, starting, listening,
+  stopping, final, unavailable and error states. Android error codes map to
+  plain recovery text without exposing provider internals.
+
+**Cleanup and revision contract:** When two final hypotheses are returned after
+requesting Android formatting, treat the first as formatted and the second as
+raw; otherwise use the first as both. Apply only deterministic whitespace and
+punctuation-spacing normalization to the display candidate. Keep the raw final
+string only in the active in-memory session. Do not delete arbitrary filler
+words, infer self-corrections, translate, summarize or change names, numbers,
+dates, recipients or message meaning. User edit increments the transcript
+revision; Submit freezes the exact visible value and no prior revision retains
+authority.
+
+**Host fixture and oracle:** Pure tests drive a generation-based state reducer,
+hypothesis selector and cleaner without a microphone. Cover nominal
+idle→listening→partial→final, Done, Stop before/after partial, permission
+denied, unavailable recognizer, empty/no-match/error, replacement generation,
+late partial/final rejection, formatted/raw one/two/many hypotheses, Unicode,
+names/numbers/dates, punctuation spacing and idempotence. The observed oracle
+is reducer/output state, separate from fake recognizer acknowledgements.
+
+**Exact-device matrix, unrun until recorded:** On the pseudonymous supplied
+Samsung only, record OS/API, recognizer component, locale/model availability
+and app SHA. Exercise permission grant/deny/revoke, offline mode, quiet and
+ordinary home-like noise, conversational distance, names/numbers/dates,
+10-second no-speech behavior, 30-second cap, Done, Stop, lock/background and
+rotation. Record partial/final correctness, correction effort and timings;
+retain no raw audio or personal transcript. Use synthetic phrases. Host build
+success cannot establish any device or human claim.
+
+**Rollback and completion:** Voice remains a removable adapter and Type remains
+the supported fallback. A host-complete delivery requires unit tests, assemble,
+lint, documentation validation, a content/permission inspection and exact
+unrun gaps. T-120 reaches review after those checks; it completes only after
+the requested implementation handoff is accepted. Device evidence, RES-06 and
+GATE-05/06/07 remain separate.
 
 ## Restart prompts
 
