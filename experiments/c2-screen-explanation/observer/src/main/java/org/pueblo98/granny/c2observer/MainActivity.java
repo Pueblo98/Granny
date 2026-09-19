@@ -10,11 +10,15 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.view.Gravity;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** Manual lab surface for one synthetic, user-consented projection session. */
 public final class MainActivity extends Activity {
@@ -23,8 +27,9 @@ public final class MainActivity extends Activity {
     private static final long CONSENT_INVALIDATION_DELAY_MILLIS = 3_000L;
 
     private final CaptureSessionStateMachine stateMachine =
-            new CaptureSessionStateMachine(LabSessionLedger.process().snapshot().generation);
+            new CaptureSessionStateMachine(LabSessionLedger.process().snapshot());
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private final List<Button> startControls = new ArrayList<>();
     private long activeGeneration;
     private String activeTrial = CaptureTrialPlan.STANDARD;
     private TextView status;
@@ -33,11 +38,9 @@ public final class MainActivity extends Activity {
     private final BroadcastReceiver resultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String resultStatus = intent.getStringExtra(CaptureService.EXTRA_STATUS);
-            if ("UNAVAILABLE".equals(resultStatus)) {
-                stateMachine.unavailable();
-            } else {
-                stateMachine.stopped();
+            long resultGeneration = intent.getLongExtra(CaptureService.EXTRA_GENERATION, -1L);
+            if (resultGeneration != activeGeneration) {
+                return;
             }
             renderLatestSessionState();
         }
@@ -47,6 +50,16 @@ public final class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(buildContent());
+        LabSessionLedger.Snapshot restored = LabSessionLedger.process().snapshot();
+        activeGeneration = restored.generation;
+        if (restored.phase == LabSessionLedger.Phase.REQUESTING) {
+            LabSessionLedger.process().result(
+                    restored.generation,
+                    "UNAVAILABLE",
+                    "Capture consent was not restored after the observer was recreated.",
+                    "No capture grant was retained; start a new explicit request.");
+        }
+        stateMachine.reconcile(LabSessionLedger.process().snapshot());
         registerReceiver(
                 resultReceiver,
                 new IntentFilter(CaptureService.ACTION_RESULT),
@@ -91,12 +104,14 @@ public final class MainActivity extends Activity {
         root.addView(fixture, fixtureParams);
 
         Button start = button("2. Choose fixture app window");
+        startControls.add(start);
         start.setOnClickListener(ignored -> requestCapture(CaptureTrialPlan.STANDARD, false));
         LinearLayout.LayoutParams startParams = matchWrap();
         startParams.topMargin = dp(16);
         root.addView(start, startParams);
 
         Button stopBeforeResult = button("Test C2-07: invalidate consent after 3 seconds");
+        startControls.add(stopBeforeResult);
         stopBeforeResult.setOnClickListener(
                 ignored -> requestCapture(CaptureTrialPlan.STANDARD, true));
         LinearLayout.LayoutParams stopBeforeResultParams = matchWrap();
@@ -113,6 +128,7 @@ public final class MainActivity extends Activity {
         root.addView(stop, stopParams);
 
         Button stopTrial = button("C2-08: 10-second Stop trial — share one app only");
+        startControls.add(stopTrial);
         stopTrial.setOnClickListener(
                 ignored -> requestCapture(CaptureTrialPlan.STOP, false));
         LinearLayout.LayoutParams stopTrialParams = matchWrap();
@@ -120,6 +136,7 @@ public final class MainActivity extends Activity {
         root.addView(stopTrial, stopTrialParams);
 
         Button revokeTrial = button("C2-09: 10-second lock/revoke trial — share one app only");
+        startControls.add(revokeTrial);
         revokeTrial.setOnClickListener(
                 ignored -> requestCapture(CaptureTrialPlan.REVOKE, false));
         LinearLayout.LayoutParams revokeTrialParams = matchWrap();
@@ -127,6 +144,7 @@ public final class MainActivity extends Activity {
         root.addView(revokeTrial, revokeTrialParams);
 
         Button resizeTrial = button("C2-10: 10-second rotate trial — share one app only");
+        startControls.add(resizeTrial);
         resizeTrial.setOnClickListener(
                 ignored -> requestCapture(CaptureTrialPlan.RESIZE, false));
         LinearLayout.LayoutParams resizeTrialParams = matchWrap();
@@ -134,6 +152,7 @@ public final class MainActivity extends Activity {
         root.addView(resizeTrial, resizeTrialParams);
 
         Button processLossTrial = button("C2-12: 10-second task-removal trial — share one app only");
+        startControls.add(processLossTrial);
         processLossTrial.setOnClickListener(
                 ignored -> requestCapture(CaptureTrialPlan.PROCESS_LOSS, false));
         LinearLayout.LayoutParams processLossTrialParams = matchWrap();
@@ -141,7 +160,7 @@ public final class MainActivity extends Activity {
         root.addView(processLossTrial, processLossTrialParams);
 
         status = text("Not started. Select only the C2 Synthetic Screen Fixture app window; never select the full display.", 20, false);
-        status.setContentDescription("Capture status");
+        status.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
         LinearLayout.LayoutParams statusParams = matchWrap();
         statusParams.topMargin = dp(28);
         root.addView(status, statusParams);
@@ -169,6 +188,10 @@ public final class MainActivity extends Activity {
     }
 
     private void requestCapture(String trial, boolean invalidateBeforeResult) {
+        if (!stateMachine.canBeginRequest()) {
+            showStatus("Capture is already requesting, starting, or stopping. Wait for its result before starting another trial.");
+            return;
+        }
         MediaProjectionManager manager = getSystemService(MediaProjectionManager.class);
         if (manager == null) {
             showStatus("Screen capture is unavailable on this configuration.");
@@ -176,6 +199,7 @@ public final class MainActivity extends Activity {
         }
         activeTrial = trial;
         activeGeneration = stateMachine.beginRequest();
+        updateStartControls();
         long requestedGeneration = activeGeneration;
         if (invalidateBeforeResult) {
             mainHandler.postDelayed(() -> {
@@ -190,9 +214,17 @@ public final class MainActivity extends Activity {
         } else {
             showStatus(trialInstruction(trial));
         }
-        LabSessionLedger.process().requesting(activeGeneration, status.getText().toString());
+        if (!LabSessionLedger.process().requesting(activeGeneration, status.getText().toString())) {
+            renderLatestSessionState();
+            return;
+        }
         updateStopControl(LabSessionLedger.Phase.REQUESTING);
-        startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_CAPTURE);
+        try {
+            startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_CAPTURE);
+        } catch (RuntimeException error) {
+            recordAndShowResult("UNAVAILABLE", "Android could not open capture consent.",
+                    "No capture started; a new explicit request is required.");
+        }
     }
 
     @Override
@@ -216,9 +248,19 @@ public final class MainActivity extends Activity {
             showStatus("Late capture consent was ignored because the session was stopped or replaced.");
             return;
         }
-        CaptureService.start(this, resultCode, data, activeGeneration, activeTrial);
-        stateMachine.serviceStarted(activeGeneration);
-        LabSessionLedger.process().active(activeGeneration, activeTrial);
+        // Mark the generation admitted before crossing the asynchronous service
+        // boundary. A later Stop therefore invalidates the exact generation the
+        // service receives, even if Android delivers STOP before START.
+        if (!stateMachine.serviceStarted(activeGeneration)) {
+            showStatus("Capture did not start because the session was stopped or replaced.");
+            return;
+        }
+        try {
+            CaptureService.start(this, resultCode, data, activeGeneration, activeTrial);
+        } catch (RuntimeException error) {
+            recordAndShowResult("UNAVAILABLE", "Android refused the capture service start.",
+                    "No automatic retry is allowed.");
+        }
         renderLatestSessionState();
     }
 
@@ -247,7 +289,16 @@ public final class MainActivity extends Activity {
 
     private void stopCapture() {
         stateMachine.requestStop();
-        CaptureService.requestStop(this);
+        LabSessionLedger.process().requestStop(activeGeneration);
+        try {
+            CaptureService.requestStop(this, activeGeneration);
+        } catch (RuntimeException error) {
+            // The shared latch already blocks further work. Do not claim
+            // cleanup succeeded if Android could not deliver the command.
+            showStatus("Stop requested; cleanup is unconfirmed. Use Android's Stop sharing control.");
+            applyStopControl(StopControlState.stopping());
+            return;
+        }
         applyStopControl(StopControlState.stopping());
         showStatus("Stop requested. No new frame may be admitted.");
     }
@@ -262,6 +313,11 @@ public final class MainActivity extends Activity {
                 resultStatus,
                 message,
                 uncertainty);
+        if ("UNAVAILABLE".equals(resultStatus)) {
+            stateMachine.unavailable();
+        } else {
+            stateMachine.stopped();
+        }
         renderLatestSessionState();
     }
 
@@ -270,15 +326,26 @@ public final class MainActivity extends Activity {
             return;
         }
         LabSessionLedger.Snapshot snapshot = LabSessionLedger.process().snapshot();
+        stateMachine.reconcile(snapshot);
         if (snapshot.phase != LabSessionLedger.Phase.IDLE && snapshot.displayText != null) {
             activeGeneration = Math.max(activeGeneration, snapshot.generation);
             showStatus(snapshot.displayText);
         }
         updateStopControl(snapshot.phase);
+        updateStartControls();
     }
 
     private void updateStopControl(LabSessionLedger.Phase phase) {
         if (stop == null) {
+            return;
+        }
+        if (stateMachine.state() == CaptureSessionStateMachine.State.CAPTURING) {
+            applyStopControl(StopControlState.from(LabSessionLedger.Phase.ACTIVE));
+            return;
+        }
+        if (stateMachine.state() == CaptureSessionStateMachine.State.STOPPING
+                || phase == LabSessionLedger.Phase.STOPPING) {
+            applyStopControl(StopControlState.stopping());
             return;
         }
         StopControlState controlState = StopControlState.from(phase);
@@ -288,6 +355,13 @@ public final class MainActivity extends Activity {
     private void applyStopControl(StopControlState controlState) {
         stop.setEnabled(controlState.enabled);
         stop.setText(controlState.label);
+    }
+
+    private void updateStartControls() {
+        boolean enabled = stateMachine.canBeginRequest();
+        for (Button control : startControls) {
+            control.setEnabled(enabled);
+        }
     }
 
     private Button button(String value) {

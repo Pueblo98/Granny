@@ -2,7 +2,7 @@
 title: "T-101 C2 synthetic screen-explanation scaffold"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [android, experiment, synthetic, screen-explanation]
 related:
   - ../../docs/08-research/2026-09-19-t101-route-inventory.md
@@ -13,8 +13,14 @@ related:
 
 # T-101 C2 synthetic screen-explanation scaffold
 
+Current local follow-up: [single-session safety sprint](../../docs/10-execution/sessions/2026-09-20-android-c2-local-safety-sprint.md)
+and its [unrun human verification packet](../../docs/10-execution/t101-c2-local-safety-verification.md).
+The sprint repairs source-level overlapping-request, stale-result and Stop
+ordering gaps in this existing lab. Its host evidence is separate from the
+historical device results below; it does not admit C2 or create a production app.
+
 Status: **the ordered generation regression now passes on device; a source-only
-Stop-control state repair passes host checks but is unrun on Android, and C2
+Stop/capture lifecycle repair passes 49 host cases but is unrun on Android, and C2
 remains not admitted**.
 
 This lab-only Android 16 scaffold prepares the smallest C2 experiment from the
@@ -32,7 +38,7 @@ reproducible protected-content failure and an aborted Stop attempt.
   samples a bounded marker band into in-memory color summaries, requires a
   temporally separated same-scene marker transition, maps only known fixture
   colors to fixed explanations, and releases the projection.
-- Thirty-six passing pure local JUnit tests for consent/Stop generation,
+- Forty-nine passing pure local JUnit tests for consent/Stop generation,
   capture geometry, bounded marker sampling, marker classification, freshness
   gating, lifecycle-trial allowlisting, process-local result recovery and
   private-canary suppression.
