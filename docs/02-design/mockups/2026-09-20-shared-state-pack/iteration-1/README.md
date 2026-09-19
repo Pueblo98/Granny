@@ -5,6 +5,7 @@ owner: Simon
 last_updated: 2026-09-20
 tags: [design, mockups, conversation, states, safety]
 related:
+  - SHARED-STATE-IMPLEMENTATION-METAPROMPT.md
   - ../../../shared-conversation-state-surfaces.md
   - ../../2026-09-19-style-boards/final-harbour-blue/README.md
   - ../../2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md
@@ -34,6 +35,12 @@ proves a production workflow.
 > bottom composer; clarification, preview, activity and results appear as one
 > temporary surface above it. The raster isolates each state for review and
 > does not require an implementation to replace the whole screen.
+
+Simon authorized the active frontend session to implement this state family
+through the [shared-state implementation metaprompt](SHARED-STATE-IMPLEMENTATION-METAPROMPT.md).
+That handoff requires one reusable renderer over Home and Rooms, validates the
+seven references individually and stops before backend, Android or real speech
+work.
 
 ## Comparison
 
