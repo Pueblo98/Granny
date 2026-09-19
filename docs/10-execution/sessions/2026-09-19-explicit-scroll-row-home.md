@@ -245,6 +245,17 @@ embeds a 1440×900 participant Home and a full-page 600-pixel-wide combined
 fixture state, visual comparison, placeholder inventory, exact checks and
 known limits without overwriting the selected source.
 
+## Owner review refinement
+
+Simon reviewed the locally served checkpoint before integration. On request,
+the redundant bottom-of-page prototype sentence was removed from Home; the
+same fictional-data, no-recording, no-account and no-sending disclosure remains
+reachable through Introduction and Menu → Privacy and reset. The Round
+composer tail was moved beyond the 44-pixel corner arc and its white join mask
+was widened so the corner outline no longer intersects the tail. The live
+review server remained loopback-only. The Home browser suite now protects the
+absence of the redundant footer and the retained disclosure route.
+
 ## Validation
 
 Final validation used the repository's existing Node 26.8.1, Chromium
@@ -255,7 +266,7 @@ Final validation used the repository's existing Node 26.8.1, Chromium
 - `node prototypes/stage-1/cloud.test.mjs` — 27 passed.
 - `node prototypes/stage-1/serve.test.mjs` — 1 passed, including CSP,
   Permissions Policy, exact allowlist, traversal and write-method rejection.
-- `node prototypes/stage-1/home-browser-check.mjs` — 156 assertions, zero
+- `node prototypes/stage-1/home-browser-check.mjs` — 157 assertions, zero
   browser errors, expected static loopback requests only.
 - `node prototypes/stage-1/browser-check.mjs` — 132 assertions, zero browser
   errors; all five scripted workflows and active Stop passed.

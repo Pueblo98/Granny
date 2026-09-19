@@ -75,6 +75,7 @@ try {
   check(await b.evaluate("document.querySelector('#request').placeholder==='Ask me anything…'"), 'selected composer placeholder');
   check(await b.evaluate("document.querySelector('#stop-dock').hidden && document.querySelector('#stop-button').hidden"), 'idle Stop absent');
   check(await b.evaluate("!document.querySelector('#review-panel') && !document.querySelector('#review-home-fixture')"), 'reviewer controls absent from participant DOM');
+  check(await b.evaluate("!document.querySelector('.sandbox-notice') && document.querySelector('#introduction').textContent.includes('does not record your voice') && document.querySelector('[data-menu=privacy]')"), 'redundant Home footer is absent while Menu disclosure remains');
   check(await b.evaluate("document.querySelectorAll('#continuation').length===1 && document.querySelectorAll('#room-list .room-entry').length===3"), 'one continuation and three semantic room targets');
   check(await b.evaluate("[...document.querySelectorAll('#room-list .room-entry')].every(item => item.tagName==='BUTTON' && item.getAttribute('aria-label') && item.querySelector('strong') && item.querySelector('span'))"), 'room name and purpose share one native target');
   check(await b.evaluate("document.querySelector('#room-controls').hidden && document.querySelector('#room-viewport').dataset.overflow==='false'"), 'expanded all-fit state has no false movement controls');
