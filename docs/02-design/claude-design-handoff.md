@@ -2,9 +2,10 @@
 title: "Claude Design handoff — app experience using the prepared system"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-18
 tags: [design, handoff, interaction]
 related:
+  - claude-design-frontend-metaprompt.md
   - product-design-spec.md
   - design-system.md
   - accessibility.md
@@ -18,7 +19,9 @@ related:
 
 Design the app experience using the prepared design system. This is a separate later session from design-system construction. Do not rebuild the palette, typography or component library here, and do not run a Figma library-authoring task.
 
-Before starting composition, obtain the actual synced system reference and its source revision from the completed system session. Review its proposed-versus-accepted status and known gaps. If that system does not yet exist, report the missing prerequisite rather than implying this brief is the system.
+The prerequisite now exists: `@granny/design-system@0.1.0` was built on branch `feature/design-system-build` at `17658b0` and synced to Claude Design project [Granny Design System (proposed)](https://claude.ai/design/p/4148cba1-baa4-4241-b893-6c54188897ff). Review its proposed-versus-accepted status and known gaps before composing. The [frontend build metaprompt](claude-design-frontend-metaprompt.md) is the current copy-ready execution brief.
+
+The synced package predates the selected Round conversation composer and ADR-0014/CMP-010 Home-panel decision. Use the package for its implemented components and tokens, apply the later accepted decisions as explicit deltas, and return missing component work to the design-system owner rather than silently adding one-off app tokens.
 
 Simon settled the brainstorming interaction conflicts before this app-design session. Read the [resolved OQ-14 alignment brief](../10-execution/brainstorming-alignment.md). [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md) accepts bounded semantic composition, and [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md) accepts a stable conversation Home with zero or one optional context panel. Registered components and typed slots/actions retain renderer-owned focus/reflow and stable control anchors; arbitrary generated executable controls are excluded. Do not reopen a widget dashboard or infer visual approval from an old prototype.
 
@@ -34,7 +37,7 @@ Avoid capability grids, prompt-chip walls, generic AI gradients/sparkles, repeat
 
 ## Paste into Claude Design
 
-> Use the prepared Granny design system attached to this session. First verify its source/version and read the product decisions and constraints in this brief. I rejected the previous UI because it had too many buttons and looked generically AI-generated. Preserve the accepted Home: fixed conversation, Talk, Type and Menu anchors with zero or one optional context panel; no capability grid, carousel or widget stack. Preserve bounded semantic composition: compose registered components through typed plans, never invent executable controls or action semantics. Explore three structurally distinct visual treatments of that same Home and fictional message task, holding behavior, copy, safety and accessibility constant. Explain why each visible control is needed. Review structure with me before expanding. Preserve exact consequence previews, reachable Stop, touch/voice equivalence and honest partial/unknown results. Deliver annotated app flows and responsive states. Do not rebuild the design system, implement the production app or treat a polished screen as accepted product behavior.
+Use the full [Claude Design frontend build metaprompt](claude-design-frontend-metaprompt.md). It replaces the earlier short exploration prompt now that the design system is synced, Home is settled and the Round conversation shape is selected. It asks Claude Design to build the editable zero-panel Home and complete fictional message slice first, then extend the same interaction language to the other MVP flows and supporting states. It does not reopen the structural Home decision or request three unrelated concepts.
 
 ## Canonical inputs
 
