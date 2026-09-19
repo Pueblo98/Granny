@@ -21,6 +21,16 @@ related:
 
 ## Selected Home checkpoint
 
+**20 September cleanup:** Simon requested object/decor artwork for Home and
+library entries, portraits for continuation and room conversation, larger
+fading overview atmosphere without a separate corner object, larger text and
+marks, tighter room spacing and brighter mockup-blue outlines/important actions
+without making ordinary text blue. The browser implements this as `#0066DD`,
+with Ink text and unchanged violet focus/burgundy Stop. This is a scoped visual
+revision, not final brand acceptance. Scrollbar chrome is hidden while real
+overflow and explicit Previous/Next remain. See the
+[separate cleanup evidence](mockups/2026-09-20-context-rooms-cleanup/README.md).
+
 The executable prototype integrates the selected [Explicit Scroll Row Home](mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md) with the existing conversation shell and five scripted workflows. It retains Harbour Blue, the Round composer, one fictional Kitchen continuation, truthful written overflow controls and direct `See all rooms`. Six starter rooms now use unchanged selected local pack assets.
 
 Under Simon's subsequent explicit six-room request, this [T-119](../10-execution/backlog.md#t-119) checkpoint includes Kitchen, Fitness, Trips, Garden, Reading and Projects: four-symbol overview, all eight collections, direct search, fictional item detail and reversible source-aware conversation. The Rooms library provides Search all/All items/Unfiled and retains the bounded five-step local creation flow. The [contemporaneous session](../10-execution/sessions/2026-09-19-context-rooms-frontend.md) records authority, review and exact limits. Persistent room data, policy-scoped cross-room retrieval, membership receipts/Undo, archive/delete and production context contracts remain later slices. Room fixtures never enter the scripted task model or connected backend.

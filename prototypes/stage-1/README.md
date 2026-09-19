@@ -17,6 +17,28 @@ Current connected runtime: [versioned local backend/MCP contract](../../docs/04-
 
 ## Run
 
+### Current visual cleanup (20 September)
+
+Simon's follow-up places unchanged transparent decor objects on Home and in the
+library, with portraits reserved for the Home continuation and cropped/faded
+room conversations. Overview backdrops now fill more of the outer corner;
+the separate corner decor/motif overlays have been removed. Artwork still
+disappears at narrow/large-text sizes without removing any room controls.
+
+The brighter mockup-inspired browser outline/action blue is `#0066DD` (an
+implementation match, not an exact sampled raster colour). Normal text stays
+Ink; Menu, Previous/Next, See all rooms and All collections have written dark
+labels and blue outlines. Violet focus and burgundy Stop remain unchanged.
+Body text is now 22 CSS px with stronger weight and tighter room spacing;
+CSS pixels do not establish Android dp geometry. System-font fallback remains
+in use, so exact Bricolage/DM Sans fidelity is not claimed.
+
+The Home scrollbar chrome is hidden, not its real scrolling mechanism or
+written controls. [Cleanup evidence](../../docs/02-design/mockups/2026-09-20-context-rooms-cleanup/README.md)
+records this revision separately from the earlier checkpoint.
+
+### Local server
+
 Use the existing Node runtime (validated with Node 26.8.1):
 
 ```bash

@@ -30,8 +30,12 @@
       return states.get(room.id);
     };
     function focus(selector, top = false) {
+      const target = host.querySelector(selector);
       requestAnimationFrame(() => {
-        host.querySelector(selector)?.focus({preventScroll: true});
+        // A quick next navigation can replace the view before this frame.
+        // Never focus an unrelated matching heading in the new view.
+        if (!target?.isConnected) return;
+        target.focus({preventScroll: true});
         if (top) window.scrollTo(0, 0);
       });
     }
@@ -198,8 +202,8 @@
       if (room.accent) shell.dataset.accent = room.accent;
       const atmosphere = el('div', 'room-atmosphere');
       if (room.backdrop && s.view === 'overview') atmosphere.append(art(room.backdrop, 'room-backdrop'));
-      if (room.decor) atmosphere.append(art(room.decor, 'room-decor'));
-      if (room.motif) atmosphere.append(art(room.motif, 'room-motif'));
+      if (room.portrait && ['conversation', 'assistant'].includes(s.view))
+        atmosphere.append(art(room.portrait, 'room-chat-portrait'));
       shell.append(atmosphere, identity(room, s.view !== 'overview'));
       if (s.view === 'overview') overview(room, shell);
       else if (s.view === 'collections') allCollections(room, shell);

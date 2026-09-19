@@ -8,6 +8,10 @@
   const state = P.create();
   const $ = id => document.getElementById(id);
   const thread = $('thread'), composerText = $('request');
+  const continuationPortrait = document.querySelector('.continuation-portrait');
+  continuationPortrait.addEventListener('error', () => {
+    continuationPortrait.style.visibility = 'hidden';
+  });
   // Connected execution belongs exclusively to the backend. Scripted task
   // state/timers are never used to advance or verify a connected request.
   let runtime = null, runtimeMode = false, runtimeView = null,
@@ -96,7 +100,7 @@
            !(state.turns && state.turns.length);
   }
   function currentHomeRooms() {
-    const rooms = roomUI.rooms.map(room => ({...room, asset: room.portrait || room.mark}));
+    const rooms = roomUI.rooms.map(room => ({...room, asset: room.decor || room.mark}));
     if (homeFixture === 'no-rooms')
       return [];
     if (homeFixture === 'one-room')
@@ -244,14 +248,13 @@
     $('menu-button').setAttribute('aria-expanded', 'false');
     roomUI.enter(homeView);
     render();
+    const destinationFocus = focusId ? $(focusId)
+      : destination === 'rooms' && previousRoom ? $('library-room-' + previousRoom)
+      : $('room-content').querySelector('h1, h2');
     requestAnimationFrame(() => {
-      if (focusId) $(focusId)?.focus();
-      else if (destination === 'rooms' && previousRoom)
-        $('library-room-' + previousRoom)?.focus();
-      else {
-        $('room-content').querySelector('h1, h2')?.focus();
-        window.scrollTo(0, 0);
-      }
+      if (!destinationFocus?.isConnected) return;
+      destinationFocus.focus();
+      if (!focusId && !(destination === 'rooms' && previousRoom)) window.scrollTo(0, 0);
     });
   }
   function backToHome() {

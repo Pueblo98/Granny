@@ -183,7 +183,7 @@ try {
   }
   await b.viewport(840,900); await menu('text'); await button('150%'); await button('Apply this size');
   await button('Return to conversation'); await select('#review-scale','2');
-  check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===60"), 'combined 300% text genuinely applies');
+  check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===66"), 'combined 300% text genuinely applies');
   for (const [width,height] of [[840,900],[360,720],[600,520],[360,480]]) {
     await b.viewport(width,height); await geometry('300% '+width); await b.screenshot('large-text-'+width);
     for (const selector of ['#request','#talk','#composer button[type=submit]']) {
@@ -227,7 +227,7 @@ try {
   check(await b.evaluate("document.activeElement.id==='talk'"),'Escape returns dialog focus');
   await menu('privacy'); await button('Reset everything'); await b.click('#confirm-dialog button[value=confirm]');
   await b.waitFor("!document.querySelector('#current-task') && document.querySelector('#request').value===''");
-  check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===20"),'privacy reset restores local baseline');
+  check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===22"),'privacy reset restores local baseline');
   await fresh(true); await select('#review-delay','1500'); await request('Show me the photos Sophie sent yesterday'); await menu('new');
   check(await b.evaluate("!document.querySelector('#confirm-stop').hidden"),'active interruption dialog keeps Stop available');
   await b.click('#confirm-stop'); await waitStage('stopped'); await b.waitFor("!document.querySelector('#confirm-dialog[open]')");

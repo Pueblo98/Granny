@@ -65,7 +65,7 @@ function render(host, options) {
   function roomEntry(room) {
     const entry = action("library-room-" + room.id, "", () => invoke(options.onOpenRoom, room.id), "library-entry");
     entry.dataset.roomId = room.id;
-    entry.append(artSlot(room.portrait, "library-portrait"));
+    entry.append(artSlot(room.decor || room.mark, "library-decor"));
     const copy = el("span", "library-copy");
     copy.append(artSlot(room.mark, "room-mark"));
     copy.append(el("strong", "", text(room.name)),

@@ -2,7 +2,7 @@
 title: "Stage 1 Design System Contracts"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [design, tokens]
 related:
   - product-design-spec.md
@@ -20,6 +20,16 @@ Current composition is implemented as native HTML controls in the [browser proto
 This file owns semantic roles and reusable behavior. [Product design](product-design-spec.md) owns screens/states; [brand territories](brand-and-visual-identity.md) own candidate color/font identity values. Accepted ADR boundaries and confirmed requirements apply where linked; remaining component details are proposed. No final public name, logo, palette or typeface is accepted.
 
 ## Token roles and provisional dimensions
+
+Browser visual revision, authorized by Simon on 20 September: CMP-010–012
+retain their interaction contracts, but Home/library entry decoration uses
+the selected transparent decor objects; portraits reinforce continuation and
+room-specific conversation instead. Overview backdrops use edge alpha fades,
+not additional corner object overlays. The mockup-inspired outline/important
+action role is currently `#0066DD`; ordinary text remains Ink, focus stays
+`#4930A1` and Stop stays `#962F43`. This supersedes the older browser outline
+assignment for this checkpoint only, not historical boards or final Android
+brand approval. See [browser evidence and limits](browser-prototype.md).
 
 Color: background, surface, surface-raised, text-primary, text-secondary, border, action-primary, action-on-primary, accent-decorative, success, warning, danger, focus, disabled. State always includes text/icon/position, never hue alone. Decorative accents cannot carry essential text without measured contrast. High-consequence is not automatically red: Send uses primary with explicit wording; deletion uses danger.
 

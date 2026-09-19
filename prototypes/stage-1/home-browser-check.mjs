@@ -220,7 +220,7 @@ try {
     await button('Return to conversation', '[data-panel=text]');
     await select('#review-scale', '2');
     await settleRooms();
-    check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===60 && document.body.dataset.homeList==='true'"), 'combined 300% uses direct list at ' + width);
+    check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===66 && document.body.dataset.homeList==='true'"), 'combined 300% uses direct list at ' + width);
     check(await noHorizontalOverflow('300% ' + width), '300% ' + width + ' has no page overflow');
     for (const selector of ['#menu-button', '#request', '#talk', '#composer button[type=submit]', '#open-kitchen', '#room-list .room-entry', '#see-all-rooms'])
       check(await reachable(selector), '300% ' + width + ' core control reachable: ' + selector);
