@@ -2,9 +2,10 @@
 title: "Conversation-first redesign plan"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [design, interaction, review]
 related:
+  - context-rooms.md
   - product-design-spec.md
   - design-system.md
   - voice-ux.md
@@ -128,6 +129,8 @@ First review the interaction in neutral styling; then compare the existing ident
 Simon's 2026-09-17 class brainstorm adds two compatible explorations. First, a person may explicitly choose a calm background or visual atmosphere, with a neutral accessible default and no inferred taste; content and controls must retain contrast, legibility and focus clarity. Second, computer-use guidance may use predefined arrows, highlights or importance markers tied to a freshly resolved semantic element or supplied screen region. Guidance names the observable goal, current step and reason, with detail on request. It does not reveal model reasoning, authorize coordinate-only action, cover protected/authentication screens or imply that a universal Android overlay already works.
 
 Contextual result components may feel like modules—a photo strip, playback control, exact draft, guidance panel or preference preview—while remaining part of the current conversation. Under ADR-0013 the agent may automatically compose registered semantic components for the current task, while the renderer owns semantics/reflow and policy owns actions. Arbitrary model-created controls remain unavailable. Under ADR-0014, idle Home may contain only one CMP-010 context panel; no grid, carousel, widget stack or automatic movement of core controls is permitted.
+
+[Context Rooms](context-rooms.md), accepted in [ADR-0015](../09-decisions/ADR-0015-context-rooms.md), extend this direction as an optional secondary organization layer rather than a new Home. The same assistant and stable conversation shell operate globally and inside a room; entering a room foregrounds related references and a bounded atmosphere while policy-scoped cross-room retrieval remains possible. Exact access and release placement are open. The current browser build is not authorized to add Rooms merely because the direction is documented.
 
 ## Options and recommendation
 

@@ -2,7 +2,7 @@
 title: "Current milestone — conversation-first browser experience"
 status: proposed
 owner: Simon
-last_updated: 2026-09-18
+last_updated: 2026-09-19
 tags: [execution]
 related:
   - development-readiness.md
@@ -12,6 +12,23 @@ related:
 ---
 
 # Current milestone — conversation-first browser experience
+
+## Context Rooms direction — 2026-09-19
+
+Simon accepted [ADR-0015](../09-decisions/ADR-0015-context-rooms.md): optional
+[Context Rooms](../02-design/context-rooms.md) organize related material around
+the same global Granny assistant. Global conversation remains the universal
+starting point; room context foregrounds local references while minimum,
+policy-scoped cross-room retrieval remains possible. Rooms use large labels and
+bounded atmosphere, retain direct browse/search, and separate deleting the
+room from deleting underlying data.
+
+The concept document defines the mental model, experience, context layers,
+organization and deletion lifecycle, accessibility/privacy boundaries, failure
+cases and a staged fictional-data prototype. Exact access, terminology,
+default rooms, component/screen IDs, release placement and real persistence
+remain open. This documentation does not add Rooms to the MVP, mutate the
+current Claude Design project or authorize implementation.
 
 ## Claude Design frontend handoff — 2026-09-18
 

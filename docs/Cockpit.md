@@ -2,7 +2,7 @@
 title: "Granny development cockpit"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [execution, cockpit]
 related:
   - 10-execution/cockpit-guide.md
@@ -11,6 +11,9 @@ related:
 ---
 
 # Development cockpit
+
+> [!important] Context Rooms direction — 2026-09-19
+> Simon accepted [Context Rooms](02-design/context-rooms.md) as optional recognizable spaces around one global assistant. Home stays universal and uncluttered; Rooms add direct organization, scoped local/cross-room context and bounded atmosphere. Exact access, terminology, release and evidence remain open under [ADR-0015](09-decisions/ADR-0015-context-rooms.md).
 
 > [!important] Latest review — 2026-09-17
 > Simon selected the [Round conversation bubble](02-design/brand-and-visual-identity.md#accepted-shape-direction--round-conversation) for future composers, including compact/normal/expanded use and favicon exploration. The linked note embeds the chosen image. Home/interface choices are recorded in ADR-0013/0014; use the separate Claude Code system and Claude Design app handoffs. The old browser composition remains rejected. Runtime checks remain synthetic evidence, not Android readiness.

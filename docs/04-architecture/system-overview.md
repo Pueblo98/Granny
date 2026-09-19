@@ -2,9 +2,10 @@
 title: "Stage 1 System Architecture"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [architecture, android]
 related:
+  - ../02-design/context-rooms.md
   - ../03-agent/tool-contracts.md
   - ../05-safety-privacy/safety-and-privacy.md
   - ../08-research/android-stage-1-feasibility.md
@@ -33,6 +34,9 @@ flowchart TD
  V --> S
  S --> H[Minimal local history]
  M[Private typed memory and adaptation] --> P
+ R[Context Room index and resolver] --> P
+ UI --> R
+ M --> R
 ```
 
 Diagram arrows show logical request/data relationships; actual outbound payloads pass privacy filter before provider transport. No provider directly reaches OS/executor. Helper is V1 optional remote principal restricted to proposals; it cannot reach private memory, history or observer.
@@ -140,6 +144,15 @@ Each anchor is a stable architecture owner referenced from [traceability](../01-
 **Offline/failure isolation:** Offline local rights; tombstone blocks use immediately.
 **Dependencies:** privacy, planner, shell.
 
+<a id="rooms"></a>
+### Context Room index and resolver
+
+**Responsibility / state / APIs:** Versioned Room and RoomMembership records, canonical item references, current-room priority, scoped cross-room candidate retrieval, source receipts, Unfiled/archive/delete transitions.
+**Placement/trust:** Proposed local typed service beside memory/privacy; the model may propose queries or membership diffs but cannot read the whole store or commit changes directly.
+**Permissions/data:** References and provenance only by default; item content remains in its owning store and enters a task through existing sensitivity/scope/egress checks.
+**Offline/failure isolation:** Direct room browse/search and local membership changes remain available offline; failed resolution returns no context rather than guessed content; deleting a room invalidates room-scoped plans/permits and preserves canonical items unless separately deleted.
+**Dependencies:** shell, planner, memory, privacy, policy, audit.
+
 <a id="privacy"></a>
 ### Privacy/egress boundary
 
@@ -203,6 +216,8 @@ Simon authorized one actual local backend/MCP slice with synthetic contacts and 
 **Recovery:** classify failure → bounded re-observe/clarify/manual path using remaining budget → verified target or terminal failure. No substitute provider/control path may bypass policy or reset budget. Unknown external effect quarantines retries.
 
 **Memory:** explicit user save → local repository with provenance/revision → selected scoped read; correction/delete → retrieval blocked immediately, derivatives removed, referencing plans invalidated → read-back receipt. Sync is excluded MVP; V1 tombstone/backup behavior from privacy policy precedes any synchronization.
+
+**Context Rooms:** global or room request → local resolver ranks current-room references, then relevant cross-room references and allowed global memory → privacy/sensitivity policy admits the minimum source set with provenance → planner receives scoped context → renderer identifies material sources where needed. Add/move/archive uses a typed reversible membership diff and receipt. Delete room inventories memberships/pending work, invalidates room-scoped authority and rehomes room-only references; underlying-data deletion follows a separate confirmed transaction.
 
 **Helper:** no MVP remote endpoint. V1 invitation → authenticated helper identity + adult local scope → helper submits proposal → user reviews diff → local policy applies explicit change → minimal audit. Revoke denies locally first, syncs revocation status later; no screen/audio/task stream.
 

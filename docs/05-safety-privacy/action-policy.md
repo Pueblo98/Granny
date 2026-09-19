@@ -2,11 +2,12 @@
 title: "Stage 1 Action and Confirmation Policy"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [safety, policy]
 related:
   - safety-and-privacy.md
   - threat-model.md
+  - ../02-design/context-rooms.md
   - ../03-agent/tool-contracts.md
 ---
 
@@ -57,6 +58,7 @@ Each row inherits **all** fields of its class above; row-specific limitations ov
 | Location/emergency/medical — Stage 1 | No background location or health inference | Explain product limitation; ordinary user-owned route | No | Cannot authorize emergency dispatch/medical decision | No | POL-R; no emergency-service promise, no silent location sharing |
 | Explicit aliases/preferences — MVP | User's local items POL-00 | POL-02 | Save explicit local value POL-02 | Delete-all/export data uses POL-03 | No | Provenance and derivative deletion verified; no automatic inference persistence |
 | Important facts/adaptive communication — V1 | POL-00 private | Model proposes; local typed policy admits direct-user fact or bounded preference | POL-02 automatic local save/tuning; quiet receipt/Undo for fact | POL-03 remains required for share/export/delete-all; no per-fact save confirmation | No external action authority | Source/revision visible; no transcript mining, diagnosis, credentials, protected-trait inference or silent conflict overwrite |
+| Context Rooms — release open | POL-00 scoped room/global references | POL-02 create/rename/add/move/archive proposal with exact membership diff | POL-02 applies a reversible local membership change with receipt/Undo; no external original moves | POL-03 for Delete room after inventory; separate POL-03 and release admission for underlying-data deletion | No | Same assistant and policy; direct browse/search; no whole-room prompt load, hidden cross-room leak, authority from membership or deletion bundled with cleanup |
 | History/diagnostics/data deletion — MVP | Own local summaries | POL-02 exact export/delete preview | Local bounded expiry per disclosed schedule | POL-03 user-triggered export/delete-all | No | Export preview exactly matches output; no raw audit content, no silent support upload |
 | Co-present helper — MVP | Only what adult chooses to show | Adult-controlled setup | No extra helper power | Adult makes each consent decision | No | POL-R remote access; buyer relationship is not authorization |
 | Helper config proposals — V1 | Explicit configuration scope only | Propose diff | No automatic apply | POL-03 adult local approval / invitation; revoke available immediately | No | No messages/memory/screens/history; old grant cannot approve new scope |
