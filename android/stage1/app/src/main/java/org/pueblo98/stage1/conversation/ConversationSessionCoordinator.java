@@ -73,6 +73,7 @@ public final class ConversationSessionCoordinator {
     private final InterpreterPort interpreter;
     private final Runnable cancelCleanup;
     private final BuildMode mode;
+    private final Thread owner = Thread.currentThread();
     private String place = "Home", editable = "", partial = "", consequence = "";
     private String message = "Type or talk to make a request.";
     private ReturnAnchor anchor = new ReturnAnchor("Home", "composer", 0);
@@ -105,35 +106,35 @@ public final class ConversationSessionCoordinator {
         this.interpreter = interpreter == null ? new FixtureInterpreter() : interpreter;
         this.cancelCleanup = cleanup == null ? () -> {} : cleanup; this.mode = mode;
     }
-    public Snapshot snapshot() { return new Snapshot(this); }
-    public void setPlace(String requestedPlace, ReturnAnchor requestedAnchor) {
+    public Snapshot snapshot() { checkThread(); return new Snapshot(this); }
+    public void setPlace(String requestedPlace, ReturnAnchor requestedAnchor) { checkThread();
         stop();
         place = "Kitchen".equals(requestedPlace) ? "Kitchen" : "Home";
         anchor = new ReturnAnchor(place, requestedAnchor == null ? "composer" : requestedAnchor.focusId,
                 requestedAnchor == null ? 0 : requestedAnchor.scrollY);
     }
-    public long beginListening() {
+    public long beginListening() { checkThread();
         invalidate(); editable = ""; surface = Surface.LISTENING;
         message = "Say what you would like to do. Choose Done listening when ready.";
         return generation;
     }
-    public Result partial(long candidate, String heard) {
+    public Result partial(long candidate, String heard) { checkThread();
         if (candidate != generation || surface != Surface.LISTENING) return Result.STALE;
         if (tooLong(heard)) return voiceUnavailable("The request is too long. Please type a shorter request.");
         partial = value(heard); provenance = Provenance.PARTIAL_VOICE; return Result.ACCEPTED;
     }
-    public Result finalVoice(long candidate, String cleaned) {
+    public Result finalVoice(long candidate, String cleaned) { checkThread();
         if (candidate != generation || surface != Surface.LISTENING) return Result.STALE;
         return replace(cleaned, Provenance.FINAL_VOICE);
     }
-    public Result voiceUnavailable(String reason) {
+    public Result voiceUnavailable(String reason) { checkThread();
         invalidate(); surface = Surface.TRANSCRIPT;
         message = reason == null ? "Talk is unavailable. You can type instead." : reason;
         return Result.ACCEPTED;
     }
-    public Result typed(String request) { return replace(request, Provenance.TYPED); }
-    public Result edit(String request) { return replace(request, Provenance.EDITED_TRANSCRIPT); }
-    public Result editRequest(String request) { return edit(request); }
+    public Result typed(String request) { checkThread(); return replace(request, Provenance.TYPED); }
+    public Result edit(String request) { checkThread(); return replace(request, Provenance.EDITED_TRANSCRIPT); }
+    public Result editRequest(String request) { checkThread(); return edit(request); }
     private Result replace(String request, Provenance source) {
         invalidate(); editable = value(request); revision++; provenance = source;
         surface = Surface.TRANSCRIPT;
@@ -141,7 +142,7 @@ public final class ConversationSessionCoordinator {
                 : "Review the words, then use this request.";
         return tooLong(editable) ? Result.DENIED : Result.ACCEPTED;
     }
-    public Result submit() {
+    public Result submit() { checkThread();
         if (surface != Surface.TRANSCRIPT) return Result.DENIED;
         if (editable.isBlank() || tooLong(editable)) {
             surface = Surface.CLARIFICATION; choicesAvailable = false;
@@ -155,7 +156,7 @@ public final class ConversationSessionCoordinator {
         catch (RuntimeException unavailable) { proposal = new Proposal((Capability) null); }
         return proposal == null ? Result.QUEUED : deliverProposal(g, r, proposal);
     }
-    public Result deliverProposal(long g, long r, Proposal proposal) {
+    public Result deliverProposal(long g, long r, Proposal proposal) { checkThread();
         if (g != generation || r != revision || !proposalPending || surface != Surface.CLARIFICATION) return Result.STALE;
         proposalPending = false;
         if (proposal == null || !isEnabled(proposal.capability)) {
@@ -166,8 +167,8 @@ public final class ConversationSessionCoordinator {
         choicesAvailable = true; message = "Choose Standard, Larger, Larger still, or Largest.";
         return Result.ACCEPTED;
     }
-    public Result chooseTextScale(TextScale scale) { return prepare(scale, false); }
-    public Result chooseRestore() { return prepare(null, true); }
+    public Result chooseTextScale(TextScale scale) { checkThread(); return prepare(scale, false); }
+    public Result chooseRestore() { checkThread(); return prepare(null, true); }
     private Result prepare(TextScale scale, boolean restore) {
         if (!isEnabled(Capability.TEXT_SCALE)) return Result.DENIED;
         if (surface != Surface.IDLE && surface != Surface.TRANSCRIPT && surface != Surface.CLARIFICATION) return Result.DENIED;
@@ -191,16 +192,16 @@ public final class ConversationSessionCoordinator {
                 : "Nothing has changed yet. Review this exact local change.";
         return Result.ACCEPTED;
     }
-    public Result approve() { return approve(generation, revision, consequence); }
-    public Result approve(long g, long r, String shownConsequence) {
+    public Result approve() { checkThread(); return approve(generation, revision, consequence); }
+    public Result approve(long g, long r, String shownConsequence) { checkThread();
         if (g != generation || r != revision || !Objects.equals(shownConsequence, consequence)) return Result.STALE;
         if (surface != Surface.PREVIEW || prepared == null || !isEnabled(Capability.TEXT_SCALE)) return Result.DENIED;
         permit = new Permit(generation, revision, editable, consequence, prepared);
         prepared = null; surface = Surface.ACTIVE; message = "Waiting to save the approved local change. Stop is available.";
         return Result.QUEUED;
     }
-    public Result dispatchApproved() { return dispatchApproved(generation); }
-    public Result dispatchApproved(long g) {
+    public Result dispatchApproved() { checkThread(); return dispatchApproved(generation); }
+    public Result dispatchApproved(long g) { checkThread();
         if (g != generation || permit == null || surface != Surface.ACTIVE || !isEnabled(Capability.TEXT_SCALE)) return Result.STALE;
         Permit active = permit; permit = null;
         if (active.revision != revision || !active.request.equals(editable) || !active.consequence.equals(consequence)) return Result.STALE;
@@ -227,26 +228,26 @@ public final class ConversationSessionCoordinator {
         surface = Surface.UNKNOWN; message = "The text-size change could not be verified. Granny will not retry automatically.";
         return Result.UNKNOWN;
     }
-    public Result stop() { return stop(null); }
-    public Result stop(Runnable cleanup) {
+    public Result stop() { checkThread(); return stop(null); }
+    public Result stop(Runnable cleanup) { checkThread();
         boolean uncertain = entered || surface == Surface.UNKNOWN;
         invalidate(); surface = uncertain ? Surface.UNKNOWN : Surface.IDLE;
         message = uncertain ? "Stopped. The text-size result remains unknown." : "Cancelled before any new change. You can type or talk.";
         runCleanup(cleanup); return Result.ACCEPTED;
     }
-    public Result clearForBackground(Runnable cleanup) {
-        stop(cleanup); editable = ""; partial = ""; provenance = Provenance.TYPED;
+    public Result clearForBackground(Runnable cleanup) { checkThread();
+        editable = ""; partial = ""; provenance = Provenance.TYPED; stop(cleanup);
         return Result.ACCEPTED;
     }
-    public Result dismissResult() {
+    public Result dismissResult() { checkThread();
         if (surface != Surface.KNOWN && surface != Surface.UNKNOWN) return Result.DENIED;
         invalidate(); surface = Surface.IDLE; editable = ""; message = "Type or talk to make a request.";
         return Result.ACCEPTED;
     }
-    public void restoreUnknownOutcome() {
+    public void restoreUnknownOutcome() { checkThread();
         invalidate(); editable = ""; surface = Surface.UNKNOWN; message = "The earlier text-size result is unknown.";
     }
-    public Result reviewStatus() {
+    public Result reviewStatus() { checkThread();
         if (surface != Surface.UNKNOWN) return Result.DENIED;
         TextScaleStore.ReadResult read = observe();
         message = read.status == TextScaleStore.ReadResult.Status.PRESENT
@@ -254,8 +255,11 @@ public final class ConversationSessionCoordinator {
                 : "The earlier result remains unknown. No change or retry was requested.";
         return Result.UNKNOWN;
     }
-    public boolean isEnabled(Capability capability) { return capability == Capability.TEXT_SCALE && mode == BuildMode.SYNTHETIC_LAB; }
-    public CapabilityMetadata metadata(Capability capability) { return new CapabilityMetadata(capability, isEnabled(capability)); }
+    public boolean isEnabled(Capability capability) { checkThread(); return capability == Capability.TEXT_SCALE && mode == BuildMode.SYNTHETIC_LAB; }
+    public CapabilityMetadata metadata(Capability capability) { checkThread(); return new CapabilityMetadata(capability, isEnabled(capability)); }
+    private void checkThread() {
+        if (Thread.currentThread() != owner) throw new IllegalStateException("Conversation calls must use their creating thread");
+    }
     private void invalidate() {
         generation++; permit = null; prepared = null; proposalPending = false; choicesAvailable = false;
         partial = ""; consequence = ""; entered = false; safeCancel();

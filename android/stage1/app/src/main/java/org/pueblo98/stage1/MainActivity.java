@@ -3,6 +3,13 @@ package org.pueblo98.stage1;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.content.pm.ApplicationInfo;
+import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
+import android.view.accessibility.AccessibilityManager;
+import android.view.inputmethod.EditorInfo;
+import org.pueblo98.stage1.speech.*;
 import android.graphics.Color;
 import android.graphics.Insets;
 import android.graphics.drawable.GradientDrawable;
@@ -52,6 +59,18 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private long pendingPermission = -1;
     private boolean deniedThisProcess, foreground, rendering;
     private Surface renderedSurface;
+    private final SpeechOutputController speech = new SpeechOutputController();
+    private SpeechSettingsController speechSettings;
+    private SpeechOutputAdapter speechAdapter;
+    private ConversationSpeechBridge speechBridge;
+    private AudioManager audioManager;
+    private AudioFocusRequest audioFocus;
+    private AccessibilityManager accessibility;
+    private AccessibilityManager.TouchExplorationStateChangeListener explorationListener;
+    private LinearLayout speechPanel;
+    private TextView speechStatus;
+    private Button readAloud, stopSpeaking, repeatSpeech, sound, applyRate, restoreRate;
+    private boolean speechSettingsOpen;
     private TextView placeTitle, placeDescription, heading, explanation, outcome, provisional;
     private TextView requestLabel, sizeSample;
     private LinearLayout taskSurface, actions, composer;
@@ -64,7 +83,11 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         SharedPreferencesTextScaleStore store = new SharedPreferencesTextScaleStore(
                 getSharedPreferences("granny_text_scale", MODE_PRIVATE));
         textScale = new TextScaleController(store);
-        conversation = new ConversationSessionCoordinator(textScale, store);
+        conversation = new ConversationSessionCoordinator(textScale, store,
+                (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0
+                ? ConversationSessionCoordinator.BuildMode.SYNTHETIC_LAB
+                : ConversationSessionCoordinator.BuildMode.CANDIDATE);
+        initializeSpeech();
         recognizer = new AndroidOnDeviceVoiceRecognizer(this);
         getWindow().setDecorFitsSystemWindows(false);
         setContentView(buildContent());
@@ -136,6 +159,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         editor = new EditText(this);
         editor.setId(View.generateViewId());
         editor.setSaveEnabled(false);
+        editor.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
+        editor.setImeOptions(EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING);
         editor.setHint("Type a request");
         editor.setMinHeight(dp(96));
         editor.setGravity(Gravity.TOP | Gravity.START);
@@ -162,6 +187,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         composer.addView(type, wrap());
         composer.addView(use, wrap());
         content.addView(composer, spaced());
+        content.addView(buildSpeechControls(), spaced());
         scroll = new ScrollView(this);
         scroll.setFillViewport(true);
         scroll.addView(content);
@@ -241,9 +267,10 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
 
     @Override public void onRequestPermissionsResult(int request, String[] permissions, int[] results) {
         super.onRequestPermissionsResult(request, permissions, results);
-        if (request != MIC_REQUEST || pendingPermission < 0 || !foreground) return;
+        if (request != MIC_REQUEST) return;
         long generation = pendingPermission;
         pendingPermission = -1;
+        if (generation < 0 || !foreground) return;
         boolean granted = results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED;
         if (granted && voice.permissionGranted(generation)
                 && conversation.snapshot().generation == conversationVoiceGeneration) {
@@ -352,7 +379,9 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
             case NONE: case EDIT: case CHANGE:
                 replaceInput(displayed.editableRequest, true); break;
             case APPLY:
-                conversation.approve(displayed.generation, displayed.revision, displayed.consequence);
+                if (conversation.approve(displayed.generation, displayed.revision, displayed.consequence)
+                        != ConversationSessionCoordinator.Result.QUEUED) { render(); return; }
+                stopSpokenOutput();
                 long admittedGeneration = conversation.snapshot().generation;
                 render();
                 handler.post(() -> {
@@ -398,6 +427,10 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
                 explanation.setText("Waiting for final words. You can cancel or type instead.");
             }
         }
+        if (state.surface == Surface.CLARIFICATION && !state.choicesAvailable) {
+            heading.setText("Check your request");
+            explanation.setText("Nothing has changed. Edit the request or cancel.");
+        }
         String detail = state.message + (state.consequence.isEmpty() ? "" : "\nGoal: " + state.consequence);
         if (!outcome.getText().toString().equals(detail)) outcome.setText(detail);
         provisional.setVisibility(model.provisional ? View.VISIBLE : View.GONE);
@@ -417,8 +450,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         editor.setEnabled(!busy);
         editor.setVisibility(state.surface == Surface.LISTENING ? View.GONE : View.VISIBLE);
         requestLabel.setVisibility(editor.getVisibility());
-        talk.setVisibility(busy ? View.GONE : View.VISIBLE);
-        type.setVisibility(state.surface == Surface.ACTIVE ? View.GONE : View.VISIBLE);
+        talk.setVisibility(ConversationSurfaceModel.showsTalk(state.surface) ? View.VISIBLE : View.GONE);
+        type.setVisibility(ConversationSurfaceModel.showsType(state.surface) ? View.VISIBLE : View.GONE);
         use.setVisibility(state.surface == Surface.TRANSCRIPT ? View.VISIBLE : View.GONE);
         use.setEnabled(!state.editableRequest.isBlank());
         home.setEnabled(!busy); kitchen.setEnabled(!busy); textSettings.setEnabled(!busy);
@@ -428,7 +461,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         // Buttons are projected from one state; no parallel task cards or inferred authority.
         for (int i = 0; i < actions.getChildCount(); i++) textSizes.remove(actions.getChildAt(i));
         actions.removeAllViews();
-        if (model.choices) {
+        if (model.choices && state.choicesAvailable) {
             for (TextScale choice : TextScale.values()) {
                 Button pick = button(choice.label(), () -> {
                     if (conversation.snapshot().generation != state.generation
@@ -444,10 +477,11 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
             Button control = button(action.label, () -> action(action, state));
             control.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20 * size.current.multiplier());
             if (action == Action.RESTORE) control.setEnabled(size.restoreAvailable);
-            if (action == Action.REPEAT) control.setEnabled(spokenOutputAvailable());
+            if (action == Action.REPEAT) control.setEnabled(speechBridge.canRepeat());
             if (action == Action.DONE_LISTENING) control.setEnabled(voice.snapshot().phase == VoiceSessionController.Phase.LISTENING);
             actions.addView(control, wrap());
         }
+        renderSpeech(state);
         rendering = false;
         if (state.surface != renderedSurface) {
             renderedSurface = state.surface;
@@ -456,17 +490,92 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         }
     }
 
-    // Bound to the reviewed TTS checkpoint during integration; unavailable until then.
-    private void stopSpokenOutput() {}
-    private void repeatVisibleStatus() {}
-    private boolean spokenOutputAvailable() { return false; }
+    private void stopSpokenOutput() { if (speechBridge != null) speechBridge.stop(); }
+    private void repeatVisibleStatus() { speechBridge.repeat(); render(); }
+    private boolean spokenOutputAvailable() { return speechBridge != null && speechBridge.available(); }
+
+    private void initializeSpeech() {
+        speechSettings = new SpeechSettingsController(new SharedPreferencesSpeechSettingsStore(
+                getSharedPreferences("granny_speech_settings", MODE_PRIVATE)));
+        audioManager = getSystemService(AudioManager.class);
+        accessibility = getSystemService(AccessibilityManager.class);
+        audioFocus = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+                .setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANCE_ACCESSIBILITY)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH).build())
+                .setWillPauseWhenDucked(true)
+                .setOnAudioFocusChangeListener(change -> {
+                    if (change < 0) { stopSpokenOutput(); render(); }
+                }, handler).build();
+        SpeechOutputAdapter.Listener listener = new SpeechOutputAdapter.Listener() {
+            public void onAvailabilityChanged(SpeechOutputAdapter.Availability a, String why) {
+                runOnUiThread(() -> { if (speechBridge != null) { speechBridge.onAvailabilityChanged(a, why); render(); } });
+            }
+            public void onStarted(long g) { runOnUiThread(() -> { speechBridge.onStarted(g); render(); }); }
+            public void onCompleted(long g) { runOnUiThread(() -> { speechBridge.onCompleted(g); render(); }); }
+            public void onStopped(long g) { runOnUiThread(() -> { speechBridge.onStopped(g); render(); }); }
+            public void onError(long g, String why) { runOnUiThread(() -> { speechBridge.onError(g, why); render(); }); }
+        };
+        speechAdapter = new AndroidTextToSpeechOutput(this, listener);
+        speechBridge = new ConversationSpeechBridge(speech, speechSettings, speechAdapter, listener,
+                new ConversationSpeechBridge.Focus() {
+                    public boolean acquire() { return audioManager != null && audioManager.requestAudioFocus(audioFocus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED; }
+                    public void release() { if (audioManager != null) audioManager.abandonAudioFocusRequest(audioFocus); }
+                }, () -> {
+                    voice.stop("Reading aloud."); pendingPermission = -1;
+                    handler.removeCallbacksAndMessages(null); recognizer.cancel();
+                });
+        explorationListener = enabled -> { speechBridge.environment(foreground, enabled); render(); };
+        if (accessibility != null) accessibility.addTouchExplorationStateChangeListener(explorationListener);
+    }
+
+    private View buildSpeechControls() {
+        LinearLayout controls = column();
+        speechStatus = text("", 18); controls.addView(speechStatus, wrap());
+        readAloud = button("Read aloud", () -> { speechBridge.read(); render(); });
+        stopSpeaking = button("Stop speaking", () -> { stopSpokenOutput(); render(); });
+        repeatSpeech = button("Repeat", this::repeatVisibleStatus);
+        sound = button("Sound off", () -> { speechBridge.sound(!speechSettings.snapshot().soundEnabled); render(); });
+        controls.addView(readAloud, wrap()); controls.addView(stopSpeaking, wrap());
+        controls.addView(repeatSpeech, wrap()); controls.addView(sound, wrap());
+        controls.addView(button("Speech speed", () -> { speechSettingsOpen = !speechSettingsOpen; render(); }), wrap());
+        speechPanel = column();
+        for (SpeechRate rate : SpeechRate.values()) speechPanel.addView(button("Preview " + rate.label(), () -> {
+            if (conversation.snapshot().surface == Surface.LISTENING || conversation.snapshot().surface == Surface.ACTIVE) return;
+            speechBridge.preview(rate); render();
+        }), wrap());
+        applyRate = button("Apply previewed speed", () -> { speechSettings.applyRate(); render(); });
+        restoreRate = button("Restore previous speed", () -> { stopSpokenOutput(); speechSettings.restoreRate(); render(); });
+        speechPanel.addView(applyRate, wrap()); speechPanel.addView(restoreRate, wrap());
+        controls.addView(speechPanel, wrap()); return controls;
+    }
+
+    private void renderSpeech(ConversationSessionCoordinator.Snapshot state) {
+        if (speechStatus == null) return;
+        boolean busy = state.surface == Surface.LISTENING || state.surface == Surface.ACTIVE;
+        // Include exact request and surface text so a new outcome cannot Repeat an old preview.
+        speechBridge.visibleText(heading.getText() + ". " + explanation.getText() + " " + outcome.getText()
+                + (state.editableRequest.isEmpty() ? "" : " Request: " + state.editableRequest));
+        speechStatus.setText((accessibility != null && accessibility.isTouchExplorationEnabled()
+                ? "Screen-reader touch exploration is on. Use its spoken feedback. " : speech.snapshot().message + " ")
+                + speechSettings.snapshot().message);
+        readAloud.setEnabled(!busy && spokenOutputAvailable());
+        stopSpeaking.setVisibility(speech.isActive() ? View.VISIBLE : View.GONE);
+        repeatSpeech.setEnabled(!busy && speechBridge.canRepeat());
+        sound.setText(speechSettings.snapshot().soundEnabled ? "Sound off" : "Sound on");
+        speechPanel.setVisibility(speechSettingsOpen && !busy ? View.VISIBLE : View.GONE);
+        applyRate.setEnabled(speechSettings.snapshot().previewHeard && !speech.isActive());
+        restoreRate.setEnabled(speechSettings.snapshot().restoreAvailable);
+        if (speech.isActive()) { escape.setVisibility(View.VISIBLE); escape.setText("■ Stop"); }
+    }
 
     @Override protected void onResume() {
         super.onResume(); foreground = true;
+        speechBridge.environment(true, accessibility != null && accessibility.isTouchExplorationEnabled());
         if (conversation != null) { textScale.reload(); render(); }
     }
     @Override protected void onStop() {
         foreground = false;
+        speechBridge.environment(false, accessibility != null && accessibility.isTouchExplorationEnabled());
         conversation.clearForBackground(() -> cancelAudioForRevision());
         voice.beginTyping(""); voice.stop("App left the foreground.");
         super.onStop();
@@ -481,7 +590,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     }
     @Override protected void onDestroy() {
         handler.removeCallbacksAndMessages(null);
-        recognizer.destroy(); stopSpokenOutput();
+        recognizer.destroy(); stopSpokenOutput(); speechAdapter.destroy();
+        if (accessibility != null) accessibility.removeTouchExplorationStateChangeListener(explorationListener);
         super.onDestroy();
     }
     private void back() {

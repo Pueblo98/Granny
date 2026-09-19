@@ -17,10 +17,14 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
     private static final String UTTERANCE_PREFIX = "granny-readback-";
 
     private final Listener availabilityListener;
-    private final ConcurrentHashMap<String, Long> generations = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Binding> generations = new ConcurrentHashMap<>();
     private TextToSpeech engine;
     private Availability availability = Availability.INITIALIZING;
-    private Listener activeListener;
+    private static final class Binding {
+        final long generation;
+        final Listener listener;
+        Binding(long generation, Listener listener) { this.generation = generation; this.listener = listener; }
+    }
     private boolean destroyed;
 
     public AndroidTextToSpeechOutput(Context context, Listener listener) {
@@ -45,15 +49,14 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
                     "This text is too long for spoken readback. It remains available on screen.");
             return false;
         }
-        activeListener = listener;
-        engine.stop();
+        stop();
         if (engine.setSpeechRate(rate) != TextToSpeech.SUCCESS) {
             listener.onError(generation,
                     "This speech rate is unavailable. The written text remains available.");
             return false;
         }
         String utteranceId = UTTERANCE_PREFIX + generation;
-        generations.put(utteranceId, generation);
+        generations.put(utteranceId, new Binding(generation, listener));
         int result = engine.speak(exactText, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
         if (result != TextToSpeech.SUCCESS) {
             generations.remove(utteranceId);
@@ -66,6 +69,7 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
 
     @Override
     public void stop() {
+        generations.clear();
         if (engine != null) {
             engine.stop();
         }
@@ -91,22 +95,23 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
             unavailable("Spoken readback could not start on this tablet. Written text is still available.");
             return;
         }
+        engine.setAudioAttributes(new android.media.AudioAttributes.Builder()
+                .setUsage(android.media.AudioAttributes.USAGE_ASSISTANCE_ACCESSIBILITY)
+                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SPEECH).build());
         engine.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-                Long generation = generations.get(utteranceId);
-                Listener listener = activeListener;
-                if (generation != null && listener != null) {
-                    listener.onStarted(generation);
+                Binding binding = generations.get(utteranceId);
+                if (binding != null) {
+                    binding.listener.onStarted(binding.generation);
                 }
             }
 
             @Override
             public void onDone(String utteranceId) {
-                Long generation = generations.remove(utteranceId);
-                Listener listener = activeListener;
-                if (generation != null && listener != null) {
-                    listener.onCompleted(generation);
+                Binding binding = generations.remove(utteranceId);
+                if (binding != null) {
+                    binding.listener.onCompleted(binding.generation);
                 }
             }
 
@@ -117,20 +122,18 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
 
             @Override
             public void onError(String utteranceId, int errorCode) {
-                Long generation = generations.remove(utteranceId);
-                Listener listener = activeListener;
-                if (generation != null && listener != null) {
-                    listener.onError(generation,
+                Binding binding = generations.remove(utteranceId);
+                if (binding != null) {
+                    binding.listener.onError(binding.generation,
                             "Spoken readback stopped. Continue with the written text.");
                 }
             }
 
             @Override
             public void onStop(String utteranceId, boolean interrupted) {
-                Long generation = generations.remove(utteranceId);
-                Listener listener = activeListener;
-                if (generation != null && listener != null) {
-                    listener.onStopped(generation);
+                Binding binding = generations.remove(utteranceId);
+                if (binding != null) {
+                    binding.listener.onStopped(binding.generation);
                 }
             }
         });

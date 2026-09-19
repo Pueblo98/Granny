@@ -29,6 +29,11 @@ public final class ConversationSurfaceModel {
         this.actions = List.of(actions);
     }
 
+    public static boolean showsTalk(Surface state) {
+        return state != Surface.LISTENING && state != Surface.ACTIVE && state != Surface.TRANSCRIPT;
+    }
+    public static boolean showsType(Surface state) { return state == Surface.IDLE; }
+
     public static ConversationSurfaceModel forSurface(Surface state) {
         switch (state) {
             case LISTENING:
@@ -52,7 +57,7 @@ public final class ConversationSurfaceModel {
                         false, false, Action.REPEAT, Action.STOP);
             case KNOWN:
                 return new ConversationSurfaceModel("Granny text size checked",
-                        "What Granny verified: the saved preference. What Granny did not do: change Android or another app. Next step: review the text or restore the previous size.",
+                        "What Granny verified: the local preference state. What Granny did not do: change Android or another app. Next step: review the text or restore the previous size.",
                         false, false, Action.RESTORE, Action.REPEAT, Action.DONE);
             case UNKNOWN:
                 return new ConversationSurfaceModel("I can’t confirm the text size change",

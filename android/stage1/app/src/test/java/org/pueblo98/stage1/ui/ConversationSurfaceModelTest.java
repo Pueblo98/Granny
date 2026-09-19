@@ -39,7 +39,7 @@ public final class ConversationSurfaceModelTest {
     }
     @Test public void preferenceResultDoesNotClaimSendOrLayoutVerification() {
         ConversationSurfaceModel model = ConversationSurfaceModel.forSurface(Surface.KNOWN);
-        assertTrue(model.explanation.contains("saved preference"));
+        assertTrue(model.explanation.contains("local preference state"));
         assertFalse(model.explanation.contains("sent"));
         assertTrue(model.actions.contains(Action.RESTORE));
     }
