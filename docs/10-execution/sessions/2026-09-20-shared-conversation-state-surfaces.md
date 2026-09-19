@@ -58,7 +58,7 @@ page templates.
 - `python3 scripts/validate-docs.py` passed with zero errors across 211 Markdown
   files and 2,720 local links.
 - The documentation-tool regression suite passed 47 tests and
-  `git diff --check` passed. Handoff coverage is checked after commit.
+  `git diff --check` passed. Handoff coverage passed after commit.
 
 No browser/runtime implementation, Android, TalkBack, switch, microphone,
 device, participant or comprehension test ran.
