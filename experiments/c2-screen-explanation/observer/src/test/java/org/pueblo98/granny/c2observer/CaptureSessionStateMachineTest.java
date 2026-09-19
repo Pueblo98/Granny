@@ -126,4 +126,50 @@ public final class CaptureSessionStateMachineTest {
         assertFalse(machine.canBeginRequest());
         assertEquals(-1L, machine.beginRequest());
     }
+    @Test
+    public void cleanupClosesCancelledEpochWithoutRevivingOldConsent() {
+        LabSessionLedger ledger = new LabSessionLedger();
+        CaptureSessionStateMachine machine = new CaptureSessionStateMachine();
+        long first = machine.beginRequest();
+        ledger.requesting(first, "Choose fixture");
+        machine.requestStop(first);
+        machine.reconcile(ledger.snapshot());
+        assertFalse(machine.consentGranted(first));
+        ledger.result(first, "STOPPED", "Chooser invalidated", "Synthetic");
+        machine.reconcile(ledger.snapshot());
+        assertTrue(machine.canBeginRequest());
+        long second = machine.beginRequest();
+        assertTrue(second > first);
+        assertFalse(machine.consentGranted(first));
+        machine.reconcile(ledger.snapshot());
+        assertFalse(machine.canBeginRequest());
+        assertTrue(machine.consentGranted(second));
+    }
+
+    @Test
+    public void recreatedChooserRefusesGrantAndAllowsFreshExplicitRequest() {
+        LabSessionLedger ledger = new LabSessionLedger();
+        ledger.requesting(4L, "Choose fixture for resize");
+        CaptureSessionStateMachine recreated = new CaptureSessionStateMachine(ledger.snapshot());
+        ledger.result(4L, "UNAVAILABLE", "Recreated chooser refused", "No restored grant");
+        recreated.reconcile(ledger.snapshot());
+        assertFalse(recreated.consentGranted(4L));
+        assertTrue(recreated.canBeginRequest());
+        assertEquals(5L, recreated.beginRequest());
+    }
+
+    @Test
+    public void serviceActivationAndStoppingAreRecoveredFromCanonicalSnapshot() {
+        LabSessionLedger ledger = new LabSessionLedger();
+        ledger.requesting(3L, "Choose fixture");
+        CaptureSessionStateMachine machine = new CaptureSessionStateMachine(ledger.snapshot());
+        ledger.active(3L, "standard");
+        machine.reconcile(ledger.snapshot());
+        assertEquals(CaptureSessionStateMachine.State.CAPTURING, machine.state());
+        ledger.requestStop(3L);
+        machine.reconcile(ledger.snapshot());
+        assertEquals(CaptureSessionStateMachine.State.STOPPING, machine.state());
+        assertFalse(machine.canBeginRequest());
+    }
+
 }

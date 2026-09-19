@@ -97,4 +97,29 @@ public final class LabSessionLedgerTest {
         assertTrue(ledger.result(6L, "STOPPED", "Cleanup acknowledged.", "No projection started."));
         assertEquals(LabSessionLedger.Phase.RESULT, ledger.snapshot().phase);
     }
+    @Test
+    public void activityLatchCanBeAcknowledgedByServiceWithoutPrematureResult() {
+        LabSessionLedger ledger = new LabSessionLedger();
+        assertTrue(ledger.requesting(1L, "Choose fixture"));
+        assertTrue(ledger.active(1L, "standard"));
+        assertTrue(ledger.requestStop(1L));
+        assertTrue(ledger.requestStop(1L));
+        assertEquals(LabSessionLedger.Phase.STOPPING, ledger.snapshot().phase);
+        assertFalse(ledger.requesting(2L, "Too early"));
+        assertTrue(ledger.result(1L, "STOPPED", "Cleanup completed", "Synthetic"));
+        assertTrue(ledger.requesting(2L, "New explicit request"));
+    }
+
+    @Test
+    public void lateSuccessAfterStopCannotBecomeDisplayedExplanation() {
+        LabSessionLedger ledger = new LabSessionLedger();
+        ledger.requesting(1L, "Choose fixture");
+        ledger.active(1L, "standard");
+        ledger.requestStop(1L);
+        assertTrue(ledger.result(1L, "EXPLAINED", "Late explanation", "Synthetic"));
+        assertTrue(ledger.snapshot().displayText.startsWith("STOPPED\n"));
+        assertFalse(ledger.snapshot().displayText.contains("Late explanation"));
+        assertFalse(ledger.result(1L, "EXPLAINED", "Replay", "Synthetic"));
+    }
+
 }

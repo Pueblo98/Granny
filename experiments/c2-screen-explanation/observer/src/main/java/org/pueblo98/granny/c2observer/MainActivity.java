@@ -42,12 +42,6 @@ public final class MainActivity extends Activity {
             if (resultGeneration != activeGeneration) {
                 return;
             }
-            String resultStatus = intent.getStringExtra(CaptureService.EXTRA_STATUS);
-            if ("UNAVAILABLE".equals(resultStatus)) {
-                stateMachine.unavailable();
-            } else {
-                stateMachine.stopped();
-            }
             renderLatestSessionState();
         }
     };
@@ -220,9 +214,17 @@ public final class MainActivity extends Activity {
         } else {
             showStatus(trialInstruction(trial));
         }
-        LabSessionLedger.process().requesting(activeGeneration, status.getText().toString());
+        if (!LabSessionLedger.process().requesting(activeGeneration, status.getText().toString())) {
+            renderLatestSessionState();
+            return;
+        }
         updateStopControl(LabSessionLedger.Phase.REQUESTING);
-        startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_CAPTURE);
+        try {
+            startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_CAPTURE);
+        } catch (RuntimeException error) {
+            recordAndShowResult("UNAVAILABLE", "Android could not open capture consent.",
+                    "No capture started; a new explicit request is required.");
+        }
     }
 
     @Override
@@ -253,7 +255,12 @@ public final class MainActivity extends Activity {
             showStatus("Capture did not start because the session was stopped or replaced.");
             return;
         }
-        CaptureService.start(this, resultCode, data, activeGeneration, activeTrial);
+        try {
+            CaptureService.start(this, resultCode, data, activeGeneration, activeTrial);
+        } catch (RuntimeException error) {
+            recordAndShowResult("UNAVAILABLE", "Android refused the capture service start.",
+                    "No automatic retry is allowed.");
+        }
         renderLatestSessionState();
     }
 
@@ -283,7 +290,15 @@ public final class MainActivity extends Activity {
     private void stopCapture() {
         stateMachine.requestStop();
         LabSessionLedger.process().requestStop(activeGeneration);
-        CaptureService.requestStop(this, activeGeneration);
+        try {
+            CaptureService.requestStop(this, activeGeneration);
+        } catch (RuntimeException error) {
+            // The shared latch already blocks further work. Do not claim
+            // cleanup succeeded if Android could not deliver the command.
+            showStatus("Stop requested; cleanup is unconfirmed. Use Android's Stop sharing control.");
+            applyStopControl(StopControlState.stopping());
+            return;
+        }
         applyStopControl(StopControlState.stopping());
         showStatus("Stop requested. No new frame may be admitted.");
     }

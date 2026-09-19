@@ -74,6 +74,12 @@ final class LabSessionLedger {
         if (candidateGeneration != generation || phase == Phase.RESULT) {
             return false;
         }
+        if (phase == Phase.STOPPING && !"STOPPED".equals(status)
+                && !"UNAVAILABLE".equals(status)) {
+            status = "STOPPED";
+            message = "Capture stopped. No explanation was produced.";
+            uncertainty = "A result racing with Stop was suppressed after cleanup.";
+        }
         generation = candidateGeneration;
         phase = Phase.RESULT;
         displayText = safe(status) + "\n" + safe(message)
@@ -82,6 +88,9 @@ final class LabSessionLedger {
     }
 
     synchronized boolean requestStop(long candidateGeneration) {
+        if (candidateGeneration == generation && phase == Phase.STOPPING) {
+            return true;
+        }
         if (candidateGeneration != generation
                 || (phase != Phase.REQUESTING && phase != Phase.ACTIVE)) {
             return false;

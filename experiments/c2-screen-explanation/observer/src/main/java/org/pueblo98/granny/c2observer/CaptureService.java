@@ -127,6 +127,7 @@ public final class CaptureService extends Service {
         if (ACTION_STOP.equals(intent.getAction())) {
             long requestedGeneration = intent.getLongExtra(EXTRA_GENERATION, 0L);
             if (!startAdmission.requestStop(requestedGeneration)) {
+                if (generation == 0L) stopSelf(startId);
                 return START_NOT_STICKY;
             }
             generation = requestedGeneration;
@@ -135,6 +136,7 @@ public final class CaptureService extends Service {
             return START_NOT_STICKY;
         }
         if (!ACTION_START.equals(intent.getAction())) {
+            if (generation == 0L) stopSelf(startId);
             return START_NOT_STICKY;
         }
 
@@ -145,11 +147,7 @@ public final class CaptureService extends Service {
                     "UNAVAILABLE",
                     "A previous capture service is still closing.",
                     "No projection was started; try again after cleanup completes.")) {
-                publishResult(
-                        requestedGeneration,
-                        "UNAVAILABLE",
-                        "A previous capture service is still closing.",
-                        "No projection was started; try again after cleanup completes.");
+                publishState(requestedGeneration);
             }
             stopSelf(startId);
             return START_NOT_STICKY;
@@ -178,6 +176,7 @@ public final class CaptureService extends Service {
                 ? CaptureTrialPlan.STANDARD
                 : intent.getStringExtra(EXTRA_TRIAL);
         if (!startAdmission.admitProjection(requestedGeneration, trial)) {
+            if (generation == 0L) stopSelf(startId);
             return START_NOT_STICKY;
         }
         generation = requestedGeneration;
@@ -194,6 +193,7 @@ public final class CaptureService extends Service {
             return START_NOT_STICKY;
         }
 
+        publishState(generation);
         worker.post(() -> {
             startAdmission.runIfCaptureAllowed(generation, () -> {
                 try {
@@ -270,21 +270,18 @@ public final class CaptureService extends Service {
     }
 
     private boolean rejectStart(long requestedGeneration, String message, String uncertainty) {
+        LabSessionLedger.Snapshot snapshot = LabSessionLedger.process().snapshot();
+        if (snapshot.phase != LabSessionLedger.Phase.REQUESTING
+                || snapshot.generation != requestedGeneration) return false;
         if (LabSessionLedger.process().result(
                 requestedGeneration,
                 "UNAVAILABLE",
                 message,
                 uncertainty)) {
-            publishResult(requestedGeneration, "UNAVAILABLE", message, uncertainty);
+            publishState(requestedGeneration);
             return true;
         }
         return false;
-    }
-
-    private void configureTrial(String requestedTrial) {
-        CaptureTrialPlan plan = CaptureTrialPlan.from(requestedTrial);
-        holdOpenMillis = plan.holdOpenMillis;
-        requireResize = plan.requireResize;
     }
 
     private ImageReader createImageReader(int width, int height) {
@@ -423,7 +420,7 @@ public final class CaptureService extends Service {
 
         LabSessionLedger.process().result(generation, status, message, uncertainty);
 
-        publishResult(generation, status, message, uncertainty);
+        publishState(generation);
         stopForeground(STOP_FOREGROUND_REMOVE);
         stopSelf();
         if (workerThread != null) {
@@ -431,14 +428,12 @@ public final class CaptureService extends Service {
         }
     }
 
-    private void publishResult(long resultGeneration, String status, String message, String uncertainty) {
-        Intent result = new Intent(ACTION_RESULT)
+    private void publishState(long resultGeneration) {
+        // This is only an invalidation signal. The process ledger owns the
+        // outcome; delayed broadcasts cannot carry an old success over Stop.
+        sendBroadcast(new Intent(ACTION_RESULT)
                 .setPackage(getPackageName())
-                .putExtra(EXTRA_GENERATION, resultGeneration)
-                .putExtra(EXTRA_STATUS, status)
-                .putExtra(EXTRA_MESSAGE, message)
-                .putExtra(EXTRA_UNCERTAINTY, uncertainty);
-        sendBroadcast(result);
+                .putExtra(EXTRA_GENERATION, resultGeneration));
     }
 
     private Notification buildNotification() {

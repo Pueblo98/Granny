@@ -14,6 +14,7 @@ public final class CaptureSessionStateMachine {
     }
 
     private long generation;
+    private long activeRequestGeneration;
     private State state = State.IDLE;
 
     public CaptureSessionStateMachine() {
@@ -22,6 +23,7 @@ public final class CaptureSessionStateMachine {
 
     CaptureSessionStateMachine(long initialGeneration) {
         generation = Math.max(0L, initialGeneration);
+        activeRequestGeneration = generation;
     }
 
     CaptureSessionStateMachine(LabSessionLedger.Snapshot snapshot) {
@@ -42,6 +44,7 @@ public final class CaptureSessionStateMachine {
             return -1L;
         }
         generation += 1;
+        activeRequestGeneration = generation;
         state = State.REQUESTING_CONSENT;
         return generation;
     }
@@ -110,10 +113,18 @@ public final class CaptureSessionStateMachine {
     }
 
     public synchronized void reconcile(LabSessionLedger.Snapshot snapshot) {
-        if (snapshot.generation < generation) {
+        if (snapshot.generation < activeRequestGeneration) {
             return;
         }
-        generation = snapshot.generation;
+        // Cancellation advances the local consent epoch, but cleanup still
+        // acknowledges the request it stopped. It may close, never revive it.
+        if (snapshot.generation < generation
+                && snapshot.phase != LabSessionLedger.Phase.RESULT
+                && snapshot.phase != LabSessionLedger.Phase.STOPPING) {
+            return;
+        }
+        generation = Math.max(generation, snapshot.generation);
+        activeRequestGeneration = snapshot.generation;
         if (snapshot.phase == LabSessionLedger.Phase.REQUESTING) {
             state = State.REQUESTING_CONSENT;
         } else if (snapshot.phase == LabSessionLedger.Phase.ACTIVE) {
