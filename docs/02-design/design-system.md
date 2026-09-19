@@ -98,7 +98,7 @@ One large semantic region for a single verified, timely or explicitly kept item.
 <a id="cmp-011"></a>
 ### CMP-011 — Context Room identity, entry and source cue
 
-One semantic family with three registered variants: **room entry** (written name, short purpose, optional decorative motif and concise state), **current-room identity** (persistent name/purpose plus plain scope cue) and **cross-room source cue** (source room, reason used and View source/Exclude source). The whole room-entry row is one target; icon/illustration never replaces its label. Atmosphere is decorative and cannot alter control meaning, action colors, focus order, target sizes or the Round composer. Source cues appear whenever another room materially affects meaning, privacy or correction. At large text all variants become a vertical reading sequence and preserve the room name, scope and source actions. EVAL-008/012.
+One semantic family with three registered variants: **room entry** (written name, short purpose, optional reviewed `room_portrait` and concise state), **current-room identity** (persistent name/purpose plus plain scope cue) and **cross-room source cue** (source room, reason used and View source/Exclude source). The whole room-entry row is one target; icon/illustration never replaces its label. [Room atmosphere assets](context-room-visual-system.md) are decorative and cannot alter control meaning, action colors, focus order, target sizes or the Round composer. Source cues appear whenever another room materially affects meaning, privacy or correction. At large text all variants become a vertical reading sequence and preserve the room name, scope and source actions while decor may disappear. EVAL-008/012.
 
 ## Transient surfaces
 
