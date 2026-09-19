@@ -12,7 +12,7 @@ related:
 
 # Android Stage 1 feasibility
 
-**Evidence dates: initial assessment 2026-09-13; full route recheck 2026-09-19.** This is a primary-source desk assessment, not a device test or store approval. Android/API facts, policy text, project inference and proposed experiments are separated below. No exact reference-tablet identity, app version or working integration has been established. The current per-workflow matrices, source statements and unrun worksheets are in the [T-101 desk inventory](2026-09-19-t101-route-inventory.md).
+**Evidence dates: initial assessment 2026-09-13; full route recheck and partial manual tablet inventory 2026-09-19.** The feasibility conclusions remain a primary-source desk assessment, not a device capability test or store approval. Android/API facts, policy text, project inference and proposed experiments are separated below. The [manual inventory](2026-09-19-t101-physical-inventory.md) identifies the reference model/build and partial app/access state, but no working integration has been established. The current per-workflow matrices, source statements and unrun experiments are in the [T-101 route inventory](2026-09-19-t101-route-inventory.md).
 
 The 2026-09-19 recheck found no conflict with the accepted candidate/lab split. It narrowed the route posture: sent-photo provenance has no current ordinary candidate route; one-session screen explanation and a named media integration are conditional; exact local message preparation and Granny-local text scale are ordinary routes, but neither a manual compose handoff nor an internal setting counts as externally verified delegation. The two-external-workflow kill criterion is therefore at high risk until device experiments establish both scoped explanation and media, or another permitted integration is found.
 
@@ -71,7 +71,7 @@ Classification labels match the requested categories. Each row distinguishes sou
 
 ## Test matrix and support admission
 
-**Proposed physical first row:** supplied Samsung tablet, inventory exact model/API/One UI/security patch/RAM/display dimensions without serial, IMEI, Android ID, MAC, SSID or account names. Marketing label “Galaxy Tab A11+” and approximate $140 price are source-reported only in [hardware](../07-hardware/reference-hardware.md).
+**Physical first row, partial:** supplied Samsung `SM-X238U` / Galaxy Tab A11+ 5G, Android 16, One UI 8.0, build and patch captured in the [manual inventory](2026-09-19-t101-physical-inventory.md) without serial, IMEI, Android ID, MAC, SSID or account names. API level, RAM/display dimensions and capability behavior remain unobserved. The approximate $140 price remains source-reported only in [hardware](../07-hardware/reference-hardware.md).
 
 **Additional rows:** emulator at proposed minimum API 34; emulator at current stable API identified during spike; second stock OEM tablet before multi-device pilot. API 34 is a provisional test floor, not final minSdk. Record targetSdk/store deadline from current policy at build time. One device cannot establish Android-wide reliability.
 
@@ -93,4 +93,4 @@ Questions for an eventual authorized Play review: (1) Is the exact fixed recipe 
 
 The original linked Google/Android Developers and Play/Android Help sources were accessed 2026-09-13. They were rechecked on 2026-09-19 together with current User Data/disclosure guidance, Android restricted settings, common compose intents, Media3 controller/session documentation, Spotify's official Android SDK/release, DataStore 1.2.1 and scalable-content guidance. The [T-101 inventory](2026-09-19-t101-route-inventory.md#current-primary-sources) records exact links, statements and inference. These sources establish documented API/policy behavior, not Granny compatibility, provider selection or acceptance. API references must be checked against actual runtime/API/app versions and policy before submission. External accessibility sources are recorded separately in [accessibility](../02-design/accessibility.md).
 
-**Evidence not collected:** physical measurements; successful messenger/media integration; takeover guarantee; provider terms; store declaration/review; signed pilot distribution; participant or competitor tests. RES-02/04/05 and EVAL-001–011 specify the next evidence.
+**Evidence not collected:** physical capability measurements; complete device/app/grant/network configuration; successful messenger/media integration; takeover guarantee; provider terms; store declaration/review; signed pilot distribution; participant or competitor tests. RES-02/04/05 and EVAL-001–011 specify the next evidence.
