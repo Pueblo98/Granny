@@ -41,6 +41,18 @@ public final class CaptureSessionStateMachineTest {
     }
 
     @Test
+    public void namedStopInvalidatesOnlyOutstandingChooserGeneration() {
+        CaptureSessionStateMachine machine = new CaptureSessionStateMachine();
+        long first = machine.beginRequest();
+        long second = machine.beginRequest();
+
+        assertFalse(machine.requestStop(first));
+        assertTrue(machine.requestStop(second));
+        assertFalse(machine.consentGranted(second));
+        assertEquals(CaptureSessionStateMachine.State.STOPPING, machine.state());
+    }
+
+    @Test
     public void replacementRequestInvalidatesOldConsent() {
         CaptureSessionStateMachine machine = new CaptureSessionStateMachine();
         long first = machine.beginRequest();

@@ -55,6 +55,16 @@ public final class CaptureSessionStateMachine {
         }
     }
 
+    /** Invalidates only the named outstanding chooser request. */
+    public synchronized boolean requestStop(long candidateGeneration) {
+        if (!accepts(candidateGeneration, State.REQUESTING_CONSENT)) {
+            return false;
+        }
+        generation += 1;
+        state = State.STOPPING;
+        return true;
+    }
+
     public synchronized void stopped() {
         state = State.STOPPED;
     }

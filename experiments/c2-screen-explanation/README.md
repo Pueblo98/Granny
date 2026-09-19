@@ -28,7 +28,7 @@ or evidence that MediaProjection works on `TBL-01`.
 - `observer`: a lab-only app that requests one Android MediaProjection session,
   samples at most a 16×16 grid from one in-memory frame, maps only known fixture
   colors to fixed bounded explanations, and releases the projection immediately.
-- Ten passing pure local JUnit tests for consent/Stop generation handling,
+- Fourteen passing pure local JUnit tests for consent/Stop generation handling,
   fail-closed marker classification and private-canary suppression.
 
 The observer cannot OCR, identify arbitrary apps, click, recover, authenticate,
@@ -69,13 +69,13 @@ Current setup sources, accessed 2026-09-19:
 - API 36 MediaProjection does not independently report the selected package to
   this observer. Human chooser confirmation plus a matching fixture marker is
   useful lab context, but it cannot pass the full package/source-identity oracle.
-- The Stop-before-consent generation guard has a pure state-machine test, but
-  the current manual activity cannot deterministically inject that race while
-  Android's chooser owns the foreground. C2-07 therefore needs a reviewed test
-  control before it can produce device evidence.
-- The service deliberately stops after one sampled frame and does not resize an
-  active projection surface. C2-10 can currently establish only fail-closed or
-  unavailable behavior; it cannot establish successful resize handling.
+- C2-07 now has a dedicated manual test control that invalidates the exact
+  outstanding chooser generation after three seconds. The pure guard passes,
+  but rejection of the late Android result remains unrun device evidence.
+- The service now handles `onCapturedContentResize()` by replacing both the
+  bounded ImageReader surface and virtual-display dimensions. Invalid,
+  excessive or failed geometry stops unavailable; successful rotation/resize
+  remains unrun device evidence.
 - Source syntax and API 36 compilation are verified on the recorded host
   toolchain. Android lifecycle, rendering and MediaProjection behavior remain
   unverified until an authorized device run.
@@ -107,8 +107,8 @@ final clean host command was:
   :fixture:assembleDebug :observer:assembleDebug lintDebug
 ```
 
-It completed 92 tasks successfully. Both five-case JUnit suites passed with no
-failures or skips. Lint reported zero errors, four fixture warnings and three
+It completed 92 tasks successfully. The three JUnit suites now pass 14 cases
+with no failures or skips. Lint reported zero errors, four fixture warnings and three
 observer warnings. The remaining warnings are deliberate lab limits: exact API
 36 targeting rather than current API 37, the compatible pinned Gradle version,
 and absent production icons. Explicit extraction rules now exclude all app
@@ -121,7 +121,7 @@ Android debug certificate with SHA-256 digest
 | APK | SHA-256 | Inspected declared permissions |
 |---|---|---|
 | `fixture-debug.apk` | `b4c4a6bd5ba090067ab1c92dc70f329336f5042301796ed01d8f762ebc93fd1d` | none |
-| `observer-debug.apk` | `e89c3393247625f8bae05323734c753171fa7fd3130a2f2dc7a092f26500542e` | `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_MEDIA_PROJECTION` |
+| `observer-debug.apk` | `5688e33734b1717baf555ec6c5d450cf5bcb05ac19484b4e3ece08ca61dcb9c1` | `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_MEDIA_PROJECTION` |
 
 `apksigner` verified APK Signature Scheme v2 for both. These artifacts remain
 ignored build output in the isolated worktree; neither APK nor signing material
@@ -140,10 +140,10 @@ No row below has run.
 | C2-04 | Stale fixture | Explicit stale uncertainty | Fresh-state claim |
 | C2-05 | Private-canary fixture | Withheld result; canary absent from app/ADB/log output | Canary repetition or retention |
 | C2-06 | `FLAG_SECURE` fixture | Unavailable/denied | Protected-content explanation |
-| C2-07 | Stop before consent result | Late result rejected by generation; deterministic device control still required | Service start after Stop |
+| C2-07 | Use dedicated control; wait ≥3 seconds in chooser, then choose fixture or cancel | Exact chooser generation invalidated; late result ignored; no service | Service start after invalidation |
 | C2-08 | Stop during capture | Projection callback/resources end; no later frame | Post-Stop capture |
 | C2-09 | Android projection chip / screen lock | `onStop()` cleanup | Hidden continued capture or auto-resume |
-| C2-10 | Rotate/resize selected window | Safe unavailable with current scaffold; successful resize handling is not implemented | Distorted content treated as verified |
+| C2-10 | Rotate/resize selected window | Surface/display resize succeeds, or bounded unavailable without interpretation | Distorted or excessive content treated as verified |
 | C2-11 | Wrong app/full display selected | Must not claim fixture package/source | Package identity inferred from marker |
 | C2-12 | Service/process loss | No restart/resume; one-use consent discarded | Restored token or background capture |
 

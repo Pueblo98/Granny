@@ -8,6 +8,8 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -18,8 +20,10 @@ import android.widget.TextView;
 public final class MainActivity extends Activity {
     private static final int REQUEST_CAPTURE = 4001;
     private static final String FIXTURE_PACKAGE = "org.pueblo98.granny.c2fixture";
+    private static final long CONSENT_INVALIDATION_DELAY_MILLIS = 3_000L;
 
     private final CaptureSessionStateMachine stateMachine = new CaptureSessionStateMachine();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private long activeGeneration;
     private TextView status;
 
@@ -50,6 +54,7 @@ public final class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        mainHandler.removeCallbacksAndMessages(null);
         unregisterReceiver(resultReceiver);
         super.onDestroy();
     }
@@ -79,10 +84,16 @@ public final class MainActivity extends Activity {
         root.addView(fixture, fixtureParams);
 
         Button start = button("2. Choose fixture app window");
-        start.setOnClickListener(ignored -> requestCapture());
+        start.setOnClickListener(ignored -> requestCapture(false));
         LinearLayout.LayoutParams startParams = matchWrap();
         startParams.topMargin = dp(16);
         root.addView(start, startParams);
+
+        Button stopBeforeResult = button("Test C2-07: invalidate consent after 3 seconds");
+        stopBeforeResult.setOnClickListener(ignored -> requestCapture(true));
+        LinearLayout.LayoutParams stopBeforeResultParams = matchWrap();
+        stopBeforeResultParams.topMargin = dp(16);
+        root.addView(stopBeforeResult, stopBeforeResultParams);
 
         Button stop = button("Stop capture");
         stop.setTextColor(Color.WHITE);
@@ -120,14 +131,24 @@ public final class MainActivity extends Activity {
         startActivity(launch);
     }
 
-    private void requestCapture() {
+    private void requestCapture(boolean invalidateBeforeResult) {
         MediaProjectionManager manager = getSystemService(MediaProjectionManager.class);
         if (manager == null) {
             showStatus("Screen capture is unavailable on this configuration.");
             return;
         }
         activeGeneration = stateMachine.beginRequest();
-        showStatus("Waiting for Android consent. Choose only the synthetic fixture app window, or cancel.");
+        long requestedGeneration = activeGeneration;
+        if (invalidateBeforeResult) {
+            mainHandler.postDelayed(() -> {
+                if (stateMachine.requestStop(requestedGeneration)) {
+                    showStatus("C2-07 control fired. Any result from the open Android consent chooser must now be ignored.");
+                }
+            }, CONSENT_INVALIDATION_DELAY_MILLIS);
+            showStatus("C2-07 armed. Wait at least 3 seconds in Android's chooser, then choose the fixture or cancel. The result must be ignored.");
+        } else {
+            showStatus("Waiting for Android consent. Choose only the synthetic fixture app window, or cancel.");
+        }
         startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_CAPTURE);
     }
 
@@ -138,8 +159,11 @@ public final class MainActivity extends Activity {
             return;
         }
         if (resultCode != RESULT_OK || data == null) {
-            stateMachine.consentDenied(activeGeneration);
-            showStatus("Capture not started. Android consent was denied or cancelled.");
+            if (stateMachine.consentDenied(activeGeneration)) {
+                showStatus("Capture not started. Android consent was denied or cancelled.");
+            } else {
+                showStatus("Late consent result was ignored because the session was stopped or replaced.");
+            }
             return;
         }
         if (!stateMachine.consentGranted(activeGeneration)) {

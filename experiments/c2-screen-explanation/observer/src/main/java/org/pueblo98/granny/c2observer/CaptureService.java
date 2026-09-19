@@ -45,11 +45,13 @@ public final class CaptureService extends Service {
 
     private final AtomicBoolean finished = new AtomicBoolean(false);
     private final FixtureMarkerInterpreter interpreter = new FixtureMarkerInterpreter();
+    private final CaptureGeometry geometry = new CaptureGeometry();
     private HandlerThread workerThread;
     private Handler worker;
     private MediaProjection projection;
     private VirtualDisplay virtualDisplay;
     private ImageReader imageReader;
+    private int densityDpi;
 
     public static void start(Context context, int resultCode, Intent resultData, long generation) {
         Intent intent = new Intent(context, CaptureService.class)
@@ -82,8 +84,8 @@ public final class CaptureService extends Service {
             return START_NOT_STICKY;
         }
         if (ACTION_STOP.equals(intent.getAction())) {
-            finish("STOPPED", "Capture stopped. No explanation was produced.",
-                    "A stopped session is never resumed automatically.", true);
+            worker.post(() -> finish("STOPPED", "Capture stopped. No explanation was produced.",
+                    "A stopped session is never resumed automatically.", true));
             return START_NOT_STICKY;
         }
         if (!ACTION_START.equals(intent.getAction())) {
@@ -105,12 +107,14 @@ public final class CaptureService extends Service {
             return START_NOT_STICKY;
         }
 
-        try {
-            beginProjection(resultCode, resultData);
-        } catch (RuntimeException error) {
-            finish("UNAVAILABLE", "Capture could not start on this configuration.",
-                    error.getClass().getSimpleName() + "; no compatibility claim is made.", true);
-        }
+        worker.post(() -> {
+            try {
+                beginProjection(resultCode, resultData);
+            } catch (RuntimeException error) {
+                finish("UNAVAILABLE", "Capture could not start on this configuration.",
+                        error.getClass().getSimpleName() + "; no compatibility claim is made.", true);
+            }
+        });
         return START_NOT_STICKY;
     }
 
@@ -129,6 +133,11 @@ public final class CaptureService extends Service {
                 finish("STOPPED", "Android ended the capture session.",
                         "No capture continues after system revocation or lock.", false);
             }
+
+            @Override
+            public void onCapturedContentResize(int width, int height) {
+                resizeCapture(width, height);
+            }
         }, worker);
 
         WindowManager windowManager = getSystemService(WindowManager.class);
@@ -138,24 +147,71 @@ public final class CaptureService extends Service {
         android.graphics.Rect bounds = windowManager.getMaximumWindowMetrics().getBounds();
         int width = Math.max(1, bounds.width());
         int height = Math.max(1, bounds.height());
-        int density = getResources().getDisplayMetrics().densityDpi;
+        densityDpi = getResources().getDisplayMetrics().densityDpi;
 
-        imageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2);
-        imageReader.setOnImageAvailableListener(this::onImageAvailable, worker);
+        if (geometry.update(width, height) != CaptureGeometry.Decision.INITIALIZE) {
+            throw new IllegalArgumentException("Initial capture geometry refused");
+        }
+        imageReader = createImageReader(width, height);
         virtualDisplay = projection.createVirtualDisplay(
                 "c2-one-frame",
                 width,
                 height,
-                density,
+                densityDpi,
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
                 imageReader.getSurface(),
                 null,
                 worker);
+        if (virtualDisplay == null) {
+            throw new IllegalStateException("VirtualDisplay unavailable");
+        }
         worker.postDelayed(() -> finish(
                 "UNAVAILABLE",
                 "No usable frame arrived before the bounded timeout.",
                 "The selected window may be protected, unavailable, or incompatible.",
                 true), FRAME_TIMEOUT_MILLIS);
+    }
+
+    private ImageReader createImageReader(int width, int height) {
+        ImageReader reader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2);
+        reader.setOnImageAvailableListener(this::onImageAvailable, worker);
+        return reader;
+    }
+
+    private void resizeCapture(int width, int height) {
+        if (finished.get()) {
+            return;
+        }
+        CaptureGeometry.Decision decision = geometry.update(width, height);
+        if (decision == CaptureGeometry.Decision.UNCHANGED) {
+            return;
+        }
+        if (decision != CaptureGeometry.Decision.RESIZE || virtualDisplay == null) {
+            finish("UNAVAILABLE", "Android reported an unsafe capture size.",
+                    "The capture stopped without interpreting a resized frame.", true);
+            return;
+        }
+
+        ImageReader replacement = null;
+        try {
+            replacement = createImageReader(width, height);
+            virtualDisplay.resize(width, height, densityDpi);
+            virtualDisplay.setSurface(replacement.getSurface());
+            ImageReader previous = imageReader;
+            imageReader = replacement;
+            replacement = null;
+            if (previous != null) {
+                previous.setOnImageAvailableListener(null, null);
+                previous.close();
+            }
+        } catch (RuntimeException error) {
+            if (replacement != null) {
+                replacement.setOnImageAvailableListener(null, null);
+                replacement.close();
+            }
+            finish("UNAVAILABLE", "The capture surface could not resize safely.",
+                    error.getClass().getSimpleName() + "; no resized frame was interpreted.", true);
+        }
     }
 
     private void onImageAvailable(ImageReader reader) {
