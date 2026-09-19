@@ -45,7 +45,7 @@ try {
   check(await b.evaluate("![...document.querySelectorAll('[tabindex]')].some(e=>e.tabIndex>0)"), 'natural keyboard order');
   check(await b.evaluate("document.querySelector('#welcome h1').textContent==='What would you like to do?' && document.querySelector('#request').placeholder==='Ask me anything…'"), 'selected Home invitation and composer copy');
   check(await b.evaluate("document.querySelector('#stop-dock').hidden && document.querySelector('#stop-button').hidden"), 'idle Home has no Stop');
-  check(await b.evaluate("document.querySelectorAll('#room-list .room-entry').length===3 && document.querySelector('#continuation') && document.querySelector('#see-all-rooms')"), 'one continuation and explicit room row');
+  check(await b.evaluate("document.querySelectorAll('#room-list .room-entry').length===6 && document.querySelector('#continuation') && document.querySelector('#see-all-rooms')"), 'one continuation and explicit six-room row');
   await geometry('portrait home'); await b.screenshot('home-portrait');
   await request('Tell David I’ll call after dinner.');
   check(await stage() === 'clarify-person', 'direct intent, no category selection');

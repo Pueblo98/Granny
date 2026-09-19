@@ -93,43 +93,12 @@ const tracks = [
     source : "Example Music"
   }
 ];
-// T-119 Home fixtures are fictional and local to this browser design study.
-// The SVGs are intentionally simple placeholder atmospheres, not accepted
-// room artwork or personal content.
-const home = {
-  continuation : {
-    eyebrow : "Continue in Kitchen",
-    title : "Vegetable soup",
-    detail : "Kitchen · Recipes and cooking plans"
-  },
-  rooms : [
-    {
-      id : "fitness",
-      name : "Fitness",
-      purpose : "Movement and routines",
-      asset : "/assets/room-fitness-placeholder.svg"
-    },
-    {
-      id : "trips",
-      name : "Trips",
-      purpose : "Plans and packing",
-      asset : "/assets/room-trips-placeholder.svg"
-    },
-    {
-      id : "reading",
-      name : "Reading",
-      purpose : "Books and saved articles",
-      asset : "/assets/room-reading-placeholder.svg"
-    }
-  ]
-};
 const api = {
   people,
   channels,
   photos,
   screens,
-  tracks,
-  home
+  tracks
 };
 root.GrannyFixtures = api;
 if (typeof module !== "undefined")

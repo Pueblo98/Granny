@@ -1,0 +1,1016 @@
+{
+  "asset_root": "/assets/context-rooms",
+  "source_root": "docs/02-design/mockups/context-rooms/iteration-1",
+  "selected_asset_count": 84,
+  "assets": [
+    {
+      "role": "interior-backdrop",
+      "relative_path": "/assets/context-rooms/kitchen/room-kitchen-k01-backdrop-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/room-kitchen-k01-backdrop-i01.png",
+      "source_sha256": "507e92b3ac9ea03605c32ca653c7bc9b0baaa4b1afb7bcbf258ec3f0ad0e8547",
+      "dimensions": [
+        1586,
+        992
+      ],
+      "alpha": "rgb",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "transparent-decor-cluster",
+      "relative_path": "/assets/context-rooms/kitchen/room-kitchen-k01-decor-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/room-kitchen-k01-decor-i01.png",
+      "source_sha256": "b82241cdc5a9d996e2e1e0c89397a90a76fb059c2f65414150dab97e5a7ec12d",
+      "dimensions": [
+        1484,
+        1060
+      ],
+      "alpha": "rgba",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "transparent-empty-state",
+      "relative_path": "/assets/context-rooms/kitchen/room-kitchen-k01-empty-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/room-kitchen-k01-empty-i01.png",
+      "source_sha256": "a0e42f80b9bdc0d37bb17c617faff669fddc452d91f5fce35c3e7d3ceef1d17a",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "alpha": "rgba",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "room-mark",
+      "relative_path": "/assets/context-rooms/kitchen/room-kitchen-k01-mark-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/room-kitchen-k01-mark-i01.png",
+      "source_sha256": "5f4fd4d5a0ae19fde74df75f3fdb28a187a89e4cb840412819d6b187d38f168d",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Raster study; not SVG."
+    },
+    {
+      "role": "surface-motif",
+      "relative_path": "/assets/context-rooms/kitchen/room-kitchen-k01-motif-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/room-kitchen-k01-motif-i01.png",
+      "source_sha256": "d96e1284af8a3da1c8dcd409ae86c43a6ebd1708ee5f7d40faa47445c146e124",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgb",
+      "review_limit": "Low contrast/removable; seamless repeat unverified."
+    },
+    {
+      "role": "outside-room-portrait",
+      "relative_path": "/assets/context-rooms/kitchen/room-kitchen-k01-portrait-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/room-kitchen-k01-portrait-i01.png",
+      "source_sha256": "7f3f7c6a44342e1b4d98ebd8203e6d527e676d3d387b5b92dd2c83c5b2c68d17",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "alpha": "rgb",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/kitchen/symbols/room-kitchen-symbol-appliance-notes-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-appliance-notes-i01.png",
+      "source_sha256": "8edb2961f76730f7cbacfb048e203d825f3b59cf8c588bd029d6467ceb1efe0e",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/kitchen/symbols/room-kitchen-symbol-favorites-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-favorites-i01.png",
+      "source_sha256": "6a384f28d516d7c9ea8b3d442b94d7baa42868eed8487ab33c276a7d2eac09b8",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/kitchen/symbols/room-kitchen-symbol-ingredients-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-ingredients-i01.png",
+      "source_sha256": "e5ace508ad800664e7600cfb8098f4f197b4f72b11c8fab66f9178ee70aac6e6",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/kitchen/symbols/room-kitchen-symbol-meal-plans-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-meal-plans-i01.png",
+      "source_sha256": "00a15db590ba7438efbb81250800402a133ecd92cc6b0c6dd132dd88bcff2c0b",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/kitchen/symbols/room-kitchen-symbol-recently-used-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-recently-used-i01.png",
+      "source_sha256": "78ba830a1d631961ade7dd607656ed2429047c806b6b6bd055ddddb777fce0fd",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/kitchen/symbols/room-kitchen-symbol-recipes-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-recipes-i01.png",
+      "source_sha256": "2bc20789e38539a72ac5b062d610e81f0c1e4c9174a6bf9e055a5589781119ea",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/kitchen/symbols/room-kitchen-symbol-shopping-lists-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-shopping-lists-i01.png",
+      "source_sha256": "929ff5fbe1b2a013e06b9c65c3dacff3980c244959a4a8302677ed79d8099e63",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/kitchen/symbols/room-kitchen-symbol-unfiled-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-unfiled-i01.png",
+      "source_sha256": "537cc90db1f5fdfb61263b515b3453c8f0fa2e62a482f7d4ddbe69a263edf4fb",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "interior-backdrop",
+      "relative_path": "/assets/context-rooms/fitness/room-fitness-f01-backdrop-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/room-fitness-f01-backdrop-i01.png",
+      "source_sha256": "df178ca5073d947c7265c8f7670d99740e8aba8b14da051fc2cf7f13d9c03678",
+      "dimensions": [
+        1586,
+        992
+      ],
+      "alpha": "rgb",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "transparent-decor-cluster",
+      "relative_path": "/assets/context-rooms/fitness/room-fitness-f01-decor-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/room-fitness-f01-decor-i01.png",
+      "source_sha256": "3f3c3e55074e1b6a316a1a19370ddd76fe9ff3bacf7110c9d920d9319e1e180e",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgba",
+      "review_limit": "Known soft alpha halo; use gently on Linen or white."
+    },
+    {
+      "role": "transparent-empty-state",
+      "relative_path": "/assets/context-rooms/fitness/room-fitness-f01-empty-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/room-fitness-f01-empty-i01.png",
+      "source_sha256": "9bccf51074d4178f00d5154ce37d56af75fb1879ceb299479f6d00947b5cecdc",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgba",
+      "review_limit": "Known soft alpha halo; use gently on Linen or white."
+    },
+    {
+      "role": "room-mark",
+      "relative_path": "/assets/context-rooms/fitness/room-fitness-f01-mark-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/room-fitness-f01-mark-i01.png",
+      "source_sha256": "5825c9bdb8d6936757e736835f48758c8551d66efeb47626c91f139f4198f525",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Raster study; not SVG."
+    },
+    {
+      "role": "surface-motif",
+      "relative_path": "/assets/context-rooms/fitness/room-fitness-f01-motif-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/room-fitness-f01-motif-i01.png",
+      "source_sha256": "17657f7c197d428d5a88a075b127335d0faf113d1daf249bc02d9ee4126ebad1",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgb",
+      "review_limit": "Low contrast/removable; seamless repeat unverified."
+    },
+    {
+      "role": "outside-room-portrait",
+      "relative_path": "/assets/context-rooms/fitness/room-fitness-f01-portrait-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/room-fitness-f01-portrait-i01.png",
+      "source_sha256": "d8a35e2e6aa4d41af2888aed2a8395f773440952c60e88bddede9b050822461f",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "alpha": "rgb",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/fitness/symbols/room-fitness-symbol-classes-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-classes-i01.png",
+      "source_sha256": "331de798d2d64aa0c21f9393bad5d061aa8c94d9d88d29b1390e942a0aec25b8",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/fitness/symbols/room-fitness-symbol-cycling-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-cycling-i01.png",
+      "source_sha256": "a29b74cf521bd14084bf798131650d15a05d5cb678d13cfaaf7064617e74fcba",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/fitness/symbols/room-fitness-symbol-equipment-notes-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-equipment-notes-i01.png",
+      "source_sha256": "c289954abe004aea4b6513c25c9e7db2ff368525f99881a755b7c81d95370b7e",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/fitness/symbols/room-fitness-symbol-routines-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-routines-i01.png",
+      "source_sha256": "2257885bfda4193fe661bd5460c3a64fae197a7a5dc7310ea695da1c2a79c73c",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/fitness/symbols/room-fitness-symbol-strength-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-strength-i01.png",
+      "source_sha256": "7026022e4eb60862eec59451695d89a860741c2625c70f30656391fa765b7d02",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/fitness/symbols/room-fitness-symbol-stretching-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-stretching-i01.png",
+      "source_sha256": "5e3233511a49bd64bbc0bf47483204831a955e1bac1c8dec045d15f01339d9c5",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/fitness/symbols/room-fitness-symbol-swimming-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-swimming-i01.png",
+      "source_sha256": "e5e8e2eb835bf602f8428498c5ac3eca47fb6407e4a793309fdfcecc99ad57ff",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/fitness/symbols/room-fitness-symbol-walking-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-walking-i01.png",
+      "source_sha256": "f2c58c0859ca43ba444a6c6072e079cc82001d9ec0c586de86eaf36ac7de4e2b",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "interior-backdrop",
+      "relative_path": "/assets/context-rooms/trips/room-trips-t01-backdrop-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/room-trips-t01-backdrop-i01.png",
+      "source_sha256": "21da01e489e33067436b4cc6e7eddf323ac1df52043833e2c861412527558fc7",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgb",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "transparent-decor-cluster",
+      "relative_path": "/assets/context-rooms/trips/room-trips-t01-decor-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/room-trips-t01-decor-i01.png",
+      "source_sha256": "46210124eeae03703b1ce0f9e7253053b3ee82b75645f600e0d27d5142a2226a",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgba",
+      "review_limit": "Known soft alpha halo; use gently on Linen or white."
+    },
+    {
+      "role": "transparent-empty-state",
+      "relative_path": "/assets/context-rooms/trips/room-trips-t01-empty-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/room-trips-t01-empty-i01.png",
+      "source_sha256": "f37385384026ae6dd886fd8c803960aa69619a5b469f60e67d639ae685957405",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgba",
+      "review_limit": "Known soft alpha halo; use gently on Linen or white."
+    },
+    {
+      "role": "room-mark",
+      "relative_path": "/assets/context-rooms/trips/room-trips-t01-mark-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/room-trips-t01-mark-i01.png",
+      "source_sha256": "cff49026d6db25d4a2202d36c300ab932cf1c3d0add2eb9b3c468d902bfdd329",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Raster study; not SVG."
+    },
+    {
+      "role": "surface-motif",
+      "relative_path": "/assets/context-rooms/trips/room-trips-t01-motif-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/room-trips-t01-motif-i01.png",
+      "source_sha256": "fc765b3a353edce6da2eeae27e2935b8526b093cb211dd1eac0a3364865b3029",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgb",
+      "review_limit": "Low contrast/removable; seamless repeat unverified."
+    },
+    {
+      "role": "outside-room-portrait",
+      "relative_path": "/assets/context-rooms/trips/room-trips-t01-portrait-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/room-trips-t01-portrait-i01.png",
+      "source_sha256": "0b08fd3360c99c0711934d54293bc37a25d1d018a71f8642dbe58c1fcfcc98aa",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgb",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/trips/symbols/room-trips-symbol-day-plans-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-day-plans-i01.png",
+      "source_sha256": "b390944866066b827f95484330afb1c51e9d24274a2e48ee3a98e3d66136776e",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/trips/symbols/room-trips-symbol-packing-lists-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-packing-lists-i01.png",
+      "source_sha256": "57a6b05aac9398957d361be0d5955c99ab664a1cad2f4b1189bcaf6ef0f9c179",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/trips/symbols/room-trips-symbol-past-trips-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-past-trips-i01.png",
+      "source_sha256": "8c47b2b352d4ee85ce65db32b857f395dbb2fa32a95c52b65de774e20ca5348b",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/trips/symbols/room-trips-symbol-people-to-visit-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-people-to-visit-i01.png",
+      "source_sha256": "3fd518d8af5e1b366d542735fbab3190551ad4bef0587795457790e89d8b6435",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/trips/symbols/room-trips-symbol-places-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-places-i01.png",
+      "source_sha256": "c165c209e4b2e86f44d9429c85d1b6de494e8e578890db6f5e6e6bf3da85bcfd",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/trips/symbols/room-trips-symbol-reservations-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-reservations-i01.png",
+      "source_sha256": "67e76fe57f5caca7645fa6ff781234976d82246134f35d5d4591ac6be5c7761d",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/trips/symbols/room-trips-symbol-transport-notes-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-transport-notes-i01.png",
+      "source_sha256": "2369f87eaec2bf9d2fea0398de1f4fbcbf193ffa37d1704621d42a75f6f7f44d",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/trips/symbols/room-trips-symbol-travel-documents-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-travel-documents-i01.png",
+      "source_sha256": "6243536858429ce14b49e340eea9a906433faf06b6f18567926ce900166416bc",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "interior-backdrop",
+      "relative_path": "/assets/context-rooms/garden/room-garden-g01-backdrop-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/room-garden-g01-backdrop-i01.png",
+      "source_sha256": "889e3910d260098b9e13d26fd2332dca450027704da0b4ca365353932d10f4af",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgb",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "transparent-decor-cluster",
+      "relative_path": "/assets/context-rooms/garden/room-garden-g01-decor-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/room-garden-g01-decor-i01.png",
+      "source_sha256": "9b8d13bda6724a6aec545d37d3d0607eb3f9d2631a85284cbd52e5d12bb13886",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgba",
+      "review_limit": "Known soft alpha halo; use gently on Linen or white."
+    },
+    {
+      "role": "transparent-empty-state",
+      "relative_path": "/assets/context-rooms/garden/room-garden-g01-empty-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/room-garden-g01-empty-i01.png",
+      "source_sha256": "3b218078e21d7f129403be6aec7344f62870f373c7a84ac562749289ea67db5f",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgba",
+      "review_limit": "Known soft alpha halo; use gently on Linen or white."
+    },
+    {
+      "role": "room-mark",
+      "relative_path": "/assets/context-rooms/garden/room-garden-g01-mark-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/room-garden-g01-mark-i01.png",
+      "source_sha256": "33959990a434d8d693fb7ae5addcd5cfb6315c790f38bf6b3633a0d6e89efe37",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Raster study; not SVG."
+    },
+    {
+      "role": "surface-motif",
+      "relative_path": "/assets/context-rooms/garden/room-garden-g01-motif-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/room-garden-g01-motif-i01.png",
+      "source_sha256": "f822c7721f35ed20e8913e37d355a978cbe9f5ea1b545a621068b0152ac167fa",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgb",
+      "review_limit": "Low contrast/removable; seamless repeat unverified."
+    },
+    {
+      "role": "outside-room-portrait",
+      "relative_path": "/assets/context-rooms/garden/room-garden-g01-portrait-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/room-garden-g01-portrait-i01.png",
+      "source_sha256": "30e9ccc8eff2b505620c382b824fddeb111fd5941354f9573f9b6dd27cecd2c9",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "alpha": "rgb",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/garden/symbols/room-garden-symbol-garden-journal-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-garden-journal-i01.png",
+      "source_sha256": "13fc250c3c36304d99927ff81bc9b89348a522d599e65ee31364b23f62871289",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/garden/symbols/room-garden-symbol-photos-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-photos-i01.png",
+      "source_sha256": "a594f4bd56a94862306eadee311f693ced3e34e26ed2e3dbb0347df077036651",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/garden/symbols/room-garden-symbol-plants-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-plants-i01.png",
+      "source_sha256": "e4a875c3698a00416520d9d4615631bbba8c99c2bed5eb42f46b7f4b9b04880c",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/garden/symbols/room-garden-symbol-seasonal-plans-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-seasonal-plans-i01.png",
+      "source_sha256": "ef69f17422967e16e733b7188d11c9598aff053454f5aba15bdafe349a3d8b29",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/garden/symbols/room-garden-symbol-seeds-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-seeds-i01.png",
+      "source_sha256": "4e5cc4f91187eab8c6ec42d63effdf40f321e4050717528a2a25653662b38df9",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/garden/symbols/room-garden-symbol-supplies-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-supplies-i01.png",
+      "source_sha256": "0718c6101f511100a7a34bfec37140622c940596b482acc7bbcd965e5588d8eb",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/garden/symbols/room-garden-symbol-things-to-do-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-things-to-do-i01.png",
+      "source_sha256": "eedab77fef525af941ef8a45ad8db273b5512988c103ff517bae0162672fe72f",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/garden/symbols/room-garden-symbol-watering-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-watering-i01.png",
+      "source_sha256": "0aa8c0cb25efa177d6592fce01c0046027641bdf07cdd7c37445a780527b8298",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "interior-backdrop",
+      "relative_path": "/assets/context-rooms/reading/room-reading-r01-backdrop-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/room-reading-r01-backdrop-i01.png",
+      "source_sha256": "90b8b2228118244de3179dcf9253d6e7f8579170f5eda50d40eef947f7bdee29",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgb",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "transparent-decor-cluster",
+      "relative_path": "/assets/context-rooms/reading/room-reading-r01-decor-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/room-reading-r01-decor-i01.png",
+      "source_sha256": "f01876ab8d1d7677b34372209b971ec7925dcf841234540749ec46e1578baba0",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgba",
+      "review_limit": "Known soft alpha halo; use gently on Linen or white."
+    },
+    {
+      "role": "transparent-empty-state",
+      "relative_path": "/assets/context-rooms/reading/room-reading-r01-empty-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/room-reading-r01-empty-i01.png",
+      "source_sha256": "178a7d83fb6e3426ffd6794205a93400cd5adb3b9dcf9dc6fddb15e7c256df4e",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgba",
+      "review_limit": "Known soft alpha halo; use gently on Linen or white."
+    },
+    {
+      "role": "room-mark",
+      "relative_path": "/assets/context-rooms/reading/room-reading-r01-mark-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/room-reading-r01-mark-i01.png",
+      "source_sha256": "906f1e6165a4f13f7e5e12e68efcb658b87eeeae59bc8ea14d35aea96418171d",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Raster study; not SVG."
+    },
+    {
+      "role": "surface-motif",
+      "relative_path": "/assets/context-rooms/reading/room-reading-r01-motif-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/room-reading-r01-motif-i01.png",
+      "source_sha256": "d9032ae7458a0f62f03677d269228b0d97fc5e0f9fbb9fddb40366bde773240d",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgb",
+      "review_limit": "Low contrast/removable; seamless repeat unverified."
+    },
+    {
+      "role": "outside-room-portrait",
+      "relative_path": "/assets/context-rooms/reading/room-reading-r01-portrait-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/room-reading-r01-portrait-i01.png",
+      "source_sha256": "798634b413393d40a288c48289a949bbe1060fda569cd27ba08aec822b33a324",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "alpha": "rgb",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/reading/symbols/room-reading-symbol-articles-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-articles-i01.png",
+      "source_sha256": "7c39ddd99e1e1c50137884905f9dfb0a57807386d6b8f3fca7513985ef2a5e51",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/reading/symbols/room-reading-symbol-book-club-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-book-club-i01.png",
+      "source_sha256": "260ef089403c962a87a1983d0e9de306ec3668c63e36da3b6a40e9031e082782",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/reading/symbols/room-reading-symbol-books-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-books-i01.png",
+      "source_sha256": "bcf609d0952737edec473e93cebc1034298e7f175bd37a10b2b97db356abe760",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/reading/symbols/room-reading-symbol-currently-reading-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-currently-reading-i01.png",
+      "source_sha256": "1f0732637a4a9201e485e1c2d21c6c7420fd23c6d950d29c9b09a2023ae5c12f",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/reading/symbols/room-reading-symbol-finished-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-finished-i01.png",
+      "source_sha256": "574e9d7294a100b10dd3df7484f8e1d3b0decb42ca6b6ae2669f9e02b6609832",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/reading/symbols/room-reading-symbol-notes-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-notes-i01.png",
+      "source_sha256": "c1b85e486c5afba92b07d5e0bf2385b2367618026a50346a9a6b6e07478125b5",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/reading/symbols/room-reading-symbol-reading-list-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-reading-list-i01.png",
+      "source_sha256": "13b345fd76d79c2e5afe9be691d047c91c6fb2f6667cfa188609636f606aae85",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/reading/symbols/room-reading-symbol-sources-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-sources-i01.png",
+      "source_sha256": "0473937e9eaa493dc7e29b091c9e3239ef2f95417ca8c604ecbb90790ba8038d",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "interior-backdrop",
+      "relative_path": "/assets/context-rooms/projects/room-projects-p01-backdrop-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/room-projects-p01-backdrop-i01.png",
+      "source_sha256": "59c5af0386c2ffb80d1b8b9fc2e43d239aa941ec394f949eca0639f474e60cd7",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgb",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "transparent-decor-cluster",
+      "relative_path": "/assets/context-rooms/projects/room-projects-p01-decor-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/room-projects-p01-decor-i01.png",
+      "source_sha256": "9f0f2879c26722c2c7678698be4974b2dc6c65ba856ee2e43792870c31d38e25",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgba",
+      "review_limit": "Known soft alpha halo; use gently on Linen or white."
+    },
+    {
+      "role": "transparent-empty-state",
+      "relative_path": "/assets/context-rooms/projects/room-projects-p01-empty-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/room-projects-p01-empty-i01.png",
+      "source_sha256": "9c311abc65a28e99929095676d6de098d839987f3b159fd03d0dda349b4f9b4b",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "alpha": "rgba",
+      "review_limit": "Known soft alpha halo; use gently on Linen or white."
+    },
+    {
+      "role": "room-mark",
+      "relative_path": "/assets/context-rooms/projects/room-projects-p01-mark-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/room-projects-p01-mark-i01.png",
+      "source_sha256": "0770ca682c9e30d9f5fc82d0b59cc494d9715c607bb42af7edbf8dd1015f1476",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Raster study; not SVG."
+    },
+    {
+      "role": "surface-motif",
+      "relative_path": "/assets/context-rooms/projects/room-projects-p01-motif-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/room-projects-p01-motif-i01.png",
+      "source_sha256": "f3420d1c773ce9e5d6b403d218027703303c72ab2283bb1c30e9c6f4d2e04dc7",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgb",
+      "review_limit": "Low contrast/removable; seamless repeat unverified."
+    },
+    {
+      "role": "outside-room-portrait",
+      "relative_path": "/assets/context-rooms/projects/room-projects-p01-portrait-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/room-projects-p01-portrait-i01.png",
+      "source_sha256": "e5b8e2d0a9f1cbdd4bfa4334704d96fddea246d50dd10ad3005680ce31424305",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "alpha": "rgb",
+      "review_limit": "Selected raster study; decorative only."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/projects/symbols/room-projects-symbol-archive-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-archive-i01.png",
+      "source_sha256": "0804d7cb0cbf86cf54e82ab5f411e9dcd4bc1081bdfd0a3d9c8dbb890aedae1e",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/projects/symbols/room-projects-symbol-drafts-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-drafts-i01.png",
+      "source_sha256": "ec02077d2214727deb50d0b44c799841e330bb8e35f6515823ec2fe0b43bc6fe",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/projects/symbols/room-projects-symbol-materials-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-materials-i01.png",
+      "source_sha256": "72729442b691f3dfdc09f0a1145e5a0f22f58cae2a83b274c608c8eaa2e47edd",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/projects/symbols/room-projects-symbol-notes-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-notes-i01.png",
+      "source_sha256": "add8f624ca46d597486178c5b06f17b1eb01c1f1e2a78b08f787e6ee5da65b6d",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/projects/symbols/room-projects-symbol-plans-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-plans-i01.png",
+      "source_sha256": "4253dbb9ef7f169fe06ab7dff1f04c5b055b57c9f338829bde20a7e423cdba42",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/projects/symbols/room-projects-symbol-recently-used-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-recently-used-i01.png",
+      "source_sha256": "005366e83080ebbf9b01ab4775725c456492069d8362e447f1f799f3a5f7ac6b",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/projects/symbols/room-projects-symbol-reference-images-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-reference-images-i01.png",
+      "source_sha256": "50c7ab56c305046c81940530974cec5d86b1746fb886a4480a5b167952a78ecf",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    },
+    {
+      "role": "collection-symbol",
+      "relative_path": "/assets/context-rooms/projects/symbols/room-projects-symbol-things-to-do-i01.png",
+      "original_repository_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-things-to-do-i01.png",
+      "source_sha256": "e220070bfaf88ea82806a609b50eb7df427416d00e6fae82af4c6bd7564c043d",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "alpha": "rgba",
+      "review_limit": "Use with written label; not standalone navigation."
+    }
+  ]
+}
+

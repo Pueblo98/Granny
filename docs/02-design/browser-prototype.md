@@ -2,7 +2,7 @@
 title: "Stage 1 conversation browser prototype and handoff"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [design, prototype, handoff]
 related:
   - conversation-first-plan.md
@@ -21,9 +21,20 @@ related:
 
 ## Selected Home checkpoint
 
-The executable prototype now integrates the selected [Explicit Scroll Row Home](mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md) with the existing conversation shell and five scripted workflows. It implements the Harbour Blue roles, Round composer, one in-memory Kitchen continuation, open Fitness/Trips/Reading portrait row, truthful written overflow controls and direct `See all rooms` list fallback. The room artwork is plainly local placeholder art.
+The executable prototype integrates the selected [Explicit Scroll Row Home](mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md) with the existing conversation shell and five scripted workflows. It retains Harbour Blue, the Round composer, one fictional Kitchen continuation, truthful written overflow controls and direct `See all rooms`. Six starter rooms now use unchanged selected local pack assets.
 
-This is the Home-only checkpoint within [T-119](../10-execution/backlog.md#t-119). Kitchen and individual room routes are labelled fictional placeholders with `Back to Home`; the complete SCR-016 library, room interiors, browse/search, creation/management, persistent room data, disclosed cross-room retrieval and delete/Undo behavior remain future bounded slices. The Home fixtures never enter the scripted model context or connected backend.
+Under Simon's subsequent explicit six-room request, this [T-119](../10-execution/backlog.md#t-119) checkpoint includes Kitchen, Fitness, Trips, Garden, Reading and Projects: four-symbol overview, all eight collections, direct search, fictional item detail and reversible source-aware conversation. The Rooms library provides Search all/All items/Unfiled and retains the bounded five-step local creation flow. The [contemporaneous session](../10-execution/sessions/2026-09-19-context-rooms-frontend.md) records authority, review and exact limits. Persistent room data, policy-scoped cross-room retrieval, membership receipts/Undo, archive/delete and production context contracts remain later slices. Room fixtures never enter the scripted task model or connected backend.
+
+The new Kitchen vertical-slice references are read-only design dependencies in
+the dirty primary checkout at
+`docs/02-design/mockups/context-rooms/kitchen-vertical-slice/iteration-1/`.
+One reusable room renderer implements their overview → collection → detail →
+conversation grammar. It preserves canonical truth where raster copy differs:
+fictional stopping points are labelled as fixtures, controls use actual
+overflow state, and Ask pre-fills a question but requires Send. Source exclusion
+affects later answers, while earlier sourced answers remain identified as
+history. Returning Home clears room priority; ordinary scripted requests still
+work inside a room with the same task/Stop controls.
 
 Current connected runtime: [versioned local backend/MCP contract](../04-architecture/conversation-runtime-contract.md). Scripted remains default; local demo uses a stub model with actual MCP/store operations. Explicit live synthetic consent is available only when the backend enables it; the one live proposal check failed, so model reliability is not established.
 
@@ -52,7 +63,7 @@ A new consequential request never queues behind old work. The interface resolves
 
 | Journey / stable owners | Current conversation route | Required adverse/recovery review |
 |---|---|---|
-| SCR-003/016/017; CMP-007/010/012 | Global invitation/composer → optional continuation or direct room row/See all placeholder → Back to Home | Continuation hidden, no/one/all-fit/overflow/image-failure, narrow/large-text list, truthful disabled state, focus/range announcement; no room choice required for an ordinary request |
+| SCR-003/016/017; CMP-007/010/011/012 | Global Home → six-room library/overview → collection/search → item → explicit source-aware fixture question; optional local creation | All 48 labelled symbols, source inspection/exclusion, Home priority reset, continuation hidden, no/one/all-fit/overflow/image failure, narrow/large text, focus/range announcement; no room required for ordinary requests |
 | J-003; SCR-003/004/006/007/005/008; CMP-001/002/003/005/007 | Tell/message/text → person/channel only if unresolved → exact editable preview → specific approval → automatic unsent handoff | Wrong/ambiguous person, exact body, changed/stale/expired approval, editing, Stop, unknown, recovery without resend |
 | J-001; SCR-004/006/007/005/008; CMP-005/009 | Person/date request → local fixture filter → inline illustrated collection → individual viewer and return | Alias deletion/ambiguity, date correction/no matches, uncertain source date, permission loss, mark-read disclosure for message-source route |
 | J-002; SCR-002/004/005/008/014; CMP-006/008 | Request explanation → explicitly supplied fictional screen → plain explanation → simpler or known return target | Unknown context, sign-in/protected surface, failed/partial return; no actual browser/Android observation |
@@ -68,7 +79,7 @@ CMP-003 now uses a persistent exact inline preview with an expanded reading/edit
 
 All scripted runtime data is tab memory. The working thread is ephemeral; recent activity retains at most 20 task-kind/outcome summaries without message bodies or people. Preferences and aliases require explicit actions. Clear conversation, clear history, alias deletion and full reset have distinct scopes; reload clears scripted state. Connected demo requests and synthetic drafts additionally belong to the loopback runtime's session/store: a browser reset does not delete or undo them. No IndexedDB, local/session storage, service worker, external fonts/images/scripts, browser provider connection or telemetry is added.
 
-Photo assets are three original local SVG illustrations, explicitly fictional, with sender/source/date fixture metadata. Three additional hand-authored SVG atmosphere placeholders stand in for Fitness, Trips and Reading; their live names/purposes remain outside the art and a failed portrait removes decoration without removing the target. None are photographs of real people or accepted final room artwork. Song titles/performers are metadata for a silent simulated player, not streaming. Screen context is chosen fiction, never captured. Passwords, permissions and accounts remain explanation-only boundaries.
+Photo-workflow assets remain three original fictional SVG illustrations with sender/source/date fixture metadata. Six selected room packs supply 84 local PNGs, with unchanged alpha and SHA-256 source provenance in the [runtime manifest](../../prototypes/stage-1/assets/context-rooms/asset-manifest.json). Written identities and labels remain outside art; fixed image slots survive failures. No asset is personal content or a final-brand claim. Song metadata still belongs to a silent simulated player; screens are chosen fiction, never captured. Passwords, permissions and accounts remain explanation-only boundaries.
 
 User text is rendered as text, never executable HTML/instructions. CSP allows only same-origin connections and blocks media/fonts; response headers disable microphone/camera/geolocation. The scripted loopback server has an exact runtime-file allowlist and rejects other files and write methods, including all API routes; [server tests](../../prototypes/stage-1/serve.test.mjs) enforce it. Connected mode requires the separately owned runtime server on the same origin.
 
@@ -106,6 +117,14 @@ No reviewed local Bricolage Grotesque or DM Sans files are present and the CSP f
 Record where the next action or consequence feels unclear. Final visual preference and representative-user comprehension remain separate from browser pass/fail.
 
 ## Current evidence and remaining work
+
+The [Rooms session](../10-execution/sessions/2026-09-19-context-rooms-frontend.md)
+owns the current six-room delivery and [screenshot review](mockups/2026-09-20-context-rooms-frontend/README.md). Its
+[Rooms suite](../../prototypes/stage-1/rooms-browser-check.mjs) extends the
+existing Home/workflow checks; [review capture](../../prototypes/stage-1/rooms-review.mjs)
+reproduces the visual states. Browser evidence does not establish Android
+dp/sp geometry, TalkBack/switch behavior, user comprehension or production
+context/privacy correctness.
 
 [Current Home session evidence](../10-execution/sessions/2026-09-19-explicit-scroll-row-home.md) records the implementation, current checks, screenshot comparison and precise limits; the earlier [conversation session](../10-execution/sessions/2026-09-14-conversation-build.md) retains the five-workflow history. [Home browser tests](../../prototypes/stage-1/home-browser-check.mjs) exercise real overflow, routes, focus, fixtures and responsive states; the existing [workflow browser tests](../../prototypes/stage-1/browser-check.mjs), [model](../../prototypes/stage-1/model.test.mjs) and [scheduler](../../prototypes/stage-1/scheduler.test.mjs) retain the safety and task regressions. The test-only browser driver does not run a suite by itself.
 

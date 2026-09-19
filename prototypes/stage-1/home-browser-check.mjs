@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {browser} from './browser-driver.mjs';
+import roomFixtures from './room-fixtures.js';
 
 const b = await browser();
 let checks = 0;
@@ -67,18 +68,18 @@ try {
     'Granny', 'What would you like to do?',
     'Ask in your own words. You can type or talk.', 'Type a request', 'Talk',
     'Send', 'Continue in Kitchen', 'Vegetable soup',
-    'Kitchen · Recipes and cooking plans', 'Open Kitchen', 'Hide',
-    'Other rooms', 'Fitness', 'Movement and routines', 'Trips',
-    'Plans and packing', 'Reading', 'Books and saved articles',
+    'Kitchen · Recipes, lists and cooking plans', 'Open Kitchen', 'Hide',
+    'Other rooms', 'Fitness', 'Movement plans, routines and activity notes', 'Trips',
+    'Plans, lists and useful details for going away', 'Kitchen',
     'See all rooms'
   ]) check(copy.includes(required), 'idle Home includes: ' + required);
   check(await b.evaluate("document.querySelector('#request').placeholder==='Ask me anything…'"), 'selected composer placeholder');
   check(await b.evaluate("document.querySelector('#stop-dock').hidden && document.querySelector('#stop-button').hidden"), 'idle Stop absent');
   check(await b.evaluate("!document.querySelector('#review-panel') && !document.querySelector('#review-home-fixture')"), 'reviewer controls absent from participant DOM');
   check(await b.evaluate("!document.querySelector('.sandbox-notice') && document.querySelector('#introduction').textContent.includes('does not record your voice') && document.querySelector('[data-menu=privacy]')"), 'redundant Home footer is absent while Menu disclosure remains');
-  check(await b.evaluate("document.querySelectorAll('#continuation').length===1 && document.querySelectorAll('#room-list .room-entry').length===3"), 'one continuation and three semantic room targets');
+  check(await b.evaluate("document.querySelectorAll('#continuation').length===1 && document.querySelectorAll('#room-list .room-entry').length===6"), 'one continuation and six semantic room targets');
   check(await b.evaluate("[...document.querySelectorAll('#room-list .room-entry')].every(item => item.tagName==='BUTTON' && item.getAttribute('aria-label') && item.querySelector('strong') && item.querySelector('span'))"), 'room name and purpose share one native target');
-  check(await b.evaluate("document.querySelector('#room-controls').hidden && document.querySelector('#room-viewport').dataset.overflow==='false'"), 'expanded all-fit state has no false movement controls');
+  check(await b.evaluate("!document.querySelector('#room-controls').hidden && document.querySelector('#room-viewport').dataset.overflow==='true'"), 'expanded six-room row has genuine overflow and written controls');
   check(await noHorizontalOverflow('expanded Home'), 'expanded Home has no page-level horizontal overflow');
   check(await b.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--canvas').trim()==='#fbf6ee' && getComputedStyle(document.documentElement).getPropertyValue('--focus').trim()==='#4930a1'"), 'Harbour Blue canvas and focus tokens');
   check(await b.evaluate("(() => { const composer=document.querySelector('#composer'); const wrap=document.querySelector('.composer-wrap'); const tail=document.querySelector('.composer-tail'); const input=document.querySelector('#request'); const box=wrap.getBoundingClientRect(); const art=tail.getBoundingClientRect(); return getComputedStyle(composer,'::before').content==='none' && getComputedStyle(composer,'::after').content==='none' && getComputedStyle(composer).overflow==='visible' && getComputedStyle(input).resize==='none' && tail.getAttribute('aria-hidden')==='true' && art.bottom<=box.bottom && art.top<composer.getBoundingClientRect().bottom; })()"), 'composer uses an in-layout decorative tail without generated masks, clipping, or a native resize handle');
@@ -110,26 +111,27 @@ try {
   await fresh();
   await b.evaluate("document.querySelector('#open-kitchen').focus()");
   await b.click('#open-kitchen');
-  check(await b.evaluate("document.querySelector('[data-home-destination=kitchen] h1').textContent==='Kitchen' && document.body.innerText.includes('next T-119 slice')"), 'Kitchen opens an honest fictional placeholder');
-  await button('Back to Home');
+  check(await b.evaluate("document.querySelector('#room-surface h1').textContent==='Kitchen' && document.querySelector('#room-continue')"), 'Kitchen continuation opens overview with fictional soup continuation');
+  await b.click('#room-home');
   await b.waitFor("document.activeElement.id==='open-kitchen'");
   check(await b.evaluate("document.activeElement.id==='open-kitchen'"), 'Kitchen return restores source focus');
 
   await b.evaluate("document.querySelector('#room-fitness').focus()");
   await key('Enter');
-  check(await b.evaluate("document.querySelector('[data-home-destination=\"room:fitness\"] h1').textContent==='Fitness'"), 'room target opens labelled fictional placeholder');
-  await b.evaluate("[...document.querySelectorAll('.home-placeholder button')].find(item=>item.textContent.trim()==='Back to Home').focus()");
+  check(await b.evaluate("document.querySelector('#room-surface[data-room-id=fitness] h1').textContent==='Fitness'"), 'room target opens labelled fictional interior');
+  await b.evaluate("document.querySelector('#room-home').focus()");
   await key('Enter');
   await b.waitFor("document.activeElement.id==='room-fitness'");
   check(await b.evaluate("document.activeElement.id==='room-fitness'"), 'keyboard room return restores source focus');
 
   await b.evaluate("document.querySelector('#see-all-rooms').focus()");
   await key('Enter');
-  check(await b.evaluate("document.querySelector('[data-home-destination=rooms] h1').textContent==='All rooms' && document.querySelectorAll('.room-library-list button').length===3"), 'See all rooms exposes vertical non-gesture list');
+  check(await b.evaluate("document.querySelector('.room-library h1').textContent==='Rooms' && document.querySelectorAll('.room-library-list button').length===6"), 'See all rooms exposes vertical non-gesture library');
+  await b.waitFor("document.activeElement===document.querySelector('.room-library h1')");
   await b.evaluate("document.querySelector('#library-room-fitness').focus()");
   await key('Enter');
-  check(await b.evaluate("document.querySelector('[data-home-destination=\"room:fitness\"]') && [...document.querySelectorAll('.home-placeholder button')].some(item=>item.textContent.trim()==='Back to all rooms')"), 'keyboard list entry opens room with list return');
-  await b.evaluate("[...document.querySelectorAll('.home-placeholder button')].find(item=>item.textContent.trim()==='Back to all rooms').focus()");
+  check(await b.evaluate("document.querySelector('#room-surface[data-room-id=fitness]') && document.querySelector('#rooms-button')"), 'keyboard list entry opens room with library return');
+  await b.evaluate("document.querySelector('#rooms-button').focus()");
   await key('Enter');
   await b.waitFor("document.activeElement.id==='library-room-fitness'");
   check(await b.evaluate("document.activeElement.id==='library-room-fitness'"), 'Back to all rooms restores selected list entry');
@@ -193,8 +195,8 @@ try {
   await settleRooms();
   check(await b.evaluate("document.querySelectorAll('#room-list .room-entry').length===0 && !document.querySelector('#empty-rooms').hidden && !!document.querySelector('#see-all-rooms')"), 'no-room fixture keeps written fallback');
   await select('#review-home-fixture', 'image-failure');
-  await b.waitFor("document.querySelector('#room-fitness.image-missing') && !document.querySelector('#room-fitness img')");
-  check(await b.evaluate("document.querySelector('#room-fitness').textContent.includes('Fitness') && document.querySelector('#room-fitness').textContent.includes('Movement and routines')"), 'portrait failure preserves room text and target');
+  await b.waitFor("document.querySelector('#room-kitchen.image-missing') && getComputedStyle(document.querySelector('#room-kitchen img')).visibility==='hidden'");
+  check(await b.evaluate("document.querySelector('#room-kitchen').textContent.includes('Kitchen') && document.querySelector('#room-kitchen').textContent.includes('Recipes, lists and cooking plans')"), 'portrait failure preserves room text and target');
   await select('#review-home-fixture', 'continuation-hidden');
   check(await b.evaluate("document.querySelector('#continuation').hidden"), 'continuation-hidden fixture is reviewable');
 
@@ -247,9 +249,13 @@ try {
   const requestedPaths = b.network.filter(url => url.startsWith(b.base + '/'))
       .map(url => new URL(url).pathname);
   const allowedPaths = new Set(['/', '/styles.css', '/fixtures.js', '/intent.js',
+    '/room-fixtures.js', '/room-create.js', '/room-library.js', '/room-ui.js',
     '/model.js', '/scheduler.js', '/cloud.js', '/app.js', '/favicon.ico',
     '/assets/room-fitness-placeholder.svg', '/assets/room-trips-placeholder.svg',
     '/assets/room-reading-placeholder.svg', '/assets/missing-room-placeholder.svg']);
+  for (const room of roomFixtures.rooms)
+    for (const path of [room.mark, room.portrait, room.backdrop, room.decor,
+      room.motif, room.empty, ...room.collections.map(c => c.symbol)]) allowedPaths.add(path);
   check(!requestedPaths.some(path => path.startsWith('/api/')), 'default Home makes no API request');
   check(requestedPaths.every(path => allowedPaths.has(path)), 'Home requests only allowlisted static fixtures');
   check(b.network.every(url => url === 'about:blank' || url.startsWith(b.base + '/')), 'only loopback runtime requests');

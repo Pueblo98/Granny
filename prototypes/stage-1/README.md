@@ -2,7 +2,7 @@
 title: "Run the Stage 1 browser design prototype"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [prototype, design]
 related:
   - ../../docs/02-design/browser-prototype.md
@@ -11,7 +11,7 @@ related:
 
 # Stage 1 browser design prototype
 
-A dependency-free browser frontend for the selected Explicit Scroll Row Home and Granny's five scripted MVP workflows, with a separate opt-in connected local demo-draft mode. This is **not the Android application, production agent, full Rooms library, room interior, or T-103 runtime**. `Granny` remains a codename/placeholder marker. Scripted external actions/results are fictional fixtures; the connected backend can create real local demo drafts for fictional contacts, never send messages. Never enter personal data.
+A dependency-free browser frontend for the selected Explicit Scroll Row Home, six fictional Context Rooms and Granny's five scripted MVP workflows, with a separate opt-in connected local demo-draft mode. This is **not the Android application, production agent, persistent room system or T-103 runtime**. `Granny` remains a codename/placeholder marker. Scripted external actions/results are fictional fixtures; the connected backend can create real local demo drafts for fictional contacts, never send messages. Never enter personal data.
 
 Current connected runtime: [versioned local backend/MCP contract](../../docs/04-architecture/conversation-runtime-contract.md). Scripted remains default; local demo uses a stub model with actual MCP/store operations. Explicit live synthetic consent is available only when the backend enables it; the one live proposal check failed, so model reliability is not established.
 
@@ -25,13 +25,14 @@ node prototypes/stage-1/serve.mjs
 
 Open **http://127.0.0.1:4173** on the same computer. Keep the terminal running; Ctrl+C stops it. An optional second argument selects another port if 4173 is occupied. There is no install/build step, account, cloud service or paid design tool.
 
-The server binds only 127.0.0.1 and serves an exact allowlist of runtime scripts/styles, three original fictional workflow illustrations and three plain local room-placeholder SVGs. Test files and repository files are excluded. This is a local preview server, not a backend. Do not bind to 0.0.0.0, deploy publicly or add uploads/analytics.
+The server binds only 127.0.0.1 and serves an exact allowlist of runtime scripts/styles and local assets, including 84 unchanged selected room PNGs. Test files, source manifests and repository files are excluded. This is a local preview server, not a backend. Do not bind to 0.0.0.0, deploy publicly or add uploads/analytics.
 
 ## Review
 
-- Start on Home: review the Round writing surface, optional Kitchen continuation, and open Fitness/Trips/Reading row. When the rendered row overflows, written Previous/Next controls move it; when everything fits they disappear. **See all rooms** provides a direct vertical fallback.
+- Start on Home: review the Round writing surface, optional Kitchen continuation, and open six-room row. When the rendered row overflows, written Previous/Next controls move it; when everything fits they disappear. **See all rooms** provides a direct vertical fallback.
 - Type a goal or open **Talk (simulated)** without choosing a Room. Supported requests need no category selection. Talk never uses a microphone or speech API.
-- Open Kitchen, a room or See all rooms to inspect the clearly labelled fictional placeholders and return-focus behavior. No room interior, search, creation, personal history or persistence is implemented in this checkpoint.
+- Open Kitchen, Fitness, Trips, Garden, Reading or Projects. Each overview has four labelled symbols and an explicit route to all eight collections. Select a collection, search, open a fictional item, then **Ask Granny about this**. Review the prefilled question and Send. **View source** reopens the item; **Stop using this source** excludes it from later replies while earlier answers remain labelled as history. Returning Home clears current-room priority.
+- Rooms provides **Search all**, **All items**, **Unfiled** and a quiet **Create a room** route. The five-step wizard creates only on its final explicit action. New rooms remain in tab memory; Reset everything or reload removes them. There is no inferred creation, account, real history, real document, archive/delete or production storage.
 - Try “Tell David I’ll call after dinner.” Resolve the person/channel, edit the exact preview, then choose **Open this draft**. Default outcome is a fictional **unsent** draft.
 - Try “Show me the photos Sophie sent yesterday.”, “What am I looking at?”, “Play some Nina Simone.” and “Make this easier to read.” Results and controls appear in the same conversation. Screen help asks for a supplied fictional screen; no actual screen is observed.
 - Demonstration progression is automatic, normally 650 ms per stage. These are scripted timings, not measured model/Android latency. Stop, edits, reset and task replacement invalidate pending callbacks.
@@ -39,6 +40,45 @@ The server binds only 127.0.0.1 and serves an exact allowlist of runtime scripts
 - Open **http://127.0.0.1:4173/?review=1** for separate reviewer controls. Participant mode never inserts these controls into its DOM/focus order. Reviewer choices expose continuation hidden, no/one/all-fit/overflow/image-failure Home fixtures plus workflow outcomes, timing/expiry and enlarged text; hypothetical sends are explicitly simulations.
 
 Start with the [review script and coverage/gaps](../../docs/02-design/browser-prototype.md). Harbour Blue and the Round/Explicit Scroll Row composition are the selected browser checkpoint, not final brand acceptance or a public name. Reviewed local Bricolage Grotesque and DM Sans files are not present, so the implementation uses a documented system-sans fallback and does not claim exact type fidelity.
+
+## Context Rooms implementation and artwork
+
+See the [six-room screenshot review](../../docs/02-design/mockups/2026-09-20-context-rooms-frontend/README.md)
+for all 48 labels, the five-frame mapping and visual limitations.
+
+The five Kitchen vertical-slice frames map to the retained Home; reusable room
+overview; collection browser; item detail; and source-aware fictional
+conversation in [room-ui.js](room-ui.js). The shared Round composer, safety
+model, Stop and five workflows are retained. Only unsupported local requests
+use room fixture replies; recognized requests still use the existing model.
+No room data is sent to the optional connected backend. Rooms are disabled
+while connected mode is active; return to scripted mode through Menu first.
+
+Selected packs: Kitchen **K01 / K-M01**, Fitness **F01 / F-M01**, Trips **T01 /
+T-M01**, Garden **G01 / G-M04**, Reading **R01 / R-M07**, Projects **P01 / P-M01**.
+[Room fixtures](room-fixtures.js) contain the 48 dossier-defined collections,
+small fictional items and scripted source-aware example answers.
+[Asset manifest](assets/context-rooms/asset-manifest.json) maps every runtime
+copy to its unchanged primary design source path, SHA-256 and dimensions.
+Sources were read from `docs/02-design/mockups/context-rooms/iteration-1/` in
+the dirty primary checkout; that design work remains separately owned and
+unmodified. Runtime copies preserve PNG alpha. No art was regenerated.
+
+Portraits have mixed aspect ratios and opaque Linen-like margins, unlike the
+transparent objects in the Home reference. Runtime uses contain sizing,
+unboxed targets and reserved image slots. Backdrops are cropped/dimmed only
+within a protected edge zone; transparent decor remains separate. Motifs are
+single faint margin crops, not assumed seamless tiles. Custom rooms reuse a
+clearly labelled placeholder mark, not newly generated art.
+
+At narrow widths and large text, decoration is reduced, collection controls
+stack, detail columns become one sequence and the composer flows with the
+document. Reviewer-only **Room artwork → Artwork disabled** removes decoration
+without removing labels or controls. CSS target sizes are at least 56px, with
+64px primary/Stop intent; this does not prove Android dp sizes, TalkBack,
+switch access, physical usability or older-adult comprehension. All remain
+unrun. The selected palette is retained rather than claiming all internal
+contrast targets are met.
 
 ## Connected local demo (separate opt-in)
 
@@ -72,6 +112,8 @@ node prototypes/stage-1/scheduler.test.mjs
 node prototypes/stage-1/cloud.test.mjs
 node prototypes/stage-1/serve.test.mjs
 node prototypes/stage-1/home-browser-check.mjs
+node prototypes/stage-1/rooms-browser-check.mjs
+node prototypes/stage-1/rooms-review.mjs
 node prototypes/stage-1/browser-check.mjs
 node prototypes/stage-1/runtime-browser-check.mjs
 python3 scripts/validate-docs.py
@@ -97,7 +139,12 @@ Observed combined review endpoint: **http://127.0.0.1:4181/**, served from /tmp/
 |---|---|
 | [index.html](index.html) | Accessible app/reviewer shell, restrictive content policy |
 | [styles.css](styles.css) | Responsive Harbour Blue Home, conversation, large-text and focus treatment |
-| [fixtures.js](fixtures.js) | Fictional Home/room placeholders, contacts, photo provenance, supplied screens and media metadata |
+| [fixtures.js](fixtures.js) | Fictional contacts, photo provenance, supplied screens and media metadata |
+| [room-fixtures.js](room-fixtures.js) | Six room packs, 48 collection labels and fictional local item/source data |
+| [room-ui.js](room-ui.js) | One reusable overview, collection, detail and source-aware conversation system |
+| [room-library.js](room-library.js) | Direct room entry, global local search, All items and Unfiled |
+| [room-create.js](room-create.js) | Bounded explicit five-step local creation wizard |
+| [rooms-browser-check.mjs](rooms-browser-check.mjs) | Six-room routes, symbols, source exclusion, creation, focus, reflow and no-egress checks |
 | [intent.js](intent.js) | Modest documented rule-based request/slot interpretation; no general AI |
 | [model.js](model.js) | In-memory conversation/task transitions, approval versions, local preferences |
 | [scheduler.js](scheduler.js) | Cancellable bounded demonstration delays and preview expiry |
