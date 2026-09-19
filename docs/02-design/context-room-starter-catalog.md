@@ -1,5 +1,5 @@
 ---
-title: "Context Room starter visual catalog — Kitchen and Fitness"
+title: "Context Room starter visual catalog"
 status: proposed
 owner: Simon
 last_updated: 2026-09-19
@@ -8,85 +8,83 @@ related:
   - context-room-visual-system.md
   - context-room-asset-production.md
   - context-rooms.md
-  - brand-and-visual-identity.md
+  - context-room-catalog/kitchen.md
+  - context-room-catalog/fitness.md
+  - context-room-catalog/trips.md
+  - context-room-catalog/garden.md
+  - context-room-catalog/reading.md
+  - context-room-catalog/projects.md
 ---
 
 # Context Room starter visual catalog
 
-This catalog provides eight coherent choices for each starter room type. Each
-row is one complete preset pack and also one choice within every required asset
-family: outside portrait, inside background, decor cluster, surface motif and
-empty-state art. The names are working labels shown with the preview, not
-public brand names.
+This is the index for six fully described starter room archetypes. The rooms
+are examples the person may create, not a required default set. Every dossier
+contains eight room-mark ideas, eight complete atmosphere packs, eight direct
+content symbols, specific generation guidance and room-specific mistakes to
+avoid.
 
-The first chooser recommends one pack and lets the person change it. It should
-not expose 40 independent asset controls. Whole packs keep the visual system
-coherent while still giving the assistant 8 Kitchen and 8 Fitness options.
+| Room dossier | User job | Example contents | Neutral first pack |
+|---|---|---|---|
+| [Kitchen](context-room-catalog/kitchen.md) | Keep cooking material close and resume practical food preparation | Recipes, grocery lists, meal notes, appliance notes | K01 Morning Pantry |
+| [Fitness / Movement](context-room-catalog/fitness.md) | Resume chosen movement without body judgment or fake health scoring | Routines, walking plans, class notes, equipment notes | F01 Morning Stretch |
+| [Trips](context-room-catalog/trips.md) | Plan, pack and find travel material without turning the room into a booking app | Packing lists, reservations, destination notes, saved places | T01 Light Packing |
+| [Garden](context-room-catalog/garden.md) | Keep seasonal garden work, observations and supplies understandable | Plant notes, watering plans, photographs, seed lists | G01 Morning Allotment |
+| [Reading](context-room-catalog/reading.md) | Find, resume and discuss books or saved reading | Books, articles, reading lists, notes, book-club material | R01 Window Seat |
+| [Projects / Hobbies](context-room-catalog/projects.md) | Gather material for a chosen project without assuming one kind of hobby | Plans, reference images, notes, parts lists, drafts | P01 Open Worktable |
 
-## Kitchen — eight proposed packs
+## What a complete room identity contains
 
-| ID / look | Outside `room_portrait` | Inside `interior_backdrop` | `decor_cluster` | `surface_motif` | `empty_state_illustration` | Mood / selection tags |
-|---|---|---|---|---|---|---|
-| K01 **Morning Pantry** | Open pantry threshold with one sunlit shelf and broad simple shapes | Bright warm-neutral kitchen, clear counter, soft morning window light and quiet center | Herb pot, wooden spoon jar and folded cloth | Very faint woven-linen grain | Recipe notebook beside an empty bowl | bright, familiar, quiet, everyday |
-| K02 **Plum Tile** | Rounded doorway with a restrained plum tile band | Off-white kitchen with one plum backsplash strip and uncluttered worktop | Copper kettle, small herb jar and two stacked bowls | Large low-contrast half-tile repeat | Blank recipe card holder with bowl and spoon | warm, expressive, tidy, plum |
-| K03 **Garden Window** | Window-and-sill vignette with leafy herbs, no garden scene needed for recognition | Airy kitchen with garden light, pale surfaces and edge foliage kept outside the reading field | Basil, rosemary and a ceramic water jug | Sparse leaf-outline repeat | Seedling herb, recipe book and simple plate | fresh, natural, daylight, soft-green |
-| K04 **Blue Porcelain** | Shelved blue-and-white plate silhouette inside a simple arch | Quiet cream kitchen with a muted blue porcelain accent wall at the edge | Blue bowl, white jug and folded napkin | Broad hand-painted stripe, low contrast | One open cookbook with a blue bowl | crisp, traditional, calm, blue |
-| K05 **Warm Wood** | Simple timber doorway and floating shelf, no rustic clutter | Light wood cabinets, matte cream wall and generous open counter | Chopping board, bread basket and neutral crock | Subtle wood grain with low directional contrast | Board, covered bowl and blank note card | grounded, warm, tactile, natural |
-| K06 **Baking Table** | Rounded baking-table vignette with mixing bowl silhouette | Soft neutral bake space with one broad table and empty upper field | Mixing bowl, whisk and flour jar without labels | Oversized dot-and-line baking motif | Empty cake stand, bowl and folded recipe sheet | cheerful, practical, soft, creative |
-| K07 **Quiet Modern** | Clean geometric doorway with one pendant-light shape | Minimal warm-white kitchen, matte surfaces, no glossy showroom reflections | Carafe, single planter and shallow tray | Nearly invisible soft-grid texture | Empty tray with one recipe card | simple, modern, spacious, low-detail |
-| K08 **Evening Supper** | Warm doorway glow with table edge and one pendant silhouette | Calm early-evening kitchen with warm edge lighting and a bright protected content area | Teapot, two place settings and small vase | Slow curved-line motif suggesting rising steam | Covered dish and blank menu card | cozy, evening, social, amber |
+Each dossier uses the same seven-part vocabulary:
 
-### Kitchen guardrails
+1. **Room mark** — a simple doorplate-like emblem always paired with the room
+   name. It is not a separate app logo or assistant identity.
+2. **Room portrait** — the scene or threshold shown outside the room.
+3. **Interior backdrop** — the low-detail atmosphere behind the stable UI.
+4. **Decor cluster** — removable objects near an edge or corner.
+5. **Surface motif** — a faint pattern used only in empty margins.
+6. **Empty-state illustration** — what appears before content is added.
+7. **Collection symbols** — a small room-specific icon set for direct browsing;
+   every symbol retains a written label.
 
-- Do not make the room feminine, servant-like, old-fashioned by default or
-  tied to a particular household role.
-- Avoid brand packaging, appliance logos, legible labels, flames, knives as
-  focal objects, dirty dishes or unsafe clutter.
-- Food may appear only as generic supporting still life. No dietary or health
-  claims, alcohol emphasis or assumed cultural cuisine.
-- The room must still read as Kitchen with the decor cluster hidden.
+The assistant recommends one reviewed pack during room creation. The person can
+accept it, choose **Change look**, select a different room mark, or use the
+plain room. The initial UI should present whole packs rather than exposing all
+seven layers as separate configuration controls.
 
-## Fitness — eight proposed packs
+## Scale of the idea catalog
 
-| ID / look | Outside `room_portrait` | Inside `interior_backdrop` | `decor_cluster` | `surface_motif` | `empty_state_illustration` | Mood / selection tags |
-|---|---|---|---|---|---|---|
-| F01 **Morning Stretch** | Open studio threshold with rolled mat and broad sunrise shape | Bright quiet movement room with clear floor and soft morning light | Rolled mat, cushion and water bottle without branding | Wide calm arcs with very low contrast | Unrolled mat with folded towel | gentle, bright, flexible, beginner-friendly |
-| F02 **Calm Strength** | Bench silhouette with two simple weights and a wide doorway | Warm-neutral strength space with clear floor, stable bench and no mirrors behind content | Two light dumbbells, resistance band and towel | Large balanced blocks, not performance stripes | Bench, band and paired weights at rest | capable, grounded, strong, uncluttered |
-| F03 **Walking Day** | Hall threshold opening toward a simple path-and-sky vignette | Indoor preparation space with daylight and a broad landscape edge, not a navigable map | Walking shoes, light jacket and bottle | Sparse path-line motif | Shoes beside a blank route card | outdoors, steady, everyday, open |
-| F04 **Garden Movement** | Trellis-like threshold with broad leaves and open center | Sheltered garden-room feeling with flat floor and foliage limited to the edges | Stretch band, planter and small stool | Broad leaf-shadow shapes | Band and cushion beside one plant | fresh, restorative, natural, soft-green |
-| F05 **Dance & Rhythm** | Curved doorway with abstract musical pulse marks | Warm open floor with one speaker-like shape but no controls or club lighting | Small speaker, scarf and water bottle | Slow repeating wave motif | Folded scarf with simple music-note-free rhythm shapes | lively, expressive, social, warm |
-| F06 **Pool Lane** | Rounded blue threshold with one broad lane-line cue | Dry preparation room overlooking calm water; no slippery-floor implication under controls | Towel, goggles and water bottle | Wide ripple bands with restrained contrast | Folded towel and goggles | cool, clear, rhythmic, aquatic |
-| F07 **Cycling Corner** | Simple wheel arc framed by a broad doorway | Quiet indoor cycling space with one stationary bicycle at the far edge and protected reading field | Helmet, towel and bottle, all unbranded | Large spoke-arc geometry | Helmet and folded route sheet | active, modern, focused, energetic |
-| F08 **Recovery & Mobility** | Soft arch with cushion and stretch-band silhouette | Calm mobility space with stable chair, clear floor and warm diffuse light | Firm chair, cushion and resistance band | Broad nested curves with low contrast | Chair, cushion and band ready for use | supportive, slow, comfortable, steady |
+- 6 room archetypes.
+- 8 room marks per archetype: 48 mark concepts.
+- 8 environment packs per archetype: 48 complete visual directions.
+- 8 collection symbols per archetype: 48 symbol concepts.
+- A selected complete pack requires six raster/vector masters plus the shared
+  room-specific symbol kit.
 
-### Fitness guardrails
+These are generation ideas, not 336 approved production assets. The
+[production brief](context-room-asset-production.md) stages contact sheets and
+one neutral UI-ready pack per room before expanding the remaining variants.
 
-- No scales, calorie counts, body measurements, transformation imagery,
-  trophies, streaks or idealized bodies.
-- Avoid hospital physiotherapy rooms, surveillance mirrors, locker rooms and
-  intimidating commercial-gym density.
-- A chair, mat or light weight is an available object, not an assumption about
-  disability, frailty or skill.
-- Do not place fake timers, heart rates, step totals or progress graphs in the
-  art. Real data belongs to semantic UI components.
-- The room must still read as Fitness or Movement with the decor hidden and
-  with its written room label present.
+## Shared rules
 
-## Recommended default proposals
+- The written room name and purpose remain the primary identity.
+- Marks use one bold silhouette and one internal idea; no tiny scene, letters,
+  emoji, house floor plan or fake app badge.
+- Backgrounds leave a protected quiet field for the conversation and content.
+- Decorative layers may disappear at large text, narrow width, high contrast
+  or low-bandwidth mode without changing navigation.
+- Artwork contains no live text, counts, status, notifications, personal data,
+  commercial logos or controls.
+- Harbour Blue belongs to the stable product shell. Room art may introduce a
+  restrained nonsemantic atmosphere, but it cannot recolor Send, focus, Stop,
+  confirmation or other semantic controls.
+- Room imagery never creates a Kitchen Granny, Fitness Granny or other
+  specialist personality. It is one assistant everywhere.
 
-For the first prototype, use **K01 Morning Pantry** and **F01 Morning Stretch**
-as neutral recommendation candidates because they are bright, low-detail and
-easy to simplify. This is a production starting point, not Simon's final visual
-selection or a claim that intended users prefer them.
+## Later candidates
 
-The assistant may rank packs by explicit request words such as “bright,”
-“simple,” “traditional,” “garden,” “evening” or “more energetic.” With no
-visual request, it selects the neutral candidate. It must not infer a look from
-age, diagnosis, gender, name, stored photos or private room contents.
-
-## Later room types
-
-Trips, Projects, Family, Music, Garden and Reading are reasonable future
-catalog candidates. Health, Finances, Faith and shared-family rooms require
-additional privacy, representation and terminology review before visual asset
-work. Adding a catalog does not create a default room or admit its data type.
+Music, Family and Friends, Home, Photography and Study are possible later
+archetypes. Health, Finances, Faith, legal matters and shared-family rooms need
+additional privacy, representation and terminology review before a visual
+catalog is generated. A catalog entry never admits a data class or creates a
+default room.

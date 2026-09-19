@@ -22,9 +22,10 @@ before entry and atmospheric after entry. It gives image-generation and UI
 sessions one bounded asset model instead of asking them to invent a new room
 from scratch.
 
-The starter set covers **Kitchen** and **Fitness** with eight proposed visual
-packs for each. These are examples and catalog entries, not default rooms every
-person must have. The functional T-119 fixture may still use Trips for its
+The starter set covers **Kitchen, Fitness, Trips, Garden, Reading and Projects**
+with eight room marks and eight proposed visual packs for each. These are
+examples and catalog entries, not default rooms every person must have. The
+functional T-119 fixture continues to use Kitchen and Trips for its first
 cross-room provenance case.
 
 ## Design read
@@ -62,27 +63,32 @@ the model unnecessary visual authority.
 
 ## Asset families
 
-Every complete pack has five required masters. Text, buttons and live content
-are rendered by the UI and must never be baked into these images.
+Every complete pack has six required visual masters plus a room-specific shared
+collection-symbol kit. Text, buttons and live content are rendered by the UI
+and must never be baked into these images.
 
 | Asset role | Where it appears | Master specification | Composition rule |
 |---|---|---|---|
-| `room_portrait` | The representation seen outside the room in the Rooms library and creation review | 1600×1200, 4:3, WebP or PNG; supply 4:3 and square focal metadata | One clear threshold, facade or symbolic room vignette; readable at small size; no written label inside the art |
+| `room_mark` | Doorplate emblem beside the written room name in Home, library, creation and current-room identity | 1024×1024 SVG preferred plus transparent PNG review export; test one-color and reversed | One bold silhouette and one internal idea; always paired with text; never a separate app logo or assistant identity |
+| `room_portrait` | The representation seen outside the room in Home's selected CMP-012 row, the Rooms library and creation review | 1600×1200, 4:3, WebP or PNG; supply 4:3 and square focal metadata | One clear threshold, facade or symbolic room vignette; readable at small size; no written label inside the art |
 | `interior_backdrop` | Behind the room shell after entry | 2560×1600, 16:10, WebP; author with 4:3 and portrait-safe crops | Low-detail central reading field, detail near edges, no important object under the composer, Stop or content column |
 | `decor_cluster` | Optional edge or corner reinforcement inside the room | 1400×1000 transparent PNG/WebP | One restrained group of two to four objects; removable without losing room identity |
 | `surface_motif` | Very low-contrast texture, divider or empty margin | 1024×1024 seamless tile or scalable SVG when genuinely vector-safe | No high-frequency noise, faux depth behind text or pattern needed to understand the room |
 | `empty_state_illustration` | Empty room before content is added | 1200×900 transparent PNG/WebP | Inviting room-related still life; no fake files, metrics, notifications or instructions |
+| `collection_symbols` | Direct-browse categories inside one room | Per-room set of eight 96×96 SVG masters plus 192px PNG review exports | Consistent stroke/fill family; always paired with written labels; organizes content without implying action, status or permission |
 
 Derived thumbnails and responsive crops come from these masters; they are not
-independent designs. Optional motion, sound, weather, people, personal photos
-and generated portraits are outside the starter set. If later admitted,
-motion must be nonessential and disabled by reduced-motion settings.
+independent designs. The symbol kit is shared across a room archetype rather
+than regenerated for every atmosphere pack. Optional motion, sound, weather,
+people, personal photos and generated portraits are outside the starter set.
+If later admitted, motion must be nonessential and disabled by reduced-motion
+settings.
 
 ## What may vary and what stays fixed
 
 | May vary by pack | Fixed across every room |
 |---|---|
-| Room portrait, backdrop, removable decor, subtle motif and nonsemantic room accent | Granny identity and voice |
+| Room mark, portrait, backdrop, removable decor, subtle motif and nonsemantic room accent | Granny identity and voice |
 | Warmth, material cues, time-of-day suggestion and amount of decorative detail within reviewed bounds | Round conversation composer, Talk, Type, Menu, Stop and confirmation placement/meaning |
 | A room-specific empty illustration | Live text, room name, purpose, item names, counts, source cues and status |
 | Decorative cropping for compact, medium and expanded layouts | Action, danger, success, warning and focus semantics |
@@ -127,11 +133,13 @@ Each reviewed entry needs machine-readable metadata equivalent to:
   "mood": ["bright", "familiar", "quiet"],
   "asset_status": "proposed",
   "assets": {
+    "room_mark": "...",
     "room_portrait": "...",
     "interior_backdrop": "...",
     "decor_cluster": "...",
     "surface_motif": "...",
-    "empty_state_illustration": "..."
+    "empty_state_illustration": "...",
+    "collection_symbols": ["...", "..."]
   },
   "safe_crops": ["4:3", "1:1", "portrait"],
   "decorative_alt": "",
@@ -146,7 +154,7 @@ as the semantic label. Asset metadata is not model-authored at render time.
 
 ## Accessibility and dignity gates
 
-- Room and pack names remain readable when images fail or are hidden.
+- Room and pack names remain readable when marks/images fail or are hidden.
 - Portraits differ in silhouette and object grouping as well as color.
 - Backgrounds preserve an opaque or sufficiently protected reading surface;
   contrast is measured on the actual rendered composition.
@@ -165,12 +173,12 @@ as the semantic label. Asset metadata is not model-authored at render time.
 
 ## Review states
 
-Asset review must cover: library portrait, creation recommendation, selected
+Asset review must cover: selected Home-row portrait, library portrait, creation recommendation, selected
 and unselected preview, room entry, populated room, empty room, image failure,
 offline/model unavailable, 200% text, combined 300% scaling, high contrast,
 reduced motion, keyboard focus and decorative-image removal. A beautiful
 contact sheet is not enough to admit a pack into the UI catalog.
 
-The [starter catalog](context-room-starter-catalog.md) defines the first 16
-packs. The [production brief](context-room-asset-production.md) defines how to
+The [starter catalog](context-room-starter-catalog.md) defines six room
+dossiers and the first 48 packs. The [production brief](context-room-asset-production.md) defines how to
 generate, name, inspect and hand them to the prototype.

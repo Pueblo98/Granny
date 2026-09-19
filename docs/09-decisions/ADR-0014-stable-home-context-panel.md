@@ -1,17 +1,25 @@
 ---
 title: "ADR-0014 — Stable conversation Home with one context panel"
-status: accepted
+status: deprecated
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [adr, design, accessibility, home]
 related:
   - README.md
+  - ADR-0016-explicit-home-room-row.md
   - ../01-product/prd.md
   - ../02-design/product-design-spec.md
   - ../10-execution/brainstorming-alignment.md
 ---
 
 # ADR-0014 — Stable conversation Home with one context panel
+
+> [!warning] Superseded for Context Rooms Home composition
+> [ADR-0016](ADR-0016-explicit-home-room-row.md), accepted by Simon on
+> 2026-09-19, preserves the stable conversation anchors but replaces this
+> record's zero-or-one-region limit with a compact continuation plus an
+> explicit open room portrait row. This record remains as decision history and
+> as the simpler five-workflow MVP baseline.
 
 ## Context and authority
 
@@ -43,3 +51,9 @@ This decision accepts the current Home structure, not its final visual styling, 
 ## Decision authority and history
 
 **Accepted by Simon on 2026-09-17.** After discussing the tradeoff for older adults, Simon wrote: “I like your idea with the one context panel for now so let's go with the recommended and resolve the conflict.”
+
+**Deprecated on 2026-09-19 by [ADR-0016](ADR-0016-explicit-home-room-row.md)**
+for future Context Rooms Home composition after Simon selected Explicit Scroll
+Row. Stable Talk/Type/Menu/Stop positions, optional continuation semantics and
+privacy/focus constraints remain inherited; the zero-or-one-region and
+no-carousel limits do not.

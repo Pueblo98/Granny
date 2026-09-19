@@ -13,7 +13,7 @@ related:
 
 # Design-system contract
 
-**Design review update, Simon, 2026-09-17:** the browser UI has too many buttons and a generic AI appearance; its visual composition is not accepted. Use the [Claude Code system-construction brief](claude-code-design-system-handoff.md) to build brand guidance, tokens and reusable specimens before /design-sync. The separate [Claude Design app brief](claude-design-handoff.md) consumes that system under [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md)'s accepted bounded composition and [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md)'s stable Home rule. The catalog below does not prescribe displaying all controls at once. Historical Figma authoring remains quota-blocked; it is not a dependency of the Claude Code route.
+**Design review update:** the earlier browser UI had too many buttons and a generic AI appearance. The component catalog remains bounded by [ADR-0013](../09-decisions/ADR-0013-bounded-interface-composition.md); future Context Rooms Home work now starts from [ADR-0016](../09-decisions/ADR-0016-explicit-home-room-row.md)'s selected Explicit Scroll Row and the Harbour Blue system. The catalog below does not prescribe displaying all controls at once. Historical Figma authoring remains quota-blocked; it is not a dependency of the current local design route.
 
 Current composition is implemented as native HTML controls in the [browser prototype](browser-prototype.md). Reusable rendering helpers map to CMP contracts; semantic CSS custom properties are provisional grayscale review values, not accepted production tokens. Figma instances are no longer the required current handoff. Prototype discrepancies remain named gaps, not new component requirements.
 
@@ -39,7 +39,7 @@ All components have stable IDs and share enabled/focused/pressed/selected/loadin
 
 The model may emit only a typed composition plan referencing registered CMP IDs, versioned variants, typed content slots and allowed action references. The app renderer validates the whole plan, supplies native semantics and owns focus/source order. Unknown IDs/variants/slots, invalid nesting, duplicate consequential controls, hidden required fields, unsafe order or content beyond component bounds reject the plan and use a known fallback.
 
-Composition can choose which relevant components appear and how nonconsequential content flows within the current task. It cannot create executable code/event handlers, rename a registered consequence, bypass preview/confirmation, remove Stop, move stable Talk/Type/Menu anchors or convert observed content into a control. At large text/narrow width, renderer-owned reflow overrides model ordering when required for reading/focus. Temporary task components may appear automatically. Home permits only CMP-010 as its single optional persistent context region.
+Composition can choose which relevant components appear and how nonconsequential content flows within the current task. It cannot create executable code/event handlers, rename a registered consequence, bypass preview/confirmation, remove Stop, move stable Talk/Type/Menu anchors or convert observed content into a control. At large text/narrow width, renderer-owned reflow overrides model ordering when required for reading/focus. Temporary task components may appear automatically. The MVP Home permits CMP-010 as its optional context region; the selected Context Rooms Home may combine one compact CMP-010 continuation with one renderer-owned CMP-012 row under ADR-0016.
 
 <a id="cmp-001"></a>
 ### CMP-001 — Stop / Cancel / Take over
@@ -93,18 +93,45 @@ Rows show descriptive labels and state; cards group related content without maki
 <a id="cmp-010"></a>
 ### CMP-010 — Home context panel
 
-One large semantic region for a single verified, timely or explicitly kept item. Allowed content is a short descriptive heading, state/source when needed, one clear next action, and secondary Keep here or Hide controls; Reset Home stays in Menu. The panel contains a registered content component, never model-defined actions, and never stacks multiple cards, paginates or auto-rotates. Sensitive details stay hidden until explicit open. Absent is a complete normal state. Expiry or invalid evidence removes the panel without moving the fixed Talk/Type/Menu anchors or stealing focus. Renderer-owned reflow places the whole panel after the input region at large text/narrow widths.
+One semantic region for a single verified, timely or explicitly kept item. Allowed content is a short descriptive heading, state/source when needed, one clear next action, and secondary Keep here or Hide controls; Reset Home stays in Menu. The panel contains a registered content component, never model-defined actions, and never stacks multiple continuation cards, paginates or auto-rotates. In the ADR-0016 Home it uses the compact continuation variant and may coexist with CMP-012. Sensitive details stay hidden until explicit open. Absent is a complete normal state. Expiry or invalid evidence removes the panel without moving the fixed Talk/Type/Menu anchors or stealing focus. Renderer-owned reflow places the whole panel after the input region at large text/narrow widths.
 
 <a id="cmp-011"></a>
 ### CMP-011 — Context Room identity, entry and source cue
 
 One semantic family with three registered variants: **room entry** (written name, short purpose, optional reviewed `room_portrait` and concise state), **current-room identity** (persistent name/purpose plus plain scope cue) and **cross-room source cue** (source room, reason used and View source/Exclude source). The whole room-entry row is one target; icon/illustration never replaces its label. [Room atmosphere assets](context-room-visual-system.md) are decorative and cannot alter control meaning, action colors, focus order, target sizes or the Round composer. Source cues appear whenever another room materially affects meaning, privacy or correction. At large text all variants become a vertical reading sequence and preserve the room name, scope and source actions while decor may disappear. EVAL-008/012.
 
+<a id="cmp-012"></a>
+### CMP-012 — Home explicit room portrait row
+
+Selected under [ADR-0016](../09-decisions/ADR-0016-explicit-home-room-row.md)
+from the [Explicit Scroll Row reference](mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md).
+The renderer owns one open, borderless row of CMP-011 room-entry targets on the
+Home Linen canvas. Each target combines a removable portrait, live written name
+and short purpose as one broad semantic target; it never becomes a card grid,
+boxed shelf, app icon or separate-agent identity.
+
+When Rooms overflow, expose written **Previous** and **Next** controls with
+accurate enabled/disabled state, announce the newly foregrounded range once and
+preserve focus. Swipe, drag, wheel and a partial-next crop are optional
+reinforcement, not the only route. Always expose written **See all rooms** to
+SCR-016. When every Room fits, do not imply false overflow: suppress unavailable
+movement or show its disabled state and reason accessibly. No auto-rotation,
+timed movement, dot-only pagination or artwork behind live text.
+
+At large text or narrow width, reflow to a vertical sequence/direct-list
+treatment before shrinking labels or requiring essential horizontal scroll.
+Image failure removes decor only. Empty, one-room, all-fit, overflow, loading,
+error and offline states retain Home conversation access. Focus uses the
+separated `#4930A1` ring without clipping; the component cannot move the stable
+Round composer or active Stop. EVAL-008/012.
+
 ## Transient surfaces
 
 Toast/snackbar: optional nonessential acknowledgement only, never sole failure/confirmation/undo control. In-page banner: persistent dependency/permission status. Dialog: short local destructive preview with focus containment and Back escape; long previews use full page. Sheet: nonconsequential bounded choice only if large text/focus work; otherwise full page. No stacked dialogs or hidden essential actions behind overlays.
 
 ## Identity-to-token workflow
+
+**Current visual selection, Simon, 2026-09-19:** [Harbour Blue final board and written transcription](mockups/2026-09-19-style-boards/final-harbour-blue/README.md) now supply the selected visual reference for the rounded composer, controls and context panel. This supersedes the earlier open palette shortlist, not the component behavior above. Exact production measurements, font files and accessibility evidence remain separate.
 
 Brand foundation → four territories → Simon review + accessibility/user evidence → selected proposed direction → validated semantic values and logo assets → browser components/prototypes (Figma optional) → accepted Git-backed tokens and Android.
 

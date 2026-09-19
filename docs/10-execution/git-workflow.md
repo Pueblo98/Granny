@@ -2,7 +2,7 @@
 title: "Git worktrees, publication and review workflow"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-19
 tags: [execution, git, workflow]
 related:
   - ../../AGENTS.md
@@ -16,6 +16,12 @@ related:
 This is the canonical owner for task isolation, commits, GitHub publication and integration. Product readiness and external product actions remain governed by their existing gates.
 
 ## Authority and scope
+
+### Mockup-only local work — 2026-09-19
+
+Simon explicitly directed: “from now on since we will only be working on mockups only work in main / the root folder no need for a bunch of github stuff”. For this mockup-only phase, edit the primary checkout directly on main, keep assets and gallery notes in the existing docs vault, and preserve unrelated user edits. New worktrees, task branches, commits, pushes and GitHub PR/merge steps are not required for these local iterations. Finish with actual saved artifact paths and validation, not a fabricated publication claim. This overrides the isolation/publication defaults below only for mockups and their necessary filing/handoff documentation; executable app work and other change classes retain their usual authority boundaries.
+
+### General change workflow
 
 **Confirmed direction, Simon, 2026-09-14:** push completed work to the existing GitHub repository and make future change sessions use worktrees and push their work. This is standing authorization for ordinary, non-force task-branch pushes to **Pueblo98/Granny**, unless a later instruction says local-only or narrows that authority.
 

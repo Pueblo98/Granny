@@ -29,8 +29,9 @@ ADRs record consequential scope, distribution, authority/data, platform and inte
 | [ADR-0011](ADR-0011-explicit-activation-and-access.md) | proposed | Tap-to-talk/full touch, stronger measurable access baseline |
 | [ADR-0012](ADR-0012-automatic-memory-and-adaptive-communication.md) | accepted | App V1 automatically saves allowed important facts; setup preference anchors bounded silent communication adaptation |
 | [ADR-0013](ADR-0013-bounded-interface-composition.md) | accepted | Agent composes registered semantic components through typed plans; arbitrary generated controls remain unavailable |
-| [ADR-0014](ADR-0014-stable-home-context-panel.md) | accepted | Home keeps stable conversation controls and may show zero or one optional registered context panel |
+| [ADR-0014](ADR-0014-stable-home-context-panel.md) | deprecated | Historical stable-anchor/one-panel Home, superseded for Context Rooms composition by ADR-0016 |
 | [ADR-0015](ADR-0015-context-rooms.md) | accepted | Context Rooms are the active M2 design direction and proposed App V1 organization layer around one assistant; direct access and scoped cross-room context remain required |
+| [ADR-0016](ADR-0016-explicit-home-room-row.md) | accepted | Future Context Rooms Home uses the selected Explicit Scroll Row with open portraits, written Previous/Next and direct Rooms access |
 
 Accepted history remains unchanged. Routine copy/file layout does not need an ADR. Do not recycle IDs. New proposal links affected requirements, architecture, policy, eval and gate; specify options, recommendation, reversibility, evidence and approver. Acceptance records date/authority and unresolved evidence conditions without pretending tests passed. If an accepted decision changes, add superseding record and mark prior record deprecated with forward link; preserve historical reasoning.
 

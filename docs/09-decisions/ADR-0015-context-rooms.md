@@ -6,6 +6,7 @@ last_updated: 2026-09-19
 tags: [adr, design, context, memory, privacy]
 related:
   - README.md
+  - ADR-0016-explicit-home-room-row.md
   - ../02-design/context-rooms.md
   - ../02-design/product-design-spec.md
   - ../03-agent/memory-system.md
@@ -17,8 +18,9 @@ related:
 
 ## Context and authority
 
-ADR-0014 keeps Home as a stable conversation surface with zero or one context
-panel. Simon proposed a complementary spatial organization model: recognizable
+ADR-0014 originally kept Home as a stable conversation surface with zero or
+one context panel. Simon proposed a complementary spatial organization model:
+recognizable
 rooms such as Kitchen or Fitness can collect related material, make it easier
 to resume domain work and give the assistant a useful local context. He then
 clarified that quick tasks remain available through global chat, the assistant
@@ -73,11 +75,15 @@ and commits it.
 [Context Rooms](../02-design/context-rooms.md) owns the detailed interaction,
 context, lifecycle and staged prototype brief. The memory contract distinguishes
 room membership from personal memory; privacy policy owns cross-room retrieval
-and deletion. ADR-0013 continues to forbid arbitrary generated controls, and
-ADR-0014 continues to limit Home to zero or one optional context panel.
+and deletion. ADR-0013 continues to forbid arbitrary generated controls. The
+later accepted [ADR-0016](ADR-0016-explicit-home-room-row.md) supersedes
+ADR-0014's Home limit for Context Rooms: future Home may combine one compact
+continuation with one explicit open portrait row while retaining stable
+conversation anchors.
 
-Exact navigation, default rooms, terminology and real-data implementation
-remain open. In a follow-up direction on 2026-09-19, Simon asked the entire
+The Home entry/composition is now selected in ADR-0016; default rooms,
+terminology and real-data implementation remain open. In a follow-up direction
+on 2026-09-19, Simon asked the entire
 notebook and future plan to adopt Context Rooms. They are now the active M2
 fictional-data design direction with proposed App V1 placement, stable IDs and
 T-119 as the bounded next slice. They do not enter the five-workflow MVP or
