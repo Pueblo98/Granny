@@ -1,6 +1,6 @@
 ---
 title: "T-101 C2 local safety verification packet"
-status: draft
+status: review
 owner: Simon
 last_updated: 2026-09-20
 tags: [execution, android, synthetic, verification]
@@ -20,14 +20,14 @@ full EVAL-002/006 completion. Simon performs or supervises every tablet action.
 
 ## Reviewed artifact
 
-Source commit and built APK hashes will be filled after source review and host
-build. Do not authorize installation against an incomplete identity table.
+These exact source and APK identities passed host build and independent source
+review. They have not been installed or run on the tablet.
 
 | Artifact | Exact source / SHA-256 |
 |---|---|
-| Source | Pending final reviewed source commit |
-| Fixture APK | Pending host build |
-| Observer APK | Pending host build |
+| Source | `e83ee9578b6ca16b5711efc941ff1921add80d11` |
+| Fixture APK | `044a693583f95ad6bb98e2038019546871cea36b39b570ae07217bc03a070678` |
+| Observer APK | `f5f902dd7359cfe282f51af7b3fdce4b928ef0fb4cfadcbfa596822c0cc74b13` |
 
 Use the APKs under the root sprint worktree's
 `experiments/c2-screen-explanation/{fixture,observer}/build/outputs/apk/debug/`.
@@ -43,7 +43,7 @@ values; this sprint has not queried the tablet. Stop if configuration differs.
 Fixture manifest declares no permissions. Observer declares only
 `FOREGROUND_SERVICE` and `FOREGROUND_SERVICE_MEDIA_PROJECTION`. Neither declares
 internet, microphone, storage, contacts, accounts or accessibility access. Both
-disable backup and cleartext traffic. Final binary inspection remains pending.
+disable backup and cleartext traffic. Binary permission inspection and APK signature verification pass.
 No provider, analytics, WebView or network SDK is added. Manifest/source evidence
 is static: it does not independently prove runtime memory erasure or egress.
 
@@ -154,7 +154,7 @@ text, personal content, screenshots or transport identifiers.
 
 ## Exact authorization text
 
-Once the artifact table is final, the requested authorization is:
+For exactly the reviewed identities above, the requested authorization is:
 
 > I authorize this packet's exact source commit and both listed APK SHA-256
 > values on TBL-01 only. I will perform or supervise setup, the seven numbered
