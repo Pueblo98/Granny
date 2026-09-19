@@ -46,7 +46,8 @@ public final class ConversationSessionCoordinator {
 
     private final TextScaleController textScale;
     private final Runnable cancelCleanup;
-    private final TextScaleStore outcomeObserver;
+    private final CapabilityPorts.CapabilityAdapter adapter;
+    private final CapabilityPorts.OutcomeObserver outcomeObserver;
     private final InterpreterPort interpreter;
     private String place = "Home";
     private ReturnAnchor anchor = new ReturnAnchor("Home", "composer", 0);
@@ -62,13 +63,16 @@ public final class ConversationSessionCoordinator {
     private boolean restoreRequested;
 
     public ConversationSessionCoordinator(TextScaleController textScale) { this(textScale, null, null, () -> {}); }
-    public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore outcomeObserver) { this(textScale, outcomeObserver, null, () -> {}); }
+    public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore outcomeObserver) { this(textScale, new CapabilityPorts.C5Adapter(textScale, outcomeObserver), new CapabilityPorts.StoreObserver(outcomeObserver), null, () -> {}); }
     public ConversationSessionCoordinator(TextScaleController textScale, Runnable cancelCleanup) { this(textScale, null, null, cancelCleanup); }
     public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore outcomeObserver, Runnable cancelCleanup) {
         this(textScale, outcomeObserver, null, cancelCleanup);
     }
     public ConversationSessionCoordinator(TextScaleController textScale, TextScaleStore observer, InterpreterPort interpreter, Runnable cleanup) {
-        this.textScale = textScale; this.outcomeObserver = observer; this.interpreter = interpreter; this.cancelCleanup = cleanup;
+        this(textScale, new CapabilityPorts.C5Adapter(textScale, observer), new CapabilityPorts.StoreObserver(observer), interpreter, cleanup);
+    }
+    public ConversationSessionCoordinator(TextScaleController textScale, CapabilityPorts.CapabilityAdapter adapter, CapabilityPorts.OutcomeObserver observer, InterpreterPort interpreter, Runnable cleanup) {
+        this.textScale = textScale; this.adapter = adapter; this.outcomeObserver = observer; this.interpreter = interpreter; this.cancelCleanup = cleanup;
     }
 
     public Snapshot snapshot() { return new Snapshot(place, anchor, surface, generation, revision, provenance,
@@ -111,23 +115,25 @@ public final class ConversationSessionCoordinator {
     public Result chooseTextScale(TextScale scale) {
         if (surface == Surface.IDLE) { generation++; revision++; provenance = Provenance.TYPED; }
         if (surface != Surface.CLARIFICATION && surface != Surface.TRANSCRIPT && surface != Surface.IDLE) return Result.DENIED;
-        if (scale == null || !textScale.preview(scale)) { surface = Surface.UNKNOWN; message = "Text size is unavailable. It was not changed."; return Result.DENIED; }
+        CapabilityPorts.Prepared prepared = scale == null ? null : adapter.prepare(scale, false);
+        if (prepared == null) { surface = Surface.UNKNOWN; message = "Text size is unavailable. It was not changed."; return Result.DENIED; }
         consequence = "Make Granny's text " + scale.label().toLowerCase() + ".";
-        restoreRequested = false;
+        restoreRequested = false; pendingPrepared = prepared;
         surface = Surface.PREVIEW; message = "This changes only Granny's text size. Review and approve to continue."; return Result.ACCEPTED;
     }
     public Result chooseRestore() {
-        if (!textScale.snapshot().restoreAvailable) return Result.DENIED;
+        CapabilityPorts.Prepared prepared = adapter.prepare(null, true); if (prepared == null) return Result.DENIED;
         if (surface != Surface.CLARIFICATION && surface != Surface.TRANSCRIPT && surface != Surface.IDLE) return Result.DENIED;
         consequence = "Restore Granny's previous text size.";
-        restoreRequested = true;
+        restoreRequested = true; pendingPrepared = prepared;
         surface = Surface.PREVIEW;
         message = "This restores Granny's previous text size. Review and approve to continue.";
         return Result.ACCEPTED;
     }
     public Result approve() {
         if (surface != Surface.PREVIEW || consequence.isEmpty()) return Result.DENIED;
-        permit = new Permit(generation, revision, consequence, editable, expectedStored()); surface = Surface.ACTIVE;
+        if (pendingPrepared == null) return Result.DENIED;
+        permit = new Permit(generation, revision, consequence, editable, pendingPrepared); surface = Surface.ACTIVE;
         message = "Ready to change Granny's text size. Stop is available."; return Result.QUEUED;
     }
     public Result approve(long displayedGeneration, long displayedRevision, String displayedConsequence) {
@@ -140,24 +146,25 @@ public final class ConversationSessionCoordinator {
         if (queuedGeneration != generation) return Result.STALE;
         if (permit == null || !permit.matches(generation, revision, consequence)) return Result.STALE;
         Permit admitted = permit; permit = null;
-        TextScaleController.OperationResult applied = restoreRequested ? textScale.restore() : textScale.apply();
         if (generation != admitted.generation) return Result.STALE;
-        if ((applied == TextScaleController.OperationResult.APPLIED || applied == TextScaleController.OperationResult.ALREADY_APPLIED || applied == TextScaleController.OperationResult.RESTORED)
-                && independentlyObserved(admitted.expected)) {
+        boolean applied = adapter.dispatch(admitted.prepared);
+        if (generation != admitted.generation) return Result.STALE;
+        if (generation != admitted.generation) return Result.STALE;
+        if (applied && independentlyObserved(admitted.prepared.target)) {
             surface = Surface.KNOWN; message = textScale.snapshot().message; return Result.KNOWN;
         }
         surface = Surface.UNKNOWN; message = textScale.snapshot().message; return Result.UNKNOWN;
     }
     public Result stop() {
         boolean inflight = surface == Surface.ACTIVE;
-        invalidate(); textScale.cancelPreview(); cancelCleanup.run(); surface = inflight ? Surface.UNKNOWN : Surface.IDLE;
+        invalidate(); adapter.cancel(); cancelCleanup.run(); surface = inflight ? Surface.UNKNOWN : Surface.IDLE;
         message = inflight ? "Stopped. The text-size result is unknown." : "Stopped. You can talk again or type."; return Result.ACCEPTED;
     }
-    public Result stop(Runnable cleanup) { boolean inflight = surface == Surface.ACTIVE; invalidate(); textScale.cancelPreview(); if (cleanup != null) cleanup.run(); cancelCleanup.run(); surface = inflight ? Surface.UNKNOWN : Surface.IDLE; message = inflight ? "Stopped. The text-size result is unknown." : "Stopped. You can talk again or type."; return Result.ACCEPTED; }
+    public Result stop(Runnable cleanup) { boolean inflight = surface == Surface.ACTIVE; invalidate(); adapter.cancel(); if (cleanup != null) cleanup.run(); cancelCleanup.run(); surface = inflight ? Surface.UNKNOWN : Surface.IDLE; message = inflight ? "Stopped. The text-size result is unknown." : "Stopped. You can talk again or type."; return Result.ACCEPTED; }
     /** Drops active private text and authority on background/recreation; it never resumes work. */
     public Result clearForBackground(Runnable cleanup) {
         boolean inflight = surface == Surface.ACTIVE;
-        invalidate(); textScale.cancelPreview();
+        invalidate(); adapter.cancel();
         if (cleanup != null) cleanup.run(); cancelCleanup.run();
         editable = ""; partial = ""; provenance = Provenance.TYPED;
         surface = inflight ? Surface.UNKNOWN : Surface.IDLE;
@@ -165,21 +172,23 @@ public final class ConversationSessionCoordinator {
         return Result.ACCEPTED;
     }
     public Result dismissResult() { if (surface != Surface.KNOWN && surface != Surface.UNKNOWN) return Result.DENIED; surface = Surface.IDLE; consequence = ""; message = "Type or talk to make a request."; return Result.ACCEPTED; }
+    /** Restores only an honest content-free uncertainty after Activity/process recreation. */
+    public void restoreUnknownOutcome() { invalidate(); editable=""; partial=""; surface=Surface.UNKNOWN; message="The earlier text-size result is unknown."; }
+    /** A read-only check never dispatches or upgrades an earlier unknown outcome. */
+    public Result reviewStatus() { TextScaleStore.ReadResult read=outcomeObserver.observe(); message=read.status==TextScaleStore.ReadResult.Status.PRESENT ? "Current stored text size is " + read.value.current.label() + ". The earlier result remains unknown." : "The text-size result remains unknown."; surface=Surface.UNKNOWN; return Result.UNKNOWN; }
     public boolean isEnabled(Capability capability) { return capability == Capability.TEXT_SCALE; }
     public CapabilityMetadata metadata(Capability capability) { return capability == Capability.TEXT_SCALE ? new CapabilityMetadata(capability, true, "private preference readback") : new CapabilityMetadata(capability, false, "unadmitted"); }
-    private void invalidate() { generation++; permit = null; partial = ""; consequence = ""; restoreRequested = false; textScale.cancelPreview(); }
-    private TextScaleStore.StoredValue expectedStored() { return outcomeObserver != null && outcomeObserver.read().status == TextScaleStore.ReadResult.Status.PRESENT ? outcomeObserver.read().value : null; }
+    private CapabilityPorts.Prepared pendingPrepared;
+    private void invalidate() { generation++; permit = null; pendingPrepared=null; partial = ""; consequence = ""; restoreRequested = false; adapter.cancel(); }
     private boolean independentlyObserved(TextScaleStore.StoredValue before) {
         if (outcomeObserver == null) return false;
-        TextScaleStore.ReadResult observed = outcomeObserver.read();
-        return observed.status == TextScaleStore.ReadResult.Status.PRESENT
-                && observed.value.current == textScale.snapshot().current
-                && (before == null ? observed.value.version == 1 : observed.value.version == before.version + 1);
+        TextScaleStore.ReadResult observed = outcomeObserver.observe();
+        return observed.status == TextScaleStore.ReadResult.Status.PRESENT && observed.value.equals(before);
     }
     private static boolean isTextSizeRequest(String value) { return value.trim().equalsIgnoreCase("make text larger") || value.trim().equalsIgnoreCase("make granny text larger") || value.trim().equalsIgnoreCase("make this bigger"); }
     private static final class Permit {
-        final long generation, revision; final String consequence, exactRequest; final TextScaleStore.StoredValue expected;
-        Permit(long generation, long revision, String consequence, String exactRequest, TextScaleStore.StoredValue expected) { this.generation = generation; this.revision = revision; this.consequence = consequence; this.exactRequest=exactRequest; this.expected=expected; }
+        final long generation, revision; final String consequence, exactRequest; final CapabilityPorts.Prepared prepared;
+        Permit(long generation, long revision, String consequence, String exactRequest, CapabilityPorts.Prepared prepared) { this.generation = generation; this.revision = revision; this.consequence = consequence; this.exactRequest=exactRequest; this.prepared=prepared; }
         boolean matches(long generation, long revision, String consequence) { return this.generation == generation && this.revision == revision && this.consequence.equals(consequence); }
     }
     private static boolean safeEquals(String left, String right) { return left == null ? right == null : left.equals(right); }
