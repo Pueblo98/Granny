@@ -13,9 +13,9 @@ related:
 
 # T-101 C2 synthetic screen-explanation scaffold
 
-Status: **a source-only generation-recovery repair addresses the latest stale
-result defect and passes host checks; it is unrun on Android and C2 remains not
-admitted**.
+Status: **the ordered generation regression now passes on device; a source-only
+Stop-control state repair passes host checks but is unrun on Android, and C2
+remains not admitted**.
 
 This lab-only Android 16 scaffold prepares the smallest C2 experiment from the
 [T-101 route inventory](../../docs/08-research/2026-09-19-t101-route-inventory.md#c2--one-session-screen-explanation).
@@ -32,7 +32,7 @@ reproducible protected-content failure and an aborted Stop attempt.
   samples a bounded marker band into in-memory color summaries, requires a
   temporally separated same-scene marker transition, maps only known fixture
   colors to fixed explanations, and releases the projection.
-- Thirty-three passing pure local JUnit tests for consent/Stop generation,
+- Thirty-six passing pure local JUnit tests for consent/Stop generation,
   capture geometry, bounded marker sampling, marker classification, freshness
   gating, lifecycle-trial allowlisting, process-local result recovery and
   private-canary suppression.
@@ -305,6 +305,28 @@ while no capture is active. Record that as an unresolved state-clarity defect,
 not a lifecycle failure. Both packages were uninstalled and debugging was
 restored. C2 remains disabled/not admitted because selected-package identity,
 independent retention/egress evidence and distribution viability remain open.
+
+## Post-run Stop-control state repair — 2026-09-19
+
+The human's report that the red button always read `Stop capture` is addressed
+in source. The control is now enabled and labeled `Stop capture` only while the
+content-free process ledger reports an active capture. Idle, requesting and
+completed phases disable it and label it `No capture to stop`; after a valid
+press it becomes disabled as `Stop requested` until the service result arrives.
+Result broadcasts render status and control state from the same ledger snapshot.
+
+A clean offline build completed 92 tasks. Nine JUnit suites pass **36/36**
+cases with no failure or skip; lint reports zero errors and the same eight
+lab-only warnings. Permissions remain unchanged. Both APKs verify with APK
+Signature Scheme v2 and the same ordinary debug certificate:
+
+| APK | Stop-state-repair SHA-256 | Device state |
+|---|---|---|
+| `fixture-debug.apk` | `044a693583f95ad6bb98e2038019546871cea36b39b570ae07217bc03a070678` | Unrun for this source revision |
+| `observer-debug.apk` | `241ec620e8b4f72361f7c011d723a0fb36e441a605477c13cab8ccf510286618` | Unrun |
+
+This presentation repair has not run on Android and does not alter C2's
+admission limits. Any device verification requires fresh exact authority.
 
 ## Install and teardown procedure used
 

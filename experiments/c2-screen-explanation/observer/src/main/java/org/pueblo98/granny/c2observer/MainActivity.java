@@ -28,19 +28,18 @@ public final class MainActivity extends Activity {
     private long activeGeneration;
     private String activeTrial = CaptureTrialPlan.STANDARD;
     private TextView status;
+    private Button stop;
 
     private final BroadcastReceiver resultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String resultStatus = intent.getStringExtra(CaptureService.EXTRA_STATUS);
-            String message = intent.getStringExtra(CaptureService.EXTRA_MESSAGE);
-            String uncertainty = intent.getStringExtra(CaptureService.EXTRA_UNCERTAINTY);
             if ("UNAVAILABLE".equals(resultStatus)) {
                 stateMachine.unavailable();
             } else {
                 stateMachine.stopped();
             }
-            showStatus(resultStatus + "\n" + message + "\n\nLimit: " + uncertainty);
+            renderLatestSessionState();
         }
     };
 
@@ -104,9 +103,10 @@ public final class MainActivity extends Activity {
         stopBeforeResultParams.topMargin = dp(16);
         root.addView(stopBeforeResult, stopBeforeResultParams);
 
-        Button stop = button("Stop capture");
+        stop = button("No capture to stop");
         stop.setTextColor(Color.WHITE);
         stop.setBackgroundColor(Color.rgb(142, 35, 45));
+        stop.setEnabled(false);
         stop.setOnClickListener(ignored -> stopCapture());
         LinearLayout.LayoutParams stopParams = matchWrap();
         stopParams.topMargin = dp(16);
@@ -191,6 +191,7 @@ public final class MainActivity extends Activity {
             showStatus(trialInstruction(trial));
         }
         LabSessionLedger.process().requesting(activeGeneration, status.getText().toString());
+        updateStopControl(LabSessionLedger.Phase.REQUESTING);
         startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_CAPTURE);
     }
 
@@ -247,6 +248,7 @@ public final class MainActivity extends Activity {
     private void stopCapture() {
         stateMachine.requestStop();
         CaptureService.requestStop(this);
+        applyStopControl(StopControlState.stopping());
         showStatus("Stop requested. No new frame may be admitted.");
     }
 
@@ -272,6 +274,20 @@ public final class MainActivity extends Activity {
             activeGeneration = Math.max(activeGeneration, snapshot.generation);
             showStatus(snapshot.displayText);
         }
+        updateStopControl(snapshot.phase);
+    }
+
+    private void updateStopControl(LabSessionLedger.Phase phase) {
+        if (stop == null) {
+            return;
+        }
+        StopControlState controlState = StopControlState.from(phase);
+        applyStopControl(controlState);
+    }
+
+    private void applyStopControl(StopControlState controlState) {
+        stop.setEnabled(controlState.enabled);
+        stop.setText(controlState.label);
     }
 
     private Button button(String value) {
