@@ -268,9 +268,9 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 
 **Purpose/links:** J-009 / PRD-FR-022.
 **Entry/exit:** Home/Menu or tested secondary Rooms route → open room, create room or return Home.
-**Hierarchy/content:** Rooms heading, explanation that rooms bring related things closer, calm list of CMP-011 entries, Unfiled/All items access and optional Create room.
+**Hierarchy/content:** Rooms heading, explanation that rooms bring related things closer, calm list of CMP-011 entries, Unfiled/All items access and optional Create room. Each entry may use a reviewed [room portrait](context-room-visual-system.md) while the written name/purpose remains primary.
 **Controls:** Whole labeled room row; Search all; Create room; Archive/manage; Home/Back. No permanent Home grid, carousel or decorative floor-plan navigation.
-**Data/sensitivity:** Room name/purpose, safe visual preset, coarse item/recent state; private item detail hidden until explicit open.
+**Data/sensitivity:** Room name/purpose, known local visual `pack_id`, coarse item/recent state; private item detail hidden until explicit open. The assistant may recommend a reviewed pack but does not generate room art at runtime.
 **Loading/empty/disabled/error/interrupted:** Empty explains that Home still handles everything; offline direct local browse works; failed resolver does not remove the library; uncertain suggested placement remains Unfiled.
 **Focus, semantics, keyboard/switch and speech:** Heading → explanatory text → Search/Create → room rows → Unfiled/Home; visual motif decorative when the written name/purpose conveys identity.
 **Orientation/window:** At large text use one vertical list; no masonry, map or horizontal shelf. Row content wraps before actions split.
@@ -282,12 +282,12 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 
 **Purpose/links:** J-009 / PRD-FR-022.
 **Entry/exit:** SCR-016 room row or one Home continuation → browse/ask/manage → Rooms or global Home.
-**Hierarchy/content:** Persistent written room name/purpose and scope cue, bounded atmosphere, room-relevant recent/list/search content, CMP-011 source cues and the same Round conversation composer.
+**Hierarchy/content:** Persistent written room name/purpose and scope cue, bounded atmosphere from the reviewed [five-role asset system](context-room-visual-system.md), room-relevant recent/list/search content, CMP-011 source cues and the same Round conversation composer.
 **Controls:** Talk, Type, Menu and active Stop in shared positions; Browse/search; View source/Exclude source; Add/move; Manage/archive/delete room; Rooms/Home.
 **Data/sensitivity:** Minimum admitted current-room references plus only relevant cross-room/global context with source, revision and sensitivity metadata.
 **Loading/empty/disabled/error/interrupted:** Empty room still supports conversation; model/network failure leaves direct browse/search; cross-room denial returns no guessed content; deletion conflict opens exact inventory and separate underlying-data flow.
 **Focus, semantics, keyboard/switch and speech:** Room heading and scope cue announce once; source cue precedes source actions; returning from item/source restores position; core controls match Home semantics/order.
-**Orientation/window:** Atmosphere never consumes the reading column or reduces contrast; large text collapses supporting metadata before written identity or controls.
+**Orientation/window:** Atmosphere never consumes the reading column or reduces contrast; large text collapses supporting metadata and may remove decor before written identity or controls. Missing assets use the neutral room without moving UI.
 **Telemetry/eval:** No item names/content in audit; EVAL-008/012 and T-119 fixture.
 **Design review question:** Does the person understand current scope, one assistant and escape to global Home without coaching?
 

@@ -43,6 +43,18 @@ and real persistence remain evidence-gated. This plan authorizes documentation
 and a separately requested fictional-data prototype; it does not authorize
 personal-data storage or silently expand the MVP.
 
+### Room visual asset preparation
+
+The next visual-production input is now specified without generating assets or
+expanding T-119. The [visual system](../02-design/context-room-visual-system.md)
+defines five removable asset roles and a low-effort reviewed-pack chooser. The
+[starter catalog](../02-design/context-room-starter-catalog.md) supplies eight
+Kitchen and eight Fitness directions. The [production brief](../02-design/context-room-asset-production.md)
+defines contact sheets, the first four UI-ready packs, dimensions, file/manifest
+rules, prompts, safe zones, fallbacks and review checks. Granny may recommend a
+known local pack; arbitrary runtime generation and inferred personal taste are
+excluded. No image asset or frontend implementation is claimed by these notes.
+
 ## Claude Design frontend handoff — 2026-09-18
 
 The proposed Stage 1 design system is built and synced in Claude Design project

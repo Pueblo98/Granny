@@ -6,6 +6,9 @@ last_updated: 2026-09-19
 tags: [design, interaction, context, organization, rooms]
 related:
   - conversation-first-plan.md
+  - context-room-visual-system.md
+  - context-room-starter-catalog.md
+  - context-room-asset-production.md
   - product-design-spec.md
   - design-system.md
   - accessibility.md
@@ -256,6 +259,13 @@ non-tappable instructional text or during an explicit creation flow. It should
 not assume everyone needs a Fitness, Family or Health room. Room creation must
 work through touch and text as well as voice.
 
+The proposed [visual asset system](context-room-visual-system.md) makes this
+low-effort: Granny recommends one reviewed local pack, while **Change look**
+and **Use plain room** remain available. The model never generates arbitrary
+room art at runtime or turns a room name into a personality inference. The
+[starter catalog](context-room-starter-catalog.md) supplies eight Kitchen and
+eight Fitness directions; these examples do not create default rooms.
+
 ## Archiving and deleting a room
 
 The agent may orchestrate room deletion, but it does not own deletion
@@ -311,6 +321,12 @@ The default preset must be calm and accessible. Custom atmosphere uses bounded
 presets rather than arbitrary images behind text. Reduced motion, contrast,
 large type and speech settings remain global unless the person explicitly asks
 for a safe room-specific presentation preference.
+
+Each reviewed pack uses five removable asset roles: outside room portrait,
+inside backdrop, decor cluster, subtle surface motif and empty-state
+illustration. UI text and controls are never baked into the art. The
+[generation and handoff brief](context-room-asset-production.md) owns asset
+sizes, safe zones, manifest metadata, fallbacks and review order.
 
 ## Accessibility and dignity requirements
 
@@ -407,7 +423,8 @@ preference alone does not admit persistence or cross-room access.
    something else after naming/language research?
 4. When should Granny use cross-room context silently, show a compact source
    receipt or ask first?
-5. Which visual properties may vary per room without harming recognition?
+5. Which Kitchen/Fitness packs advance after contact-sheet and in-UI review,
+   and may any compatible layers be changed independently later?
 6. Are some rooms locally private by default, and how is that explained without
    turning rooms into a misleading security boundary?
 7. Which release first admits persistent room membership and real documents?

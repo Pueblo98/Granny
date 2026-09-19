@@ -40,7 +40,7 @@ W3C's [Resize Text explanation](https://www.w3.org/WAI/WCAG22/Understanding/resi
 | A11Y-08 | Plain adult wording, one question at a time, visible chosen recipient/time/content, no forced recall | RES-03 teach-back: user explains effect and stop; note language/access profile and qualitative dignity feedback |
 | A11Y-09 | Speech rate and replay controls, private-content speech opt-out, no TalkBack/TTS competition | Audio-focus tests, Bluetooth route/disconnect, hearing/noisy-room study; text persists |
 | A11Y-10 | Preference changes predictable and reversible, do not infer cognitive status, no age caricatures | EVAL-007 persistence/restore, RES-06/09 identity testing and copy review |
-| A11Y-11 | A room is identifiable through a persistent written name/purpose and stable navigation; illustration, color, spatial memory and conversation are never the sole route | SCR-016/017 at 200%, grayscale/reduced motion, TalkBack/keyboard/switch and model-offline direct-findability review; EVAL-012 |
+| A11Y-11 | A room is identifiable through a persistent written name/purpose and stable navigation; [reviewed atmosphere assets](context-room-visual-system.md), color, spatial memory and conversation are never the sole route | SCR-016/017 at 200%, combined 300%, grayscale/reduced motion, decor removed, image failure, TalkBack/keyboard/switch and model-offline direct-findability review; EVAL-012 |
 
 A11Y IDs are implementation audit items derived from PRD-ACC IDs, not a second product requirement authority.
 

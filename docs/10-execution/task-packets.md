@@ -172,7 +172,7 @@ Read RES-01/03/06/09, EVAL-012, J-001/002/003/005/006/007; [research protocols](
 
 **Question:** Can one recognizable room narrow context and improve direct organization without crowding Home, fragmenting the assistant, surprising the person with cross-room data or trapping content behind conversation?
 
-**Read first:** PRD-FR-022; UC-026/J-009; SCR-003/016/017; CMP-011; CAP-15; [Context Rooms](../02-design/context-rooms.md); ADR-0014/0015; action/privacy policy; EVAL-008/012. Keep implementation in the browser/design medium unless a separate native task is authorized.
+**Read first:** PRD-FR-022; UC-026/J-009; SCR-003/016/017; CMP-011; CAP-15; [Context Rooms](../02-design/context-rooms.md); [visual asset system](../02-design/context-room-visual-system.md), [starter catalog](../02-design/context-room-starter-catalog.md) and [asset production brief](../02-design/context-room-asset-production.md); ADR-0014/0015; action/privacy policy; EVAL-008/012. Keep implementation in the browser/design medium unless a separate native task is authorized.
 
 **Deterministic fictional fixture:**
 
@@ -182,6 +182,12 @@ Read RES-01/03/06/09, EVAL-012, J-001/002/003/005/006/007; [research protocols](
 - sensitivity/source/revision metadata on every reference; no real documents or external URLs;
 - resolver variants: current-room match, relevant cross-room source, denied sensitive source, stale membership, offline/model unavailable and no result;
 - lifecycle variants: create/rename, add/move/remove with diff, receipt/Undo, archive/restore, delete room only, move then delete and separate underlying-data handoff.
+
+Visual prototype assets come from reviewed local pack IDs. Kitchen/Fitness
+catalog breadth is visual preparation, not an expansion of the deterministic
+Kitchen/Trips data fixture. The first implementation may use neutral placeholders
+until K01/F01 pass image and in-UI review; missing art must fall back without
+changing controls, context or room availability.
 
 **Required review cases:**
 
