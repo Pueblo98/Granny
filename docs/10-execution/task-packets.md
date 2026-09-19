@@ -2,7 +2,7 @@
 title: "First design and engineering task packets"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-18
 tags: [execution, handoff]
 related:
   - backlog.md
@@ -77,7 +77,7 @@ Then T-104/105/106 test admitted external workflows, T-107 local privacy, and T-
 
 **Outcome:** Demonstrate the local control contract against deterministic synthetic side effects before exposing real apps or data. PRD-SAF-001–005, FR-004/012/013/016, NFR-001/003/004, DST-004; UC-003/006/011/019/025; J-002/003; EVAL-006/008/009/010.
 
-**Fresh-session execution:** use the [complete T-103 backend sprint handoff](t103-backend-sprint-handoff.md) to implement units A–D and C01–C20 with the environment bootstrap, validation and publication boundaries already spelled out.
+**Implementation review:** the [pure offline core](../../prototypes/t103-authority-core/README.md) implements units A-D; its [evidence report](../../prototypes/t103-authority-core/EVIDENCE.md) records the current C01-C20 run, fixed schedules, privacy projection and limits. The [backend sprint handoff](t103-backend-sprint-handoff.md) remains the authorization/source record for that bounded implementation.
 
 **Canonical contracts:** [tool types](../03-agent/tool-contracts.md), [transaction protocol](../03-agent/execution-protocol.md), [control budgets](../03-agent/device-control.md), [action matrix](../05-safety-privacy/action-policy.md), [privacy](../05-safety-privacy/safety-and-privacy.md), [admission](../04-architecture/capability-admission.md). If a packet and those owners disagree, report the conflict and correct the owner; do not create a second implementation contract in this file.
 
@@ -106,7 +106,7 @@ The ledger knows whether the fake send actually occurred, regardless of whether 
 
 ### Required case matrix
 
-All cases below are **unrun**. P = proposed expected invariant, not observed pass.
+All cases below retain their proposed invariant as the review oracle. The deterministic fake-only suite has executed C01-C20; actual result and assertion counts are in the [evidence report](../../prototypes/t103-authority-core/EVIDENCE.md). This does not pass the broader canonical EVALs or device gates.
 
 | Case | Injected event/configuration | Required assertion | EVAL owner |
 |---|---|---|---|
