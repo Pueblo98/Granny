@@ -212,11 +212,18 @@ also merges remote-main design-only commit
 `f873f652e25425e48835ffcffe43be54d0a4a3b6`; its sole generated-snapshot conflict
 was regenerated from both records. No source conflict occurred.
 
-Publication/PR verification is pending the final documentation checks. Main
-integration requires Simon's explicit mixed-code authority. The primary checkout
+[PR #33](https://github.com/Pueblo98/Granny/pull/33) is open and mergeable.
+The publication checkpoint `d03f8dcd09dc09c841bd50b897cf0b296122e0d6` matched
+`git ls-remote` for the task branch on 2026-09-20; subsequent handoff-only commits
+are identified by this file's Git history and reverified at final delivery.
+Repository maintenance and security checks passed at that checkpoint; the
+runtime CI job was still pending at this record update. Main integration requires
+Simon's explicit mixed-code authority. The primary checkout
 remains untouched and unsynchronized with its dirty design work preserved.
-Voice's `feature/t120-native-voice` at inspected `51afeb0` has uncommitted
-`android/stage1/` work and was not integrated or built here. Before later combined
+Final read-only inspection found voice's `feature/t120-native-voice` advanced to
+`dc3d69a2371e568314f541b1e04d82feaa3fc0cf` (native on-device voice shell committed),
+with a peer-managed merge in progress and a cockpit-snapshot conflict. Root did
+not alter that worktree or integrate/build its code here. Before later combined
 integration, inspect its exact commit and rerun combined build/unit/lint,
 permissions/docs and relevant lifecycle/accessibility checks.
 
