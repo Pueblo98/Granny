@@ -90,6 +90,13 @@ Clean-worktree validation after that merge passed:
   while the suite completed `OK`.
 - `python3 scripts/check_handoff.py --base origin/main --head HEAD` — passed.
 - `git diff --check` — passed; the task worktree was clean.
+- Existing prototype baseline: `model.test.mjs` passed 67 tests,
+  `scheduler.test.mjs` passed 7, `cloud.test.mjs` passed 27 and
+  `serve.test.mjs` passed its loopback allowlist test. `browser-check.mjs`
+  passed 130 assertions with zero errors and only loopback requests;
+  `runtime-browser-check.mjs` passed 37 fixture assertions with zero errors.
+  Both browser checks used local Chrome 151 and temporary `/tmp` screenshots;
+  no implementation evidence or repository screenshots were added here.
 
 These checks do not establish browser, Android, accessibility-technology or
 human evidence. Prototype runtime behavior remains unchanged and will be
