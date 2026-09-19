@@ -21,6 +21,12 @@ related:
 
 ## Selected Home checkpoint
 
+The [content/art separation refinement](mockups/2026-09-20-room-content-separation/README.md)
+retains the large hero footprint while finishing its fade before collection
+symbols and restricting chat to a clean left grid column. Masks follow measured
+content boundaries on resize. Artwork cannot compete with browse labels or
+extend behind the chat reading column; narrow/large-text reflow stays single-column.
+
 Simon's subsequent [footprint refinement](mockups/2026-09-20-room-footprint-refinement/README.md)
 removes the hidden-continuation width cap: Other rooms starts at the ordinary
 page margin and sizes three complete entries within its new width. Hero art

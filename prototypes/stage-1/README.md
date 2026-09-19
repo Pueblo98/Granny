@@ -47,7 +47,7 @@ composition. Hiding Home continuation centers the remaining room region.
 The bubble body and pointer are one SVG contour, measured from the real form;
 the separated focus contour uses the same geometry. No overlay hides a seam.
 Run `node prototypes/stage-1/room-layout-browser-check.mjs` for the new
-132-assertion layout/continuation regression suite and reproducible screenshots.
+143-assertion layout/continuation regression suite and reproducible screenshots.
 See [repair evidence](../../docs/02-design/mockups/2026-09-20-room-layout-repair/README.md).
 
 Latest [footprint refinement](../../docs/02-design/mockups/2026-09-20-room-footprint-refinement/README.md)
@@ -57,6 +57,14 @@ chat portrait occupies 60% of the shell instead of 27%. Hide removes the
 remaining 64rem width cap and fits three complete entries across the available
 page width, with gap-aware sizing and a reset scroll position. Narrow/large-text
 layouts still use a direct vertical list.
+
+The subsequent [content/art separation pass](../../docs/02-design/mockups/2026-09-20-room-content-separation/README.md)
+keeps those image sizes but ends the overview fade at the measured collection
+symbol region. Room chat uses a 3:2 content/art grid; the art remains transparent
+through the actual reading-column edge. Resize observation updates these
+boundaries after reflow; no screenshot-specific nudges are used. Source actions
+wrap beneath source text, and narrow/large-text chat returns to one full-width
+column with artwork removed.
 
 Use the existing Node runtime (validated with Node 26.8.1):
 

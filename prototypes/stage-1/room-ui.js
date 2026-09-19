@@ -23,6 +23,19 @@
     const starter = window.GrannyRoomFixtures.rooms;
     let rooms = [...starter], route = '', serial = 0, wizard = null;
     const states = new Map();
+    function fitAtmosphere() {
+      const art = host.querySelector('.room-atmosphere');
+      if (!art || !art.getClientRects().length) return;
+      const bounds = art.getBoundingClientRect();
+      const symbols = host.querySelector('.overview-symbols');
+      const reading = host.querySelector('.room-conversation');
+      // Fade boundaries follow real content, independently of image scale.
+      if (symbols) art.style.setProperty('--room-browse-start',
+        Math.max(0, symbols.getBoundingClientRect().top - bounds.top) + 'px');
+      if (reading) art.style.setProperty('--room-reading-end',
+        Math.max(0, reading.getBoundingClientRect().right - bounds.left) + 'px');
+    }
+    new ResizeObserver(fitAtmosphere).observe(host);
     const current = () => rooms.find(room => route === 'room:' + room.id);
     const stateFor = room => {
       if (!states.has(room.id)) states.set(room.id, {view: 'overview', collection: '', item: '', query: '',
@@ -229,6 +242,7 @@
         }
       });
       else if (current()) renderRoom(current());
+      requestAnimationFrame(fitAtmosphere);
     }
     function releaseSource() { if (current()) stateFor(current()).source = null; }
     return {
