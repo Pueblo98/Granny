@@ -1,0 +1,92 @@
+{
+  "title": "Shared conversation state pack — iteration 1",
+  "date": "2026-09-20",
+  "visual_system": "Harbour Blue",
+  "fixture": "Tell David I’ll call after dinner.",
+  "selected_frame_count": 7,
+  "failed_asset_count": 0,
+  "rejected_retry_count": 0,
+  "prompt_log": "prompts.md",
+  "assets": [
+    {
+      "id": "shared-state-01-listening",
+      "role": "listening",
+      "contracts": ["SCR-004", "CMP-002"],
+      "path": "01-listening.png",
+      "width": 1586,
+      "height": 992,
+      "alpha": false,
+      "review_status": "selected-first-output"
+    },
+    {
+      "id": "shared-state-02-editable-transcript",
+      "role": "editable-transcript",
+      "contracts": ["SCR-004", "CMP-002", "CMP-007"],
+      "path": "02-editable-transcript.png",
+      "width": 1586,
+      "height": 992,
+      "alpha": false,
+      "review_status": "selected-first-output"
+    },
+    {
+      "id": "shared-state-03-which-david",
+      "role": "clarification",
+      "contracts": ["SCR-006", "CMP-005"],
+      "path": "03-which-david.png",
+      "width": 1586,
+      "height": 992,
+      "alpha": false,
+      "review_status": "selected-first-output"
+    },
+    {
+      "id": "shared-state-04-exact-draft-preview",
+      "role": "consequence-preview",
+      "contracts": ["SCR-007", "CMP-003"],
+      "path": "04-exact-draft-preview.png",
+      "width": 1585,
+      "height": 992,
+      "alpha": false,
+      "review_status": "selected-first-output"
+    },
+    {
+      "id": "shared-state-05-active-task-stop",
+      "role": "active-task",
+      "contracts": ["SCR-005", "CMP-001", "CMP-004"],
+      "path": "05-active-task-stop.png",
+      "width": 1586,
+      "height": 992,
+      "alpha": false,
+      "review_status": "selected-first-output"
+    },
+    {
+      "id": "shared-state-06-prepared-not-sent",
+      "role": "prepared-result",
+      "contracts": ["SCR-008", "CMP-006"],
+      "path": "06-prepared-not-sent.png",
+      "width": 1585,
+      "height": 992,
+      "alpha": false,
+      "review_status": "selected-first-output"
+    },
+    {
+      "id": "shared-state-07-unknown-outcome",
+      "role": "unknown-result",
+      "contracts": ["SCR-008", "CMP-006"],
+      "path": "07-unknown-outcome.png",
+      "width": 1585,
+      "height": 992,
+      "alpha": false,
+      "review_status": "selected-first-output"
+    },
+    {
+      "id": "shared-state-comparison",
+      "role": "review-sheet",
+      "contracts": [],
+      "path": "comparison.png",
+      "width": 1680,
+      "height": 2496,
+      "alpha": false,
+      "review_status": "derived-from-selected-frames"
+    }
+  ]
+}

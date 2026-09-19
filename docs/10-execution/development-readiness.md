@@ -2,7 +2,7 @@
 title: "Stage 1 development-readiness gates and handoff"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [execution]
 related:
   - current-milestone.md
@@ -13,6 +13,21 @@ related:
 ---
 
 # Development-readiness assessment
+
+## Native voice implementation decision — 2026-09-20
+
+Simon accepted [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md)
+and requested [T-120](backlog.md#t-120): a bounded own-app Android shell using
+only available on-device `SpeechRecognizer`, a complete typed fallback and
+conservative deterministic transcript cleanup. This resolves the initial
+activation/recognizer/model-cleanup choice and authorizes code plus host tests.
+It does not establish reference-tablet recognition quality, lifecycle safety,
+privacy isolation, accessibility, human preference or a production gate. The
+exact-device RES-06/EVAL matrix remains required after the host artifact is
+reviewable. The T-120 host artifact now has 16 passing pure contract tests, a
+passing debug assembly and lint run, an empty runtime dependency graph and an
+APK permission dump containing only `RECORD_AUDIO`. No Android device was
+attached, so this moves the task to review without changing any gate.
 
 ## Context Rooms planning update — 2026-09-19
 
@@ -42,7 +57,7 @@ The user-authorized T-102 initial browser design slice is **Ready with proposed 
 
 **Assessment date: 2026-09-14. Scope: Stage 1 stock-Android app only.** Primary-source desk research was performed on 2026-09-13; editing and final validation crossed midnight in Europe/Madrid.
 
-The canonical specification package is written and linked. It is **ready for bounded synthetic contract work and targeted evidence collection with proposed assumptions**, not ready for an MVP build, real-user autonomous pilot, public distribution or final branded production UI. No runtime/device/user eval has run. Simon accepted ADR-0009's five-experiment scope, control posture and two externally verified workflow minimum on 2026-09-14; architecture/data ADR-0010 and activation ADR-0011 remain proposed. Desk policy evidence rules out the general-assistant dynamic AccessibilityService Play route under the reviewed policy; other routes are conditional.
+The canonical specification package is written and linked. It is **ready for bounded synthetic contract work and targeted evidence collection with proposed assumptions**, not ready for an MVP build, real-user autonomous pilot, public distribution or final branded production UI. Simon accepted ADR-0009's five-experiment scope, control posture and two externally verified workflow minimum on 2026-09-14; architecture/data ADR-0010 remains proposed. ADR-0011's activation and initial native recognition route is accepted for T-120, while all device/acoustic/access evidence remains open. Desk policy evidence rules out the general-assistant dynamic AccessibilityService Play route under the reviewed policy; other routes are conditional.
 
 “Ready” describes an artifact/gate's specified scope, not global release authority. Status labels: Ready; Ready with proposed assumptions; Needs evidence; Needs Simon decision; Blocked; Not applicable to current stage. Gate criteria are prospective proposals until Simon adopts them. A completed specification does not turn unknown platform behavior into fact.
 
@@ -57,8 +72,8 @@ The canonical specification package is written and linked. It is **ready for bou
 | Brand/naming/visual directions | [Identity](../02-design/brand-and-visual-identity.md), [naming](../02-design/naming-exploration.md), [local boards](../02-design/identity-review.html) | Needs Simon decision; 81 candidates/30 live longlist/12 scored candidates/3 finalists/4 territories, screening not clearance |
 | Browser design/token handoff | [Browser](../02-design/browser-prototype.md), [tokens](../../design-tokens/README.md), [paused Figma](../02-design/figma.md) | Ready with proposed assumptions for initial design review; executable browser slice and checks exist; no final identity or native conformance |
 | Agent/control/tool contract | [Behavior](../03-agent/agent-behavior.md), [tools](../03-agent/tool-contracts.md), [control](../03-agent/device-control.md) | Ready with proposed assumptions for fake replay; device adapters need feasibility |
-| Android/system architecture | [System](../04-architecture/system-overview.md), [root map](../../ARCHITECTURE.md) | Ready with proposed assumptions; boundaries/flows specified, SDK/framework/provider unselected |
-| Platform/distribution feasibility | [Assessment](../08-research/android-stage-1-feasibility.md) and [T-101 route inventory](../08-research/2026-09-19-t101-route-inventory.md) | Needs evidence; current official-source matrices and a partial user-reported physical inventory exist, but no measured route/store approval |
+| Android/system architecture | [System](../04-architecture/system-overview.md), [root map](../../ARCHITECTURE.md) | Ready with proposed assumptions; T-120 selects the initial platform on-device recognizer behind a replaceable adapter, while UI framework/database/planner/provider and broader production topology remain unselected |
+| Platform/distribution feasibility | [Assessment](../08-research/android-stage-1-feasibility.md), [T-101 route inventory](../08-research/2026-09-19-t101-route-inventory.md) and [C2 device ledger](../08-research/2026-09-19-t101-c2-device-evidence.md) | Needs evidence; repaired C2 has bounded positive protected-scene, Stop, lock, resize and task-removal recovery observations, while an unrun host-checked repair addresses idle Stop state; selected-package/retention/egress oracles remain incomplete and no route/store approval exists |
 | Policy/privacy/threats/memory/helper | [Action matrix](../05-safety-privacy/action-policy.md), [data](../05-safety-privacy/safety-and-privacy.md), [threats](../05-safety-privacy/threat-model.md), [memory](../03-agent/memory-system.md) | Ready with proposed assumptions for synthetic design; real-data provider/market/security review missing |
 | Evals/metrics/failures/trace | [17 evals](../06-evals/canonical-tasks.md), [metrics](../06-evals/eval-strategy.md), [taxonomy](../06-evals/failure-taxonomy.md), [trace](../01-product/traceability.md) | Ready with proposed assumptions as specs; all runtime/human evals unrun |
 | Research program | [Research plan](../08-research/research-plan.md), [sources](../08-research/README.md) | Ready with proposed assumptions; recruitment/protocol approvals and actual evidence missing |
@@ -74,10 +89,10 @@ The canonical specification package is written and linked. It is **ready for bou
 |---|---|---|---|
 | GATE-01 Specification coherence | Link/frontmatter/ID/trace checks + cross-discipline editorial review; document editor verifies mechanics, Simon reviews product proposals | Ready with proposed assumptions; automated validation recorded below, stakeholder acceptance distinct | Bounded fake-interface tests, low-fi/design briefs and evidence planning; not production |
 | GATE-02 MVP scope decision | Simon explicitly accepts ADR-0009 or revised scope, five workflows and ≥2 external delegation bar | Ready — passed 2026-09-14: Simon explicitly accepted ADR-0009 after review; experiment scope only, not feasibility or blanket specification acceptance | Commit resources to admitted workflow experiments; not bypass GATE-03/04/06 or authorize MVP build/pilot |
-| GATE-03 Android control feasibility | Exact device/app matrix, API/semantic route, fresh targeting, Stop and independent postconditions; Android + safety review | Needs evidence; T-101 now has a partial manual `TBL-01` configuration, but API/window/speech/app/grant/network/build gaps, every app adapter, independent device postcondition and Stop/takeover trial remain unrun | Only demonstrated synthetic device/control capabilities; unsupported routes stay disabled |
+| GATE-03 Android control feasibility | Exact device/app matrix, API/semantic route, fresh targeting, Stop and independent postconditions; Android + safety review | Needs evidence; [C2 device runs](../08-research/2026-09-19-t101-c2-device-evidence.md) now show bounded protected-scene, Stop, lock, resize and task-removal result recovery, but selected-package identity remains unresolved; the Stop-state presentation repair is host-checked only | Only demonstrated synthetic device/control capabilities; unsupported routes stay disabled |
 | GATE-04 Distribution viability | Capability-by-route policy map, declarations/disclosures and appropriate authoritative review evidence; Simon + policy reviewer | Needs evidence; current route map retains API/integration candidate and lab separation, but manifests/disclosures/finite recipes and authoritative review are absent. General dynamic accessibility public route remains Blocked | Chosen candidate distribution build and narrowly approved pilot route; not guaranteed Play acceptance |
 | GATE-05 Interaction-design, naming and brand-direction readiness | Full MVP flow/state/access coverage, formative comprehension, Simon's name/territory decision or explicit provisional prototype exception, professional name checks before public commitment | Needs Simon decision and evidence; browser prototype/briefs/boards exist; remaining design gaps, user studies and legal clearance are open | Styled controlled prototype with recorded maturity; public identity only after specialist clearance, production UI still GATE-08 |
-| GATE-06 Safety/privacy readiness for prototype | Reviewed finite tools, local permit/cancel/journal, threat/privacy contract; deterministic invariants then device isolation/grants/egress tests for actuation; safety/privacy reviewer + Simon for real data | Ready with proposed assumptions for **offline fake replay only**; T-101 defines synthetic fixtures/forbidden effects/retention, but device isolation, grants, capture/egress and Stop remain unrun. Needs evidence for device actuation/real data | Synthetic contract replay now under DoR; actual device actuation only after invariants and platform controls verified; real data additionally terms/consent/support review |
+| GATE-06 Safety/privacy readiness for prototype | Reviewed finite tools, local permit/cancel/journal, threat/privacy contract; deterministic invariants then device isolation/grants/egress tests for actuation; safety/privacy reviewer + Simon for real data | Ready with proposed assumptions for **offline fake replay only**; C2 denial/withholding, visible Stop and lifecycle cleanup have narrow positive observations, but device retention/egress isolation remain unresolved. Needs evidence for device actuation/real data | Synthetic contract replay now under DoR; actual device actuation only after invariants and platform controls verified; real data additionally terms/consent/support review |
 | GATE-07 Technical prototype success | Controlled versioned EVAL suite: ≥2 useful external delegated workflows, proposed ≥80% verified nominal success, all safety cases pass, comprehension/access evidence; engineering/research/safety + Simon | Needs evidence; no runtime prototype or trial baseline | Evidence-backed MVP scope refinement and build decision |
 | GATE-08 MVP implementation readiness | GATE-01–07 relevant scope passed; accepted scope/interfaces/policy, per-slice DoR, supported matrix, provider/data contracts, design/token maturity, test/rollback/support plan; Simon | Blocked by scope, platform, route, design and runtime evidence | Deliberately bounded production MVP implementation; no broad assistant expansion |
 | GATE-09 Pilot readiness | MVP verification/access/consent/rights/incident/support/update/rollback drills, proposed ≥90% success with n/uncertainty, no unresolved critical/high defect, accepted pilot market/protocol; Simon + safety/research/Android | Blocked by GATE-08 and missing operational/user evidence | Consented, supported limited pilot only; V1/public launch requires separate decision |
@@ -117,7 +132,7 @@ The [T-103 packet](task-packets.md#t-103-packet) and [accepted evidence](../../p
 
 ## Exactly what may start next
 
-- **Next dependency-ordered backend/evidence work:** [T-101](backlog.md#t-101) has a [partial manual Step B inventory](../08-research/2026-09-19-t101-physical-inventory.md); unresolved fields stay unknown without broader authority. [Step A and Step C worksheets](../08-research/2026-09-19-t101-route-inventory.md) are prepared. Separately authorize one bounded synthetic experiment—C2 is recommended to reduce external-workflow kill risk—before any scaffold, install, permission or actuation. T-104 waits for sent-photo route/device evidence and the applicable device-safety boundary.
+- **Next dependency-ordered backend/evidence work:** [T-101](backlog.md#t-101) has Step A/C plans, a partial Step B inventory and four bounded [C2 device runs](../08-research/2026-09-19-t101-c2-device-evidence.md). The ordered generation regression passes and the source-only Stop-state repair passes 36 host cases; next prepare independent selected-package, retention and egress oracles. T-104 waits for sent-photo route/device evidence and the applicable device-safety boundary.
 - **Next experience slice when implementation is requested:** [T-119](backlog.md#t-119), fictional in-memory Context Rooms on the conversation shell starting from ADR-0016's selected Home. PRD-FR-022, UC-026/J-009, SCR-003/016/017, CMP-011/012 and CAP-15 fixture only. No persistence, personal data, provider egress or Android dependency.
 - **Independent evidence work:** RES-01/03 recruitment/prototype planning after ethics preparation; Simon's name/identity iteration.
 - **Must wait:** actual external device actuation until fake invariants/device safety gate; real personal data/cloud until provider/consent/security review; final branded production UI until design/name maturity; MVP build/pilot/public distribution until named gates. No Stage 2/3 work.
