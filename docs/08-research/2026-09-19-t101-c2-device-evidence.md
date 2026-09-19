@@ -66,3 +66,12 @@ Before any C2 rerun, revise the protected-content/stale-frame boundary and the
 manual Stop/revoke/process-loss harness, add an independently observable resize
 and lifecycle oracle, and review the temporary-unresponsiveness event. A rerun
 requires fresh exact device authority and reviewed new artifacts.
+
+## Source-only repair follow-up
+
+A later same-day source task prepared, host-tested and hashed a prospective
+repair. It requires a temporally separated two-phase marker-band transition so
+a static prior frame cannot produce an explanation, and adds explicit bounded
+single-app controls for C2-08/09/10/12. The repair does not alter this ledger's
+failed/inconclusive/unrun dispositions. No repaired APK was installed and no
+tablet action occurred; see the [scaffold record](../../experiments/c2-screen-explanation/README.md#post-run-source-only-repair-evidence--2026-09-19).

@@ -25,6 +25,7 @@ public final class MainActivity extends Activity {
     private final CaptureSessionStateMachine stateMachine = new CaptureSessionStateMachine();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private long activeGeneration;
+    private String activeTrial = CaptureTrialPlan.STANDARD;
     private TextView status;
 
     private final BroadcastReceiver resultReceiver = new BroadcastReceiver() {
@@ -70,7 +71,7 @@ public final class MainActivity extends Activity {
         root.addView(title, matchWrap());
 
         TextView scope = text(
-                "LAB ONLY • synthetic fixture • one in-memory frame summary • no network, storage, account, OCR, model, or app action",
+                "LAB ONLY • synthetic fixture • temporally fresh in-memory summaries • no network, storage, account, OCR, model, or app action",
                 19,
                 false);
         LinearLayout.LayoutParams scopeParams = matchWrap();
@@ -84,13 +85,14 @@ public final class MainActivity extends Activity {
         root.addView(fixture, fixtureParams);
 
         Button start = button("2. Choose fixture app window");
-        start.setOnClickListener(ignored -> requestCapture(false));
+        start.setOnClickListener(ignored -> requestCapture(CaptureTrialPlan.STANDARD, false));
         LinearLayout.LayoutParams startParams = matchWrap();
         startParams.topMargin = dp(16);
         root.addView(start, startParams);
 
         Button stopBeforeResult = button("Test C2-07: invalidate consent after 3 seconds");
-        stopBeforeResult.setOnClickListener(ignored -> requestCapture(true));
+        stopBeforeResult.setOnClickListener(
+                ignored -> requestCapture(CaptureTrialPlan.STANDARD, true));
         LinearLayout.LayoutParams stopBeforeResultParams = matchWrap();
         stopBeforeResultParams.topMargin = dp(16);
         root.addView(stopBeforeResult, stopBeforeResultParams);
@@ -102,6 +104,34 @@ public final class MainActivity extends Activity {
         LinearLayout.LayoutParams stopParams = matchWrap();
         stopParams.topMargin = dp(16);
         root.addView(stop, stopParams);
+
+        Button stopTrial = button("C2-08: 10-second Stop trial — share one app only");
+        stopTrial.setOnClickListener(
+                ignored -> requestCapture(CaptureTrialPlan.STOP, false));
+        LinearLayout.LayoutParams stopTrialParams = matchWrap();
+        stopTrialParams.topMargin = dp(16);
+        root.addView(stopTrial, stopTrialParams);
+
+        Button revokeTrial = button("C2-09: 10-second lock/revoke trial — share one app only");
+        revokeTrial.setOnClickListener(
+                ignored -> requestCapture(CaptureTrialPlan.REVOKE, false));
+        LinearLayout.LayoutParams revokeTrialParams = matchWrap();
+        revokeTrialParams.topMargin = dp(16);
+        root.addView(revokeTrial, revokeTrialParams);
+
+        Button resizeTrial = button("C2-10: 10-second rotate trial — share one app only");
+        resizeTrial.setOnClickListener(
+                ignored -> requestCapture(CaptureTrialPlan.RESIZE, false));
+        LinearLayout.LayoutParams resizeTrialParams = matchWrap();
+        resizeTrialParams.topMargin = dp(16);
+        root.addView(resizeTrial, resizeTrialParams);
+
+        Button processLossTrial = button("C2-12: 10-second task-removal trial — share one app only");
+        processLossTrial.setOnClickListener(
+                ignored -> requestCapture(CaptureTrialPlan.PROCESS_LOSS, false));
+        LinearLayout.LayoutParams processLossTrialParams = matchWrap();
+        processLossTrialParams.topMargin = dp(16);
+        root.addView(processLossTrial, processLossTrialParams);
 
         status = text("Not started. Select only the C2 Synthetic Screen Fixture app window; never select the full display.", 20, false);
         status.setContentDescription("Capture status");
@@ -131,12 +161,13 @@ public final class MainActivity extends Activity {
         startActivity(launch);
     }
 
-    private void requestCapture(boolean invalidateBeforeResult) {
+    private void requestCapture(String trial, boolean invalidateBeforeResult) {
         MediaProjectionManager manager = getSystemService(MediaProjectionManager.class);
         if (manager == null) {
             showStatus("Screen capture is unavailable on this configuration.");
             return;
         }
+        activeTrial = trial;
         activeGeneration = stateMachine.beginRequest();
         long requestedGeneration = activeGeneration;
         if (invalidateBeforeResult) {
@@ -147,7 +178,7 @@ public final class MainActivity extends Activity {
             }, CONSENT_INVALIDATION_DELAY_MILLIS);
             showStatus("C2-07 armed. Wait at least 3 seconds in Android's chooser, then choose the fixture or cancel. The result must be ignored.");
         } else {
-            showStatus("Waiting for Android consent. Choose only the synthetic fixture app window, or cancel.");
+            showStatus(trialInstruction(trial));
         }
         startActivityForResult(manager.createScreenCaptureIntent(), REQUEST_CAPTURE);
     }
@@ -170,9 +201,33 @@ public final class MainActivity extends Activity {
             showStatus("Late capture consent was ignored because the session was stopped or replaced.");
             return;
         }
-        CaptureService.start(this, resultCode, data, activeGeneration);
+        CaptureService.start(this, resultCode, data, activeGeneration, activeTrial);
         stateMachine.serviceStarted(activeGeneration);
-        showStatus("Capture requested. Use Stop here or Android's screen-sharing chip. The service stops after one sampled frame.");
+        showStatus("Capture requested for " + activeTrial
+                + ". Share-one-app is mandatory. Use the red Stop button or notification Stop action; never select the full display.");
+    }
+
+    private String trialInstruction(String trial) {
+        String action;
+        switch (trial) {
+            case CaptureTrialPlan.STOP:
+                action = "Wait two seconds after sharing starts, then return here and press the red Stop button.";
+                break;
+            case CaptureTrialPlan.REVOKE:
+                action = "Wait two seconds after sharing starts, then lock the tablet once or use an available Android Stop-sharing control.";
+                break;
+            case CaptureTrialPlan.RESIZE:
+                action = "Wait two seconds after sharing starts, then rotate the tablet once and wait for the result.";
+                break;
+            case CaptureTrialPlan.PROCESS_LOSS:
+                action = "Wait two seconds after sharing starts, then open Recents and remove only the C2 Screen Explanation Lab task.";
+                break;
+            default:
+                action = "Wait for the bounded freshness result.";
+                break;
+        }
+        return "Choose Share one app, then select only C2 Synthetic Screen Fixture. "
+                + "Never share the full screen. " + action;
     }
 
     private void stopCapture() {

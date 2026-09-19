@@ -15,7 +15,17 @@ public final class FixtureMarkerInterpreterTest {
 
         assertEquals(FixtureMarkerInterpreter.Status.EXPLAINED, result.status);
         assertEquals("normal", result.fixtureId);
+        assertEquals(0, result.markerPhase);
         assertTrue(result.message.contains("No action was taken"));
+    }
+
+    @Test
+    public void alternateNormalPhaseKeepsSceneButChangesPhase() {
+        FixtureMarkerInterpreter.Interpretation result = interpreter.interpret(solid("#16A34A"));
+
+        assertEquals(FixtureMarkerInterpreter.Status.EXPLAINED, result.status);
+        assertEquals("normal", result.fixtureId);
+        assertEquals(1, result.markerPhase);
     }
 
     @Test
@@ -49,6 +59,7 @@ public final class FixtureMarkerInterpreterTest {
 
         assertEquals(FixtureMarkerInterpreter.Status.UNAVAILABLE, black.status);
         assertEquals(FixtureMarkerInterpreter.Status.UNAVAILABLE, unknown.status);
+        assertEquals(-1, black.markerPhase);
     }
 
     private FrameSample solid(String hex) {

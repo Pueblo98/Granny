@@ -18,15 +18,16 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.view.WindowManager;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Captures at most one down-sampled in-memory frame and then releases every
- * projection resource. No bitmap, screenshot, content text, or network output
- * is created.
+ * Requires a fresh synthetic marker transition from down-sampled in-memory
+ * frame summaries, then releases every projection resource. No bitmap,
+ * screenshot, content text, or network output is created.
  */
 public final class CaptureService extends Service {
     public static final String ACTION_RESULT = "org.pueblo98.granny.c2observer.RESULT";
@@ -39,26 +40,40 @@ public final class CaptureService extends Service {
     private static final String EXTRA_RESULT_CODE = "resultCode";
     private static final String EXTRA_RESULT_DATA = "resultData";
     private static final String EXTRA_GENERATION = "generation";
+    private static final String EXTRA_TRIAL = "trial";
     private static final String CHANNEL_ID = "c2_capture_active";
     private static final int NOTIFICATION_ID = 2102;
     private static final long FRAME_TIMEOUT_MILLIS = 4_000L;
 
     private final AtomicBoolean finished = new AtomicBoolean(false);
     private final FixtureMarkerInterpreter interpreter = new FixtureMarkerInterpreter();
+    private final FreshFrameGate freshFrameGate = new FreshFrameGate();
     private final CaptureGeometry geometry = new CaptureGeometry();
+    private final LifecycleEvidenceGate lifecycleEvidenceGate = new LifecycleEvidenceGate();
     private HandlerThread workerThread;
     private Handler worker;
     private MediaProjection projection;
     private VirtualDisplay virtualDisplay;
     private ImageReader imageReader;
     private int densityDpi;
+    private long captureStartedAtMillis;
+    private long holdOpenMillis;
+    private boolean requireResize;
+    private boolean completionScheduled;
+    private FixtureMarkerInterpreter.Interpretation pendingInterpretation;
 
-    public static void start(Context context, int resultCode, Intent resultData, long generation) {
+    public static void start(
+            Context context,
+            int resultCode,
+            Intent resultData,
+            long generation,
+            String trial) {
         Intent intent = new Intent(context, CaptureService.class)
                 .setAction(ACTION_START)
                 .putExtra(EXTRA_RESULT_CODE, resultCode)
                 .putExtra(EXTRA_RESULT_DATA, resultData)
-                .putExtra(EXTRA_GENERATION, generation);
+                .putExtra(EXTRA_GENERATION, generation)
+                .putExtra(EXTRA_TRIAL, trial);
         context.startForegroundService(intent);
     }
 
@@ -107,6 +122,14 @@ public final class CaptureService extends Service {
             return START_NOT_STICKY;
         }
 
+        try {
+            configureTrial(intent.getStringExtra(EXTRA_TRIAL));
+        } catch (IllegalArgumentException error) {
+            finish("UNAVAILABLE", "Unknown lifecycle trial was refused.",
+                    "Only the fixed synthetic C2 trial modes are accepted.", true);
+            return START_NOT_STICKY;
+        }
+
         worker.post(() -> {
             try {
                 beginProjection(resultCode, resultData);
@@ -119,6 +142,7 @@ public final class CaptureService extends Service {
     }
 
     private void beginProjection(int resultCode, Intent resultData) {
+        captureStartedAtMillis = SystemClock.elapsedRealtime();
         MediaProjectionManager manager = getSystemService(MediaProjectionManager.class);
         if (manager == null) {
             throw new IllegalStateException("MediaProjectionManager unavailable");
@@ -165,11 +189,20 @@ public final class CaptureService extends Service {
         if (virtualDisplay == null) {
             throw new IllegalStateException("VirtualDisplay unavailable");
         }
+        long timeoutMillis = Math.max(
+                FRAME_TIMEOUT_MILLIS,
+                holdOpenMillis + FRAME_TIMEOUT_MILLIS);
         worker.postDelayed(() -> finish(
                 "UNAVAILABLE",
-                "No usable frame arrived before the bounded timeout.",
-                "The selected window may be protected, unavailable, or incompatible.",
-                true), FRAME_TIMEOUT_MILLIS);
+                "No fresh approved fixture transition completed before the bounded timeout.",
+                "The selected window may be protected, static, stale, unavailable, or incompatible.",
+                true), timeoutMillis);
+    }
+
+    private void configureTrial(String requestedTrial) {
+        CaptureTrialPlan plan = CaptureTrialPlan.from(requestedTrial);
+        holdOpenMillis = plan.holdOpenMillis;
+        requireResize = plan.requireResize;
     }
 
     private ImageReader createImageReader(int width, int height) {
@@ -204,6 +237,8 @@ public final class CaptureService extends Service {
                 previous.setOnImageAvailableListener(null, null);
                 previous.close();
             }
+            lifecycleEvidenceGate.onResizeObserved();
+            maybeFinishPending();
         } catch (RuntimeException error) {
             if (replacement != null) {
                 replacement.setOnImageAvailableListener(null, null);
@@ -222,9 +257,12 @@ public final class CaptureService extends Service {
             if (image == null || image.getPlanes().length == 0) {
                 return;
             }
+            if (pendingInterpretation != null) {
+                return;
+            }
             Image.Plane plane = image.getPlanes()[0];
             ByteBuffer buffer = plane.getBuffer();
-            FrameSample sample = FrameSample.fromRgba(
+            FrameSample sample = FrameSample.fromMarkerBandRgba(
                     buffer,
                     image.getWidth(),
                     image.getHeight(),
@@ -232,15 +270,47 @@ public final class CaptureService extends Service {
                     plane.getRowStride(),
                     16);
             FixtureMarkerInterpreter.Interpretation interpretation = interpreter.interpret(sample);
-            finish(
-                    interpretation.status.name(),
-                    interpretation.message,
-                    interpretation.uncertainty,
-                    true);
+            FreshFrameGate.Decision decision = freshFrameGate.observe(
+                    interpretation,
+                    SystemClock.elapsedRealtime());
+            if (decision == FreshFrameGate.Decision.REJECT) {
+                finish("UNAVAILABLE", "The synthetic fixture changed before freshness was verified.",
+                        "No explanation is produced from mixed or replaced fixture states.", true);
+            } else if (decision == FreshFrameGate.Decision.ACCEPT) {
+                pendingInterpretation = interpretation;
+                lifecycleEvidenceGate.onFreshnessAccepted();
+                maybeFinishPending();
+            }
         } catch (RuntimeException error) {
             finish("UNAVAILABLE", "The sampled frame could not be interpreted safely.",
                     error.getClass().getSimpleName() + "; no frame was retained.", true);
         }
+    }
+
+    private void maybeFinishPending() {
+        if (pendingInterpretation == null || !lifecycleEvidenceGate.canFinish(requireResize)) {
+            return;
+        }
+        long elapsed = SystemClock.elapsedRealtime() - captureStartedAtMillis;
+        long remaining = holdOpenMillis - elapsed;
+        if (remaining > 0L) {
+            if (!completionScheduled) {
+                completionScheduled = true;
+                worker.postDelayed(() -> {
+                    completionScheduled = false;
+                    maybeFinishPending();
+                }, remaining);
+            }
+            return;
+        }
+        String trialEvidence = requireResize
+                ? " A bounded capture resize was observed for this trial."
+                : "";
+        finish(
+                pendingInterpretation.status.name(),
+                pendingInterpretation.message,
+                pendingInterpretation.uncertainty + trialEvidence,
+                true);
     }
 
     private void finish(String status, String message, String uncertainty, boolean stopProjection) {
@@ -290,7 +360,7 @@ public final class CaptureService extends Service {
         return new Notification.Builder(this, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_menu_view)
                 .setContentTitle("Synthetic screen check active")
-                .setContentText("One frame only. Use Stop or Android's sharing chip.")
+                .setContentText("Freshness check active. Use this Stop action at any time.")
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .addAction(new Notification.Action.Builder(null, "Stop", stop).build())

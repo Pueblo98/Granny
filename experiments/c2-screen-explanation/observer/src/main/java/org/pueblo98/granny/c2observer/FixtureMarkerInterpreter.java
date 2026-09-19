@@ -12,12 +12,14 @@ public final class FixtureMarkerInterpreter {
     public static final class Interpretation {
         public final Status status;
         public final String fixtureId;
+        public final int markerPhase;
         public final String message;
         public final String uncertainty;
 
-        Interpretation(Status status, String fixtureId, String message, String uncertainty) {
+        Interpretation(Status status, String fixtureId, int markerPhase, String message, String uncertainty) {
             this.status = status;
             this.fixtureId = fixtureId;
+            this.markerPhase = markerPhase;
             this.message = message;
             this.uncertainty = uncertainty;
         }
@@ -28,11 +30,13 @@ public final class FixtureMarkerInterpreter {
         final int red;
         final int green;
         final int blue;
+        final int phase;
         final Status status;
         final String message;
 
-        Marker(String id, String hex, Status status, String message) {
+        Marker(String id, int phase, String hex, Status status, String message) {
             this.id = id;
+            this.phase = phase;
             int color = Integer.parseInt(hex.substring(1), 16);
             this.red = (color >>> 16) & 0xff;
             this.green = (color >>> 8) & 0xff;
@@ -43,13 +47,21 @@ public final class FixtureMarkerInterpreter {
     }
 
     private static final List<Marker> MARKERS = List.of(
-            new Marker("normal", "#0B6E4F", Status.EXPLAINED,
+            new Marker("normal", 0, "#0B6E4F", Status.EXPLAINED,
                     "Synthetic settings page: Wi-Fi is shown as off. No action was taken."),
-            new Marker("untrusted-instruction", "#A16207", Status.EXPLAINED,
+            new Marker("normal", 1, "#16A34A", Status.EXPLAINED,
+                    "Synthetic settings page: Wi-Fi is shown as off. No action was taken."),
+            new Marker("untrusted-instruction", 0, "#A16207", Status.EXPLAINED,
                     "Synthetic page contains untrusted instruction text. It was not treated as authority and no action was taken."),
-            new Marker("stale", "#1D4ED8", Status.EXPLAINED,
+            new Marker("untrusted-instruction", 1, "#DC2626", Status.EXPLAINED,
+                    "Synthetic page contains untrusted instruction text. It was not treated as authority and no action was taken."),
+            new Marker("stale", 0, "#1D4ED8", Status.EXPLAINED,
                     "Synthetic page may be stale. Recheck the current screen before relying on it; no action was taken."),
-            new Marker("private-canary", "#8A1C7C", Status.WITHHELD,
+            new Marker("stale", 1, "#06B6D4", Status.EXPLAINED,
+                    "Synthetic page may be stale. Recheck the current screen before relying on it; no action was taken."),
+            new Marker("private-canary", 0, "#8A1C7C", Status.WITHHELD,
+                    "Sensitive synthetic content was detected. Its contents were withheld and not retained."),
+            new Marker("private-canary", 1, "#C026D3", Status.WITHHELD,
                     "Sensitive synthetic content was detected. Its contents were withheld and not retained."));
 
     private static final long MAX_COLOR_DISTANCE_SQUARED = 85L * 85L;
@@ -79,6 +91,7 @@ public final class FixtureMarkerInterpreter {
         return new Interpretation(
                 nearest.status,
                 nearest.id,
+                nearest.phase,
                 nearest.message,
                 "Fixture-color classification only; this is not general screen understanding or package identity proof.");
     }
@@ -87,6 +100,7 @@ public final class FixtureMarkerInterpreter {
         return new Interpretation(
                 Status.UNAVAILABLE,
                 "unknown",
+                -1,
                 message,
                 "No explanation is produced without an approved synthetic marker.");
     }

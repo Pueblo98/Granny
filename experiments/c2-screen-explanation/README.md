@@ -13,7 +13,8 @@ related:
 
 # T-101 C2 synthetic screen-explanation scaffold
 
-Status: **host checks pass; first bounded device run did not pass admission**.
+Status: **source-only repair passes host checks; first device run remains failed
+and no repaired artifact has run on Android**.
 
 This lab-only Android 16 scaffold prepares the smallest C2 experiment from the
 [T-101 route inventory](../../docs/08-research/2026-09-19-t101-route-inventory.md#c2--one-session-screen-explanation).
@@ -27,10 +28,12 @@ reproducible protected-content failure and an aborted Stop attempt.
   private-canary and `FLAG_SECURE` scenes. Its asset manifest is the independent
   expected-state oracle for a future run.
 - `observer`: a lab-only app that requests one Android MediaProjection session,
-  samples at most a 16×16 grid from one in-memory frame, maps only known fixture
-  colors to fixed bounded explanations, and releases the projection immediately.
-- Fourteen passing pure local JUnit tests for consent/Stop generation handling,
-  fail-closed marker classification and private-canary suppression.
+  samples a bounded marker band into in-memory color summaries, requires a
+  temporally separated same-scene marker transition, maps only known fixture
+  colors to fixed explanations, and releases the projection.
+- Twenty-nine passing pure local JUnit tests for consent/Stop generation,
+  capture geometry, bounded marker sampling, marker classification, freshness
+  gating, lifecycle-trial allowlisting and private-canary suppression.
 
 The observer cannot OCR, identify arbitrary apps, click, recover, authenticate,
 read accessibility trees, contact a model, use a network, save a screenshot or
@@ -46,8 +49,8 @@ is not proof of the selected package or of generic screen understanding.
 | SDK | `compileSdk 36`, `targetSdk 36`, `minSdk 36` | Exact Android 16 lab row only |
 | Runtime libraries | Android platform APIs only | No Compose, model, analytics, OCR or networking SDK |
 | Declared permissions | `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_MEDIA_PROJECTION` in observer only | No internet, storage, microphone, account, notification-listener or accessibility permission |
-| Retention | One down-sampled in-memory color summary | No bitmap/file/database/log payload |
-| Stop | Observer button, foreground-service notification action and Android projection chip/callback | Visibility and latency remain device evidence |
+| Retention | Transient down-sampled marker-band color summaries plus one fixed interpretation | No bitmap/file/database/log payload |
+| Stop | Observer button, foreground-service notification action and Android projection callback | Repaired visibility and latency remain unrun device evidence |
 | Outcome | Fixed fixture explanation, withheld, stopped or unavailable | No automated recovery or external action |
 
 Android's official documentation requires per-session user consent, a
@@ -72,6 +75,13 @@ Current setup sources, accessed 2026-09-19:
   useful lab context, but it cannot pass the full package/source-identity oracle.
 - C2-07's dedicated manual test control rejected the late Android result on
   the first bounded device run.
+- The source-only repair alternates a dedicated marker band every 750 ms and
+  requires a same-scene phase change at least 500 ms apart. Static cached,
+  black and unknown frames time out unavailable. This is host-verified logic,
+  not proof that One UI protects C2-06 until a separately authorized rerun.
+- C2-08/09/10/12 now have explicit ten-second, share-one-app-only controls.
+  Stop/revoke/process-loss trials hold only a fixed interpretation; C2-10 also
+  requires an observed bounded resize. Their Android behavior is unrun.
 - The service now handles `onCapturedContentResize()` by replacing both the
   bounded ImageReader surface and virtual-display dimensions. Invalid,
   excessive or failed geometry stops unavailable; successful rotation/resize
@@ -84,7 +94,7 @@ These are experiment findings and preparation gaps, not reasons to weaken the
 oracle or infer support. C2 cannot pass until the relevant gaps are resolved and
 the device matrix is actually run.
 
-## Host build evidence — 2026-09-19
+## First-run host build evidence — 2026-09-19
 
 After Simon accepted the Android SDK License Agreement and authorized local SDK
 installation, the isolated host toolchain used:
@@ -107,7 +117,7 @@ final clean host command was:
   :fixture:assembleDebug :observer:assembleDebug lintDebug
 ```
 
-It completed 92 tasks successfully. The three JUnit suites now pass 14 cases
+It completed 92 tasks successfully. The then-current three JUnit suites passed 14 cases
 with no failures or skips. Lint reported zero errors, four fixture warnings and three
 observer warnings. The remaining warnings are deliberate lab limits: exact API
 36 targeting rather than current API 37, the compatible pinned Gradle version,
@@ -155,6 +165,41 @@ a content-free result ledger. The observer's own message is never sufficient.
 Package/window identity remains unresolved and is a prospective failure, not a
 threshold to relax after running.
 
+## Post-run source-only repair evidence — 2026-09-19
+
+The repair does not erase or reinterpret the failed device run. It changes the
+fixture and observer so that:
+
+- only a centered marker band changes phase, at 750 ms intervals; the full
+  screen does not flash;
+- one static cached frame cannot produce an explanation because the observer
+  requires the same fixture scene in both marker phases at least 500 ms apart;
+- black/unknown/static input reaches a bounded unavailable timeout;
+- fixed ten-second C2-08/09/10/12 modes explicitly say to share one app only;
+- C2-10 cannot report its fixed result unless a permitted resize callback was
+  observed; and
+- trial IDs and timing are allowlisted and unit-tested.
+
+The clean offline build completed all 92 tasks. Seven JUnit suites pass **29/29**
+cases with no failures or skips. Lint reports zero errors and the same expected
+lab-only version/icon warnings. Static scans still find no internet, storage,
+audio, account, accessibility, WebView, socket, file-output or logging route.
+`aapt2` reports no fixture permissions and only
+`FOREGROUND_SERVICE`/`FOREGROUND_SERVICE_MEDIA_PROJECTION` for the observer.
+
+The new ignored debug APKs verify with APK Signature Scheme v2 and the same
+ordinary debug certificate. They have **not** been installed:
+
+| APK | Repaired SHA-256 | Device state |
+|---|---|---|
+| `fixture-debug.apk` | `044a693583f95ad6bb98e2038019546871cea36b39b570ae07217bc03a070678` | Unrun |
+| `observer-debug.apk` | `a1fe72b66e43a45fc42e30564b54d6cbbc1748adbccd409b335ad08c20cfa1b8` | Unrun |
+
+Host tests cannot establish MediaProjection pixels, `FLAG_SECURE` behavior,
+system Stop/revoke callbacks, rotation, process loss, visibility or absence of
+device egress. The repaired APKs must not be installed without fresh exact
+authority after commit and artifact review.
+
 ## Install and teardown procedure used
 
 The proposed transport is USB ADB on exactly one human-confirmed `TBL-01`.
@@ -190,7 +235,8 @@ clearing other apps or resetting the tablet.
 
 ## Exact authority required for any rerun
 
-A later run requires revised reviewed artifacts and explicit approval for all
+A later run requires these revised artifacts to be reviewed against their
+published commit and digests, plus explicit approval for all
 of the following, not a generic "continue":
 
 1. On `TBL-01` only, manually enable Developer options and USB debugging, trust
