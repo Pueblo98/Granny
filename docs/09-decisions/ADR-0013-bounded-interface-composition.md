@@ -15,7 +15,7 @@ related:
 
 ## Context and authority
 
-The class brainstorm proposed an agent that can create or rearrange buttons, modules and widgets. The current system instead defines stable semantic components. Simon reviewed fixed components, free-form generated UI and bounded composition, then explicitly accepted bounded composition on 2026-09-17 as “the perfect option.” [ADR-0014](ADR-0014-stable-home-context-panel.md) subsequently fixed Home to a stable conversation anchor with at most one context panel.
+The class brainstorm proposed an agent that can create or rearrange buttons, modules and widgets. The current system instead defines stable semantic components. Simon reviewed fixed components, free-form generated UI and bounded composition, then explicitly accepted bounded composition on 2026-09-17 as “the perfect option.” [ADR-0016](ADR-0016-explicit-home-room-row.md) now fixes the Context Rooms Home to reviewed CMP-010/012 components around stable conversation anchors.
 
 ## Options considered
 
@@ -31,7 +31,7 @@ The agent may select, fill and order registered semantic components through a ty
 
 The renderer and local policy remain authoritative. Rendering a control never grants an action. Consequential controls use the registered preview/approval component and exact bound action; the agent cannot disguise Send, Delete, Share, Purchase or permission changes behind a novel label or generic button. Stop, Talk/Type and the current task status keep stable app-owned positions and cannot be moved or removed by a composition plan.
 
-Temporary task composition may happen automatically without asking the person to design the screen. On Home, ADR-0014 permits zero or one eligible registered context panel and forbids automatic movement of the core controls or a multi-widget surface. A new component family requires design/accessibility/policy review and versioned tests before registry admission.
+Temporary task composition may happen automatically without asking the person to design the screen. On the Context Rooms Home, ADR-0016 permits one compact eligible continuation plus one renderer-owned explicit room row and forbids automatic movement of core controls or a multi-widget surface. A new component family requires design/accessibility/policy review and versioned tests before registry admission.
 
 ## Consequences and validation
 

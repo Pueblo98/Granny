@@ -25,15 +25,15 @@ Simon authorized implementation of the [conversation-first plan](conversation-fi
 
 Granny opens as an ordinary Android application, not a replacement OS. MVP does not require the default launcher role. Home, task, history and settings are app-owned. External apps, Android navigation, permission dialogs, IME, authentication, status/navigation bars and capture selectors remain system/app-owned. Optional launcher role is a separate V1 feasibility choice, not deeper authority.
 
-Home has one invitation, a persistent labeled text composer, labeled Talk and quiet Menu. It may show zero or one optional context panel under [ADR-0014](../09-decisions/ADR-0014-stable-home-context-panel.md), without moving the core anchors. Supported typed requests resolve directly through a documented prototype grammar. Clarification asks one question only for unresolved slots; content/results and exact previews appear inline. Menu exposes Today, History, Settings, Privacy, People and Help; typed secondary requests reach the same local functions. No capability grid, carousel, widget stack or mandatory category picker.
+Home has one invitation, a persistent labeled text composer, labeled Talk and quiet Menu. The five-workflow MVP may show zero or one optional context panel without moving those anchors. For the Context Rooms extension, [ADR-0016](../09-decisions/ADR-0016-explicit-home-room-row.md) selects one compact continuation plus one CMP-012 open portrait row with written Previous/Next and See all rooms. Supported typed requests resolve directly through a documented prototype grammar. Clarification asks one question only for unresolved slots; content/results and exact previews appear inline. Menu exposes Today, History, Settings, Privacy, People and Help; typed secondary requests reach the same local functions. No capability grid, boxed room shelf, widget stack or mandatory category picker.
 
-[Context Rooms](context-rooms.md) are the accepted active design direction under [ADR-0015](../09-decisions/ADR-0015-context-rooms.md), not a replacement for this Home. A tested secondary Rooms entry opens SCR-016; SCR-017 keeps the same conversation shell while foregrounding one room. T-119 prototypes these surfaces with fictional data. Production placement is proposed for App V1; no room grid or decorative floor plan is added to SCR-003.
+[Context Rooms](context-rooms.md) are the accepted active design direction under [ADR-0015](../09-decisions/ADR-0015-context-rooms.md), not a replacement for this Home. The selected Home row gives direct access to a small visible set and a written route opens SCR-016; SCR-017 keeps the same conversation shell while foregrounding one room. T-119 prototypes these surfaces with fictional data. Production placement is proposed for App V1; no tile grid or decorative floor plan is added to SCR-003.
 
 ```text
 Conversation: request → clarify if needed → inline exact preview → activity → result
                    └→ inline photos / screen explanation / media / text preview
 Menu → local settings / people / privacy / history / help → same conversation
-Menu/secondary route → SCR-016 Rooms → SCR-017 current room → same conversation
+Home CMP-012 / See all rooms → SCR-016 Rooms → SCR-017 current room → same conversation
 ```
 
 **Back** moves one app navigation level; from a pending confirmation it cancels that approval and preserves local draft. **Granny Home** cancels automation then goes to SCR-003; it is distinct from Android Home. **Android Home/Recents** retain ordinary Android behavior; returning never resumes automation silently. **Stop** latches task cancellation, including pending speech/capture, and reconciles already-dispatched effects. **Take over** performs Stop and leaves external app state intact. **Cancel** exits an uncommitted preview or input. **Stop speaking** only mutes output and is explicitly labeled; it does not mean microphone off.
@@ -86,14 +86,14 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 
 **Purpose/links:** J-007 / PRD-FR-001/002.
 **Entry/exit:** Setup complete/skip or return → current conversation; a fresh conversation first resolves unfinished work.
-**Hierarchy/content:** Welcome invitation, readable thread, persistent labeled composer and Talk, quiet Menu; then zero or one CMP-010 context panel when an eligible item earns the space. The panel prioritizes unresolved work requiring attention, then a release-admitted timely reminder, recent artifact or explicitly kept item. Content appears for the current request.
-**Controls:** Talk; Type a request; submit intent; Menu with secondary Today/history/settings/privacy/help. An optional panel has one primary next action plus Keep here or Hide as applicable; Reset Home lives in Menu. Submit requests interpretation, never approval of a consequence.
+**Hierarchy/content:** Welcome invitation, readable thread, persistent labeled composer and Talk, quiet Menu. The MVP baseline may show zero or one CMP-010 context panel. The selected Context Rooms Home may show one compact CMP-010 continuation plus one CMP-012 open room portrait row. Continuation prioritizes unresolved work requiring attention; the row keeps Rooms secondary to writing while making them directly recognizable and reachable.
+**Controls:** Talk; Type a request; submit intent; Menu with secondary Today/history/settings/privacy/help. An optional continuation has one primary next action plus Hide as applicable. CMP-012 provides broad labeled room targets, truthful written Previous/Next when overflow exists and See all rooms. Submit requests interpretation, never approval of a consequence.
 **Data/sensitivity:** No unsolicited private preview. A sensitive item uses a generic label and explicit open action; panel content comes only from already admitted local data/capabilities.
-**Loading/empty/disabled/error/interrupted:** No eligible item leaves the panel absent and invitation available; stale/unverified items disappear rather than speculate; offline status names usable local functions; interrupted work retains its truthful result and has no automatic resumption.
-**Focus, semantics, keyboard/switch and speech:** Stable Stop when active → Header/Menu → thread/invitation → composer/Talk/submit → optional context panel. Updates preserve reading position and input focus; the panel does not insert ahead of current focus, announce repeatedly or autofocus any action.
-**Orientation/window:** shared reflow; core anchors do not move while Home is open. At narrow width or large text the panel follows the input region as one vertical block; content scrolls before controls shrink.
+**Loading/empty/disabled/error/interrupted:** No eligible continuation leaves that panel absent; no Rooms leaves the row absent and retains a written Rooms/create route when applicable. Image failure preserves room names, purposes and targets. Stale/unverified items disappear rather than speculate; offline status names usable local functions; interrupted work retains its truthful result and has no automatic resumption.
+**Focus, semantics, keyboard/switch and speech:** Stable Stop when active → Header/Menu → thread/invitation → composer/Talk/submit → optional continuation → room row and See all rooms. Previous/Next announce the newly foregrounded range once and preserve logical focus; updates do not insert ahead of current focus, announce repeatedly or autofocus an action.
+**Orientation/window:** shared reflow; core anchors do not move while Home is open. At narrow width or large text, continuation and Rooms become one vertical sequence after the input region; room navigation becomes a direct list or vertical treatment before labels shrink or essential horizontal scrolling appears.
 **Telemetry/eval:** shared events with this screen ID; journey-linked eval in [traceability](../01-product/traceability.md).
-**Design review question:** Can the person express a goal and understand or dismiss the single contextual item without learning a feature taxonomy or mistaking it for required work? A later Rooms prototype must also prove that its secondary entry does not compete with this starting point.
+**Design review question:** Can the person express any goal without choosing a Room, understand or dismiss continuation, browse the explicit room row without a precision gesture and reach the full library without mistaking Rooms for separate assistants or required categories?
 
 <a id="scr-004"></a>
 ### SCR-004 — Listening, transcript and interpretation
@@ -267,9 +267,9 @@ Loading has an explicit cause and bounded deadline. Empty explains absence and g
 ### SCR-016 — Rooms library and creation
 
 **Purpose/links:** J-009 / PRD-FR-022.
-**Entry/exit:** Home/Menu or tested secondary Rooms route → open room, create room or return Home.
+**Entry/exit:** Home CMP-012/See all rooms or Menu route → open room, create room or return Home.
 **Hierarchy/content:** Rooms heading, explanation that rooms bring related things closer, calm list of CMP-011 entries, Unfiled/All items access and optional Create room. Each entry may use a reviewed [room portrait](context-room-visual-system.md) while the written name/purpose remains primary.
-**Controls:** Whole labeled room row; Search all; Create room; Archive/manage; Home/Back. No permanent Home grid, carousel or decorative floor-plan navigation.
+**Controls:** Whole labeled room row; Search all; Create room; Archive/manage; Home/Back. Home's selected CMP-012 provides a restrained subset plus See all rooms; SCR-016 remains the complete direct list. No tile grid or decorative floor-plan navigation.
 **Data/sensitivity:** Room name/purpose, known local visual `pack_id`, coarse item/recent state; private item detail hidden until explicit open. The assistant may recommend a reviewed pack but does not generate room art at runtime.
 **Loading/empty/disabled/error/interrupted:** Empty explains that Home still handles everything; offline direct local browse works; failed resolver does not remove the library; uncertain suggested placement remains Unfiled.
 **Focus, semantics, keyboard/switch and speech:** Heading → explanatory text → Search/Create → room rows → Unfiled/Home; visual motif decorative when the written name/purpose conveys identity.

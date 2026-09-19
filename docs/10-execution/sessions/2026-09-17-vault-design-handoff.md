@@ -5,7 +5,6 @@ owner: Simon
 last_updated: 2026-09-17
 tags: [execution, session, design, figma]
 related:
-  - ../../02-design/claude-design-handoff.md
   - ../../02-design/figma.md
   - ../open-questions.md
 record_type: session

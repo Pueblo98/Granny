@@ -20,7 +20,7 @@ related:
 
 ## Planned Context Rooms extension
 
-The current executable prototype still covers the conversation shell and five scripted workflows described below. Simon adopted [Context Rooms](context-rooms.md) as the next experience direction on 2026-09-19. [T-119](../10-execution/backlog.md#t-119) will add a fictional-data global Home → Rooms library → Kitchen slice, direct browse/search, one disclosed cross-room source and safe room deletion. Until that task is separately implemented and tested, this page must not imply those screens already exist.
+The current executable prototype still covers the conversation shell and five scripted workflows described below. Simon adopted [Context Rooms](context-rooms.md) as the next experience direction on 2026-09-19. [T-119](../10-execution/backlog.md#t-119) will add a fictional-data global Home → Rooms library → Kitchen slice, direct browse/search, one disclosed cross-room source and safe room deletion. Simon has now authorized the first selected-Home implementation checkpoint through its [bounded metaprompt](mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/FRONTEND-IMPLEMENTATION-METAPROMPT.md); that work has not run yet. Until it is implemented and tested, this page must not imply the selected Home or later Rooms screens already exist.
 
 Current connected runtime: [versioned local backend/MCP contract](../04-architecture/conversation-runtime-contract.md). Scripted remains default; local demo uses a stub model with actual MCP/store operations. Explicit live synthetic consent is available only when the backend enables it; the one live proposal check failed, so model reliability is not established.
 

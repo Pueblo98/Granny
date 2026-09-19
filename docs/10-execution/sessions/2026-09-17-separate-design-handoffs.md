@@ -5,8 +5,7 @@ owner: Simon
 last_updated: 2026-09-17
 tags: [execution, session, design]
 related:
-  - ../../02-design/claude-code-design-system-handoff.md
-  - ../../02-design/claude-design-handoff.md
+  - ../../02-design/figma.md
 record_type: session
 session_state: complete
 record_basis: contemporaneous
