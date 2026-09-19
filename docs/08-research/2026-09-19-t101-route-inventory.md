@@ -1,5 +1,5 @@
 ---
-title: "T-101 desk route inventory and unrun device worksheets"
+title: "T-101 route inventory and device worksheets"
 status: proposed
 owner: Simon
 last_updated: 2026-09-19
@@ -15,13 +15,13 @@ related:
   - ../10-execution/task-packets.md
 ---
 
-# T-101 desk route inventory and unrun device worksheets
+# T-101 route inventory and device worksheets
 
 ## Decision and evidence status
 
-This is the Step A source/desk artifact for [T-101](../10-execution/backlog.md#t-101), accessed **2026-09-19**. It covers all five experiments accepted by [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) and prepares Steps B and C. It establishes what current official documentation says and which bounded experiments are worth proposing. It does **not** establish app compatibility, device timing, Play approval, user comprehension or a supported configuration.
+This is the Step A source/desk artifact for [T-101](../10-execution/backlog.md#t-101), accessed **2026-09-19**. It covers all five experiments accepted by [ADR-0009](../09-decisions/ADR-0009-mvp-and-control-posture.md) and prepares Steps B and C. A later [partial manual physical inventory](2026-09-19-t101-physical-inventory.md) fills the non-identifying Step B values that Simon could read safely. The combined record does **not** establish app compatibility, device timing, Play approval, user comprehension or a supported configuration.
 
-No tablet, account, app, provider or store was accessed. No command, ADB action, install, developer-setting or permission change, sign-in, external-app actuation, personal-data inspection or Android scaffold occurred. Physical and synthetic-device evidence is **unrun**. T-101 therefore remains in progress, and GATE-03/04 plus the device/real-data portion of GATE-06 remain open.
+Step A accessed no tablet, account, app, provider or store. Step B later used only Simon's manual transcription of visible Settings values; Codex did not connect to or operate the tablet. No command, ADB action, install, update, developer-setting or permission change, sign-in, external-app actuation, personal-data inspection or Android scaffold occurred. Physical inventory is **partial and user-reported**; every synthetic-device experiment remains **unrun**. T-101 therefore remains in progress, and GATE-03/04 plus the device/real-data portion of GATE-06 remain open.
 
 Disposition terms in this note are route-planning terms, not admission:
 
@@ -48,6 +48,7 @@ Access dates below are 2026-09-19. Page versions are recorded when the publisher
 | Android Developers, [Media3 connection guide](https://developer.android.com/media/media3/session/connect-to-media-app), [MediaController reference](https://developer.android.com/reference/androidx/media3/session/MediaController) and [platform MediaController](https://developer.android.com/reference/android/media/session/MediaController) | A controller can query/control a media session when it has the session token or connects to an exposed service; the media app chooses commands/connection. Discovering active platform sessions generally requires media-control permission, notification-listener access or an owner-supplied token. | Media3 is a protocol surface, not universal access to every installed media app. An owning app must expose and accept the exact browse/play route; notification-listener access is not adopted as a generic workaround. |
 | Spotify for Developers, [Android SDK](https://developer.spotify.com/documentation/android) and [official SDK release](https://github.com/spotify/android-sdk/releases/tag/v0.8.0-appremote_v2.1.0-auth) | The beta Android SDK can initiate/control playback and subscribe to `PlayerState` after app authorization. Current listed release is App Remote 0.8.0 / Auth 2.1.0; the Spotify app and user permission are required. | A versioned Spotify-only synthetic route is plausible. App/account/region/catalog/subscription behavior, exact URI resolution, Pause/Stop timing and terms remain untested. This is not a provider selection or general-media claim. |
 | Android Developers, [DataStore](https://developer.android.com/topic/libraries/architecture/datastore) and [scalable Compose content](https://developer.android.com/develop/ui/compose/accessibility/scalable-content) | DataStore 1.2.1 is documented for consistent transactional small preference storage; Android guidance supports app-defined scalable content and testing in-app scale together with system font/display settings. | Granny can own, preview, persist, read back and restore its own text-scale preference without device-wide settings authority. Compose/framework selection remains outside this evidence task. |
+| Samsung, [Galaxy Tab A11+ 5G product listing](https://www.samsung.com/us/tablets/galaxy-tab-a11-plus/buy/galaxy-tab-a11-plus-5g-128gb-gray-sku-sm-x238uzaaatt/) | Samsung identifies `SM-X238U` as a Galaxy Tab A11+ 5G model. | Confirms the marketing family for the manually observed model code; it does not establish the individual tablet's settings, current app behavior or carrier/account state. |
 
 The Meta WhatsApp Cloud API documentation endpoints were checked as candidate-integration leads but were not reliably retrievable in this desk session. No consumer WhatsApp inbox, provenance or send capability is inferred from Business Platform terminology or from absence of a retrieved page. The consumer-messenger route therefore remains unknown rather than silently assumed.
 
@@ -133,26 +134,26 @@ The Meta WhatsApp Cloud API documentation endpoints were checked as candidate-in
 
 The accepted kill criterion is now an explicit **high risk**, not yet triggered: only scoped external-screen explanation and a named media integration have plausible conditional paths to useful externally verified outcomes, and neither is measured. Sent-photo retrieval has no present candidate route, message preparation/handoff cannot count as send, and text adjustment is internal. If either conditional external path fails, fewer than two useful external workflows remain; Simon must revisit scope/product/distribution rather than weaken outcome labels or begin Stage 2.
 
-## Step B — physical inventory worksheet (unrun)
+## Step B — physical inventory worksheet
 
-**Execution status:** not executed because no physical tablet/access and no device-command authority were supplied. Every value below remains `UNRUN — UNKNOWN`; the repository's “Galaxy Tab A11+” label is source-reported, not an inventory answer.
+**Execution status:** partial manual inspection on 2026-09-19. Simon visually read and transcribed permitted Settings values for `TBL-01`; Codex had no device connection or control. The complete configuration and all capability behavior remain unverified. See the [method, exact observations and limits](2026-09-19-t101-physical-inventory.md).
 
 | Admitted field | Record format for future run | Current value |
 |---|---|---|
-| Pseudonymous device label | Locally assigned non-identifying label, for example `TBL-01` | UNRUN — UNKNOWN |
-| Exact manufacturer/model/SKU | Visible Settings/About value, excluding serial | UNRUN — UNKNOWN |
-| Android release / API | Exact displayed release plus API from an authorized read-only source | UNRUN — UNKNOWN |
-| OEM UI and build | One UI/OEM version and build string without unique device identifier | UNRUN — UNKNOWN |
-| Security patch | Exact patch date | UNRUN — UNKNOWN |
-| Locale / timezone | Current language/locale and timezone, no location inference | UNRUN — UNKNOWN |
-| Display/window/font | Resolution and logical window dp where authorized; orientation, display size and font scale | UNRUN — UNKNOWN |
-| Input/access | Active input modes and relevant accessibility state by category only; no typed history/dictionary | UNRUN — UNKNOWN |
-| Speech support | On-device/installed recognizer availability, locale and offline status; no recording | UNRUN — UNKNOWN |
-| Target app packages/versions | Package and exact version for fixture/communication/media/Settings targets | UNRUN — UNKNOWN |
-| Synthetic account fixture | `signed-out` or pseudonymous fixture label only; never email/name/token | UNRUN — UNKNOWN |
-| Grants/app-ops | Required permission/special-access names and granted/denied state only | UNRUN — UNKNOWN |
-| Network profile | `offline`, `metered test`, or `controlled test network`; never SSID/address | UNRUN — UNKNOWN |
-| Build/adapter identity | Exact build digest, build mode, capability/adapter/recipe/policy version | UNRUN — UNKNOWN |
+| Pseudonymous device label | Locally assigned non-identifying label, for example `TBL-01` | `TBL-01` — manually assigned |
+| Exact manufacturer/model/SKU | Visible Settings/About value, excluding serial | Samsung `SM-X238U`; official Samsung listing maps it to Galaxy Tab A11+ 5G |
+| Android release / API | Exact displayed release plus API from an authorized read-only source | Android 16; API level not directly observed |
+| OEM UI and build | One UI/OEM version and build string without unique device identifier | One UI 8.0; `BP2A.250605.031.A3.X238UQS5AZE1` |
+| Security patch | Exact patch date | Android patch 2026-04-05; Google Play system update 2025-11-01 |
+| Locale / timezone | Current language/locale and timezone, no location inference | English (United States); automatic date/time on; Madrid time displayed; automatic-time-zone setting and zone ID unobserved |
+| Display/window/font | Resolution and logical window dp where authorized; orientation, display size and font scale | Font slider midpoint, bold off, screen zoom 2/5; resolution, logical dp, orientation and exact scale unobserved |
+| Input/access | Active input modes and relevant accessibility state by category only; no typed history/dictionary | Samsung Keyboard default in English; Google voice typing on/automatic; TalkBack, Link to Windows and Voice Access off; Live Transcribe and Sound Notifications listed with state unobserved |
+| Speech support | On-device/installed recognizer availability, locale and offline status; no recording | Google voice typing listed/on with automatic language selection; on-device/offline support unobserved |
+| Target app packages/versions | Package and exact version for fixture/communication/media/Settings targets | Photos `7.89.0.968035987`; Messages installed/version unobserved; Chrome `138.0.7204.179`; Gmail `2025.07.28.789007522`; Google app `16.35.65.ve.arm64`; WhatsApp/Spotify/YouTube reported absent |
+| Synthetic account fixture | `signed-out` or pseudonymous fixture label only; never email/name/token | Unobserved / not prepared; personal account state excluded |
+| Grants/app-ops | Required permission/special-access names and granted/denied state only | Unobserved; no change authorized |
+| Network profile | `offline`, `metered test`, or `controlled test network`; never SSID/address | Unobserved; no network identifier collected |
+| Build/adapter identity | Exact build digest, build mode, capability/adapter/recipe/policy version | No Granny Android build or adapter supplied/inspected |
 
 Always exclude serial number, IMEI, MAC, Android ID, advertising ID, SSID, IP address, account names/addresses, contacts, screenshots, personal messages/photos/media, tokens and personal content. Do not copy a full diagnostic dump into Git.
 
@@ -224,4 +225,6 @@ All fixtures use opaque endpoints and fabricated content. Each experiment is a s
 - **GATE-04 stays Needs evidence:** the public dynamic accessibility route remains blocked under reviewed policy; candidate API/integration and any finite recipe still need manifest/data/disclosure architecture plus an appropriate policy reviewer. No store approval/contact occurred.
 - **GATE-06 stays Ready only for offline fake replay and Needs evidence for device actuation/real data:** T-103's accepted fixture invariants do not prove projection/accessibility lifecycle, grants, egress isolation or external effects.
 
-The next bounded authorization should be **Step B only**: Simon provides `TBL-01`, confirms physical access, and explicitly authorizes manual read-only inspection of the listed non-identifying fields. If an already configured read-only transport is desired, he must separately authorize the reviewed exact command list after the connected-device checkpoint; this plan does not authorize enabling developer options or USB debugging. After Step B is recorded, each chosen C1–C5 experiment needs separate authorization naming the device, build, synthetic app/account/content, installs (if any), grants/settings allowed, network/provider access, actuation, teardown and retention. T-104 remains blocked until the sent-photo route and applicable device-safety boundary have actual evidence.
+Step B is now partial: the safe manually visible fields above are recorded, while API level, complete display/window data, offline speech, app packages/versions, accounts, grants, network profile and build/adapter identity remain unknown or absent. Do not fill those gaps with commands or personal-account inspection under this authorization.
+
+The recommended next bounded authorization is **C2 only**, because scoped screen explanation is one of only two plausible external workflow families and can use local synthetic content without personal accounts. It must separately authorize the exact local fixture/test build, Android scaffolding, install/teardown, per-session projection consent, synthetic app actuation, permitted storage, deny/revoke/Stop/secure-screen cases and zero network/egress. C5 is lower risk but does not reduce the two-external-workflow kill risk. Each other C1–C5 experiment still requires its own device/build/fixture/account/grant/network/actuation/retention authority. T-104 remains blocked until the sent-photo route and applicable device-safety boundary have actual evidence.
