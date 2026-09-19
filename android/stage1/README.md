@@ -63,3 +63,24 @@ OS/API, recognizer component, locale/model status, permission path, offline
 state, partial/final result, correction effort, Stop/lifecycle result and
 timings. A successful install or one correct transcript does not pass RES-06,
 EVAL-005/007/009/012 or a release gate.
+
+## C5 Granny-local text size
+
+The native shell now provides Standard / Larger / Larger still / Largest
+(1.0 / 1.15 / 1.3 / 1.5 times base sp, compounded with system font scaling).
+Selecting a choice only changes the sample. Apply writes the private,
+versioned `granny_text_scale` preference; readback must match before success.
+Restore reinstates the previous saved value once. Cancel abandons a preview;
+true backgrounding cancels it, while configuration recreation retains only
+preference/preview state. No transcript is retained by this mechanism.
+
+The store contains schema/version/current/previous enum only, uses synchronous
+commit and a single-process compare-and-set lock, and remains excluded from
+backup and transfer. Unknown save outcomes block further writes in that process.
+There is no Android/third-party settings control or natural-language dispatch.
+The inherited voice entry and local request submission remain separate.
+
+See the [session record](../../docs/10-execution/sessions/2026-09-20-c5-native-text-scale.md)
+and [exact tablet verification](../../docs/10-execution/t101-c5-tablet-verification.md).
+Host fake-store readbacks are distinct from actual disk/restart, Android layout,
+TalkBack and keyboard evidence. Those device cases are unrun.
