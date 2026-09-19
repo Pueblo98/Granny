@@ -2,7 +2,7 @@
 title: "Android Stage 1 Capability and Distribution Feasibility"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-19
 tags: [research, android, distribution]
 related:
   - research-plan.md
@@ -12,7 +12,9 @@ related:
 
 # Android Stage 1 feasibility
 
-**Evidence date: 2026-09-13.** This is a primary-source desk assessment, not a device test or store approval. Android/API facts, policy text, project inference and proposed experiments are separated below. No exact reference-tablet identity, app version or working integration has been established.
+**Evidence dates: initial assessment 2026-09-13; full route recheck 2026-09-19.** This is a primary-source desk assessment, not a device test or store approval. Android/API facts, policy text, project inference and proposed experiments are separated below. No exact reference-tablet identity, app version or working integration has been established. The current per-workflow matrices, source statements and unrun worksheets are in the [T-101 desk inventory](2026-09-19-t101-route-inventory.md).
+
+The 2026-09-19 recheck found no conflict with the accepted candidate/lab split. It narrowed the route posture: sent-photo provenance has no current ordinary candidate route; one-session screen explanation and a named media integration are conditional; exact local message preparation and Granny-local text scale are ordinary routes, but neither a manual compose handoff nor an internal setting counts as externally verified delegation. The two-external-workflow kill criterion is therefore at high risk until device experiments establish both scoped explanation and media, or another permitted integration is found.
 
 ## Distribution conclusion
 
@@ -56,9 +58,9 @@ Classification labels match the requested categories. Each row distinguishes sou
 | Notifications | Notification listener or approved integration; [NotificationListenerService](https://developer.android.com/reference/android/service/notification/NotificationListenerService) | Separate user-granted special access; notification content incomplete/redacted and not historical message database | Deferred broad listener; no MVP dependency; permission revoke and canary leakage if explored |
 | Contacts/people | Ordinary picker or runtime permission; [common intents](https://developer.android.com/guide/components/intents-common) | Prefer selected contacts/explicit aliases to broad address-book access; endpoint ambiguity persists | Duplicate names, revoked URI, no contact provider; EVAL-003 |
 | Calls | Ordinary intent/approved calling app; runtime permission for direct telephony path if selected | Dialer handoff differs from placed call; Wi-Fi tablet may lack telephony; no CALL_LOG requirement | Registered VoIP/dialer route, ring/answer oracle; EVAL-013 |
-| Messaging | Ordinary compose/send intents or approved app integration | Compose intent cannot read inbox or prove delivery; no personal-messenger API presumed available | Exact draft/endpoint/receipt, account sync, duplicate send; EVAL-003 |
+| Messaging | Ordinary compose intents or approved app integration | Android documents SMS/email compose and general Sharesheet handoff; these cannot read an inbox or prove external draft fidelity, send or delivery. No personal-messenger API is presumed available | Exact draft/endpoint/receipt, account sync, duplicate send; EVAL-003 |
 | SMS/call-log access | Sensitive runtime/role/policy constraints; [sensitive permissions](https://support.google.com/googleplay/android-developer/answer/16558241?hl=en) | Not required in proposed MVP; no exception assumed | Manifest denies broad SMS/call-log permissions; EVAL-011 |
-| Media | Ordinary app/API, approved integration, or admitted semantic recipe | Playback metadata/control depends on owning app/session; search/open may not play; subscriptions/DRM restrict | Source/title/playing state + human/audio oracle; EVAL-004 |
+| Media | Owner-exposed Media3 session/library, approved integration, or admitted semantic recipe | The owner app can accept/reject controllers and commands. Spotify's beta Android SDK 0.8.0 App Remote / 2.1.0 Auth is a concrete conditional candidate with user authorization and PlayerState; search/open may not play and subscriptions/catalog/DRM restrict | Source URI/title/playing state + independent session/audio oracle; EVAL-004 |
 | Local text/speech setting | Ordinary Android/app API | Granny controls its own text/UI; this is not global system font change | Read-back/restore/reflow; EVAL-007 |
 | System brightness/settings | User-granted special permission or user-owned settings handoff; [Settings.System](https://developer.android.com/reference/android/provider/Settings.System) | Some writes require special access; many settings restricted; no WRITE_SECURE_SETTINGS assumption | MVP manual handoff; exact field/permission if later explored |
 | Files/photos | Ordinary picker grants; [Photo picker](https://developer.android.com/training/data-storage/shared/photo-picker), [Storage Access Framework](https://developer.android.com/training/data-storage/shared/documents-files) | Selected URI access; not all files or private messenger storage; picker photos do not prove sender/date | URI expiry, no selection, metadata mismatch; EVAL-001/015 |
@@ -89,6 +91,6 @@ Questions for an eventual authorized Play review: (1) Is the exact fixed recipe 
 
 ## Source register
 
-All linked sources above: Google/Android Developers or Play/Android Help, accessed 2026-09-13. They establish documented API/policy behavior, not Granny compatibility or acceptance. Search terms included “AccessibilityService autonomously initiate plan execute”, “MediaProjection Android 14 consent”, “Android background foreground service restrictions” and each named API. API reference capabilities must be checked against actual runtime/API and app versions; policy may change before submission. External accessibility sources are recorded separately in [accessibility](../02-design/accessibility.md).
+The original linked Google/Android Developers and Play/Android Help sources were accessed 2026-09-13. They were rechecked on 2026-09-19 together with current User Data/disclosure guidance, Android restricted settings, common compose intents, Media3 controller/session documentation, Spotify's official Android SDK/release, DataStore 1.2.1 and scalable-content guidance. The [T-101 inventory](2026-09-19-t101-route-inventory.md#current-primary-sources) records exact links, statements and inference. These sources establish documented API/policy behavior, not Granny compatibility, provider selection or acceptance. API references must be checked against actual runtime/API/app versions and policy before submission. External accessibility sources are recorded separately in [accessibility](../02-design/accessibility.md).
 
 **Evidence not collected:** physical measurements; successful messenger/media integration; takeover guarantee; provider terms; store declaration/review; signed pilot distribution; participant or competitor tests. RES-02/04/05 and EVAL-001–011 specify the next evidence.

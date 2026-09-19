@@ -2,7 +2,7 @@
 title: "Capability admission, build modes and support lifecycle"
 status: proposed
 owner: Simon
-last_updated: 2026-09-14
+last_updated: 2026-09-19
 tags: [architecture, android, release]
 related:
   - system-overview.md
@@ -62,13 +62,13 @@ The planner receives a redacted subset of available operation schemas, never wri
 
 | Workflow / operation | Candidate route | Required postcondition | Current disposition / next evidence |
 |---|---|---|---|
-| UC-002 sent family photos / CAP-06 | Permitted communication integration or admitted fixed recipe | Exact sender/channel/date + attachment | Unknown; T-101 then T-104; photo picker alone not sufficient |
-| UC-003 explanation / CAP-01/02 | Scoped semantic observation where allowed or selected image | Bounded source-grounded explanation with protected content excluded | Unknown device route; T-101/102/104, EVAL-002/005/008 |
-| UC-006 draft / CAP-07 | Local preparation | Exact locally reviewed text/recipient | Specified, not implemented; T-103/105 |
-| UC-006 handoff / CAP-08 | Registered owning-app compose route | Opened vs actual draft state distinguished | Unknown; T-105; no sent claim |
+| UC-002 sent family photos / CAP-06 | Permitted communication integration or lab-only admitted fixed recipe | Exact sender/channel/date + attachment | Candidate integration unknown; picker/manual route no-go for outcome; fixed recipe conditional for lab experiment only. [T-101 desk evidence](../08-research/2026-09-19-t101-route-inventory.md#route-1--sent-family-photos); device evidence unrun, T-104 blocked |
+| UC-003 explanation / CAP-01/02 | Per-session app-window projection, scoped semantic observation, or selected image | Bounded source-grounded explanation with protected content excluded | Conditional for explicit scoped observation; selected-image subset go; automated recovery unknown/lab-only. [T-101 desk evidence](../08-research/2026-09-19-t101-route-inventory.md#route-2--scoped-screen-explanation-and-recovery); device/egress evidence unrun |
+| UC-006 draft / CAP-07 | Granny-local preparation | Exact locally reviewed text/recipient/channel | Go to own-app synthetic experiment; specified, not implemented. T-105 remains separate |
+| UC-006 handoff / CAP-08 | Android SMS/email compose or system chooser; exact owner integration if later found | Opened handoff vs independently read-back external draft distinguished | Conditional for truthful manual handoff; unknown for verified consumer-app draft. [T-101 desk evidence](../08-research/2026-09-19-t101-route-inventory.md#route-3--exact-message-preparation-and-confirmation); no sent claim |
 | UC-006 commit / CAP-09 | Supported send integration only | Receipt matched to exact intended effect | Disabled; no working consumer-messenger integration established |
-| UC-004 media / CAP-10 | Admitted playback API/integration or fixed recipe | Exact content + active playback | Unknown; T-106 |
-| UC-007 text / CAP-11 | Granny-owned preference/UI | Stored value + accessible reflow | Specified, not implemented; T-102; no device-wide claim |
+| UC-004 media / CAP-10 | Owner-exposed Media3 route, named approved integration, or lab-only fixed recipe | Exact content + active playback | Conditional per named owner/version; Spotify App Remote 0.8.0/Auth 2.1.0 is the current concrete candidate, not selected support. [T-101 desk evidence](../08-research/2026-09-19-t101-route-inventory.md#route-4--requested-media); device/provider evidence unrun |
+| UC-007 text / CAP-11 | Granny-owned preference/UI | Stored value + accessible reflow | Go to own-app synthetic experiment; specified, not implemented; no device-wide claim. [T-101 desk evidence](../08-research/2026-09-19-t101-route-inventory.md#route-5--granny-owned-text-adjustment) |
 | Stop / CAP-12 | Local coordinator plus tested adapter cancellation boundary | No post-latch dispatch and honest in-flight status | Fake proof T-103 first, device proof EVAL-006 later |
 
 A candidate app name is a test hypothesis, not support. Do not convert WhatsApp Business API documentation into a claim to read an adult's consumer WhatsApp inbox. Do not substitute a controlled fake for a failed third-party route.

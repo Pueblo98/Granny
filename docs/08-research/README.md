@@ -2,11 +2,12 @@
 title: "Research and source register"
 status: proposed
 owner: Simon
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 tags: [research]
 related:
   - research-plan.md
   - android-stage-1-feasibility.md
+  - 2026-09-19-t101-route-inventory.md
   - source-material/initialization-handoff.md
   - source-material/planning-conversation.md
   - source-material/2026-09-17-class-brainstorming.md
@@ -18,7 +19,7 @@ related:
 
 Workflow-tool source, accessed 2026-09-14: OpenAI [Build skills](https://learn.chatgpt.com/docs/build-skills) documents repo-local .agents/skills discovery, SKILL.md name/description metadata and optional UI settings. This establishes the packaging convention, not successful discovery or behavioral reliability in a fresh session. Repository skills are instruction-only and do not install global plugins/configuration.
 
-[Research plan](research-plan.md) owns hypotheses, methods, ethics and evidence gates. No completed user/device study is implied by a specification. [Android feasibility](android-stage-1-feasibility.md) owns current platform/policy desk findings; [naming](../02-design/naming-exploration.md) owns preliminary candidate screening. Store future dated observations using the [research template](../_templates/research-note.md), not by editing source history.
+[Research plan](research-plan.md) owns hypotheses, methods, ethics and evidence gates. No completed user/device study is implied by a specification. [Android feasibility](android-stage-1-feasibility.md) owns platform/policy conclusions; the [2026-09-19 T-101 route inventory](2026-09-19-t101-route-inventory.md) records the current five-workflow source recheck and unrun physical/synthetic worksheets. [Naming](../02-design/naming-exploration.md) owns preliminary candidate screening. Store future dated observations using the [research template](../_templates/research-note.md), not by editing source history.
 
 ## Preserved inputs
 
@@ -30,15 +31,17 @@ Workflow-tool source, accessed 2026-09-14: OpenAI [Build skills](https://learn.c
 | [Planning conversation](source-material/planning-conversation.md) | Captured historical proposals, not approval/research results | SHA-256 d1d4edd3419123df3a3470720d2fda1932c68ba38fdd40df62c9a8aa003106d5 |
 | [Simon's class brainstorming](source-material/2026-09-17-class-brainstorming.md) | Structured capture of Simon-authored ideas and proposed P1–P9 sequence; source note records the original supplied-file hash; conflicts require a current decision | SHA-256 93ca1ef2e43610771588b3642a27693d9433e1c63555babf8509022566ee1f35 |
 
-## Current primary-source desk evidence — accessed 2026-09-13
+## Current primary-source desk evidence — accessed 2026-09-13 and rechecked 2026-09-19
 
 | Publisher / source | Establishes | Limits / canonical analysis |
 |---|---|---|
-| Google Play, [AccessibilityService policy](https://support.google.com/googleplay/android-developer/answer/10964491?hl=en) | General autonomous initiation/planning/execution restrictions, static rule distinction, accessibility-tool criteria and disclosure | Not approval for Granny; [feasibility](android-stage-1-feasibility.md) maps routes |
+| Google Play, [AccessibilityService policy](https://support.google.com/googleplay/android-developer/answer/10964491?hl=en) | General autonomous initiation/planning/execution restrictions, static rule distinction, accessibility-tool criteria and disclosure | Not approval for Granny; [feasibility](android-stage-1-feasibility.md) and [T-101](2026-09-19-t101-route-inventory.md) map routes |
 | Google Play, [sensitive permissions](https://support.google.com/googleplay/android-developer/answer/16558241?hl=en), [User Data](https://support.google.com/googleplay/android-developer/answer/10144311?hl=en) | Permission and data/disclosure obligations | App/market-specific review still needed; no broad legal conclusion |
 | Android Developers, [accessibility services](https://developer.android.com/guide/topics/ui/accessibility/service), [AccessibilityService reference](https://developer.android.com/reference/android/accessibilityservice/AccessibilityService) | User-granted observation/action APIs and lifecycle | Does not establish target-app semantic quality or store permission |
 | Android Developers, [MediaProjection](https://developer.android.com/media/grow/media-projection), [foreground-service restrictions](https://developer.android.com/develop/background-work/services/fgs/restrictions-bg-start) | Capture grant/lifecycle and background limits | Secure windows/OEM/versions require tests |
 | Android Developers, [common intents](https://developer.android.com/guide/components/intents-common), [package visibility](https://developer.android.com/training/package-visibility) | Supported intents are scoped integrations, app-query restrictions | App launch is not task verification |
+| Android Developers, [Media3 controller/session](https://developer.android.com/media/media3/session/connect-to-media-app); Spotify, [Android SDK](https://developer.spotify.com/documentation/android) | Owner-exposed media sessions can accept controllers; Spotify's beta SDK documents authorized playback and PlayerState | Conditional named-route lead only; app/account/version/terms/device evidence remains unrun |
+| Android Developers, [DataStore](https://developer.android.com/topic/libraries/architecture/datastore), [scalable content](https://developer.android.com/develop/ui/compose/accessibility/scalable-content) | Current app-local preference storage and own-content scaling guidance | Does not select a framework or prove layout/accessibility on the tablet |
 | Android Developers, [accessible apps](https://developer.android.com/guide/topics/ui/accessibility/apps); W3C [WCAG 2.2](https://www.w3.org/TR/WCAG22/) | Platform target/contrast/semantics guidance and web criteria | [Accessibility spec](../02-design/accessibility.md) separates native internal targets from external minimums; no compliance certification |
 | Official foundries/repositories linked in [identity](../02-design/brand-and-visual-identity.md) | Candidate typeface provenance and licenses | Exact version, glyph coverage and performance untested; no fonts installed |
 | Primary company/app pages and CIPO linked in [naming](../02-design/naming-exploration.md) | Observable competing uses and specific trademark lead | Discovery screening only; unknown markets and unsearched classes; no clearance |
