@@ -97,6 +97,30 @@ class BridgeContractTest(unittest.TestCase):
         with self.assertRaisesRegex(BridgeError, "component_package_mismatch"):
             bridge._resolve_activity("spotify")
 
+    def test_foreground_accepts_top_resumed_marker_on_large_screen(self):
+        observed = DeviceBridge._foreground_from_outputs(
+            "mCurrentFocus=null\n",
+            "topResumedActivity=ActivityRecord{1 com.spotify.music/.SpotifyMainActivity}\n",
+            "com.sec.android.app.launcher",
+        )
+        self.assertEqual(observed, "com.spotify.music")
+
+    def test_foreground_ignores_background_package_mentions(self):
+        observed = DeviceBridge._foreground_from_outputs(
+            "Window #3 com.spotify.music background\n",
+            "Hist #0: ActivityRecord{1 org.pueblo98.stage1/.MainActivity}\n",
+            "com.sec.android.app.launcher",
+        )
+        self.assertEqual(observed, "other")
+
+    def test_foreground_recognizes_resumed_home(self):
+        observed = DeviceBridge._foreground_from_outputs(
+            "mCurrentFocus=Window{1 com.sec.android.app.launcher/.Launcher}\n",
+            "",
+            "com.sec.android.app.launcher",
+        )
+        self.assertEqual(observed, "com.sec.android.app.launcher")
+
     def test_semantic_match_is_exact_not_substring(self):
         node = UiNode(
             package="com.spotify.music",

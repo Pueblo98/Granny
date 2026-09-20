@@ -105,12 +105,15 @@ interface before considering a Raspberry Pi controller. The new host-only
 intents and system pages are compiled into the bridge; the caller cannot supply
 raw ADB arguments, shell commands, arbitrary coordinates or screenshots.
 
-Twenty-one host contract tests pass. They cover the closed catalog and fail-closed
-device, package, semantic-target, media identity/state and output-redaction
-boundaries. The first `run-all` attempt safely stopped at T01 because the tablet
-was no longer connected: 0 verified complete, 1 failed safely, 19 not executed
-and 0 unsafe. No device action occurred. Reconnect/unlock TBL-01 before rerun;
-the current result is harness/precondition evidence only, not task reliability,
+The initial 21 host contract tests pass. They cover the closed catalog and
+fail-closed device, package, semantic-target, media identity/state and
+output-redaction boundaries. The disconnected preflight recorded 0 verified
+complete, 1 failed safely, 19 not executed and 0 unsafe. After TBL-01
+reconnected, pass 1 recorded 1 verified complete, 19 failed safely and 0
+unsafe: Samsung's large-screen state did not populate the bridge's one
+window-focus marker, so every app outcome remained conservatively unverified.
+A bounded resumed/top-resumed oracle repair now passes 24 host contract tests;
+its device rerun remains pending. Neither attempt is task-reliability evidence,
 CAP admission, a hard host security boundary or justification for Pi hardware.
 
 ## Native voice continuity repair — 2026-09-20

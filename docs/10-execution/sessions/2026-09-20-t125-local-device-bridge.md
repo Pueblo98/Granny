@@ -15,7 +15,7 @@ session_state: review
 record_basis: contemporaneous
 agent: Codex
 branch: feature/t125-local-device-bridge
-next_action: Reconnect and unlock TBL-01, then rerun the exact T01-T20 catalog only through the closed bridge and record deidentified outcomes
+next_action: Review and rerun the bounded Samsung resumed-activity oracle repair through the exact closed T01-T20 catalog, retaining both failed passes
 changed_paths:
   - experiments/local-device-bridge/README.md
   - experiments/local-device-bridge/bridge.py
@@ -58,7 +58,7 @@ screenshots, identifiers, UI trees or media metadata.
 - Added exact foreground and Spotify artist/title/playback-state oracles.
   Transport/UI/media output is reduced to registered booleans, state names and
   normalized errors.
-- Added 21 host contract tests. Unknown task/app/target/text/page, multiple
+- Added initial host contract tests. Unknown task/app/target/text/page, multiple
   or unauthorized device, component mismatch, substring selector, invalid
   bounds, wrong media identity/state and raw transport-output leakage all fail
   closed.
@@ -69,7 +69,7 @@ screenshots, identifiers, UI trees or media metadata.
 ## Evidence
 
 `python3 -m unittest discover -s experiments/local-device-bridge -p
-'test_*.py' -v` passes 21/21. `python3 -m py_compile
+'test_*.py' -v` passes 24/24 after the bounded foreground-oracle repair. `python3 -m py_compile
 experiments/local-device-bridge/bridge.py` and `git diff --check` pass.
 
 The first model-facing `run-all` used only the closed CLI. T01 returned
@@ -79,13 +79,26 @@ occurred. This is actual precondition/fail-closed evidence, not synthetic-device
 task evidence. A single bounded T01 retry returned the same missing-device
 condition.
 
+After Simon reconnected TBL-01, device pass 1 ran from published commit
+`f2ff689f2538818fb9b96e66019326ca7d1dcb3f`. T01 verified one awake, unlocked
+authorized tablet. T02–T20 all failed safely: Android accepted some fixed
+launch/search requests, but the bridge's window-only foreground oracle did not
+recognize Samsung resumed/top-resumed large-screen markers. Result: 1 verified
+complete, 19 failed safely and 0 unsafe. Exact downstream effects remain
+unverified and the run is retained rather than excluded.
+
+The bounded repair adds only sanitized `topResumedActivity`,
+`mResumedActivity` and `ResumedActivity` recognition alongside the existing
+window markers, still returning only allowlisted package names. Regression
+fixtures require a true top-resumed marker and reject incidental background
+package mentions. A fresh device rerun is required from the repaired commit.
+
 ## Handoff
 
-Reconnect and unlock TBL-01, preserving the existing USB-debug authorization.
-Rerun `run-all` only through the model-facing bridge and retain all twenty
-terminal outcomes. Do not bypass a failed case with direct ADB. If the catalog
-needs correction, rerun host checks and identify the changed bridge digest
-before any claim-bearing device run.
+Publish the foreground-oracle repair, then rerun `run-all` only through the
+model-facing bridge and retain all twenty terminal outcomes. Do not bypass a
+failed case with direct ADB. Any further correction requires fresh host checks
+and a new source commit before another claim-bearing device run.
 
 This mixed code/documentation task may be pushed under standing task-branch
 authority. It is not authorized for PR merge, main integration, Pi purchase/

@@ -182,18 +182,39 @@ class DeviceBridge:
         return component
 
     def foreground_package(self) -> str:
-        output = self._shell("dumpsys", "window", "windows")
-        focus_lines = [
-            line for line in output.splitlines()
-            if "mCurrentFocus" in line or "mFocusedApp" in line
-        ]
-        joined = "\n".join(focus_lines)
-        for package in self.APP_PACKAGES.values():
-            if package in joined:
-                return package
+        window_output = self._shell("dumpsys", "window", "windows")
+        activity_output = self._shell("dumpsys", "activity", "activities")
         home = self._resolve_home_package()
-        if home and home in joined:
-            return home
+        return self._foreground_from_outputs(window_output, activity_output, home)
+
+    @classmethod
+    def _foreground_from_outputs(
+        cls,
+        window_output: str,
+        activity_output: str,
+        home_package: str | None,
+    ) -> str:
+        packages = list(cls.APP_PACKAGES.values())
+        if home_package:
+            packages.append(home_package)
+        # Large-screen/OEM windowing may omit mCurrentFocus while still naming a
+        # single top-resumed activity. Inspect only foreground-marker lines and
+        # return only an allowlisted package, never raw activity data.
+        markers = (
+            "topResumedActivity",
+            "mResumedActivity",
+            "ResumedActivity",
+            "mCurrentFocus",
+            "mFocusedApp",
+        )
+        lines = [*activity_output.splitlines(), *window_output.splitlines()]
+        for marker in markers:
+            for line in lines:
+                if marker not in line:
+                    continue
+                for package in packages:
+                    if package in line:
+                        return package
         return "other"
 
     def _resolve_home_package(self) -> str | None:
