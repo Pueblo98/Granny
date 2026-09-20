@@ -2,7 +2,7 @@
 title: "Stage 1 Threat Model"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [safety, threats]
 related:
   - action-policy.md
@@ -37,6 +37,7 @@ All mitigations below are specified, **unimplemented/unrun**. Gate numbers link 
 | THR-16 | Distribution/supply-chain mismatch — Build enables unreviewed dynamic route, recipe update or malicious package | Policy violation or unsafe control | Signed/versioned build/registry; package/version admission; capability kill switch; no model-downloaded scripts | EVAL-009/011; install/update review | Store/OEM/policy changes | Android + release | GATE-04 |
 | THR-17 | Generated-interface deception — Model/content proposes an unknown control, hides consequence, duplicates approval, creates unsafe focus/order, or persists a stale/private Home item | Accidental or misunderstood action; inaccessible escape; shoulder-surfed private context | ADR-0013 registered CMP IDs/versions/slots/actions only; ADR-0016 limits Home to one compact continuation plus renderer-owned CMP-012 with admitted room metadata; truthful overflow state; renderer-owned semantics/reflow; stable Stop/Talk/Type; whole-plan rejection and written Rooms fallback | EVAL-007/008/010/012 composition, privacy and comprehension attacks | An approved continuation or room label may still distract or reveal generic context | design + agent + safety | GATE-05/06 |
 | THR-18 | Room-context collapse — Malicious/misclassified content, stale membership or an overbroad cross-room query leaks sensitive material, poisons another task or causes room deletion to remove/strand canonical data | Private disclosure, wrong future context, lost findability or data loss | Typed canonical references and revisions; local sensitivity/scope filter; minimum relevant retrieval with provenance; no instruction promotion; direct browse/Unfiled; room deletion separate from underlying-data deletion; invalidate room-scoped plans/permits | EVAL-008/010/012 room fixtures, cross-room canaries, direct-findability and delete-versus-data comprehension | Relevant but surprising cross-room inference; user may misread a room as a security boundary | memory + privacy + design | GATE-05/06/09 |
+| THR-19 | Development bridge confused for a security boundary — Model or compromised host can edit/invoke the same transport wrapper, or a lab route leaks into a candidate build | Raw device authority, private-screen exposure or unreviewed actions despite a narrow nominal schema | Lab-only separate source; compiled task/target/text/URL registry; normalized outputs; no arbitrary arguments; candidate artifact exclusion; later hard-boundary experiment uses a separately owned service/account/device | T-125 host denial tests; EVAL-009 build-surface inspection; adversarial direct-interface and artifact scan before any stronger claim | Same-user development harness cannot resist an actor with repository or process execution access | security + Android + release | GATE-04/06 |
 
 ## Abuse-case acceptance
 

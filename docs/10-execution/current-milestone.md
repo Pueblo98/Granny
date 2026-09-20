@@ -96,6 +96,23 @@ account/auth/offline/ad behavior, exact content identity, active playback and
 Pause remain open, so T-106, CAP-10 play/pause, GATE-04 and ADR-0009's
 external-workflow bar remain incomplete.
 
+## T-125 closed local device bridge — 2026-09-20
+
+Simon asked to test twenty representative tablet tasks through a narrow local
+interface before considering a Raspberry Pi controller. The new host-only
+[bridge](../../experiments/local-device-bridge/README.md) exposes only a fixed
+`T01`–`T20` catalog. Packages, semantic labels, public fixture text, URLs,
+intents and system pages are compiled into the bridge; the caller cannot supply
+raw ADB arguments, shell commands, arbitrary coordinates or screenshots.
+
+Twenty-one host contract tests pass. They cover the closed catalog and fail-closed
+device, package, semantic-target, media identity/state and output-redaction
+boundaries. The first `run-all` attempt safely stopped at T01 because the tablet
+was no longer connected: 0 verified complete, 1 failed safely, 19 not executed
+and 0 unsafe. No device action occurred. Reconnect/unlock TBL-01 before rerun;
+the current result is harness/precondition evidence only, not task reliability,
+CAP admission, a hard host security boundary or justification for Pi hardware.
+
 ## Native voice continuity repair — 2026-09-20
 
 [Simon-reported smoke feedback](../08-research/2026-09-20-native-tablet-smoke-feedback.md)

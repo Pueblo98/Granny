@@ -499,6 +499,57 @@ surfaces without affecting T-122/T-123, speech or C5. Host completion requires
 unit tests, assemble, lint, permission/dependency inspection, documentation
 validation and an explicit statement that no device run occurred.
 
+## T-125 packet — Closed local device bridge and twenty-case run
+
+**Requested mode and outcome:** Implement and exercise a lab-only host bridge
+before considering a Raspberry Pi. The model-facing surface is a closed catalog
+of twenty named cases, not raw ADB, shell, coordinates or a generic UI tool.
+Measure whether the fixed interface can complete useful Granny, Spotify,
+YouTube, browser, Android Settings and Clock tasks with independent outcomes.
+
+**Boundary and authority:** One already-authorized `TBL-01`; fixed public
+fixtures only. Spotify uses Playboi Carti / Magnolia and must finish paused;
+YouTube uses “how to boil an egg”; the browser may open only
+`https://example.com/`; Settings navigation is read-only; Clock creates no
+alarm. Provider search/play history is an expected external side effect. Do not
+open account/profile/credential/payment/contact/message/file surfaces, install
+apps, change grants/settings, accept provider terms or retain screenshots,
+identifiers, raw UI trees or metadata.
+
+**Interface contract:** The CLI accepts `catalog`, `run T01`–`T20`, or
+`run-all`. App, semantic target, fixture text, URL, intent and system-page
+values are compiled into the bridge. A fresh semantic hierarchy supplies tap
+coordinates internally; no caller provides coordinates. Exactly one awake,
+unlocked authorized device is a suite precondition. External command output is
+reduced to registered booleans/state names and normalized errors.
+
+**Case catalog:** T01 readiness; T02 Home; T03–T05 Granny open/Setup/return;
+T06–T13 Spotify open/search/play/verify/pause/resume/final pause; T14–T15
+YouTube open/public search; T16 fixed public web page; T17–T18 Settings and
+Accessibility settings; T19 Clock without alarm; T20 Home. Each case receives
+exactly one terminal classification. If T01 fails, T02–T20 are `not_executed`,
+not manufactured failures or passes.
+
+**Oracles and adverse checks:** Foreground package, Granny text, fixed public
+query visibility and package-matched Spotify artist/title/state are independent
+from command acceptance. Host tests deny unknown task/app/semantic target/text/
+page, multiple/missing/unauthorized devices, package mismatch, substring target,
+invalid bounds, wrong media identity/state and raw error leakage. Inspect public
+method signatures to ensure they expose no shell/argument/package/coordinate/
+URL field.
+
+**Security claim limit:** Because the same development user can edit and invoke
+the bridge, this validates interface closure and behavior, not a hard security
+boundary against the model or a compromised host. A separately owned service,
+OS account/container or Pi would be needed to test that stronger claim. The
+bridge must never ship in candidate/release artifacts.
+
+**Rollback and completion:** Delete the experiment directory. Record every
+attempt and denominator, including `not_executed`; do not erase provider
+history to make the run appear clean. Host tests/docs must pass. Device evidence
+requires the exact reviewed source digest, one connected device and a separate
+deidentified record; a missing device blocks only the run, not source review.
+
 ## Restart prompts
 
 These are scoped examples, not standing authorization:

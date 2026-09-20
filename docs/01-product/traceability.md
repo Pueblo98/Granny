@@ -25,7 +25,11 @@ and human outcomes remain unrun. No capability or gate is admitted by this link.
 clarification and exact draft preview for PRD-FR-007/008; it does not implement
 external handoff/send. [T-124](../10-execution/backlog.md#t-124) adds a
 debug-only Android media request handoff for PRD-FR-010; it does not implement
-or evidence matching playback or Pause.
+or evidence matching playback or Pause. [T-125](../10-execution/backlog.md#t-125)
+adds a host-only closed twenty-case device-bridge experiment for PRD-FR-004/
+010/012/013 and PRD-SAF-001/003/004/005 themes. Its host denial tests do not
+implement production control, and its first device attempt stopped at the
+missing-device precondition before any task executed.
 
 ## Executable design artifact
 
