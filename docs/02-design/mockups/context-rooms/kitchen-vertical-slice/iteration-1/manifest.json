@@ -1,0 +1,50 @@
+{
+  "iteration": "kitchen-vertical-slice-iteration-1",
+  "status": "proposed-awaiting-simon-review",
+  "generated_with": "built-in image generation; comparison composed locally from selected frames",
+  "selected_frame_count": 5,
+  "rejected_retry_count": 2,
+  "entries": [
+    {
+      "frame": 1,
+      "role": "home-to-room-handoff",
+      "file_path": "docs/02-design/mockups/context-rooms/kitchen-vertical-slice/iteration-1/01-home-to-kitchen.png",
+      "dimensions": {"width": 1585, "height": 992},
+      "review_status": "selected"
+    },
+    {
+      "frame": 2,
+      "role": "room-overview",
+      "file_path": "docs/02-design/mockups/context-rooms/kitchen-vertical-slice/iteration-1/02-kitchen-overview.png",
+      "dimensions": {"width": 1586, "height": 992},
+      "review_status": "selected-after-symbol-correction"
+    },
+    {
+      "frame": 3,
+      "role": "collection-selected-and-direct-browse",
+      "file_path": "docs/02-design/mockups/context-rooms/kitchen-vertical-slice/iteration-1/03-recipes-selected.png",
+      "dimensions": {"width": 1586, "height": 992},
+      "review_status": "selected-after-density-correction"
+    },
+    {
+      "frame": 4,
+      "role": "fictional-item-detail",
+      "file_path": "docs/02-design/mockups/context-rooms/kitchen-vertical-slice/iteration-1/04-vegetable-soup-detail.png",
+      "dimensions": {"width": 1584, "height": 993},
+      "review_status": "selected"
+    },
+    {
+      "frame": 5,
+      "role": "room-aware-conversation-and-source-cue",
+      "file_path": "docs/02-design/mockups/context-rooms/kitchen-vertical-slice/iteration-1/05-ask-granny-about-soup.png",
+      "dimensions": {"width": 1586, "height": 992},
+      "review_status": "selected-with-recorded-extra-source-copy"
+    },
+    {
+      "role": "comparison-sheet",
+      "file_path": "docs/02-design/mockups/context-rooms/kitchen-vertical-slice/iteration-1/comparison.png",
+      "dimensions": {"width": 1680, "height": 1872},
+      "review_status": "derived-review-artifact"
+    }
+  ]
+}

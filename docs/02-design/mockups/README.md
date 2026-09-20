@@ -5,6 +5,8 @@ owner: Simon
 last_updated: 2026-09-20
 tags: [design, mockups]
 related:
+  - 2026-09-20-profile-accessibility/iteration-1/README.md
+  - 2026-09-20-navigation-supporting-surfaces/iteration-1/README.md
   - 2026-09-20-core-outcome-modules/iteration-1/README.md
   - 2026-09-20-rooms-system/iteration-1/README.md
   - 2026-09-20-shared-state-pack/iteration-1/README.md
@@ -17,6 +19,19 @@ related:
 ---
 
 # Mockup gallery
+
+**Current Profile/accessibility review:** [iteration 1](2026-09-20-profile-accessibility/iteration-1/README.md)
+adds a local, non-account Profile destination plus representative 200% text,
+narrow-window, keyboard-open, keyboard-focus, reduced-motion, no-microphone,
+artwork-disabled, long-copy and screen-reader-order references. These ten
+Harbour Blue frames define adaptation patterns to review; they do not prove the
+full per-surface accessibility matrix or native assistive-technology behavior.
+
+**Current navigation/supporting-surface review:** [iteration 1](2026-09-20-navigation-supporting-surfaces/iteration-1/README.md)
+covers Menu, minimal Today history, Settings, Privacy/data, Accessibility,
+Help, new conversation, return from an external app, global search and
+three-step skippable onboarding. Thirteen Harbour Blue frames keep navigation
+secondary to conversation and separate preferences from optional access.
 
 **Current core outcome-module review:** [iteration 1](2026-09-20-core-outcome-modules/iteration-1/README.md)
 places Photos, screen explanation, message drafting, media and reading

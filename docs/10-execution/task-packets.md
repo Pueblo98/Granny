@@ -273,7 +273,9 @@ is reducer/output state, separate from fake recognizer acknowledgements.
 Samsung only, record OS/API, recognizer component, locale/model availability
 and app SHA. Exercise permission grant/deny/revoke, offline mode, quiet and
 ordinary home-like noise, conversational distance, names/numbers/dates,
-10-second no-speech behavior, 30-second cap, Done, Stop, lock/background and
+10-second session-level no-speech behavior, absolute 30-second/eight-segment
+cap, append-to-existing-draft, multi-sentence pauses, Done/Stop in a restart gap,
+late prior-segment callbacks, lock/background and
 rotation. Record partial/final correctness, correction effort and timings;
 retain no raw audio or personal transcript. Use synthetic phrases. Host build
 success cannot establish any device or human claim.
@@ -284,6 +286,84 @@ lint, documentation validation, a content/permission inspection and exact
 unrun gaps. T-120 reaches review after those checks; it completes only after
 the requested implementation handoff is accepted. Device evidence, RES-06 and
 GATE-05/06/07 remain separate.
+
+<a id="t-121-packet"></a>
+## T-121 packet — Explicit spoken readback and speech controls
+
+**Requested mode and outcome:** Extend the own-app Android shell so the person
+can explicitly read the current visible request aloud, stop only speech while
+the words remain on screen, repeat the unchanged revision, turn sound off/on
+and preview then apply one of the design system's four speech rates. This slice
+covers PRD-FR-013/016 and ACC-003 through UC-017/022, J-007, SCR-004,
+CMP-001/007/009 and CAP-11/12.
+
+**Entry and boundary:** Start from the published C5/native voice branch. Keep
+Views, manual interfaces/fakes and JUnit 4; add no provider SDK, model, Internet
+permission, service, audio file or testing framework. Android `TextToSpeech` is
+behind a removable adapter. Written text is always complete when speech is
+off, unavailable, stopped or failed. The app passes explicitly selected text
+to the installed Android TTS service; host inspection cannot prove that
+service's runtime retention or egress behavior.
+
+**Output contract:**
+
+- Nothing is spoken automatically. Read aloud and Repeat are explicit touch or
+  semantic actions; neither authorizes or repeats an external consequence.
+- Select only an installed locale-compatible `Voice` for which
+  `isNetworkConnectionRequired()` is false. Missing engine, voice/language
+  data or unsupported rate returns unavailable/error with written fallback;
+  never switch silently to a network-required voice.
+- Bind every readback to the exact visible text revision. Editing, replacement,
+  Talk, lifecycle exit or Sound off invalidates the output generation before
+  calling platform Stop. Late start/done/stop/error callbacks cannot restore
+  old state. Reject over-limit text rather than silently truncate it.
+- Stop speaking interrupts output and preserves the visible text, current
+  task and Repeat for the unchanged revision. The global Stop also stops
+  output. Microphone and speaker state use distinct written labels.
+- Do not run capture and output together. Starting Talk first stops speech to
+  avoid speaker echo; this is not ambient barge-in or wake-word support.
+
+**Settings contract:** SpeechRate uses only 0.75, 1.0, 1.25 and 1.5, labeled
+Slower, Normal, Faster and Fastest. Selecting a rate is a preview proposal; the
+matching audible sample must complete before Apply. Persist by versioned
+compare-and-set, then independently read back the exact value before claiming
+success. Conflict reloads current state; failed, corrupt, unknown or mismatched
+readback never retries or claims success. Restore returns to the stored prior
+rate. Sound off is an immediate reversible local setting and cancels current
+speech. Backup/device transfer remains excluded for the setting store.
+
+**Host fixture and oracle:** Pure controllers use controlled generations and a
+fake versioned store. Cover unavailable output, explicit exact-text start,
+start/done/error replacement, Stop before/after start, late completion denial,
+same/changed revision, Repeat, rate preview isolation, lifecycle clear, all
+four rate values, preview-before-apply, Sound off/on, restart readback,
+restore, conflict, corrupt record, write failure/unknown, mismatched readback
+and version exhaustion. Controller/store state is the oracle, separate from
+platform acknowledgements.
+
+**Exact-device matrix, unrun until separately authorized:** On the pseudonymous
+Samsung, record app SHA, Android build, installed TTS engine/component/version,
+locale, selected voice and its network-required flag. Test missing/available
+voice data, airplane-mode output, all four rates, explicit Read, Stop latency,
+Repeat, Sound off, edit invalidation, Talk/output exclusion, volume zero,
+wired/Bluetooth route where safely available, audio-focus interruption,
+rotation, background, lock and task removal. Run TalkBack/keyboard/switch and
+large-text reachability. Use synthetic phrases and inspect content-free network
+and storage observations independently; do not retain synthesized audio.
+
+**Rollback and completion:** Speech output is a removable adapter; written
+interaction remains supported. Host completion requires unit tests, assemble,
+lint, manifest/dependency/data inspection and exact unrun gaps. T-121 reaches
+review after those checks. Device/participant evidence and release gates remain
+separate.
+
+### Combined native integration follow-up
+
+The [integration record](sessions/2026-09-20-native-conversation-integration.md)
+owns the combined artifact, exact host checks and deferred synthetic matrix.
+T-120/T-121 device sequences must be revised for this shared surface before any
+later exact authorization: do not install or reuse an earlier APK implicitly.
+Simon has placed physical-tablet testing on hold while code is integrated.
 
 ## Restart prompts
 
