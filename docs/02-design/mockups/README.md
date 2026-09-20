@@ -5,6 +5,7 @@ owner: Simon
 last_updated: 2026-09-20
 tags: [design, mockups]
 related:
+  - 2026-09-20-rooms-system/iteration-1/README.md
   - 2026-09-20-shared-state-pack/iteration-1/README.md
   - 2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md
   - 2026-09-19-harbour-blue-home/round-4/README.md
@@ -15,6 +16,16 @@ related:
 ---
 
 # Mockup gallery
+
+**Current Rooms-system review:** [iteration 1](2026-09-20-rooms-system/iteration-1/README.md)
+extends the selected Harbour Blue shell through the full library, global search,
+All items/Unfiled, room and item organization, archive/restore, separated
+deletion scopes, cross-room disclosure and degraded states. These 17 screens are
+proposed visual references and have not been promoted into canonical PRD or
+design-system instructions. Simon authorized the active frontend session to use
+the [bounded implementation metaprompt](2026-09-20-rooms-system/iteration-1/ROOMS-SYSTEM-IMPLEMENTATION-METAPROMPT.md)
+for a fictional in-memory prototype while those production contracts remain
+unchanged.
 
 **Current shared state pack:** [iteration 1](2026-09-20-shared-state-pack/iteration-1/README.md)
 extends the selected Harbour Blue conversation shell through listening,
