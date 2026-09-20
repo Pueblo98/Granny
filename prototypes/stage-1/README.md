@@ -19,9 +19,10 @@ Current connected runtime: [versioned local backend/MCP contract](../../docs/04-
 
 ### Current visual cleanup (20 September)
 
-Simon's follow-up places unchanged transparent decor objects on Home and in the
-library, with portraits reserved for the Home continuation and cropped/faded
-room conversations. Overview backdrops now fill more of the outer corner;
+Simon's follow-up places unchanged transparent decor objects on Home, with
+portraits in the Home continuation and cropped/faded room conversations. The
+later Rooms-system references restore portraits to the dedicated library.
+Overview backdrops now fill more of the outer corner;
 the separate corner decor/motif overlays have been removed. Artwork still
 disappears at narrow/large-text sizes without removing any room controls.
 
@@ -106,7 +107,7 @@ authority were reused, not replaced by a separate seven-step wizard.
 - Start on Home: review the Round writing surface, optional Kitchen continuation, and open six-room row. When the rendered row overflows, written Previous/Next controls move it; when everything fits they disappear. **See all rooms** provides a direct vertical fallback.
 - Type a goal or open **Talk (simulated)** without choosing a Room. Supported requests need no category selection. Talk never uses a microphone or speech API.
 - Open Kitchen, Fitness, Trips, Garden, Reading or Projects. Each overview has four labelled symbols and an explicit route to all eight collections. Select a collection, search, open a fictional item, then **Ask Granny about this**. Review the prefilled question and Send. **View source** reopens the item; **Stop using this source** excludes it from later replies while earlier answers remain labelled as history. Returning Home clears current-room priority.
-- Rooms provides **Search all**, **All items**, **Unfiled** and a quiet **Create a room** route. The five-step wizard creates only on its final explicit action. New rooms remain in tab memory; Reset everything or reload removes them. There is no inferred creation, account, real history, real document, archive/delete or production storage.
+- Rooms provides **Search all rooms**, **All items**, **Unfiled**, **Archived rooms** and **Create a room**. Create/edit uses one temporary required-name/purpose form with an explicit save action. New rooms and all organization changes remain in tab memory; Reset everything or reload restores the fixture. No inferred creation, account, real history, real document or production storage is involved.
 - Try “Tell David I’ll call after dinner.” Resolve the person/channel, edit the exact preview, then choose **Open this draft**. Default outcome is a fictional **unsent** draft.
 - Try “Show me the photos Sophie sent yesterday.”, “What am I looking at?”, “Play some Nina Simone.” and “Make this easier to read.” Results and controls appear in the same conversation. Screen help asks for a supplied fictional screen; no actual screen is observed.
 - Demonstration progression is automatic, normally 650 ms per stage. These are scripted timings, not measured model/Android latency. Stop, edits, reset and task replacement invalidate pending callbacks.
@@ -116,6 +117,44 @@ authority were reused, not replaced by a separate seven-step wizard.
 Start with the [review script and coverage/gaps](../../docs/02-design/browser-prototype.md). Harbour Blue and the Round/Explicit Scroll Row composition are the selected browser checkpoint, not final brand acceptance or a public name. Reviewed local Bricolage Grotesque and DM Sans files are not present, so the implementation uses a documented system-sans fallback and does not claim exact type fidelity.
 
 ## Context Rooms implementation and artwork
+
+### Rooms-system checkpoint
+
+[Rooms review evidence](../../docs/02-design/mockups/2026-09-20-rooms-system/frontend-checkpoint-1/README.md)
+maps the 17 reference states. [rooms-store.js](rooms-store.js) owns stable rooms,
+canonical fictional items and independent room/collection memberships. Add,
+move and remove produce a persistent before/after receipt with exact Undo.
+Later mutations retire stale receipts. Archive/restore keeps identity and
+items; Delete room only removes organization, while the separate inspected
+item-deletion action removes only selected in-memory items. Item deletion is
+explicitly not undoable; Reset/reload restores the starting fixture.
+
+**Room details** opens rename/purpose and a separate management route. Native
+dialogs contain keyboard focus, cancel with Escape, and restore their invoking
+control. The library/search/All items/Unfiled places share the normal-flow
+composer. Required names reject blank and duplicate-like values without
+rewriting entered text. Custom rooms use an honest plain appearance and begin
+empty; the old template/theme wizard is removed.
+
+In Kitchen, type **What should I pack for cooking on a trip?** for the exact
+Trips/Weekend packing list cross-room source fixture. View source keeps Kitchen
+current; Exclude changes only the response's local source use. Type **Can you
+help me plan some easy meals for our weekend trip?** for the denied Passport
+details fixture. Only its safe label is available; Review access grants nothing.
+These are deterministic examples, not retrieval, policy enforcement or model
+answers. Private source content does not exist in the fixture.
+
+Reviewer URLs `/?review=1&roomsFixture=empty`, `loading`, `offline` or
+`missing-art` select adverse library fixtures; then choose Rooms. Loading has a
+bounded local completion action; offline retry makes no request. Search only
+matches already loaded fictional data. Reviewer controls are absent without
+`review=1`. All changes disappear on reload; no browser storage is used.
+
+New organization surfaces use canonical Harbour Blue outline `#597DA0` and
+primary `#165D9C`. Existing approved Home/Room shell cleanup keeps its brighter
+outline variant; the new slice does not silently recolor that reviewed shell.
+No fonts or artwork were fetched or generated. System-font and Android/human
+evidence limits below still apply.
 
 See the [six-room screenshot review](../../docs/02-design/mockups/2026-09-20-context-rooms-frontend/README.md)
 for all 48 labels, the five-frame mapping and visual limitations.
@@ -142,8 +181,8 @@ Portraits have mixed aspect ratios and opaque Linen-like margins, unlike the
 transparent objects in the Home reference. Runtime uses contain sizing,
 unboxed targets and reserved image slots. Backdrops are cropped/dimmed only
 within a protected edge zone; transparent decor remains separate. Motifs are
-single faint margin crops, not assumed seamless tiles. Custom rooms reuse a
-clearly labelled placeholder mark, not newly generated art.
+single faint margin crops, not assumed seamless tiles. Custom rooms use a
+clearly labelled plain appearance, not newly generated art.
 
 At narrow widths and large text, decoration is reduced, collection controls
 stack, detail columns become one sequence and the composer flows with the
@@ -185,6 +224,9 @@ node prototypes/stage-1/model.test.mjs
 node prototypes/stage-1/scheduler.test.mjs
 node prototypes/stage-1/cloud.test.mjs
 node prototypes/stage-1/serve.test.mjs
+node prototypes/stage-1/rooms-store.test.mjs
+node prototypes/stage-1/rooms-system-browser-check.mjs
+node prototypes/stage-1/rooms-system-review.mjs
 node prototypes/stage-1/home-browser-check.mjs
 node prototypes/stage-1/rooms-browser-check.mjs
 node prototypes/stage-1/rooms-review.mjs
@@ -217,7 +259,9 @@ Observed combined review endpoint: **http://127.0.0.1:4181/**, served from /tmp/
 | [room-fixtures.js](room-fixtures.js) | Six room packs, 48 collection labels and fictional local item/source data |
 | [room-ui.js](room-ui.js) | One reusable overview, collection, detail and source-aware conversation system |
 | [room-library.js](room-library.js) | Direct room entry, global local search, All items and Unfiled |
-| [room-create.js](room-create.js) | Bounded explicit five-step local creation wizard |
+| [room-create.js](room-create.js) | Shared required-name/purpose create/edit form |
+| [rooms-store.js](rooms-store.js) | Canonical items, independent memberships, reversible organization and source boundaries |
+| [room-dialog.js](room-dialog.js) | Single native temporary dialog, focus containment and restoration |
 | [rooms-browser-check.mjs](rooms-browser-check.mjs) | Six-room routes, symbols, source exclusion, creation, focus, reflow and no-egress checks |
 | [intent.js](intent.js) | Modest documented rule-based request/slot interpretation; no general AI |
 | [model.js](model.js) | In-memory conversation/task transitions, approval versions, local preferences |

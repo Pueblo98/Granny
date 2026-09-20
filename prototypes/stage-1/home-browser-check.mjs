@@ -69,8 +69,8 @@ try {
     'Ask in your own words. You can type or talk.', 'Type a request', 'Talk',
     'Send', 'Continue in Kitchen', 'Vegetable soup',
     'Kitchen · Recipes, lists and cooking plans', 'Open Kitchen', 'Hide',
-    'Other rooms', 'Fitness', 'Movement plans, routines and activity notes', 'Trips',
-    'Plans, lists and useful details for going away', 'Kitchen',
+    'Other rooms', 'Fitness', 'Movement and routines', 'Trips',
+    'Plans and packing', 'Kitchen',
     'See all rooms'
   ]) check(copy.includes(required), 'idle Home includes: ' + required);
   check(await b.evaluate("document.querySelector('#request').placeholder==='Ask me anything…'"), 'selected composer placeholder');
@@ -249,7 +249,7 @@ try {
   const requestedPaths = b.network.filter(url => url.startsWith(b.base + '/'))
       .map(url => new URL(url).pathname);
   const allowedPaths = new Set(['/', '/styles.css', '/fixtures.js', '/intent.js',
-    '/room-fixtures.js', '/room-create.js', '/room-library.js', '/room-ui.js',
+    '/room-fixtures.js', '/rooms-store.js', '/room-dialog.js', '/room-create.js', '/room-library.js', '/room-ui.js',
     '/model.js', '/scheduler.js', '/cloud.js', '/app.js', '/favicon.ico',
     '/assets/room-fitness-placeholder.svg', '/assets/room-trips-placeholder.svg',
     '/assets/room-reading-placeholder.svg', '/assets/missing-room-placeholder.svg']);

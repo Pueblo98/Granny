@@ -94,6 +94,7 @@
     home: backToHome,
     open: (destination, focusId) => openHomeDestination(destination, document.activeElement, focusId),
     changed: renderRooms,
+    refresh: () => render(),
     compose: text => {
       if (text !== null) composerText.value = text;
       focus(composerText);
@@ -981,19 +982,26 @@
     $('welcome').hidden = (homeView !== 'home' || !!menuPanel || runtimeMode) && !introductionView;
     $('introduction').hidden = !introductionView;
     $('home-secondary').hidden = !emptyHome;
-    $('continuation').hidden = !continuationVisible ||
+    $('continuation').hidden = !continuationVisible || !roomUI.continuation ||
                                  homeFixture === 'continuation-hidden';
+    const kitchen = roomUI.continuation;
+    if(kitchen) {
+      $('continuation').querySelector('.eyebrow').textContent = 'Continue in ' + kitchen.name;
+      $('open-kitchen').textContent = 'Open ' + kitchen.name;
+      $('continuation').querySelector('.continuation-purpose').textContent = kitchen.name + ' · ' + kitchen.purpose;
+    }
     document.body.dataset.home = String(emptyHome);
     const sharedTask = !runtimeMode && state.task?.kind === 'message' && dismissedTask !== state.task.id;
     document.body.dataset.surface = speechState || (sharedTask ? 'task' : '');
-    const browsing = homeView === 'rooms' || homeView === 'create-room';
+    const browsing = ['rooms','room-search','all-items','unfiled','archived-rooms'].includes(homeView) || homeView.startsWith('item:');
     $('room-content').hidden = !!menuPanel || runtimeMode ||
         (!browsing && !homeView.startsWith('room:'));
     const skipLink = document.querySelector('.skip-link');
     skipLink.href = $('room-content').hidden ? '#conversation' : '#room-content';
     skipLink.textContent = $('room-content').hidden ? 'Skip to conversation' : 'Skip to room content';
-    $('conversation').hidden = browsing && !menuPanel && !runtimeMode;
-    document.querySelector('.composer-wrap').hidden = browsing && !menuPanel && !runtimeMode;
+    $('conversation').hidden = false;
+    document.querySelector('.composer-wrap').hidden = false;
+    document.body.dataset.libraryView = String(browsing && !menuPanel && !runtimeMode);
     document.body.dataset.roomView = String(homeView.startsWith('room:') && !menuPanel && !runtimeMode);
     document.body.dataset.roomPriority = !runtimeMode && homeView.startsWith('room:') ? homeView.slice(5) : '';
     document.body.dataset.roomRoute = String(homeView.startsWith('room:') || browsing);
@@ -1742,6 +1750,9 @@
   });
   renderRooms();
   render();
+  const roomsFixture = new URLSearchParams(location.search).get('roomsFixture');
+  if (review && ['empty', 'loading', 'offline', 'missing-art'].includes(roomsFixture))
+    roomUI.setAvailability(roomsFixture);
   fitComposer();
   updateComposerFocus();
   if (scheduler && scheduler.sync)

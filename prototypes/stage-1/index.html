@@ -13,6 +13,8 @@
   <script src="scheduler.js" defer></script>
   <script src="cloud.js" defer></script>
   <script src="room-fixtures.js" defer></script>
+  <script src="rooms-store.js" defer></script>
+  <script src="room-dialog.js" defer></script>
   <script src="room-create.js" defer></script>
   <script src="room-library.js" defer></script>
   <script src="room-ui.js" defer></script>
@@ -65,6 +67,7 @@
       <div id="thread" aria-live="off"></div>
     </section>
 
+    <div id="organization-receipt" hidden></div>
     <div class="composer-wrap">
       <svg class="composer-focus-frame" aria-hidden="true" focusable="false">
         <path id="composer-focus-path"></path>
@@ -112,7 +115,7 @@
           <img class="continuation-portrait" src="/assets/context-rooms/kitchen/room-kitchen-k01-portrait-i01.png" alt="" aria-hidden="true">
           <p class="eyebrow">Continue in Kitchen</p>
           <h2>Vegetable soup</h2>
-          <p>Kitchen · Recipes, lists and cooking plans</p>
+          <p class="continuation-purpose">Kitchen · Recipes, lists and cooking plans</p>
         </div>
         <div class="continuation-actions">
           <button type="button" class="primary" id="open-kitchen">Open Kitchen</button>

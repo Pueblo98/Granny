@@ -8,6 +8,8 @@ const types = { "/": ["index.html","text/html"], "/index.html": ["index.html","t
   "/scheduler.js": ["scheduler.js","text/javascript"],
   "/cloud.js": ["cloud.js","text/javascript"],
   "/room-fixtures.js": ["room-fixtures.js", "text/javascript"],
+  "/rooms-store.js": ["rooms-store.js", "text/javascript"],
+  "/room-dialog.js": ["room-dialog.js", "text/javascript"],
   "/room-create.js": ["room-create.js", "text/javascript"],
   "/room-ui.js": ["room-ui.js", "text/javascript"],
   "/room-library.js": ["room-library.js", "text/javascript"],

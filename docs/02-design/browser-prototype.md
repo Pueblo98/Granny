@@ -19,6 +19,20 @@ related:
 
 # Conversation-first browser experience
 
+## Fictional Rooms-system checkpoint
+
+The [Rooms-system review](mockups/2026-09-20-rooms-system/frontend-checkpoint-1/README.md)
+extends the existing six-room frontend with independent canonical items and
+memberships, local search, All items/Unfiled, create/edit, persistent organization
+Undo, archive/restore and separately scoped room/item deletion. These are
+in-memory fixtures, not persistent personal data or external file operations.
+One native dialog family overlays the current place; the shared conversation
+renderer and active Stop contract remain unchanged. Kitchen source examples
+name Trips without changing Kitchen atmosphere; denied-source review cannot
+grant access. Empty/loading/offline/missing-art are deterministic review states.
+The [scoped session](../10-execution/sessions/2026-09-20-rooms-system-frontend.md)
+owns exact validation and browser-only limits.
+
 ## Shared temporary conversation surfaces
 
 The [20 September shared-state checkpoint](mockups/2026-09-20-shared-state-pack/frontend-checkpoint-1/README.md)

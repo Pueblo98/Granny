@@ -1,193 +1,94 @@
-/* Direct, local Rooms library. It only renders supplied fictional fixtures;
- * routing and any room state remain owned by the caller. */
-(function(root) {
-"use strict";
-
-const text = value => String(value == null ? "" : value);
-const slug = value => text(value).replace(/[^A-Za-z0-9_-]+/g, "-");
-function el(tag, className, content) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (content !== undefined) node.textContent = content;
-  return node;
-}
-function action(id, label, handler, className) {
-  const node = el("button", className || "", label);
-  node.type = "button";
-  if (id) node.id = id;
-  node.addEventListener("click", handler);
-  return node;
-}
-function artSlot(src, className) {
-  const slot = el("span", "art-slot " + className);
-  if (!src) return slot;
-  const image = el("img", className + "-image");
-  image.src = src;
-  image.alt = "";
-  image.setAttribute("aria-hidden", "true");
-  image.addEventListener("error", () => image.remove(), {once: true});
-  slot.append(image);
-  return slot;
-}
-function itemsFor(rooms, onlyUnfiled) {
-  const result = [];
-  rooms.forEach(room => (room.collections || []).forEach(collection => {
-    if (onlyUnfiled && collection.id !== "unfiled") return;
-    (collection.items || []).forEach(item => result.push({room, collection, item}));
-  }));
-  return result;
-}
-function matches(value, query) {
-  return !query || text(value).toLowerCase().includes(query.toLowerCase());
-}
-
-function render(host, options) {
-  if (!host) throw new Error("A Rooms library host is required.");
-  options = options || {};
-  const rooms = Array.isArray(options.rooms) ? options.rooms : [];
-  let mode = "rooms", query = "", destroyed = false;
-
-  const invoke = (callback, ...args) => {
-    if (typeof callback === "function") callback(...args);
+/* Controlled direct browsing. Canonical items and memberships live in the store. */
+(() => {
+  'use strict';
+  const el = (tag, cls, text) => { const n = document.createElement(tag); n.className = cls || ''; if (text !== undefined) n.textContent = text; return n; };
+  const action = (id, text, fn, cls = 'text-button') => {
+    const b = el('button', cls, text); b.type = 'button'; b.id = id; b.addEventListener('click', fn); return b;
   };
-  function resultRow(record) {
-    const {room, collection, item} = record;
-    const row = action("library-item-" + slug(room.id) + "-" + slug(collection.id) + "-" + slug(item.id), "", () =>
-      invoke(options.onOpenItem, room.id, collection.id, item.id), "library-item-result");
-    row.dataset.roomId = room.id;
-    row.dataset.collectionId = collection.id;
-    row.dataset.itemId = item.id;
-    row.append(el("strong", "", text(item.title)),
-      el("span", "", text(item.summary)),
-      el("small", "", text(room.name) + " · " + text(collection.label)));
-    return row;
-  }
-  function roomEntry(room) {
-    const entry = action("library-room-" + room.id, "", () => invoke(options.onOpenRoom, room.id), "library-entry");
-    entry.dataset.roomId = room.id;
-    entry.append(artSlot(room.decor || room.mark, "library-decor"));
-    const copy = el("span", "library-copy");
-    copy.append(artSlot(room.mark, "room-mark"));
-    copy.append(el("strong", "", text(room.name)),
-      el("span", "", text(room.purpose) || "An optional space for related material."));
-    entry.append(copy);
-    return entry;
-  }
-  function renderResults(container) {
-    const source = mode === "unfiled" ? itemsFor(rooms, true) : itemsFor(rooms, false);
-    const matchingRooms = mode === "search" ? rooms.filter(room =>
-      matches(text(room.name) + " " + text(room.purpose), query)) : [];
-    const filtered = source.filter(record => {
-      const haystack = [record.room.name, record.room.purpose, record.collection.label,
-        record.item.title, record.item.summary].join(" ");
-      return matches(haystack, query);
-    });
-    const heading = mode === "unfiled"
-      ? "Unfiled items" : query ? "Search results" : "All fictional items";
-    container.append(el("h2", "", heading));
-    if (matchingRooms.length) {
-      const roomHeading = el("h3", "", "Matching rooms");
-      const roomList = el("div", "room-library-list");
-      matchingRooms.forEach(room => roomList.append(roomEntry(room)));
-      container.append(roomHeading, roomList);
+  function portrait(room, missing) {
+    const slot = el('span', 'art-slot library-portrait');
+    const fallback = () => { slot.replaceChildren(el('span', 'art-fallback', room.custom ? 'Plain room' : 'Artwork unavailable')); };
+    if (!room.portrait || missing) fallback();
+    else {
+      const image = el('img'); image.alt = ''; image.src = room.portrait;
+      image.addEventListener('error', fallback, {once: true}); slot.append(image);
     }
-    const status = el("p", "notice");
-    status.setAttribute("role", "status");
-    status.textContent = filtered.length
-      ? filtered.length + (filtered.length === 1 ? " fictional item" : " fictional items")
-      : "No fictional items match this view.";
-    container.append(status);
-    if (filtered.length) {
-      const rows = el("div", "library-item-results");
-      filtered.forEach(record => rows.append(resultRow(record)));
-      container.append(rows);
+    return slot;
+  }
+  function render(host, o) {
+    const {store, route, query, go} = o;
+    const names = {rooms: 'Rooms', 'room-search': 'Search all rooms', 'all-items': 'All items', unfiled: 'Unfiled', 'archived-rooms': 'Archived rooms'};
+    const section = el('section', 'room-library rooms-system'); section.dataset.libraryView = route;
+    const h = el('h1', '', names[route]); h.tabIndex = -1; section.append(h);
+    section.append(el('p', 'room-intro', route === 'rooms' ? 'Choose a room, search everything, or browse without a room.' :
+      route === 'archived-rooms' ? 'Archived rooms are hidden from Home, but their items stay available.' :
+      route === 'room-search' ? 'Find an item without choosing a room first.' : 'Everything stays available even when it is not in a room.'));
+    const nav = el('nav', 'room-actions library-navigation'); nav.setAttribute('aria-label', 'Room library navigation');
+    for (const [id, label, destination] of [['library-search-route','Search all rooms','room-search'], ['library-all-items','All items','all-items'], ['library-unfiled','Unfiled','unfiled']]) {
+      const b = action(id, label, () => go(destination));
+      if (route === destination) b.setAttribute('aria-current', 'page'); nav.append(b);
+    }
+    nav.append(action('create-room','Create a room',o.onCreate));
+    if (route === 'rooms') nav.append(action('library-archived','Archived rooms',()=>go('archived-rooms')));
+    else nav.append(action('library-back-to-rooms','Back to Rooms',()=>go('rooms')));
+    nav.append(action('library-home','Back to Home',o.onHome)); section.append(nav);
+    if (store.availability === 'offline') {
+      const banner = el('section', 'rooms-banner');
+      banner.append(el('h2','','You’re offline — simulated'), el('p','','You can browse and search the fictional items already in this tab. No server search, new content or cross-room updates are available. Nothing is saved across a restart.'),
+        action('rooms-try-again','Try again',o.retry), action('browse-saved','Browse local items',()=>go('all-items'))); section.append(banner);
+    }
+    if (route === 'rooms' || route === 'archived-rooms') {
+      if (route === 'rooms' && store.availability === 'loading') {
+        const loading = el('section', 'rooms-loading'); loading.setAttribute('aria-busy','true');
+        loading.append(el('h2','','Loading rooms…'),el('p','','Simulated loading. Your conversation and All items are still available.'));
+        const inert = el('div','room-library-list'); inert.setAttribute('aria-hidden','true');
+        for (let i=0;i<3;i++) inert.append(el('div','room-loading-placeholder'));
+        loading.append(inert); section.append(loading,action('rooms-finish-loading','Show local rooms',o.retry));
+      } else {
+        const rooms = route === 'rooms' ? store.activeRooms : store.rooms.filter(r=>r.archived);
+        const list = el('div','room-library-list');
+        rooms.forEach(room => {
+          const entry = action('library-room-'+room.id,'',()=>o.onOpenRoom(room.id),'library-entry');
+          entry.dataset.roomId = room.id;
+          entry.append(portrait(room, store.availability === 'missing-art' && room.id === 'garden'));
+          const copy = el('span','library-copy'); copy.append(el('strong','',room.name),el('span','',room.purpose)); entry.append(copy);
+          if (room.archived) {
+            const row = el('article','archived-room');
+            // Archived identity is not an entry until explicitly restored.
+            const identity = el('div','archived-identity'); identity.append(...entry.childNodes);
+            row.append(identity,el('p','','Archived'),action('restore-'+room.id,'Restore '+room.name,()=>o.restore(room.id)));
+            list.append(row);
+          } else list.append(entry);
+        });
+        if (!rooms.length) list.append(el('h2','',route === 'rooms'?'No rooms yet':'No archived rooms'),
+          el('p','','You can still ask Granny anything or browse All items. Creating a room is optional.'));
+        section.append(list);
+      }
     } else {
-      const empty = el("p", "library-empty", mode === "unfiled"
-        ? "Nothing is unfiled in these fictional rooms. Items without a certain place can stay here until you choose where they belong."
-        : query ? "Try another word, or return to the room list."
-        : "These fictional rooms have no browseable items yet.");
-      container.append(empty);
+      const label = el('label','',route === 'room-search'?'Search all rooms':route === 'unfiled'?'Search Unfiled':'Search all items'); label.htmlFor='library-search';
+      const field = el('div','library-search-field'), input = el('input'); input.id='library-search'; input.type='search'; input.value=query;
+      input.placeholder='Find a fictional item';
+      const clear = action('library-clear','Clear',()=>{input.value='';o.onQuery('');filter();input.focus();});
+      field.append(input,clear); section.append(label,field);
+      const status = el('p','library-result-count'); status.id='library-result-count'; status.setAttribute('role','status');
+      const results = el('div','library-item-results'); results.id='library-search-results'; section.append(status,results);
+      function filter() {
+        results.replaceChildren(); const q=input.value.trim().toLocaleLowerCase();
+        if (route==='room-search'&&!q) {status.textContent='Type a word to search these fictional local items.';return;}
+        const items = store.items().filter(i=>i.sensitivity!=='private' && (route!=='unfiled'||!store.memberships(i.id).length))
+          .filter(i=>[i.title,i.type,i.summary,...store.roomNames(i.id)].join(' ').toLocaleLowerCase().includes(q));
+        status.textContent=items.length+' result'+(items.length===1?'':'s');
+        if(!items.length)results.append(el('p','',q?'No matching items. Try another word or Clear.':route==='unfiled'?'Nothing is unfiled. Items without a room will appear here.':'No available items in this fixture. You can still ask Granny anything.'));
+        items.forEach(item=>{
+          const row=action('library-item-'+item.id,'',()=>o.onOpenItem(item.id),'library-item-result'); row.dataset.itemId=item.id;
+          const sources=store.roomNames(item.id);
+          row.append(el('strong','',item.title),el('span','',(item.type||'Fictional item')+' · '+(sources.join(', ')||'Not in a room')));results.append(row);
+        });
+      }
+      input.addEventListener('input',()=>{o.onQuery(input.value);filter();});
+      input.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();clear.click();}});filter();
     }
-  }
-  function draw(focusAfter, preserveSearch = false) {
-    if (destroyed) return;
-    const active = document.activeElement;
-    const selection = preserveSearch && active?.id === "library-search"
-      ? [active.selectionStart, active.selectionEnd] : null;
-    const scrollPosition = preserveSearch ? window.scrollY : null;
-    host.replaceChildren();
-    const section = el("section", "room-library");
-    const heading = el("h1", "", "Rooms");
-    heading.tabIndex = -1;
-    section.append(heading,
-      el("p", "room-intro", "Rooms bring related things closer. The same Granny assistant is available everywhere."));
-
-    const searchLabel = el("label", "room-library-search-label", "Search all");
-    searchLabel.htmlFor = "library-search";
-    const search = document.createElement("input");
-    search.id = "library-search";
-    search.type = "search";
-    search.value = query;
-    search.placeholder = "Find a fictional room or item";
-    search.setAttribute("aria-describedby", "library-search-help");
-    search.addEventListener("input", () => {
-      query = search.value;
-      // A search always shows matching items and source cues, without asking
-      // the assistant or using any cross-room retrieval.
-      mode = query ? "search" : "rooms";
-      draw("library-search", true);
-    });
-    searchLabel.append(search);
-    const searchHelp = el("p", "notice", "Searches these local fictional examples only.");
-    searchHelp.id = "library-search-help";
-    section.append(searchLabel, searchHelp);
-
-    const create = action("create-room", "Create a room", () => invoke(options.onCreate), "text-button");
-    const direct = el("nav", "room-actions");
-    direct.setAttribute("aria-label", "Room library navigation");
-    const all = action("library-all-items", "All items", () => {
-      mode = "all"; query = ""; draw("library-all-items");
-      invoke(options.announce, "Showing all fictional room items.");
-    }, "text-button");
-    all.setAttribute("aria-pressed", String(mode === "all"));
-    const unfiled = action("library-unfiled", "Unfiled", () => {
-      mode = "unfiled"; query = ""; draw("library-unfiled");
-      invoke(options.announce, "Showing unfiled fictional room items.");
-    }, "text-button");
-    unfiled.setAttribute("aria-pressed", String(mode === "unfiled"));
-    direct.append(all, unfiled);
-    if (mode !== "rooms") direct.append(action("library-back-to-rooms", "Back to room list", () => {
-      mode = "rooms"; query = ""; draw("library-search");
-    }, "text-button"));
-    direct.append(action("library-home", "Back to Home", () => invoke(options.onHome), "text-button"));
-    section.append(create, direct);
-    if (mode === "rooms") {
-      const list = el("div", "room-library-list");
-      if (rooms.length) rooms.forEach(room => list.append(roomEntry(room)));
-      else list.append(el("p", "library-empty", "No rooms are available in this fictional fixture. Home can still handle ordinary questions."));
-      section.append(list);
-    } else {
-      const results = el("section", "library-results");
-      results.id = "library-search-results";
-      results.setAttribute("aria-label", mode === "unfiled" ? "Unfiled fictional items" : "Search results");
-      renderResults(results);
-      section.append(results);
-    }
-
     host.append(section);
-    if (focusAfter) requestAnimationFrame(() => {
-      const target = document.getElementById(focusAfter);
-      target?.focus({preventScroll: true});
-      if (selection && target && typeof target.setSelectionRange === "function")
-        target.setSelectionRange(...selection);
-      if (scrollPosition != null) window.scrollTo(0, scrollPosition);
-    });
-    else requestAnimationFrame(() => heading.focus({preventScroll: true}));
   }
-  draw();
-  return {destroy: () => { destroyed = true; host.replaceChildren(); }};
-}
-
-root.GrannyRoomLibrary = {render};
-if (typeof module !== "undefined") module.exports = root.GrannyRoomLibrary;
-})(globalThis);
+  window.GrannyRoomLibrary={render};
+})();

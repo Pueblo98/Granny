@@ -5,7 +5,9 @@
   const image = (room, file) => `${root}/${room}/${file}`;
   const symbol = (room, id) => image(room, `symbols/room-${room}-symbol-${id}-i01.png`);
   const item = (id, title, summary, extra = {}) => ({ id, title, summary, body: `${title}\n\n${summary}`, ...extra });
-  const col = (room, id, label, items = []) => ({ id, label, symbol: symbol(room, id), items });
+  const col = (room, id, label, items = []) => ({ id, label, symbol: symbol(room, id),
+    items: items.map(value => ({...value, type: value.type ||
+      ({recipes:'Recipe', 'packing-lists':'Packing list', 'shopping-lists':'Shopping list'}[id] || 'Fictional item')})) });
   const makeRoom = (id, name, purpose, pack, packId, markId, collections, featuredCollections, continuation) => ({
     id, name, purpose, pack, packId, markId,
     mark: image(id, `room-${id}-${packId.toLowerCase()}-mark-i01.png`), portrait: image(id, `room-${id}-${packId.toLowerCase()}-portrait-i01.png`),
@@ -39,7 +41,31 @@
       col('projects', 'plans', 'Plans', [item('shelf-plan', 'Shelf plan', 'A fictional plan for arranging a small shelf.', { body: 'Shelf plan\n\nA fictional project note for arranging a small shelf.', sections: [{ heading: 'Idea', lines: ['Keep one tray on the lower shelf.', 'Leave the top surface clear.'] }, { heading: 'Reference', lines: ['Use the room notes for project details.', 'No measurements or purchase instructions are included.'] }], details: ['Open the fictional plan.', 'Review the tray idea.', 'Keep the surface clear.', 'Return to Plans.'], actionLabel: 'Show plan details', question: 'What is the main idea in this plan?', answer: 'This fictional plan keeps one tray on the lower shelf and leaves the top surface clear. It does not give measurements or purchasing advice.', sourceExplanation: 'Using the Idea section in Shelf plan · Projects · Plans' })]), col('projects', 'reference-images', 'Reference Images', [item('colour-reference', 'Colour reference', 'A fictional visual reference placeholder.')]), col('projects', 'notes', 'Notes'), col('projects', 'materials', 'Materials'), col('projects', 'drafts', 'Drafts'), col('projects', 'things-to-do', 'Things to Do'), col('projects', 'recently-used', 'Recently Used'), col('projects', 'archive', 'Archive')
     ], ['plans', 'reference-images', 'notes', 'materials'], { collectionId: 'plans', itemId: 'shelf-plan', actionLabel: 'Open plan' })
   ];
-  const GrannyRoomFixtures = { rooms };
+  // Current checkpoint wording; room IDs/selected artwork/collection kits stay stable.
+  const purposes = ['Recipes, lists and cooking plans', 'Movement and routines', 'Plans and packing',
+    'Plants and seasonal plans', 'Books and saved articles', 'Notes, materials and things to do'];
+  rooms.forEach((room, index) => { room.purpose = purposes[index]; });
+  const packing = rooms[2].collections[0].items[0];
+  packing.sections[1].lines.push('Portable blender');
+  packing.body += '\nPortable blender';
+  packing.answer = 'This fictional list shows a reusable water bottle, small bag and portable blender under “Still to check.” It does not represent a booking or travel plan.';
+  // Canonical additions, not copied into each Room. No external originals exist.
+  const systemItems = [
+    {item: item('soup-shopping', 'Soup shopping list', 'Carrots, onion and vegetable stock.', {type: 'Shopping list'}), roomId: 'kitchen', collectionId: 'shopping-lists'},
+    {item: item('appliance-note', 'Appliance note', 'A fictional note about a portable blender.', {type: 'Note'}), roomId: 'kitchen', collectionId: 'appliance-notes'},
+    {item: item('tomato-soup-notes', 'Tomato soup notes', 'Fictional garden journal notes for a soup idea.', {type: 'Garden journal'}), roomId: 'garden', collectionId: 'garden-journal'},
+    {item: item('soup-photo', 'Soup photo', 'A fictional photo placeholder; no photograph or file is stored.', {type: 'Photo'})},
+    {item: item('new-note', 'New note', 'An unfiled fictional note.', {type: 'Note'})},
+    {item: {id: 'passport-details', title: 'Passport details', sensitivity: 'private', type: 'Private source'}, roomId: 'trips', collectionId: 'travel-documents'}
+  ];
+  const sourceFixtures = {
+    allowed: {question: 'What should I pack for cooking on a trip?', itemId: 'weekend-packing',
+      answer: 'The fictional packing list mentions the portable blender, so this example keeps the soup plan simple.',
+      reason: 'It mentions the portable blender.'},
+    denied: {question: 'Can you help me plan some easy meals for our weekend trip?', itemId: 'passport-details',
+      answer: 'I can help with the Kitchen information I have.'}
+  };
+  const GrannyRoomFixtures = { rooms, systemItems, sourceFixtures };
   if (typeof module !== 'undefined' && module.exports) module.exports = GrannyRoomFixtures;
   if (globalScope) globalScope.GrannyRoomFixtures = GrannyRoomFixtures;
 }(typeof window !== 'undefined' ? window : globalThis));
