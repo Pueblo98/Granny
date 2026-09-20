@@ -10,6 +10,15 @@ import org.pueblo98.stage1.readability.TextScaleController;
 import org.pueblo98.stage1.readability.TextScaleStore;
 
 public final class ConversationSessionCoordinatorTest {
+    @Test public void talkPreservesExistingDraftUntilCombinedFinalArrives() {
+        ConversationSessionCoordinator c=coordinator(); c.typed("  My exact edited request.  ");
+        long g=c.beginListening(); assertEquals("  My exact edited request.  ",c.snapshot().editableRequest);
+        c.partial(g,"  My exact edited request.  New words");
+        assertEquals("  My exact edited request.  ",c.snapshot().editableRequest);
+        c.finalVoice(g,"  My exact edited request.  New words.");
+        assertEquals("  My exact edited request.  New words.",c.snapshot().editableRequest);
+        assertFalse(c.snapshot().permitQueued);
+    }
     @Test public void typedAndFinalVoiceShareRevisionPreviewPath() {
         ConversationSessionCoordinator typed = coordinator();
         typed.typed("make text larger"); assertEquals(ConversationSessionCoordinator.Result.ACCEPTED, typed.submit()); typed.chooseTextScale(TextScale.LARGE);

@@ -17,6 +17,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
+import org.pueblo98.stage1.voice.DictationSession;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -49,6 +51,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private static final int MIC_REQUEST = 120;
     private static final int INK = 0xff2e2d32, BLUE = 0xff2c5981, LINEN = 0xfffbf6ee;
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private final DictationSession dictation = new DictationSession();
     private final VoiceSessionController voice = new VoiceSessionController();
     private final Map<TextView, Float> textSizes = new LinkedHashMap<>();
     private final Map<String, Integer> placeScroll = new LinkedHashMap<>();
@@ -196,7 +199,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         scroll.setFillViewport(true);
         scroll.addView(content);
         root.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
-        escape = button("Cancel", () -> stopEverything("Cancelled."));
+        escape = button("Cancel", () -> stopEverything(conversation.snapshot().surface == Surface.LISTENING ? "Stopped." : "Cancelled."));
         root.addView(escape, wrap());
         root.setOnApplyWindowInsetsListener((view, insets) -> {
             Insets safe = insets.getInsets(WindowInsets.Type.systemBars()
@@ -230,7 +233,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     }
 
     private void startTyping() {
-        String keep = conversation.snapshot().editableRequest;
+        String keep = dictation.active() ? dictation.finish() : conversation.snapshot().editableRequest;
         replaceInput(keep, false);
         render();
         editor.requestFocus();
@@ -240,6 +243,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
 
     private void startTalk() {
         rememberOrigin("composer");
+        dictation.begin(conversation.snapshot().editableRequest, SystemClock.elapsedRealtime());
         conversationVoiceGeneration = conversation.beginListening();
         // Invalidate before adapter cleanup so synchronous/late callbacks cannot revive capture.
         voice.stop("New Talk request.");
@@ -250,20 +254,18 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         recognizer.cancel();
         if (!recognizer.isAvailable()) {
             voice.recognizerUnavailable();
-            conversation.voiceUnavailable("On-device recognition is unavailable. You can type instead.");
-            render();
+            finishDictation("On-device recognition is unavailable. Your draft is kept; you can type instead.");
             return;
         }
         boolean granted = checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
         long generation = voice.beginVoice(granted);
+        conversation.partial(conversationVoiceGeneration, dictation.visibleText());
         render();
         if (granted) {
-            recognizer.start(generation, this);
-            scheduleStartTimeout(generation);
+            startSegment(generation);
         } else if (deniedThisProcess) {
             voice.permissionDenied(generation);
-            conversation.voiceUnavailable("Microphone access is unavailable. You can type instead.");
-            render();
+            finishDictation("Microphone access is unavailable. Your draft is kept; you can type instead.");
         } else {
             pendingPermission = generation;
             requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, MIC_REQUEST);
@@ -279,15 +281,30 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         boolean granted = results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED;
         if (granted && voice.permissionGranted(generation)
                 && conversation.snapshot().generation == conversationVoiceGeneration) {
-            recognizer.start(generation, this);
-            scheduleStartTimeout(generation);
+            startSegment(generation);
         } else {
             deniedThisProcess = !granted;
             if (voice.permissionDenied(generation)) {
-                conversation.voiceUnavailable("Microphone permission was not granted. You can type instead.");
+                finishDictation("Microphone permission was not granted. Your draft is kept; you can type instead.");
             }
         }
         render();
+    }
+
+    private void startSegment(long generation) {
+        if (!foreground || checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
+                || conversation.snapshot().generation != conversationVoiceGeneration
+                || !dictation.beginSegment(dictation.turn(), generation, SystemClock.elapsedRealtime())) {
+            finishDictation("Listening ended. Your words are kept for review."); return;
+        }
+        recognizer.start(generation, this);
+        scheduleStartTimeout(generation);
+        long turn = dictation.turn();
+        handler.postDelayed(() -> {
+            if (dictation.active() && dictation.turn() == turn) {
+                finishDictation("The 30-second listening limit was reached. Your words are kept; choose Add more to continue.");
+            }
+        }, dictation.remaining(SystemClock.elapsedRealtime()));
     }
 
     private void scheduleStartTimeout(long generation) {
@@ -303,17 +320,24 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         if (!foreground || !voice.ready(generation)) return;
         handler.removeCallbacksAndMessages(null);
         handler.postDelayed(() -> {
-            if (voice.noSpeechPrompt(generation)) render();
-        }, 10_000);
+            if (dictation.shouldPrompt() && voice.noSpeechPrompt(generation)) render();
+        }, dictation.promptRemaining(SystemClock.elapsedRealtime()));
+        long turn = dictation.turn();
         handler.postDelayed(() -> {
-            if (voice.snapshot().generation == generation) finishListening();
-        }, 30_000);
+            if (dictation.active() && dictation.turn() == turn) finishDictation(
+                    "The 30-second listening limit was reached. Your words are kept; choose Add more to continue.");
+        }, dictation.remaining(SystemClock.elapsedRealtime()));
         render();
     }
 
     @Override public void onPartial(long generation, String text) {
         if (foreground && voice.partial(generation, text)) {
-            conversation.partial(conversationVoiceGeneration, text);
+            if (dictation.partial(generation, text)) {
+                if (dictation.visibleText().codePointCount(0, dictation.visibleText().length()) > 4096) {
+                    finishDictation("The draft is long. Your completed words are kept; please shorten it before using it."); return;
+                }
+                conversation.partial(conversationVoiceGeneration, dictation.visibleText());
+            }
             render();
         }
     }
@@ -321,33 +345,57 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     @Override public void onFinal(long generation, TranscriptHypotheses hypotheses) {
         if (!foreground || !voice.finalResult(generation, hypotheses.raw, hypotheses.display)) return;
         handler.removeCallbacksAndMessages(null);
-        if (hypotheses.display.isBlank()) conversation.voiceUnavailable("I didn’t catch a request. You can type instead.");
-        else conversation.finalVoice(conversationVoiceGeneration, hypotheses.display);
-        render();
+        DictationSession.Result result = dictation.finalSegment(generation, hypotheses.display, SystemClock.elapsedRealtime());
+        if (result == DictationSession.Result.STALE) return;
+        if (result == DictationSession.Result.CONTINUE) {
+            conversation.partial(conversationVoiceGeneration, dictation.visibleText());
+            long turn = dictation.turn();
+            render();
+            // Only a successful segment continues this same explicit, bounded Talk turn.
+            handler.postDelayed(() -> {
+                if (!foreground || !dictation.active() || dictation.turn() != turn
+                        || conversation.snapshot().generation != conversationVoiceGeneration) return;
+                startSegment(voice.beginVoice(checkSelfPermission(Manifest.permission.RECORD_AUDIO)
+                        == PackageManager.PERMISSION_GRANTED));
+                render();
+            }, 150);
+        } else finishDictation("Review your words before using this request. Choose Add more to continue.");
     }
 
     @Override public void onError(long generation, String reason) {
         if (!foreground || !voice.error(generation, reason)) return;
-        handler.removeCallbacksAndMessages(null);
-        conversation.voiceUnavailable(reason);
-        render();
+        finishDictation(reason + " Your earlier completed words are kept. Unfinished words were not added.");
+    }
+
+    private void finishDictation(String message) {
+        String draft = dictation.finish();
+        // Invalidate capture before cleanup; no final/timeout can reopen this turn.
+        voice.stop("Finished listening."); pendingPermission = -1;
+        handler.removeCallbacksAndMessages(null); recognizer.cancel();
+        conversation.finalVoice(conversationVoiceGeneration, draft);
+        conversation.voiceUnavailable(message);
+        dictation.clear(); render();
     }
 
     private void finishListening() {
+        if (!dictation.requestDone()) {
+            finishDictation("Your words are kept. Review them before using this request."); return;
+        }
         long generation = voice.snapshot().generation;
-        if (!voice.requestDone(generation)) return;
+        if (!voice.requestDone(generation)) {
+            finishDictation("Your words are kept. Review them before using this request."); return;
+        }
         handler.removeCallbacksAndMessages(null);
         recognizer.done();
         handler.postDelayed(() -> {
-            if (voice.snapshot().generation == generation && voice.snapshot().phase == VoiceSessionController.Phase.STOPPING) {
-                onError(generation, "The final words did not arrive. You can type instead.");
-                recognizer.cancel();
-            }
-        }, 10_000);
+            if (dictation.active() && voice.snapshot().generation == generation) finishDictation(
+                    "The final words did not arrive. Your earlier completed words are kept; please add or type the unfinished sentence.");
+        }, Math.min(10_000, dictation.remaining(SystemClock.elapsedRealtime())));
         render();
     }
 
     private void cancelAudioForRevision() {
+        dictation.clear();
         voice.stop("Request changed.");
         pendingPermission = -1;
         handler.removeCallbacksAndMessages(null);
@@ -357,6 +405,10 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     }
 
     private void stopEverything(String reason) {
+        if (dictation.active()) {
+            String draft = "Cancelled.".equals(reason) ? dictation.originalDraft() : dictation.finish();
+            conversation.finalVoice(conversationVoiceGeneration, draft);
+        }
         voice.stop(reason); speech.stop(reason);
         conversation.stop(() -> cancelAudioForRevision());
         render();
@@ -429,6 +481,9 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
             } else if (capture.phase == VoiceSessionController.Phase.STARTING) {
                 heading.setText("Starting listening");
                 explanation.setText("Waiting for the on-device recognizer. You can cancel or type instead.");
+            } else if (capture.phase == VoiceSessionController.Phase.FINAL) {
+                heading.setText("Continuing listening");
+                explanation.setText("Your earlier words are kept. Continue when Listening appears, or choose Done listening.");
             } else if (capture.phase == VoiceSessionController.Phase.STOPPING) {
                 heading.setText("Finishing the transcript");
                 explanation.setText("Waiting for final words. You can cancel or type instead.");
@@ -441,7 +496,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         String detail = state.message + (state.consequence.isEmpty() ? "" : "\nGoal: " + state.consequence);
         if (!outcome.getText().toString().equals(detail)) outcome.setText(detail);
         provisional.setVisibility(model.provisional ? View.VISIBLE : View.GONE);
-        provisional.setText("Heard so far\n" + state.heardSoFar + " ▏");
+        provisional.setText("Draft and words heard so far (review before use)\n" + state.heardSoFar + " ▏");
         TextScaleController.Snapshot size = textScale.snapshot();
         sizeSample.setVisibility(state.surface == Surface.PREVIEW ? View.VISIBLE : View.GONE);
         sizeSample.setTextSize(TypedValue.COMPLEX_UNIT_SP,
@@ -463,8 +518,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         use.setEnabled(!state.editableRequest.isBlank());
         home.setEnabled(!busy); kitchen.setEnabled(!busy); textSettings.setEnabled(!busy);
         escape.setVisibility(state.surface == Surface.IDLE ? View.GONE : View.VISIBLE);
-        escape.setText(state.surface == Surface.ACTIVE ? "■ Stop" : "Cancel");
-        escape.setTextColor(state.surface == Surface.ACTIVE ? 0xff962f43 : BLUE);
+        escape.setText(state.surface == Surface.ACTIVE || state.surface == Surface.LISTENING ? "■ Stop" : "Cancel");
+        escape.setTextColor(state.surface == Surface.ACTIVE || state.surface == Surface.LISTENING ? 0xff962f43 : BLUE);
         // Buttons are projected from one state; no parallel task cards or inferred authority.
         for (int i = 0; i < actions.getChildCount(); i++) textSizes.remove(actions.getChildAt(i));
         actions.removeAllViews();
@@ -485,7 +540,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
             control.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20 * size.current.multiplier());
             if (action == Action.RESTORE) control.setEnabled(size.restoreAvailable);
             if (action == Action.REPEAT) control.setEnabled(speechBridge.canRepeat());
-            if (action == Action.DONE_LISTENING) control.setEnabled(voice.snapshot().phase == VoiceSessionController.Phase.LISTENING);
+            if (action == Action.DONE_LISTENING) control.setEnabled(dictation.active() && voice.snapshot().phase != VoiceSessionController.Phase.STOPPING);
             actions.addView(control, wrap());
         }
         renderSpeech(state);
@@ -528,7 +583,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
                     public boolean acquire() { return audioManager != null && audioManager.requestAudioFocus(audioFocus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED; }
                     public void release() { if (audioManager != null) audioManager.abandonAudioFocusRequest(audioFocus); }
                 }, () -> {
-                    voice.stop("Reading aloud."); pendingPermission = -1;
+                    dictation.clear(); voice.stop("Reading aloud."); pendingPermission = -1;
                     handler.removeCallbacksAndMessages(null); recognizer.cancel();
                 });
         explorationListener = enabled -> { speechBridge.environment(foreground, enabled); render(); };
@@ -585,7 +640,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         if (conversation != null) { textScale.reload(); render(); }
     }
     @Override protected void onStop() {
-        foreground = false;
+        foreground = false; dictation.clear();
         speechBridge.environment(false, accessibility != null && accessibility.isTouchExplorationEnabled());
         conversation.clearForBackground(() -> cancelAudioForRevision());
         voice.beginTyping(""); voice.stop("App left the foreground.");

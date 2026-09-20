@@ -6,7 +6,7 @@ import org.pueblo98.stage1.conversation.ConversationSessionCoordinator.Surface;
 /** Written state/control contract consumed by the native renderer, not a second state owner. */
 public final class ConversationSurfaceModel {
     public enum Action {
-        USE_REQUEST("Use this request"), LISTEN_AGAIN("Listen again"),
+        USE_REQUEST("Use this request"), LISTEN_AGAIN("Add more"),
         DONE_LISTENING("Done listening"), TYPE("Type instead"), CANCEL("Cancel"),
         EDIT("Edit request"), NONE("None of these"), APPLY("Apply this text size"),
         CHANGE("Change it"), REPEAT("Repeat"), STOP("■ Stop"),

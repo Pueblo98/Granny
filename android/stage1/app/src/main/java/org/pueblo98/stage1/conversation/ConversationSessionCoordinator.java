@@ -114,7 +114,7 @@ public final class ConversationSessionCoordinator {
                 requestedAnchor == null ? 0 : requestedAnchor.scrollY);
     }
     public long beginListening() { checkThread();
-        invalidate(); editable = ""; surface = Surface.LISTENING;
+        invalidate(); surface = Surface.LISTENING;
         message = "Say what you would like to do. Choose Done listening when ready.";
         return generation;
     }
