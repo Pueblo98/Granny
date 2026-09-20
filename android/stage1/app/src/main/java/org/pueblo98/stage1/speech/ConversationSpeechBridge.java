@@ -23,7 +23,9 @@ public final class ConversationSpeechBridge implements SpeechOutputAdapter.Liste
     public void visibleText(String text) {
         if (visible.equals(text)) return;
         visible = text; revision++;
-        if (output.contentChanged(revision)) { adapter.stop(); focus.release(); }
+        boolean wasActive = output.isActive();
+        output.contentChanged(revision);
+        if (wasActive) stop();
     }
     public void environment(boolean foreground, boolean screenReader) {
         this.foreground = foreground; this.screenReader = screenReader;
@@ -51,6 +53,7 @@ public final class ConversationSpeechBridge implements SpeechOutputAdapter.Liste
     }
     private boolean start(SpeechOutputController.Request request) {
         if (request == null) return false;
+        adapter.stop(); focus.release();
         stopInput.run();
         if (!focus.acquire()) {
             output.error(request.generation, "Audio is busy. The written text remains available.");

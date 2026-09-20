@@ -241,8 +241,9 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         voice.stop("New Talk request.");
         pendingPermission = -1;
         handler.removeCallbacksAndMessages(null);
-        recognizer.cancel();
+        speech.stop("Input changed.");
         stopSpokenOutput();
+        recognizer.cancel();
         if (!recognizer.isAvailable()) {
             voice.recognizerUnavailable();
             conversation.voiceUnavailable("On-device recognition is unavailable. You can type instead.");
@@ -346,11 +347,13 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         voice.stop("Request changed.");
         pendingPermission = -1;
         handler.removeCallbacksAndMessages(null);
-        recognizer.cancel();
+        speech.stop("Input changed.");
         stopSpokenOutput();
+        recognizer.cancel();
     }
 
     private void stopEverything(String reason) {
+        voice.stop(reason); speech.stop(reason);
         conversation.stop(() -> cancelAudioForRevision());
         render();
         restoreOrigin();

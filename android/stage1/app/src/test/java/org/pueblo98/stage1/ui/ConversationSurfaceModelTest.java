@@ -6,6 +6,14 @@ import org.pueblo98.stage1.conversation.ConversationSessionCoordinator.Surface;
 import org.pueblo98.stage1.ui.ConversationSurfaceModel.Action;
 
 public final class ConversationSurfaceModelTest {
+    @Test public void composerDoesNotDuplicateListeningOrTranscriptControls() {
+        assertFalse(ConversationSurfaceModel.showsTalk(Surface.LISTENING));
+        assertFalse(ConversationSurfaceModel.showsType(Surface.LISTENING));
+        assertFalse(ConversationSurfaceModel.showsTalk(Surface.TRANSCRIPT));
+        assertFalse(ConversationSurfaceModel.showsType(Surface.TRANSCRIPT));
+        assertTrue(ConversationSurfaceModel.showsTalk(Surface.IDLE));
+        assertTrue(ConversationSurfaceModel.showsType(Surface.IDLE));
+    }
     @Test public void provisionalListeningHasNoSubmitOrConsequenceApproval() {
         ConversationSurfaceModel model = ConversationSurfaceModel.forSurface(Surface.LISTENING);
         assertTrue(model.provisional);
