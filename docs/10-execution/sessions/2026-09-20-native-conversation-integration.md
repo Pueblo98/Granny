@@ -9,11 +9,11 @@ related:
   - ../../02-design/shared-conversation-state-surfaces.md
   - ../../../android/stage1/README.md
 record_type: session
-session_state: review
+session_state: complete
 record_basis: contemporaneous
 agent: GPT-6 Astra with Terra implementation and Sol independent review
 branch: feature/native-conversation-integration
-next_action: Review the combined source branch for main integration; keep physical tablet testing on hold.
+next_action: Integrated through the native PR sequence; use the follow-up smoke evidence when discussing the next bounded native slice
 changed_paths:
   - android/stage1/README.md
   - android/stage1/app/src/main/AndroidManifest.xml
@@ -263,10 +263,13 @@ retaining written input if an audio route fails evidence. Do not wholesale
 revert merged concurrent design commits. Local text/speech Restore remains an
 explicit app control; cancelling speech never changes a preference automatically.
 
-### Next bounded action
+### Post-review closure — 2026-09-20
 
-Review this combined source branch for main integration. Keep tablet testing
-on hold until Simon separately releases that hold and authorizes exact cases.
-The ready local capability is still C5 and its rollback; do not add another
-external route to fill the evidence gap. T-101 remains in progress, C2 remains
-unadmitted, GATE-03/04/06 remain open, and T-104 remains blocked by route evidence.
+The combined source and continuity repair reached `main` through the native PR
+sequence ending in PR #42. Simon later completed a bounded follow-up walkthrough;
+the [recorded smoke feedback](../../08-research/2026-09-20-native-tablet-followup-feedback.md)
+is positive for the repaired interaction and requested access paths, while
+spoken naturalness remains unsatisfactory. Missing case-level configuration,
+repetitions and timings prevent a complete device-matrix claim. T-101 remains in
+progress, C2 remains unadmitted, GATE-03/04/06 remain open and T-104 remains
+blocked by route evidence.

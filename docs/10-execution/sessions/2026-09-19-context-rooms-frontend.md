@@ -9,11 +9,11 @@ related:
   - ../../02-design/browser-prototype.md
   - ../../02-design/context-rooms.md
 record_type: session
-session_state: review
+session_state: complete
 record_basis: contemporaneous
 agent: Codex
 branch: feature/explicit-scroll-row-home
-next_action: "Simon reviews the six-room browser checkpoint; mixed-code main integration needs explicit authority."
+next_action: "Integrated through PR #44 and accepted by Simon for the current cohesive frontend iteration; production context/persistence evidence remains separate."
 changed_paths:
   - docs/02-design/browser-prototype.md
   - docs/02-design/mockups/2026-09-20-context-rooms-frontend/README.md

@@ -5,11 +5,11 @@ owner: Simon
 last_updated: 2026-09-20
 tags: [execution, prototype, rooms]
 record_type: session
-session_state: review
+session_state: complete
 record_basis: contemporaneous
 agent: Codex lead with Terra audits
 branch: feature/explicit-scroll-row-home
-next_action: Simon reviews the Rooms-system checkpoint; mixed-code main integration needs separate authority
+next_action: Simon accepted the integrated Rooms checkpoint for now; discuss production context/persistence only as a separately ready task
 related:
   - ../backlog.md
   - ../../../prototypes/stage-1/README.md
