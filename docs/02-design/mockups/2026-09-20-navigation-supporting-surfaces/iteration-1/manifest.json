@@ -1,0 +1,30 @@
+{
+  "title": "Navigation and supporting surfaces — iteration 1",
+  "date": "2026-09-20",
+  "visual_system": "Harbour Blue",
+  "selected_frame_count": 13,
+  "failed_asset_count": 0,
+  "rejected_retry_count": 3,
+  "prompt_log": "prompts.md",
+  "assets": [
+    {"id":"navigation-01-menu","role":"menu","path":"01-menu.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"navigation-02-today","role":"minimal-history","path":"02-today-minimal-history.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"navigation-03-settings","role":"settings-overview","path":"03-settings-overview.png","width":1586,"height":992,"alpha":false,"review_status":"selected-targeted-retry"},
+    {"id":"navigation-04-privacy","role":"privacy-and-data","path":"04-privacy-and-data.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"navigation-05-accessibility","role":"accessibility-preferences","path":"05-accessibility-preferences.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"navigation-06-help","role":"help","path":"06-help-what-can-i-ask.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"navigation-07-new-conversation","role":"new-conversation-confirmation","path":"07-new-conversation.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"navigation-08-external-return","role":"external-return-unknown","path":"08-return-from-external-app.png","width":1586,"height":992,"alpha":false,"review_status":"selected-targeted-retry"},
+    {"id":"navigation-09-global-search","role":"global-search-results","path":"09-global-search-results.png","width":1586,"height":992,"alpha":false,"review_status":"selected-targeted-retry"},
+    {"id":"navigation-10-search-empty","role":"global-search-no-result","path":"10-global-search-no-results.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"navigation-11-onboarding-welcome","role":"onboarding-welcome","path":"11-onboarding-welcome.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"navigation-12-onboarding-preferences","role":"onboarding-preferences","path":"12-onboarding-preferences.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"navigation-13-onboarding-access","role":"onboarding-optional-access","path":"13-onboarding-optional-access.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"navigation-comparison","role":"review-sheet","path":"comparison.png","width":1624,"height":4102,"alpha":false,"review_status":"derived-from-selected-frames"}
+  ],
+  "rejected_assets": [
+    {"path":"rejected/03-settings-trash-back-rejected.png","reason":"Back to Home incorrectly used a trash icon"},
+    {"path":"rejected/08-return-extra-turns-rejected.png","reason":"Introduced an inaccurate extra conversation pair"},
+    {"path":"rejected/09-global-search-mismatched-summary-rejected.png","reason":"Soup query was paired with an unrelated photo task summary"}
+  ]
+}
