@@ -9,11 +9,11 @@ related:
   - ../../02-design/shared-conversation-state-surfaces.md
   - ../../02-design/browser-prototype.md
 record_type: session
-session_state: review
+session_state: complete
 record_basis: contemporaneous
 agent: Codex
 branch: feature/explicit-scroll-row-home
-next_action: "Simon reviews the shared-state checkpoint; mixed-code main integration requires separate authority."
+next_action: "Integrated through PR #44 and accepted within the current cohesive frontend iteration; Android and human evidence remain separate."
 changed_paths:
   - prototypes/stage-1/app.js
   - prototypes/stage-1/index.html

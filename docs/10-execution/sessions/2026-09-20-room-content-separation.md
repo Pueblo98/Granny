@@ -9,11 +9,11 @@ related:
   - ../../02-design/browser-prototype.md
   - ../../02-design/mockups/2026-09-20-room-content-separation/README.md
 record_type: session
-session_state: review
+session_state: complete
 record_basis: contemporaneous
 agent: Codex
 branch: feature/explicit-scroll-row-home
-next_action: "Simon reviews clean browse labels and the narrower chat column; mixed-code main integration remains separate."
+next_action: "Integrated through PR #44 and accepted within the current frontend iteration; no layout revision is queued."
 changed_paths:
   - prototypes/stage-1/styles.css
   - prototypes/stage-1/room-ui.js

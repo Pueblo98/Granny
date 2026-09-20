@@ -9,11 +9,11 @@ related:
   - ../../02-design/browser-prototype.md
   - ../../02-design/mockups/2026-09-20-room-footprint-refinement/README.md
 record_type: session
-session_state: review
+session_state: complete
 record_basis: contemporaneous
 agent: Codex
 branch: feature/explicit-scroll-row-home
-next_action: "Simon reviews full-width hidden Home and larger hero/chat artwork; mixed-code main integration remains separate."
+next_action: "Integrated through PR #44; Simon accepted the Home/Rooms scrolling and emphasis refinement for now."
 changed_paths:
   - prototypes/stage-1/app.js
   - prototypes/stage-1/styles.css

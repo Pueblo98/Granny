@@ -363,7 +363,12 @@ The [integration record](sessions/2026-09-20-native-conversation-integration.md)
 owns the combined artifact, exact host checks and deferred synthetic matrix.
 T-120/T-121 device sequences must be revised for this shared surface before any
 later exact authorization: do not install or reuse an earlier APK implicitly.
-Simon has placed physical-tablet testing on hold while code is integrated.
+The integration and continuity repair are now on `main`; Simon's
+[follow-up smoke report](../08-research/2026-09-20-native-tablet-followup-feedback.md)
+is positive for the repaired flow and requested access checks, while spoken
+naturalness remains unsatisfactory. Missing configuration, case-level results,
+repetitions and timings mean the complete matrices remain open. Any new device
+action still needs exact scope and artifact identity.
 
 ## Restart prompts
 

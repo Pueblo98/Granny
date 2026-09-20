@@ -9,11 +9,11 @@ related:
   - ../../02-design/browser-prototype.md
   - ../../02-design/mockups/2026-09-20-context-rooms-cleanup/README.md
 record_type: session
-session_state: review
+session_state: complete
 record_basis: contemporaneous
 agent: Codex
 branch: feature/explicit-scroll-row-home
-next_action: "Simon reviews the brighter outlines and artwork balance in the local preview; mixed-code integration remains separate."
+next_action: "Integrated through PR #44 and accepted within the current frontend iteration; no visual revision is queued."
 changed_paths:
   - prototypes/stage-1/app.js
   - prototypes/stage-1/index.html

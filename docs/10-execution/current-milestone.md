@@ -13,6 +13,26 @@ related:
 
 # Current milestone — Context Rooms and native voice/readback shells
 
+## Iteration-1 review checkpoint — 2026-09-20
+
+Simon completed the integrated browser walkthrough after PR #44 and reported
+the first frontend iteration cohesive and good for now. The Home/Rooms scrolling
+and room-emphasis refinement is also accepted for this checkpoint; no frontend
+revision is queued. This is owner review of the fictional browser artifact, not
+representative-user comprehension evidence or a GATE-05 pass.
+
+Simon also reported the repaired native interaction and requested tablet
+accessibility smoke checks working well. [The follow-up record](../08-research/2026-09-20-native-tablet-followup-feedback.md)
+captures the narrow positive observations and missing configuration/case data.
+Spoken readback is slightly improved but still below the desired naturalness.
+No cloud voice, alternate engine or provider/data-flow change is selected.
+
+The next discussion should choose one bounded product-app slice and the next
+feasibility evidence target. Candidate implementation order is setup/capability
+status, local fictional draft/clarification/preview, then recent activity only
+after its storage/backup/retention packet. T-101 still separately owns
+selected-package, retention, egress and external-route evidence.
+
 ## Native voice continuity repair — 2026-09-20
 
 [Simon-reported smoke feedback](../08-research/2026-09-20-native-tablet-smoke-feedback.md)
@@ -22,22 +42,25 @@ The [source repair](sessions/2026-09-20-native-voice-continuity.md) preserves
 existing words, collects bounded successful recognizer segments until Done/Stop,
 and ranks eligible offline voices by locale and declared quality. The repaired
 APK is host-checked and its package update succeeded; functional retest is unreported; no quality or gate
-acceptance is claimed. The earlier blanket testing hold was lifted for the
-reported smoke run only; new device actions remain separately scoped.
+acceptance is claimed from the original smoke run. Simon's later follow-up is
+positive for the repaired interaction/access paths, while readback naturalness
+remains unsatisfactory; exact configuration, trials and timings are still
+missing. New device actions remain separately scoped.
 
 ## Native conversation integration — 2026-09-20
 
 The [integration session](sessions/2026-09-20-native-conversation-integration.md)
-joins committed T-120/C5 and T-121 source in the existing `android/stage1` app.
+joins T-120/C5 and T-121 source in the existing `android/stage1` app and is
+integrated on `main` through the native PR sequence ending in PR #42.
 One coordinator owns typed/final spoken requests, clarification, exact preview,
 one-use approval, Stop and known/unknown results while Home/fictional Kitchen
 remains the underlying place. Only debug C5 text size is enabled; candidate
 builds and C2 screen explanation fail closed. Explicit readback and speech-rate
 controls share input/output exclusion, exact rendered-text revisions, audio
 focus and touch-exploration suppression. Host checks are source/fixture evidence.
-All physical tablet testing is on hold at Simon's request. T-101 and
-GATE-03/04/06 remain open; T-104 has no admitted route. This mixed task branch
-is not a main merge or primary-vault synchronization.
+Simon's later bounded smoke checks provide positive owner-reported device
+observations but not the complete versioned matrix. T-101 and GATE-03/04/06
+remain open; T-104 has no admitted route.
 
 ## T-121 explicit spoken readback and speech controls — 2026-09-20
 
@@ -55,10 +78,11 @@ provider SDK, model, generated audio file or network fallback; the written path
 remains complete whenever speech is unavailable. Speech settings use private,
 versioned storage with compare-and-set and explicit readback. Host tests cover
 state, stale callbacks, exact revisions and persistence failure handling, while
-debug assembly and lint pass. No device or TTS engine was exercised, so audible
-output, engine egress/offline behavior, language packs, audio focus, Stop
-latency, rate fidelity and TalkBack interaction remain unrun under
-EVAL-007/009 and RES-06. No gate passes from this implementation.
+debug assembly and lint pass. Simon later reported the repaired flow and access
+checks working on the reference tablet; audible quality is slightly improved
+but still unsatisfactory. Engine/voice identity, network state, repetition
+counts, audio-focus behavior, Stop latency and rate fidelity remain unreported
+under EVAL-007/009 and RES-06. No gate passes from this smoke feedback.
 
 ## Profile and accessibility adaptation review — 2026-09-20
 
@@ -89,12 +113,14 @@ preferences from optional access reviews.
 The rasters do not themselves implement navigation, persist history or
 preferences, request Android permissions, search external apps or prove
 return-state verification. Simon subsequently approved the direction for the
-active frontend session through the bounded
+then-active frontend session through the bounded
 [navigation/supporting-surface implementation metaprompt](../02-design/mockups/2026-09-20-navigation-supporting-surfaces/iteration-1/NAVIGATION-SUPPORTING-SURFACES-IMPLEMENTATION-METAPROMPT.md).
 The handoff defines each screen's purpose, exact fixture copy, entry/exit,
 state ownership, focus and responsive behavior, cross-surface journeys and
 tests. It remains fictional browser work and stops before Android, real
-permissions, durable personal data, external-app claims or mixed-task merge.
+permissions, durable personal data or external-app claims. The implementation
+is integrated through PR #44 and Simon's iteration walkthrough found the
+supporting system cohesive; no immediate revision is requested.
 
 ## Core outcome modules visual review — 2026-09-20
 
@@ -105,14 +131,13 @@ each useful state with a no-result, guidance, prepared-handoff, unavailable or
 restore state. Each outcome remains one inline contextual module above the
 stable Round composer; none is a separate mini-app dashboard.
 
-This is a visual-review checkpoint only. It does not implement the modules,
-prove external retrieval or action, accept raster geometry, or change product
-contracts. Navigation and supporting surfaces were not specified in the
-request and remain a later bounded batch. The next step is Simon's review of
-which modules can proceed unchanged and which should be simplified while
-preserving source, state, consequence and recovery language.
+The original rasters alone did not implement modules or prove external
+retrieval/action. The five reusable fictional module families and navigation
+support are now integrated through PR #44. Simon's iteration walkthrough found
+them cohesive and requested no immediate simplification; their external
+capability and human-comprehension evidence remains unrun.
 
-Simon subsequently authorized the active frontend session to implement all ten
+Simon subsequently authorized the then-active frontend session to implement all ten
 references through the bounded
 [core outcome-module implementation metaprompt](../02-design/mockups/2026-09-20-core-outcome-modules/iteration-1/CORE-OUTCOME-MODULES-IMPLEMENTATION-METAPROMPT.md).
 The handoff treats them as five reusable inline module families over the
@@ -138,14 +163,13 @@ recognition is unavailable, rejects stale callbacks after Stop/session
 replacement and retains no raw audio or default transcript history. Sixteen
 pure host cases pass with debug assembly and lint; the APK permission dump
 contains only `RECORD_AUDIO` and its runtime dependency graph is empty. Host
-evidence proves only that bounded local contract. No Android device was
-attached, so exact Samsung recognizer, locale, acoustic, lifecycle, latency,
-accessibility and correction-effort evidence remains unrun under RES-06 and
-EVAL-005/007/009/012; no gate passes from the decision or scaffold.
-
-The task branch starts from the latest committed Explicit Scroll Row Home and
-merges current `origin/main`. The owner's later uncommitted Context Rooms work
-remains untouched and is not claimed as part of T-120.
+evidence proves only that bounded local contract. Subsequent Simon-reported
+smoke checks on the reference tablet are positive for repaired continuity,
+permission/access fallbacks and accessibility paths. Exact recognizer, locale,
+network/acoustic conditions, repetitions, timings and correction effort remain
+unreported under RES-06 and EVAL-005/007/009/012; no gate passes from the
+decision, scaffold or smoke feedback. The integrated shell and repair are now
+on `main`.
 
 ## Rooms system visual review — 2026-09-20
 
@@ -156,20 +180,19 @@ underlying-data deletion, cross-room disclosure, sensitive-source denial, and
 empty/loading/offline/missing-art fallbacks. It preserves Harbour Blue, open
 room portraits, direct browse rows and the stable conversation shell.
 
-This is the visual-review checkpoint Simon requested. No frame is accepted by
-generation alone, and canonical PRD/design-system propagation waits for his
-feedback. The next bounded step is to select, simplify or combine these
-structures without turning Rooms into a busier dashboard, then record only the
-accepted behavior and replicable UI rules in their canonical owners.
+The frames were not accepted by generation alone. The complete in-memory
+fictional Rooms slice is now integrated through PR #44, and Simon's walkthrough
+found the result cohesive and good for now. Production persistence,
+policy-enforced retrieval and representative-user evidence remain separate.
 
-Simon subsequently authorized the active frontend session to implement the
+Simon subsequently authorized the then-active frontend session to implement the
 complete fictional Rooms slice from a bounded
 [implementation metaprompt](../02-design/mockups/2026-09-20-rooms-system/iteration-1/ROOMS-SYSTEM-IMPLEMENTATION-METAPROMPT.md).
 The handoff requires reusable in-memory Room/item/membership state, direct
 browse/search, reversible organization, separated deletion scopes, disclosed or
 denied cross-room sources, degraded fixtures and regression/accessibility
-coverage. It does not authorize persistent personal data, backend retrieval,
-Android work or automatic main integration.
+coverage. It does not authorize persistent personal data, backend retrieval or
+Android work.
 
 ## Shared conversation state pack — 2026-09-20
 
@@ -190,11 +213,12 @@ expands or one temporary task surface appears above it, with a larger focused
 sheet allowed only when content or access needs require it.
 
 The [shared-state implementation metaprompt](../02-design/mockups/2026-09-20-shared-state-pack/iteration-1/SHARED-STATE-IMPLEMENTATION-METAPROMPT.md)
-now gives the active frontend session an executable handoff for all seven
-references. It requires reusable bottom-connected state surfaces over both Home
+provided the frontend session an executable handoff for all seven references.
+The integrated implementation uses reusable bottom-connected state surfaces over both Home
 and Rooms, deterministic fictional fixtures, responsive/accessibility coverage
-and preservation of existing safety behavior; it does not authorize backend,
-Android, real microphone or external-app work.
+and preserved safety behavior. Simon's walkthrough requested no immediate
+revision; this does not authorize backend, Android, real microphone or
+external-app work.
 
 ## C5 local text-size implementation — 2026-09-20
 
@@ -202,9 +226,11 @@ The [C5 slice](sessions/2026-09-20-c5-native-text-scale.md) extends the existing
 [native voice shell](../../android/stage1/README.md) with closed text-size
 choices, isolated preview, explicit Apply, private saved-value readback and
 Restore previous size. It adds no permission, dependency or network route.
-Source/host evidence does not establish device layout, TalkBack or restart
-persistence; the [synthetic tablet packet](../10-execution/t101-c5-tablet-verification.md)
-owns the pending verification. T-101 and GATE-03/04/06 remain open.
+Source/host evidence is supplemented by Simon's positive smoke report for the
+requested persistence/restart, large-text and access paths. The report lacks
+case-level configuration, repetitions and layout/traversal measurements, so the
+[synthetic tablet packet](../10-execution/t101-c5-tablet-verification.md) is not
+fully closed. T-101 and GATE-03/04/06 remain open.
 
 ## T-101 route and partial physical inventory — 2026-09-19
 
@@ -276,9 +302,11 @@ from three to six fictional rooms using the new Kitchen vertical-slice
 mockups. The [current session](sessions/2026-09-19-context-rooms-frontend.md)
 records reusable room overviews, 48 collection controls, library/search,
 fictional item details, reversible source-aware replies and explicit local
-creation. The task branch is not main integration or final design acceptance.
-Production persistence, backend room context, archive/delete, Android, Figma
-and human/device evidence remain outside this implementation checkpoint.
+creation. The expanded Rooms system, outcomes and support surfaces are now
+integrated through PR #44; Simon's walkthrough found the iteration cohesive and
+requested no immediate revision. This is not final public identity or
+representative-human acceptance. Production persistence, backend room context,
+Android capability and participant evidence remain outside this checkpoint.
 
 **Iteration 5 — selected Linen foundation:** Simon selected Linen canvas with the existing white surface and dark ink, keeping Soft Plum as baseline while explicitly authorizing blue Send/accent alternatives. [Four final-shortlist boards](../02-design/mockups/2026-09-19-style-boards/iteration-5/README.md) hold the composition fixed, distinguish ordinary border from offset focus ring, and preserve red Stop. The assistant recommends Plum + Cobalt; Simon's main-board choice remains next. [Canonical selection](../02-design/brand-and-visual-identity.md#selected-foundation--linen) and [session evidence](sessions/2026-09-19-linen-final-shortlist.md) separate selected foundation from proposed action values and unrun access evidence. Earlier round summaries below are historical.
 
@@ -331,9 +359,9 @@ Simon requested the complete T-103 backend sprint on 2026-09-17 and accepted all
 
 ## Historical milestone — conversation-first browser experience
 
-Simon authorized [conversation-first implementation](../02-design/conversation-first-plan.md) on 2026-09-14: message checkpoint first, then the five integrated MVP simulations, supporting preferences/privacy/recovery and proposed visual comparison. He asked to continue the working message direction on 2026-09-15 and authorized a draft PR after integrated checks. [Build record](sessions/2026-09-14-conversation-build.md) owns current evidence/publication. Main integration is not authorized. No backend, Android automation, capture, live media/message or production gate work is part of this mission.
+At that historical checkpoint, Simon authorized [conversation-first implementation](../02-design/conversation-first-plan.md) on 2026-09-14: message checkpoint first, then the five integrated MVP simulations, supporting preferences/privacy/recovery and proposed visual comparison. He asked to continue the working message direction on 2026-09-15 and authorized a draft PR after integrated checks. [Build record](sessions/2026-09-14-conversation-build.md) owns that checkpoint's evidence/publication. Later integration is recorded above; no backend, Android automation, capture, live media/message or production gate work belonged to the original mission.
 
-T-102's conversation-first browser revision is implemented for review; the development cockpit remains approved and complete. That shell remains useful input, while T-119 is now the active next design slice. Final interaction/brand acceptance, device/participant evidence and all production gates retain their existing owners and limits.
+T-102/T-119's fictional browser revisions are integrated and owner-reviewed for the current iteration; the development cockpit remains approved and complete. Final public identity, representative participant evidence and all production gates retain their existing owners and limits.
 
 ## Previous milestone — cockpit approved; conversation-first plan prepared
 

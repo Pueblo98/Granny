@@ -19,6 +19,19 @@ related:
 
 # Conversation-first browser experience
 
+## Iteration-1 owner review — 2026-09-20
+
+Simon completed a walkthrough of the integrated browser iteration after PR #44
+and reported that it remains cohesive and is good for now. The Home/Rooms
+scrolling and room-emphasis refinement is also accepted for this checkpoint. No
+frontend revision is queued before the next product/evidence discussion.
+
+This closes owner review of the current fictional browser iteration; it does
+not convert browser fixtures into Android capability evidence, establish
+representative older-adult comprehension or pass GATE-05. Future frontend
+changes should start from a newly selected bounded task rather than reopen this
+iteration by default.
+
 ## Navigation and supporting surfaces checkpoint
 
 The [navigation handoff](../10-execution/sessions/2026-09-20-navigation-support-frontend.md)
@@ -30,11 +43,11 @@ New conversation preserves minimal history; history clearing and full in-memory
 fixture reset are separate reviewed actions. Optional access grants nothing.
 The static prototype remains usable without any model/runtime connection.
 
-The new reference pack is an explicitly recorded read-only dependency in the
-dirty primary checkout, not an invented integrated artifact. Existing room,
-outcome and shared-surface contracts remain authoritative. Browser verification
-does not establish Android permissions, TalkBack, external outcomes or human
-comprehension. The prototype README owns exact entry routes and fixture limits.
+The reference pack and implementation are integrated on `main` through PR #44.
+Existing room, outcome and shared-surface contracts remain authoritative.
+Browser verification does not establish Android permissions, TalkBack,
+external outcomes or human comprehension. The prototype README owns exact
+entry routes and fixture limits.
 
 ## Inline core outcomes checkpoint
 
@@ -117,10 +130,9 @@ overflow and explicit Previous/Next remain. See the
 
 The executable prototype integrates the selected [Explicit Scroll Row Home](mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md) with the existing conversation shell and five scripted workflows. It retains Harbour Blue, the Round composer, one fictional Kitchen continuation, truthful written overflow controls and direct `See all rooms`. Six starter rooms now use unchanged selected local pack assets.
 
-Under Simon's subsequent explicit six-room request, this [T-119](../10-execution/backlog.md#t-119) checkpoint includes Kitchen, Fitness, Trips, Garden, Reading and Projects: four-symbol overview, all eight collections, direct search, fictional item detail and reversible source-aware conversation. The Rooms library provides Search all/All items/Unfiled and retains the bounded five-step local creation flow. The [contemporaneous session](../10-execution/sessions/2026-09-19-context-rooms-frontend.md) records authority, review and exact limits. Persistent room data, policy-scoped cross-room retrieval, membership receipts/Undo, archive/delete and production context contracts remain later slices. Room fixtures never enter the scripted task model or connected backend.
+Under Simon's subsequent explicit six-room request, this [T-119](../10-execution/backlog.md#t-119) checkpoint includes Kitchen, Fitness, Trips, Garden, Reading and Projects: four-symbol overview, all eight collections, direct search, fictional item detail and reversible source-aware conversation. The Rooms library provides Search all/All items/Unfiled and retains the bounded five-step local creation flow. The [contemporaneous session](../10-execution/sessions/2026-09-19-context-rooms-frontend.md) records authority, review and exact limits. The later Rooms-system checkpoint adds in-memory membership receipts/Undo, archive/restore and separated room/item deletion. Persistent room data, policy-enforced cross-room retrieval and production context contracts remain later slices. Room fixtures never enter the scripted task model or connected backend.
 
-The new Kitchen vertical-slice references are read-only design dependencies in
-the dirty primary checkout at
+The Kitchen vertical-slice references are integrated design dependencies at
 `docs/02-design/mockups/context-rooms/kitchen-vertical-slice/iteration-1/`.
 One reusable room renderer implements their overview → collection → detail →
 conversation grammar. It preserves canonical truth where raster copy differs:
