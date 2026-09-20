@@ -1,0 +1,26 @@
+{
+  "title": "Core outcome modules — iteration 1",
+  "date": "2026-09-20",
+  "visual_system": "Harbour Blue",
+  "selected_frame_count": 10,
+  "failed_asset_count": 0,
+  "rejected_retry_count": 2,
+  "prompt_log": "prompts.md",
+  "assets": [
+    {"id":"outcome-01-photos-found","module":"photos","state":"found","path":"01-photos-found.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"outcome-02-photos-no-result","module":"photos","state":"no-result","path":"02-photos-no-result.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"outcome-03-screen-explanation","module":"screen-explanation","state":"explanation","path":"03-screen-explanation.png","width":1586,"height":992,"alpha":false,"review_status":"selected-targeted-retry"},
+    {"id":"outcome-04-guidance-highlight","module":"screen-explanation","state":"guidance-highlight","path":"04-guidance-highlight.png","width":1586,"height":992,"alpha":false,"review_status":"selected-targeted-retry"},
+    {"id":"outcome-05-message-draft-review","module":"message-drafting","state":"exact-review","path":"05-message-draft-review.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"outcome-06-message-prepared-unsent","module":"message-drafting","state":"prepared-not-sent","path":"06-message-prepared-unsent.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"outcome-07-media-playing","module":"media","state":"playing","path":"07-media-playing.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"outcome-08-media-unavailable","module":"media","state":"service-unavailable","path":"08-media-unavailable.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"outcome-09-reading-preview","module":"reading-assistance","state":"text-size-preview","path":"09-reading-text-preview.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"outcome-10-reading-applied","module":"reading-assistance","state":"applied-with-restore","path":"10-reading-applied-restore.png","width":1586,"height":992,"alpha":false,"review_status":"selected-first-output"},
+    {"id":"outcome-comparison","module":"review","state":"comparison","path":"comparison.png","width":1624,"height":2930,"alpha":false,"review_status":"derived-from-selected-frames"}
+  ],
+  "rejected_assets": [
+    {"path":"rejected/03-screen-explanation-g-avatar-rejected.png","reason":"Unapproved circular G avatar"},
+    {"path":"rejected/04-guidance-highlight-g-avatar-rejected.png","reason":"Unapproved circular G avatar"}
+  ]
+}
