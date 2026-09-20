@@ -28,6 +28,7 @@ public final class FixtureAccessibilityService extends AccessibilityService {
 
     public void inspect(Rect fixture, Callback sink) {
         if (fence.pending()) { sink.unavailable("An observation is already pending."); return; }
+        if (!clearCache()) { sink.unavailable("Fresh semantics unavailable; try a new inspection."); return; }
         AccessibilityNodeInfo root = getRootInActiveWindow();
         if (root == null || !PACKAGE.contentEquals(root.getPackageName() == null ? "" : root.getPackageName())) {
             sink.unavailable("Only this lab's active fixture can be inspected."); return;
@@ -54,6 +55,9 @@ public final class FixtureAccessibilityService extends AccessibilityService {
                     HardwareBuffer buffer = result.getHardwareBuffer();
                     Bitmap image = null;
                     try {
+                        // Stop/old callbacks must not touch a newer request's cache or state.
+                        if (!fence.accepts(token, SystemClock.elapsedRealtime(), map.windowId)) return;
+                        if (!clearCache()) { fail("Fresh semantics unavailable; result withheld."); return; }
                         AccessibilityNodeInfo current = getRootInActiveWindow();
                         if (current == null || !PACKAGE.contentEquals(current.getPackageName() == null ? "" : current.getPackageName())
                                 || !fence.accepts(token, SystemClock.elapsedRealtime(), current.getWindowId())) return;
@@ -62,6 +66,10 @@ public final class FixtureAccessibilityService extends AccessibilityService {
                         if (currentWindow == null || !currentWindow.isActive()) return;
                         currentWindow.getBoundsInScreen(currentRect);
                         if (!windowRect.equals(currentRect)) { fail("Window changed; result withheld."); return; }
+                        final ScreenMap after;
+                        try { after = new NativeSnapshotReader().read(current, fixture, SystemClock.elapsedRealtime()); }
+                        catch (IllegalArgumentException error) { fail("Semantics incomplete or changed; request a fresh map."); return; }
+                        if (!map.sameSemantics(after)) { fail("Semantics changed during capture; request a fresh map."); return; }
                         if (buffer.getWidth() > 4096 || buffer.getHeight() > 4096
                                 || (long) buffer.getWidth() * buffer.getHeight() > 8_000_000) {
                             fail("Capture exceeds the lab image budget."); return;

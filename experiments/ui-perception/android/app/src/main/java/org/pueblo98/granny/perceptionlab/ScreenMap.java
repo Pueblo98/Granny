@@ -61,6 +61,19 @@ public final class ScreenMap {
         return count;
     }
 
+    /** Compare observed content, not timestamps/UUIDs; equal empty maps prove no visual completeness. */
+    public boolean sameSemantics(ScreenMap other) {
+        if (other == null || windowId != other.windowId || elements.size() != other.elements.size()) return false;
+        for (int i = 0; i < elements.size(); i++) {
+            Element a = elements.get(i), b = other.elements.get(i);
+            if (!a.label.equals(b.label) || !a.role.equals(b.role) || a.enabled != b.enabled
+                    || a.clickable != b.clickable || a.bounds.left != b.bounds.left
+                    || a.bounds.top != b.bounds.top || a.bounds.right != b.bounds.right
+                    || a.bounds.bottom != b.bounds.bottom) return false;
+        }
+        return true;
+    }
+
     private static String normalize(String text) { return text.strip().toLowerCase(Locale.ROOT).replaceAll("\\s+", " "); }
 
     public static Box toImage(Box screen, Box window, int width, int height) {

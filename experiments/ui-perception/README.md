@@ -98,6 +98,21 @@ in any future device consent and independently checked before claiming isolation
 
 ## Modules and limits
 
+### Fresh semantics (version 0.3, device retest pending)
+
+Explicit inspection now clears the service's accessibility cache and refreshes
+nodes; obsolete/invisible roots and missing children yield unavailable rather
+than a silently truncated map. A second fresh read after screenshot capture must
+match labels, roles, geometry, enabled/clickable state and window identity.
+Mismatch withholds the result, without automatic retries. Existing Stop/time
+fences still apply. These reads can increase latency; no tablet timing claim.
+
+An empty stable tree remains possible (including Canvas only), but now explicitly
+reports **coverage unknown**, not that the visible screen has no controls.
+Two agreeing reads cannot establish completeness or detect every transition.
+The reported transient Case 4 failure is not reproduced on device; these are
+defensive fixes for concrete source gaps, not a proven root-cause resolution.
+
 ### Adverse fixture cases (version 0.2)
 
 Tap the **Next case** button to cycle, then **Inspect fixture once**. Changing

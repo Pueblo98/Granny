@@ -52,4 +52,33 @@ public class PerceptionTest {
         assertEquals("not-found", map.lookup("Canvas note: larger words", 101, 4));
         assertEquals(0, map.unlabeledControls());
     }
+    @Test public void emptyThenPopulatedCaptureIsRejected() {
+        ScreenMap empty = new ScreenMap("before", 100, 4, List.of());
+        ScreenMap filled = new ScreenMap("after", 101, 4, List.of(element(false)));
+        assertFalse(empty.sameSemantics(filled));
+        assertFalse(filled.sameSemantics(empty));
+    }
+    @Test public void stableContentIgnoresTransientObservationIdentity() {
+        ScreenMap before = new ScreenMap("before", 100, 4, List.of(element(false)));
+        assertTrue(before.sameSemantics(new ScreenMap("after", 101, 4, List.of(element(false)))));
+        assertTrue(new ScreenMap("a", 100, 4, List.of()).sameSemantics(new ScreenMap("b", 101, 4, List.of())));
+    }
+    @Test public void changedEnabledStateWindowOrLabelRejectsCapture() {
+        ScreenMap before = new ScreenMap("before", 100, 4, List.of(element(true)));
+        assertFalse(before.sameSemantics(new ScreenMap("after", 101, 4, List.of(element(false)))));
+        assertFalse(before.sameSemantics(new ScreenMap("after", 101, 5, List.of(element(true)))));
+        ScreenMap.Element changed = new ScreenMap.Element("Send", "button", element(true).bounds, true, true);
+        assertFalse(before.sameSemantics(new ScreenMap("after", 101, 4, List.of(changed))));
+        assertFalse(before.sameSemantics(null));
+    }
+    @Test public void changedGeometryRoleOrClickabilityRejectsCapture() {
+        ScreenMap.Element e = element(true);
+        ScreenMap before = new ScreenMap("before", 100, 4, List.of(e));
+        for (ScreenMap.Element changed : List.of(
+                new ScreenMap.Element(e.label, e.role, new ScreenMap.Box(11, 20, 100, 60), true, true),
+                new ScreenMap.Element(e.label, "text", e.bounds, true, true),
+                new ScreenMap.Element(e.label, e.role, e.bounds, true, false))) {
+            assertFalse(before.sameSemantics(new ScreenMap("after", 101, 4, List.of(changed))));
+        }
+    }
 }

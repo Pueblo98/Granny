@@ -12,12 +12,14 @@ public final class NativeSnapshotReader {
 
     public ScreenMap read(AccessibilityNodeInfo root, Rect fixture, long now) {
         entries.clear(); visited = 0;
+        if (!root.refresh() || !root.isVisibleToUser()) throw new IllegalArgumentException("obsolete or invisible root");
         visit(root, fixture, 0, true);
         return new ScreenMap("obs-" + java.util.UUID.randomUUID(), now, root.getWindowId(), entries);
     }
 
     private void visit(AccessibilityNodeInfo node, Rect fixture, int depth, boolean parentVisible) {
         if (++visited > 512 || depth > 32) throw new IllegalArgumentException("tree limit");
+        if (!node.refresh()) throw new IllegalArgumentException("obsolete node");
         if (!FixtureAccessibilityService.PACKAGE.contentEquals(node.getPackageName() == null ? "" : node.getPackageName()))
             throw new IllegalArgumentException("unsupported package");
         if (node.isPassword() || node.isAccessibilityDataSensitive()) throw new IllegalArgumentException("sensitive node");
@@ -41,7 +43,8 @@ public final class NativeSnapshotReader {
         }
         for (int i = 0; i < node.getChildCount(); i++) {
             AccessibilityNodeInfo child = node.getChild(i);
-            if (child != null) visit(child, fixture, depth + 1, visible);
+            if (child == null) throw new IllegalArgumentException("incomplete children");
+            visit(child, fixture, depth + 1, visible);
         }
     }
 }

@@ -148,7 +148,9 @@ public final class MainActivity extends Activity {
                         JSONObject output = new JSONObject().put("schemaVersion", "granny.perception.android-lab.v1")
                                 .put("observationId", map.observationId).put("capturedAtElapsedMs", map.capturedAt)
                                 .put("windowId", map.windowId).put("coordinateSpace", "fixture-image-pixels")
-                                .put("completeness", "partial").put("ocr", "not-implemented-on-device")
+                                .put("completeness", "partial")
+                                .put("semanticStatus", map.elements.isEmpty() ? "no-semantic-elements-coverage-unknown" : "observed-partial")
+                                .put("ocr", "not-implemented-on-device")
                                 .put("executionAuthorized", false).put("elements", elements);
                         long now = SystemClock.elapsedRealtime();
                         String textSize = map.lookup("Text size", now, map.windowId);
@@ -156,7 +158,9 @@ public final class MainActivity extends Activity {
                         output.put("referenceChecksAtCapture", new JSONObject().put("textSize", textSize)
                                 .put("send", send).put("unlabeledControls", map.unlabeledControls()));
                         preview.setImageBitmap(retained);
-                        report.setText("Snapshot only — no actions authorized.\nText size: " + textSize
+                        report.setText("Snapshot only — no actions authorized.\n"
+                                + (map.elements.isEmpty() ? "No semantic elements. Coverage unknown; this does not mean the screen is empty.\n" : "")
+                                + "Text size: " + textSize
                                 + "\nSend: " + send + "\nUnlabeled controls: " + map.unlabeledControls()
                                 + "\nObserved elements: " + map.elements.size() + "\n\n" + output.toString(2));
                     } catch (Exception error) { clear(); report.setText("Unsupported observation; result cleared."); }
