@@ -999,6 +999,7 @@ function dispatch(s, e, v, g) {
       previousScale : s.previousScale,
       previewScale : s.previewScale,
       aliases : s.aliases.map(a => ({...a})),
+      history : s.history.map(entry => ({...entry})),
       settings : {...s.settings}
     };
     Object.assign(s, create(), kept);

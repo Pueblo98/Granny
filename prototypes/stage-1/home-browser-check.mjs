@@ -131,6 +131,7 @@ try {
   await b.evaluate("document.querySelector('#library-room-fitness').focus()");
   await key('Enter');
   check(await b.evaluate("document.querySelector('#room-surface[data-room-id=fitness]') && document.querySelector('#rooms-button')"), 'keyboard list entry opens room with library return');
+  await b.waitFor("document.activeElement===document.querySelector('#room-surface h1')");
   await b.evaluate("document.querySelector('#rooms-button').focus()");
   await key('Enter');
   await b.waitFor("document.activeElement.id==='library-room-fitness'");
@@ -215,9 +216,9 @@ try {
     await fresh(true);
     await b.click('#menu-button');
     await b.click('[data-menu=text]');
-    await button('150%', '[data-panel=text]');
-    await button('Apply this size', '[data-panel=text]');
-    await button('Return to conversation', '[data-panel=text]');
+    await b.click('#pref-scale-15');
+    await b.click('#apply-preferences');
+    await button('Return to conversation');
     await select('#review-scale', '2');
     await settleRooms();
     check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===66 && document.body.dataset.homeList==='true'"), 'combined 300% uses direct list at ' + width);
@@ -250,7 +251,7 @@ try {
       .map(url => new URL(url).pathname);
   const allowedPaths = new Set(['/', '/styles.css', '/fixtures.js', '/intent.js',
     '/room-fixtures.js', '/rooms-store.js', '/room-dialog.js', '/room-create.js', '/room-library.js', '/room-ui.js',
-    '/model.js', '/scheduler.js', '/cloud.js', '/outcome-ui.js', '/app.js', '/favicon.ico',
+    '/model.js', '/scheduler.js', '/cloud.js', '/outcome-ui.js', '/support-state.js', '/support-ui.js', '/app.js', '/favicon.ico',
     '/assets/room-fitness-placeholder.svg', '/assets/room-trips-placeholder.svg',
     '/assets/room-reading-placeholder.svg', '/assets/missing-room-placeholder.svg']);
   for (const room of roomFixtures.rooms)

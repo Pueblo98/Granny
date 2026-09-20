@@ -429,7 +429,9 @@
     function releaseSource() { if (current()) {stateFor(current()).source = null;stateFor(current()).crossSource=null;} }
     return {
       get rooms() { return store.activeRooms; }, get current() { return current(); },
+      get hasConversation() { return [...states.values()].some(s=>s.turns.length); },
       get availability() { return store.availability; },
+      get supportItems() { return store.items().filter(i => i.sensitivity !== 'private').map(i => ({...i, rooms: store.roomNames(i.id)})); },
       get continuation() { const kitchen=store.activeRooms.find(r=>r.id==='kitchen');return kitchen&&safeItem('vegetable-soup')&&store.memberships('vegetable-soup').some(m=>m.roomId==='kitchen')?kitchen:null; },
       setAvailability(value) { store.setAvailability(value);states.clear();refresh(); },
       enter(next) { releaseSource(); route = next; if (current()) stateFor(current()).view = 'overview'; render(); },

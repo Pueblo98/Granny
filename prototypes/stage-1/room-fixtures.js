@@ -51,7 +51,7 @@
   packing.answer = 'This fictional list shows a reusable water bottle, small bag and portable blender under “Still to check.” It does not represent a booking or travel plan.';
   // Canonical additions, not copied into each Room. No external originals exist.
   const systemItems = [
-    {item: item('soup-shopping', 'Soup shopping list', 'Carrots, onion and vegetable stock.', {type: 'Shopping list'}), roomId: 'kitchen', collectionId: 'shopping-lists'},
+    {item: item('soup-shopping', 'Soup shopping list', 'Carrots, onion and vegetable stock.', {type: 'List'})},
     {item: item('appliance-note', 'Appliance note', 'A fictional note about a portable blender.', {type: 'Note'}), roomId: 'kitchen', collectionId: 'appliance-notes'},
     {item: item('tomato-soup-notes', 'Tomato soup notes', 'Fictional garden journal notes for a soup idea.', {type: 'Garden journal'}), roomId: 'garden', collectionId: 'garden-journal'},
     {item: item('soup-photo', 'Soup photo', 'A fictional photo placeholder; no photograph or file is stored.', {type: 'Photo'})},

@@ -19,6 +19,23 @@ related:
 
 # Conversation-first browser experience
 
+## Navigation and supporting surfaces checkpoint
+
+The [navigation handoff](../10-execution/sessions/2026-09-20-navigation-support-frontend.md)
+implements the thirteen approved fictional supporting references: modal Menu,
+Today, Settings, Privacy, Accessibility, Help, exact new-conversation review,
+unknown external return, local search/results and three skippable setup steps.
+One support state/renderer retains the underlying Home or Room and conversation.
+New conversation preserves minimal history; history clearing and full in-memory
+fixture reset are separate reviewed actions. Optional access grants nothing.
+The static prototype remains usable without any model/runtime connection.
+
+The new reference pack is an explicitly recorded read-only dependency in the
+dirty primary checkout, not an invented integrated artifact. Existing room,
+outcome and shared-surface contracts remain authoritative. Browser verification
+does not establish Android permissions, TalkBack, external outcomes or human
+comprehension. The prototype README owns exact entry routes and fixture limits.
+
 ## Inline core outcomes checkpoint
 
 The [ten-state outcome review](mockups/2026-09-20-core-outcome-modules/frontend-checkpoint-1/README.md)
@@ -164,7 +181,7 @@ User text is rendered as text, never executable HTML/instructions. CSP allows on
 
 The [frontend coordination record](../10-execution/sessions/2026-09-15-ui-backend-frontend.md) records this separate authority, branch checkpoints and evidence. Backend owns [granny.conversation.v1 at the technically agreed checkpoint](https://github.com/Pueblo98/Granny/blob/aea7f442021347aab0130fcbe220ab5a1ab53b1b/docs/04-architecture/conversation-runtime-contract.md), runtime/MCP/provider execution and server-side verification; frontend owns its client/rendering/browser checks. Technical agreement does not confer product acceptance.
 
-J-003's connected route is **Menu → Demo connection → explicit local-demo consent → natural message request → necessary identity/channel clarification → exact preview → specific create-unsent-draft confirmation → creating → verifying → verified local demo draft, not sent**. This real local draft effect is distinct from the default scripted fictional app-open outcome. Message body edits invalidate approval and request a new exact preview. Person/destination corrections use a new natural request and backend-approved clarification; no parallel frontend contact API is invented.
+J-003's connected route is **Menu → Settings → About Granny → Demo connection → explicit local-demo consent → natural message request → necessary identity/channel clarification → exact preview → specific create-unsent-draft confirmation → creating → verifying → verified local demo draft, not sent**. This real local draft effect is distinct from the default scripted fictional app-open outcome. Message body edits invalidate approval and request a new exact preview. Person/destination corrections use a new natural request and backend-approved clarification; no parallel frontend contact API is invented.
 
 Only backend events can advance connected work. The frontend fences version/session/epoch/sequence, disables confirmation on editing, Stop or transport loss, and never retries a consequential command on reconnect. A cancellation acknowledgment is required to claim stopped. Unknown effect provides no new-draft/retry action and keeps an in-tab warning after mode changes. Backend session/store retention is disclosed separately from temporary browser state. Local text size spans both views; scripted aliases/activity and remaining workflows stay separate. Reviewer fixture controls do not advance connected execution.
 
@@ -226,6 +243,6 @@ Canonical EVAL-001–017, physical Android tests and human studies remain unrun.
 
 ## Delegated live synthetic conversation entry — 2026-09-15
 
-Under Simon's backend integration mission and frontend's published FE006 file-scoped handoff, Menu → Demo connection now offers **Check live model availability**. Only an explicitly enabled backend with liveAvailable exposes **Review live conversation consent**. Separate consent names synthetic conversation egress to OpenRouter/Qwen; cancel makes no session, and confirming creates a mode-bound session without a model call. Text submission starts interpretation. Default remains scripted; connected demo remains stub-only. Keys never enter the browser. No recording, account access, real sending, new capabilities or increased caps.
+Under Simon's backend integration mission and frontend's published FE006 file-scoped handoff, Menu → Settings → About Granny → Demo connection now offers **Check live model availability**. Only an explicitly enabled backend with liveAvailable exposes **Review live conversation consent**. Separate consent names synthetic conversation egress to OpenRouter/Qwen; cancel makes no session, and confirming creates a mode-bound session without a model call. Text submission starts interpretation. Default remains scripted; connected demo remains stub-only. Keys never enter the browser. No recording, account access, real sending, new capabilities or increased caps.
 
 Live-mode snapshots must match the explicitly consented mode. Mode labels and privacy text disclose provider egress, while exact draft confirmation and backend verification stay unchanged. Unknown/Stop/replay fences remain in force. Client/wire and actual live-mode HTTP/MCP tests use a stub provider, not paid model evidence. The backend's single live Qwen check failed to propose a structured draft; the mode entry does not imply reliable language interpretation. Existing interaction layout/style/other component behavior is unchanged by this delegated extension.

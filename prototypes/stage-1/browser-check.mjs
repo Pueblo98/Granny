@@ -182,30 +182,30 @@ try {
   check(await b.evaluate("document.querySelector('#request').value==='Keep this input'"),'Escape cannot replay prior dialog consent');
   await fresh(true); await message(); await b.click('[data-action=approve]'); await finish();
 
-  await menu('preferences');
+  await menu('settings'); await b.click('#settings-conversation'); await b.click('#conversation-aliases');
   await b.fill('#alias-label','Garden friend'); await select('#alias-person','david-garden'); await b.click('#alias-save');
   check((await text()).includes('Garden friend'), 'explicit alias saves locally');
   const editAlias = await b.evaluate("[...document.querySelectorAll('[id^=alias-edit-]')].find(e=>e.textContent.includes('Garden friend'))?.id");
   await b.click('#'+editAlias); await select('#alias-person','david-family'); await b.click('#alias-save');
   await button('Return to conversation'); await request('Tell Garden friend See you soon via Example Mail'); await waitStage('preview');
   check(/Brother/.test(await text()) && /See you soon/.test(await text()),'alias correction changes actual recipient routing');
-  await button('Cancel','#current-task'); await menu('preferences');
+  await button('Cancel','#current-task'); await menu('settings'); await b.click('#settings-conversation'); await b.click('#conversation-aliases');
   const aliasButton = await b.evaluate("[...document.querySelectorAll('[id^=alias-delete-]')].find(e=>e.textContent.includes('Garden friend'))?.id");
   check(!!aliasButton, 'new alias can be deleted'); await b.click('#' + aliasButton); await b.click('#confirm-dialog button[value=confirm]');
   await b.waitFor("!document.getElementById(" + JSON.stringify(aliasButton) + ")");
   check(await b.evaluate("!document.querySelector('[data-panel=preferences]').innerText.includes('Garden friend')"), 'alias deletion removes saved mapping without rewriting earlier conversation');
   await button('Return to conversation'); await menu('history');
-  check(await b.evaluate("!!document.querySelector('[data-panel=history]')"), 'history discoverable');
-  await button('Clear recent activity'); await b.click('#confirm-dialog button[value=confirm]');
-  await b.waitFor("!document.querySelector('#confirm-dialog[open]') && ![...document.querySelectorAll('[data-panel=history] button')].some(e=>e.textContent==='Clear recent activity')");
-  check((await text()).includes('no completed activity') || (await text()).includes('No recent'), 'history deletion takes effect');
-  await button('Return to conversation');
+  check(await b.evaluate("document.querySelector('#support-content')?.dataset.destination==='history'"), 'Today is discoverable from Menu');
+  await b.click('#clear-history'); await b.click('#confirm-dialog button[value=confirm]');
+  await b.waitFor("!document.querySelector('#confirm-dialog[open]') && !document.querySelector('#clear-history')");
+  check(await b.evaluate("document.querySelector('#support-content').innerText.includes('No saved task history')"), 'history deletion takes effect without a transcript');
+  await button('Back to Home');
 
   for (const [width,height] of [[1200,800],[600,960],[360,720],[360,480]]) {
     await b.viewport(width,height); await geometry(width+'x'+height);
     await b.screenshot('layout-'+width+'x'+height);
   }
-  await b.viewport(840,900); await menu('text'); await button('150%'); await button('Apply this size');
+  await b.viewport(840,900); await menu('text'); await b.click('#pref-scale-15'); await b.click('#apply-preferences');
   await button('Return to conversation'); await select('#review-scale','2');
   check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===66"), 'combined 300% text genuinely applies');
   for (const [width,height] of [[840,900],[360,720],[600,520],[360,480]]) {
@@ -253,7 +253,7 @@ try {
   await b.click('#talk'); await key('Escape');
   await b.waitFor("document.querySelector('#speech-surface').hidden && document.activeElement.id==='talk'");
   check(await b.evaluate("document.activeElement.id==='talk'"),'Escape restores Talk focus after dismissing the speech surface');
-  await menu('privacy'); await button('Reset everything'); await b.click('#confirm-dialog button[value=confirm]');
+  await menu('privacy'); await b.click('#privacy-delete'); await b.click('#confirm-dialog button[value=confirm]');
   await b.waitFor("!document.querySelector('#current-task') && document.querySelector('#request').value===''");
   check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===22"),'privacy reset restores local baseline');
   await fresh(true); await select('#review-delay','1500'); await request('Show me the photos Sophie sent yesterday'); await menu('new');
@@ -272,7 +272,7 @@ try {
   check(Math.abs(await b.evaluate('scrollY')-readingPosition)<3,'progress does not scroll a reader away from the top');
   await fresh(true); await message('Original exact words.'); await button('Change it');
   await b.fill('[aria-label=Message]','Uncommitted edit stays here.');
-  await menu('text'); await button('115%','[data-panel=text]'); await button('Apply this size','[data-panel=text]'); await button('Return to conversation','[data-panel=text]');
+  await menu('text'); await b.click('#pref-scale-115'); await b.click('#apply-preferences'); await button('Return to conversation');
   check(await b.evaluate("document.querySelector('[aria-label=Message]').value==='Uncommitted edit stays here.'"),'text settings retain unsaved draft editor');
   await button('Cancel editing');
   check((await text()).includes('Original exact words.') && !(await text()).includes('Uncommitted edit stays here.'),'cancel editing restores original exact draft');

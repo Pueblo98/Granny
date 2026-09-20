@@ -747,9 +747,10 @@ test(
       P.dispatch(s, "submit", "Play Quiet Harbour");
       for (let i = 0; i < 4; i++)
         advance(s);
+      const historyBefore = structuredClone(s.history);
       P.dispatch(s, "clearSession");
       assert.deepEqual(s.turns, []);
-      assert.deepEqual(s.history, []);
+      assert.deepEqual(s.history, historyBefore);
       assert.equal(s.task, null);
       assert.equal(s.player, null);
       assert.equal(s.playing, false);

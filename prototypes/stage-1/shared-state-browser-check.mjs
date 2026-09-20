@@ -222,7 +222,7 @@ try {
   await fresh();
   await submit('Tell David I’ll call after dinner.'); await waitState('clarification');
   await b.click('#menu-button'); await b.click('[data-menu="help"]');
-  await button('Return to conversation');
+  await b.click('#help-ask');
   check(await b.evaluate('document.querySelector("#current-task")?.dataset.stage === "clarify-person" && document.querySelector("#current-task").innerText.includes("Tell David I’ll call after dinner.")'), 'clarification can visit a secondary panel and return without gaining authority or changing request');
   await button('Cancel', '#current-task');
 

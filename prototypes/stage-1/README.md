@@ -17,6 +17,53 @@ Current connected runtime: [versioned local backend/MCP contract](../../docs/04-
 
 ## Run
 
+### Navigation and supporting surfaces (20 September)
+
+Menu is now a native modal right-side sheet. Today, Settings, Privacy and data,
+Accessibility, Help and Search are supporting destinations, not replacement
+Rooms. Their Back routes retain the original place, draft and reading position.
+The Round composer stays in document flow. Native browser Back and Escape close
+the temporary layer before returning from its destination. Active work uses the
+existing Stop/interruption path first, including waiting for connected Stop.
+
+`support-state.js` owns safe fictional summaries, the explicitly admitted local
+search projection and staged/applied preferences. `support-ui.js` owns the
+support route stack, reusable broad rows, choice groups and setup sequence.
+It reuses the existing exact native confirmation dialog and existing Room/item
+screens. Task execution, scheduler generations and outcome renderers stay in
+their existing owners. New conversation preserves Rooms, items, preferences and
+minimal history; full fixture reset remains a separate exact destructive review.
+
+Try these without connecting a model:
+
+- Menu → Today / Settings / Accessibility / Privacy and data / What can I ask?
+- Menu → Search → `soup` (four explicit matches) or `train tickets` (no match).
+  The admitted index includes two saved-item IDs, live Room names/purposes,
+  two Settings categories and a separate minimal shopping summary. It never
+  indexes private bodies or other Room fixtures. Soup shopping list is Unfiled
+  in this checkpoint, as shown by the latest approved reference.
+- Menu → Settings → About Granny → Review introduction; or `/?onboarding=1`.
+  Setup is skippable. Optional access is disclosure only and grants nothing.
+- Prepare a fictional David draft, then choose `Simulate returning to Granny`.
+  The inline return remains **Send status unknown**, with no retry or real launch.
+- `?supportFixture=history-empty`, `history-error`, `search-error`, `loading`
+  or `offline` selects the named deterministic adverse support state.
+
+Accessibility previews do not apply until Apply. Restore previous choices
+restores the last applied set. Four existing closed size choices remain
+100/115/130/150%; written labels are Normal/Comfortable/Large/Larger. Setup
+Continue applies its explicit staged preference; Skip discards it and uses the
+documented initial defaults. Speech samples are equally informative silent text.
+No storage, microphone, actual permission or external app capability is added.
+
+Reference pack dependency: the thirteen selected PNGs and their manifest were
+read-only, uncommitted primary-checkout files under
+`docs/02-design/mockups/2026-09-20-navigation-supporting-surfaces/iteration-1/`.
+They were not copied or silently integrated. The existing system-font fallback
+remains; no exact Bricolage/DM Sans raster-font fidelity is claimed.
+See the [scoped handoff](../../docs/10-execution/sessions/2026-09-20-navigation-support-frontend.md)
+for thirteen-state mapping, screenshots, test counts and limits.
+
 ### Current visual cleanup (20 September)
 
 Simon's follow-up places unchanged transparent decor objects on Home, with
@@ -195,7 +242,7 @@ contrast targets are met.
 
 ## Connected local demo (separate opt-in)
 
-**Menu → Demo connection → Connect to local demo** explicitly consents to fictional-data use. The static server above deliberately has no API, so this option requires the backend session's same-origin loopback runtime server serving these current frontend assets. Its canonical interface is [granny.conversation.v1 at the agreed checkpoint](https://github.com/Pueblo98/Granny/blob/aea7f442021347aab0130fcbe220ab5a1ab53b1b/docs/04-architecture/conversation-runtime-contract.md); frontend does not own or duplicate that runtime. See the [frontend coordination record](../../docs/10-execution/sessions/2026-09-15-ui-backend-frontend.md) for exact integrated commits and evidence before claiming a runnable combined build.
+**Menu → Settings → About Granny → Demo connection → Connect to local demo** explicitly consents to fictional-data use. The static server above deliberately has no API, so this option requires the backend session's same-origin loopback runtime server serving these current frontend assets. Its canonical interface is [granny.conversation.v1 at the agreed checkpoint](https://github.com/Pueblo98/Granny/blob/aea7f442021347aab0130fcbe220ab5a1ab53b1b/docs/04-architecture/conversation-runtime-contract.md); frontend does not own or duplicate that runtime. See the [frontend coordination record](../../docs/10-execution/sessions/2026-09-15-ui-backend-frontend.md) for exact integrated commits and evidence before claiming a runnable combined build.
 
 The connected slice prepares an unsent message for a fictional person: request, required clarification, exact person/channel/body/effect preview, explicit **Create this unsent demo draft**, creating/checking, and a verified **not sent** result. Editing message words creates a fresh preview; changing person/destination returns to a new natural request because backend-approved identity choices must not be invented by the frontend. An expired approval keeps the readable draft and offers review again. Typed “yes” is not confirmation.
 
@@ -257,6 +304,9 @@ and [scoped handoff](../../docs/10-execution/sessions/2026-09-20-core-outcomes-f
 
 ```bash
 node prototypes/stage-1/model.test.mjs
+node prototypes/stage-1/support-state.test.mjs
+node prototypes/stage-1/support-browser-check.mjs
+node prototypes/stage-1/support-review.mjs
 node prototypes/stage-1/outcomes.test.mjs
 node prototypes/stage-1/outcomes-browser-check.mjs
 node prototypes/stage-1/outcomes-review.mjs
@@ -327,6 +377,6 @@ Design changes update the canonical behavior owner if behavior changes, then the
 
 ## Delegated live synthetic conversation entry — 2026-09-15
 
-Under Simon's backend integration mission and frontend's published FE006 file-scoped handoff, Menu → Demo connection now offers **Check live model availability**. Only an explicitly enabled backend with liveAvailable exposes **Review live conversation consent**. Separate consent names synthetic conversation egress to OpenRouter/Qwen; cancel makes no session, and confirming creates a mode-bound session without a model call. Text submission starts interpretation. Default remains scripted; connected demo remains stub-only. Keys never enter the browser. No recording, account access, real sending, new capabilities or increased caps.
+Under Simon's backend integration mission and frontend's published FE006 file-scoped handoff, Menu → Settings → About Granny → Demo connection now offers **Check live model availability**. Only an explicitly enabled backend with liveAvailable exposes **Review live conversation consent**. Separate consent names synthetic conversation egress to OpenRouter/Qwen; cancel makes no session, and confirming creates a mode-bound session without a model call. Text submission starts interpretation. Default remains scripted; connected demo remains stub-only. Keys never enter the browser. No recording, account access, real sending, new capabilities or increased caps.
 
 Live-mode snapshots must match the explicitly consented mode. Mode labels and privacy text disclose provider egress, while exact draft confirmation and backend verification stay unchanged. Unknown/Stop/replay fences remain in force. Client/wire and actual live-mode HTTP/MCP tests use a stub provider, not paid model evidence. The backend's single live Qwen check failed to propose a structured draft; the mode entry does not imply reliable language interpretation. Existing interaction layout/style/other component behavior is unchanged by this delegated extension.

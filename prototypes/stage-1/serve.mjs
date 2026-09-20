@@ -14,6 +14,8 @@ const types = { "/": ["index.html","text/html"], "/index.html": ["index.html","t
   "/room-ui.js": ["room-ui.js", "text/javascript"],
   "/room-library.js": ["room-library.js", "text/javascript"],
   "/outcome-ui.js": ["outcome-ui.js", "text/javascript"],
+  "/support-state.js": ["support-state.js", "text/javascript"],
+  "/support-ui.js": ["support-ui.js", "text/javascript"],
   "/assets/garden.svg": ["assets/garden.svg","image/svg+xml"],
   "/assets/seaside.svg": ["assets/seaside.svg","image/svg+xml"],
   "/assets/meal.svg": ["assets/meal.svg","image/svg+xml"],

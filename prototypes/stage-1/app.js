@@ -28,7 +28,7 @@
   // Place belongs to homeView/roomUI. These records only own a temporary
   // conversation surface and its return position; they never enter a Room.
   let speechState = '', surfaceOrigin = null, speechReturn = null,
-      dismissedTask = null, surfaceNotice = '', lastSurfaceKey = '';
+      dismissedTask = null, surfaceNotice = '', lastSurfaceKey = '', externalReturn = null;
   function rememberSurface(source = document.activeElement) {
     if (!surfaceOrigin) surfaceOrigin = {
       place: homeView, source: source?.isConnected ? source : composerText,
@@ -72,7 +72,12 @@
     if (!speechState && !hasWork()) { next(); return; }
     const listening = !!speechState;
     ask(listening ? 'Cancel listening and leave?' : 'Stop this request and leave?',
-      'The current request will not follow you into another place. Any uncertain result stays here for review.', () => {
+      'The current request will not follow you into another place. Any uncertain result stays here for review.', async () => {
+        if(runtimeMode){
+          await runtime?.cancel();
+          if(active() || runtimeQuarantined){announce('Review the stopping or unknown result before leaving.');return;}
+          next();return;
+        }
         if (listening) endSpeech(false);
         if (hasWork()) dispatch('stop');
         if (state.task?.stage === 'unknown') {
@@ -103,6 +108,23 @@
   });
   const outcomeUI = window.GrannyOutcomeUI.create({state, node, button, dispatch,
     dismiss: dismissSurface, announce});
+  const supportUI = window.GrannySupportUI.create({
+    scale:()=>state.scale, place:()=>homeView, connected:()=>runtimeMode,
+    hasConversation:()=>!!(state.turns.length || state.task || composerText.value.trim() || roomUI.hasConversation || runtimeTurns.length),
+    rooms:()=>roomUI.rooms, items:()=>roomUI.supportItems,
+    render:()=>render(), announce, draft:value=>{composerText.value=value;focus(composerText);},
+    applyScale:value=>{dispatch('setScale',value);dispatch('applyScale');},
+    clearHistory:()=>dispatch('clearHistory'), reset:fullReset,
+    fresh:()=>{const run=()=>{clearLocalView();dispatch('clearSession');focus(composerText);};if(runtimeMode)leaveRuntime(run);else run();},
+    openRooms:()=>openHomeDestination('rooms',$('menu-button')),
+    openRoom:id=>openHomeDestination('room:'+id,$('menu-button')),
+    explore:result=>openHomeDestination(result.kind==='room'?'room:'+result.id:'item:'+result.id,$('menu-button')),
+    restorePlace:place=>{homeView=place;roomUI.show(place);render();},
+    legacy:what=>{menuPanel=what;panelReturn=$('menu-button');panelScroll=scrollY;render();focus(thread.querySelector('[data-panel] h2'));},
+    privacy:()=>runtimeMode ? 'Connected demo: browser reset does not delete backend drafts, backend sessions or provider-held data. Fictional details only.' : 'In-memory fictional simulation. No microphone, account, tracking or background storage. Reload resets the tab.',
+    confirm:(title,text,fn,label,danger,keep)=>{ask(title,text,fn,$('menu-button'));const approve=$('confirm-dialog').querySelector('[value=confirm]');approve.textContent=label;approve.className=danger?'danger':'primary';$('confirm-dialog').querySelector('[value=cancel]').textContent=keep||'Cancel';},
+    cancelConfirm:()=>{if($('confirm-dialog').open)$('confirm-dialog').close('cancel');}
+  });
 
   function atBottom() {
     return window.innerHeight + window.scrollY >=
@@ -311,6 +333,8 @@
     }));
   }
   function openHomeDestination(destination, source, focusId, interrupted = false) {
+    supportUI.forgetSearch();
+    if(supportUI.active)supportUI.finish();
     if (!interrupted && (speechState || hasWork() || pendingResult()))
       return interruptPlace(() => openHomeDestination(destination, source, focusId, true));
     if (!hasWork() && state.task) dismissedTask = state.task.id;
@@ -336,6 +360,8 @@
     });
   }
   function backToHome(interrupted = false) {
+    supportUI.forgetSearch();
+    if(supportUI.active)supportUI.finish();
     if (interrupted !== true && (speechState || hasWork() || pendingResult()))
       return interruptPlace(() => backToHome(true));
     if (!hasWork() && state.task) dismissedTask = state.task.id;
@@ -735,16 +761,17 @@
     const stage = task.stage, slots = task.slots || {}, person = slots.recipient || {};
     const working = P.ACTIVE.includes(stage);
     const prepared = stage === 'completed' && task.result?.effect === 'open-unsent-draft' && !task.outcome.startsWith('unknown');
-    const kind = stage.startsWith('clarify') ? 'clarification' : working ? 'active'
+    const returned = externalReturn === task.id;
+    const kind = returned ? 'external-return' : stage.startsWith('clarify') ? 'clarification' : working ? 'active'
       : prepared ? 'prepared' : stage === 'unknown' ? 'unknown' : ['preview', 'expired'].includes(stage) ? 'preview' : 'result';
-    const title = kind === 'clarification' ? (stage === 'clarify-person' ? `Which ${task.requestedName || 'person'}?` : task.prompt)
+    const title = returned ? 'Back from Example Messages' : kind === 'clarification' ? (stage === 'clarify-person' ? `Which ${task.requestedName || 'person'}?` : task.prompt)
       : kind === 'preview' ? 'Check the draft' : working ? 'Opening the draft'
       : prepared ? 'Draft opened' : kind === 'unknown' ? 'I can’t confirm whether it sent' : taskText(task);
     const c = node('section', 'shared-task-surface');
     c.dataset.surface = kind;
     if (kind === 'preview' || prepared) {
       c.dataset.outcomeModule = 'message';
-      c.dataset.outcomeState = prepared ? 'prepared' : 'preview';
+      c.dataset.outcomeState = returned ? 'unknown-return' : prepared ? 'prepared' : 'preview';
     }
     c.append(node('p', 'surface-place', (roomUI.current?.name || 'Home') + ' · Granny'));
     const heading = node('h2', '', title); heading.id = 'surface-heading'; heading.tabIndex = -1;
@@ -813,7 +840,7 @@
         : 'Simulated activity only. No real app is opened.'));
       action('Take over', () => dispatch('stop'), 'surface-takeover');
       action('Repeat status', () => announce(taskText(task)), 'surface-repeat');
-    } else if (prepared) {
+    } else if (kind === 'prepared') {
       c.append(node('p', 'surface-outcome', 'Prepared — not sent'));
       c.append(details([
         ['What Granny verified', `A fictional unsent draft opened for ${person.name} — ${person.detail} in ${slots.channel}.`],
@@ -821,7 +848,17 @@
         ['Next step', 'Review the draft there and tap Send yourself if it looks right. This fictional example stays inside Granny; no real app opens.']
       ]));
       action('Continue manually', () => { surfaceNotice = 'Fictional manual handoff only. No external app opens and no message is sent.'; render(); announce(surfaceNotice); }, 'surface-manual', true);
+      action('Simulate returning to Granny', () => { externalReturn=task.id;surfaceNotice='Returned to this conversation · position restored. Simulated return — no external app opened.';render();announce('Welcome back. I can’t confirm whether the message sent.'); }, 'surface-return');
       action('Done', dismissSurface, 'surface-done');
+    } else if (kind === 'external-return') {
+      c.append(node('p','surface-outcome','Send status unknown'),details([
+        ['Known','A fictional draft was opened for '+person.name+' — '+person.detail+'.'],
+        ['Unknown','Whether anyone tapped Send in Example Messages.'],
+        ['Before trying again','Check the conversation to avoid a duplicate. Granny will not retry automatically.']
+      ]));
+      action('Review status',()=>{surfaceNotice='Send status remains unknown. No action was repeated.';render();announce(surfaceNotice);},'surface-review',true);
+      action('Open app yourself',()=>{surfaceNotice='Simulated manual route only. No app is opened and no message is sent.';render();announce(surfaceNotice);},'surface-manual');
+      action('Done',dismissSurface,'surface-done');
     } else if (kind === 'unknown') {
       c.append(node('p', 'surface-outcome', 'Unknown outcome'));
       c.append(details([
@@ -902,7 +939,7 @@
             c = task.kind === 'message' ? messageSurface(task, editingTask) : hasOutcome ? outcomeUI.render(task) : card('Granny', taskText(task));
       if (hasOutcome) thread.append(turn('assistant', outcomeUI.response(task)));
       else if (sharedTask && ['preview', 'completed'].includes(task.stage)) thread.append(turn('assistant', task.stage === 'preview'
-        ? 'I prepared the exact fictional draft for you to review.' : task.result?.effect === 'open-unsent-draft' ? 'The fictional draft is ready.' : task.text));
+        ? 'I prepared the exact fictional draft for you to review.' : externalReturn===task.id ? 'Welcome back. I can’t confirm whether the message sent.' : task.result?.effect === 'open-unsent-draft' ? 'The fictional draft is ready.' : task.text));
       c.id = 'current-task';
       c.dataset.stage = task.stage;
       c.dataset.kind = task.kind;
@@ -922,58 +959,6 @@
         lastAnnouncement = taskText(task);
         announce(lastAnnouncement);
       }
-    }
-    if (menuPanel === 'history') {
-      const history =
-          card('Recent activity',
-               (state.history || []).length
-                   ? 'Scripted activity: this tab remembers only the kind of task and its outcome.'
-                   : 'There is no completed activity in this tab yet.');
-      history.dataset.panel = 'history';
-      if (runtimeMode) history.append(node('p', 'notice', 'Connected results remain in this temporary conversation, not in the scripted activity list.'));
-      (state.history || [])
-          .forEach(item => history.append(
-                       node('p', 'notice', item.job + ' — ' + item.outcome)));
-      if ((state.history || []).length)
-        history.append(button(
-            'Clear recent activity',
-            () => ask(
-                'Clear recent activity?',
-                'This removes the short outcome list from this tab. It does not change any other app.',
-                () => dispatch('clearHistory'))));
-      history.append(button('Return to conversation', returnToConversation));
-      thread.append(history);
-    }
-    if (menuPanel === 'text') {
-      const settings = card(
-          'Text size',
-          'Choose a comfortable size for this prototype. Other apps are unchanged.');
-      settings.dataset.panel = 'text';
-      const sample = node(
-          'p', 'preview-sample',
-          'This is a preview of your text size. Nothing changes until you apply it.');
-      sample.style.fontSize = (state.previewScale / state.scale) + 'em';
-      settings.append(sample);
-      const actions = node('div', 'inline-actions');
-      [1, 1.15, 1.3, 1.5].forEach(
-          scale => actions.append(button(
-              Math.round(scale * 100) + '%', () => dispatch('setScale', scale),
-              state.previewScale === scale ? 'primary' : '')));
-      settings.append(
-          actions,
-          button('Apply this size', () => dispatch('applyScale'), 'primary'),
-          button('Restore previous size', () => dispatch('restoreScale')),
-          button('Return to conversation', returnToConversation));
-      thread.append(settings);
-    }
-    if (menuPanel === 'help') {
-      const help = card(
-          'What you can ask',
-          'You can ask to find fictional family photos, explain a supplied screen, play a fictional song, make Granny’s text easier to read, or open an unsent fictional message draft.');
-      help.dataset.panel = 'help';
-      if (runtimeMode) help.append(node('p', 'notice', 'Connected mode currently prepares unsent drafts for fictional contacts only. The other four workflows are in the separate scripted demo.'));
-      help.append(button('Return to conversation', returnToConversation));
-      thread.append(help);
     }
     if (menuPanel === 'preferences') {
       const preferences =
@@ -1050,24 +1035,6 @@
           aliases, button('Return to conversation', returnToConversation));
       thread.append(preferences);
     }
-    if (menuPanel === 'privacy') {
-      const privacy = card(
-          'Privacy in this prototype',
-          runtimeMode ? (runtimeProviderMode === 'live' ? 'Live synthetic conversation: your new text and bounded conversation history go through the local runtime to OpenRouter/Qwen. Only fictional details are permitted. No microphone, screen, real contacts or Android access occurs. Browser reset does not delete provider-held data.' : 'Connected local demo: fictional requests go to the loopback runtime. Demo drafts are stored by that process, not sent. No microphone or Android access occurs.') : 'Scripted data stays in this tab’s memory. No microphone, account, tracking or background storage is used. Please use fictional details.');
-      privacy.dataset.panel = 'privacy';
-      privacy.append(node(
-          'p', '',
-          runtimeMode ? 'Reset clears this browser view, not saved demo drafts or the backend session. The runtime keeps synthetic drafts for its process lifetime; restarting it creates a new demo store. A lost connection is not proof an action stopped.' : 'Recent activity keeps up to 20 task/outcome summaries, without message words or people. Your visible conversation is temporary. Reloading clears the scripted state.'));
-      privacy.append(button(
-          'Reset everything',
-          () => ask(
-              'Reset this prototype?',
-              'This clears the conversation, activity, entered words, changed names and preferences, and restores the fictional starting examples. Nothing in another app changes.',
-              fullReset),
-          'danger'));
-      privacy.append(button('Return to conversation', returnToConversation));
-      thread.append(privacy);
-    }
     if (menuPanel === 'connection') {
       const connection = card('Demo connection', runtimeMode
         ? (runtimeProviderMode === 'live' ? 'You are using live synthetic conversation through OpenRouter/Qwen. Draft creation and verification stay in the local demo; no message is sent.' : 'You are using the connected local demo. Its runtime creates and independently reads back a real local demo draft; no message is sent.')
@@ -1138,11 +1105,15 @@
     const surfaceKey = speechState || (sharedTask || hasOutcome ? state.task.id + ':' + state.task.stage : '');
     if (userChange && surfaceKey && surfaceKey !== lastSurfaceKey && !active() && !menuPanel && !heldFocus) {
       const title = $('surface-heading');
-      if (title) requestAnimationFrame(() => { focus(title); title.scrollIntoView({block: 'nearest'}); });
+      if (title) requestAnimationFrame(() => {
+        if(scrollY!==position) return; // A later explicit scroll owns reading position.
+        focus(title); title.scrollIntoView({block: 'nearest'});
+      });
     }
     lastSurfaceKey = surfaceKey;
     if (emptyHome)
       requestAnimationFrame(updateRoomLayout);
+    supportUI.shell();
   }
   function hasWork() {
     if (runtimeMode) return active() || !!runtimeEditor;
@@ -1152,6 +1123,8 @@
             state.task.stage));
   }
   function clearLocalView() {
+    supportUI.forgetSearch();
+    externalReturn = null;
     speechState = '';
     surfaceOrigin = null;
     speechReturn = null;
@@ -1176,6 +1149,10 @@
   }
   function fullReset() {
     if (runtimeMode) { leaveRuntime(fullReset); return; }
+    pending=null;
+    if($('confirm-dialog').open)$('confirm-dialog').close('cancel');
+    supportUI.reset();
+    supportUI.forgetSearch();
     clearLocalView();
     roomUI.reset();
     continuationVisible = true;
@@ -1197,14 +1174,20 @@
     focus(composerText);
   }
   function ask(title, text, fn, source) {
+    $('support-confirm-cancel')?.remove();
+    if ($('menu').open) supportUI.closeMenu(false);
     pending = fn;
     dialogReturn = source || document.activeElement;
     $('confirm-title').textContent = title;
     $('confirm-text').textContent = text;
     $('confirm-dialog').querySelector('[value=confirm]').textContent = 'Continue';
+    $('confirm-dialog').querySelector('[value=confirm]').className = 'primary';
+    $('confirm-dialog').querySelector('[value=cancel]').textContent = 'Keep working';
     $('confirm-dialog').returnValue = '';
     $('confirm-stop').hidden = !active();
     $('confirm-dialog').showModal();
+    $('confirm-title').focus({preventScroll:true});
+    $('confirm-dialog').scrollTop = 0;
   }
   function contextualReply(text) {
     const task = state.task;
@@ -1217,6 +1200,7 @@
     return false;
   }
   function newRequest(text) {
+    if(supportUI.active) supportUI.finish(false);
     if (speechState) return;
     if (!text.trim()) {
       composerText.setCustomValidity('Type a request before choosing Send.');
@@ -1255,7 +1239,7 @@
       return;
     }
     const navigationRequests = {
-      'settings' : 'preferences',
+      'settings' : 'settings',
       'preferences' : 'preferences',
       'saved names' : 'preferences',
       'privacy' : 'privacy',
@@ -1272,9 +1256,8 @@
       composerText.value = '';
       panelReturn = composerText;
       panelScroll = scrollY;
-      menuPanel = navigation;
-      render();
-      thread.querySelector('[data-panel="' + navigation + '"] h2')?.focus();
+      if(navigation==='preferences'){menuPanel=navigation;render();}
+      else supportUI.open(navigation);
       return;
     }
     if (contextualReply(text)) {
@@ -1380,6 +1363,7 @@
     speechReturn = null;
   }
   function openTalk(source) {
+    if(supportUI.active) supportUI.finish(false);
     if (active()) {
       ask('Stop before listening?', 'Listening to another request stops the current task first.', async () => {
         if (runtimeMode) {
@@ -1415,12 +1399,20 @@
     render();
     focus(composerText);
   });
-  $('confirm-dialog').addEventListener('close', () => {
+  $('confirm-dialog').querySelector('form').addEventListener('submit', event => {
+    event.preventDefault();
+    if(!$('confirm-dialog').open)return;
+    const value=event.submitter?.value || 'cancel';
     const callback = pending, source = dialogReturn;
-    pending = null;
-    if ($('confirm-dialog').returnValue === 'confirm' && callback)
-      callback();
+    pending = null;dialogReturn=null;
+    $('confirm-dialog').close(value);
     focus(source?.getClientRects().length ? source : composerText);
+    if(value==='confirm' && callback)callback();
+  });
+  $('confirm-dialog').addEventListener('close', () => {
+    if($('confirm-dialog').open)return;
+    const source=dialogReturn;pending=null;dialogReturn=null;
+    if(source)focus(source.getClientRects().length ? source : composerText);
   });
   $('confirm-dialog').addEventListener('keydown', event => {
     if (event.key !== 'Tab') return;
@@ -1449,6 +1441,7 @@
   window.addEventListener('resize', updateStopFallback);
   document.addEventListener('keydown', event => {
     if (event.key !== 'Escape' || document.querySelector('dialog[open]')) return;
+    if(supportUI.active){event.preventDefault();supportUI.back();return;}
     if (speechState) { event.preventDefault(); endSpeech(); }
     else if (state.task?.kind === 'message' && dismissedTask !== state.task.id) {
       event.preventDefault();
@@ -1456,13 +1449,9 @@
     }
   });
   $('menu-button').addEventListener('click', () => {
-    if (speechState) { interruptPlace(() => $('menu-button').click()); return; }
-    if ($('menu').hidden) {
-      panelReturn = $('menu-button');
-      panelScroll = scrollY;
-    }
-    $('menu').hidden = !$('menu').hidden;
-    $('menu-button').setAttribute('aria-expanded', String(!$('menu').hidden));
+    if (speechState || active()) { interruptPlace(()=>supportUI.showMenu()); return; }
+    panelReturn=$('menu-button');panelScroll=scrollY;
+    supportUI.showMenu();
   });
   document.querySelectorAll('[data-menu]')
       .forEach(b => b.addEventListener('click', () => {
@@ -1473,43 +1462,7 @@
         // live approval while its exact consequence is out of view.
         if (!runtimeMode && state.task?.stage === 'preview' && b.dataset.menu !== 'return') dispatch('expire');
         const what = b.dataset.menu;
-        $('menu').hidden = true;
-        if (what === 'return') {
-          returnToConversation();
-          return;
-        }
-        if (what === 'introduction') {
-          homeView = 'introduction';
-          menuPanel = '';
-          render();
-          focus($('intro-talk'));
-          return;
-        }
-        if (what === 'new') {
-          const fn = () => {
-            if (runtimeMode) { leaveRuntime(() => { clearLocalView(); dispatch('clearSession'); }); return; }
-            clearLocalView();
-            dispatch('clearSession');
-            focus(composerText);
-          };
-          hasWork() || composerText.value.trim() || state.turns.length ||
-                  state.history.length
-              ? ask('Start a new conversation?',
-                    'This clears the conversation, unfinished input and recent activity. Text size and saved names stay in this tab.',
-                    fn, b)
-              : fn();
-        }
-        if ([ 'text', 'history', 'help', 'preferences', 'privacy', 'connection' ].includes(
-                what)) {
-          menuPanel = what;
-          render();
-          const heading =
-              thread.querySelector('[data-panel="' + what + '"] h2');
-          if (heading) {
-            heading.tabIndex = -1;
-            heading.focus();
-          }
-        }
+        supportUI.select(what);
       }));
   const review = new URLSearchParams(location.search).get('review') === '1';
   if (review) {
@@ -1627,4 +1580,5 @@
   updateComposerFocus();
   if (scheduler && scheduler.sync)
     scheduler.sync();
+  supportUI.boot();
 })();
