@@ -122,7 +122,11 @@
     openRoom:id=>openHomeDestination('room:'+id,$('menu-button')),
     explore:result=>openHomeDestination(result.kind==='room'?'room:'+result.id:'item:'+result.id,$('menu-button')),
     restorePlace:place=>{homeView=place;roomUI.show(place);render();},
-    legacy:what=>{menuPanel=what;panelReturn=$('menu-button');panelScroll=scrollY;render();focus(thread.querySelector('[data-panel] h2'));},
+    legacy:what=>{
+      menuPanel=what;panelReturn=$('menu-button');panelScroll=scrollY;render();
+      focus(thread.querySelector('[data-panel] h2'));
+      if(what==='connection'&&!runtimeMode&&!runtimeQuarantined)discoverLiveRuntime();
+    },
     privacy:()=>runtimeMode ? 'Connected demo: browser reset does not delete backend drafts, backend sessions or provider-held data. Fictional details only.' : 'In-memory fictional simulation. No microphone, account, tracking or background storage. Reload resets the tab.',
     confirm:(title,text,fn,label,danger,keep)=>{ask(title,text,fn,$('menu-button'));const approve=$('confirm-dialog').querySelector('[value=confirm]');approve.textContent=label;approve.className=danger?'danger':'primary';$('confirm-dialog').querySelector('[value=cancel]').textContent=keep||'Cancel';},
     cancelConfirm:()=>{if($('confirm-dialog').open)$('confirm-dialog').close('cancel');}
@@ -1042,27 +1046,30 @@
       thread.append(preferences);
     }
     if (menuPanel === 'connection') {
-      const connection = card('Demo connection', runtimeMode
+      const connection = card('AI connection', runtimeMode
         ? (runtimeProviderMode === 'live' ? 'You are using live synthetic conversation through OpenRouter/Qwen. Draft creation and verification stay in the local demo; no message is sent.' : 'You are using the connected local demo. Its runtime creates and independently reads back a real local demo draft; no message is sent.')
-        : 'The default experience is scripted in this tab. You can separately try the local runtime when its loopback server is running.');
+        : 'Choose live AI conversation or a fixed-response offline test. The loopback runtime must be running.');
       connection.dataset.panel = 'connection';
-      connection.append(node('p', '', 'Use fictional details only. Local demo mode uses a stub interpreter and local MCP tools, not a cloud model. It does not access accounts or control Android. The runtime temporarily stores synthetic drafts; browser reset does not delete them.'));
+      connection.append(node('p', '', 'Use fictional details only. Live AI sends the disclosed conversation context to OpenRouter/Qwen. Offline test mode uses fixed stub replies. Neither mode accesses accounts, sends messages or controls Android. The runtime temporarily stores synthetic drafts; browser reset does not delete them.'));
       if (runtimeQuarantined) connection.append(node('p', 'notice', 'A draft outcome in this tab is unknown. Creating another connected session is disabled to avoid a blind retry.'));
       if (runtimeMode) connection.append(button('Return to scripted demo', () => ask(
         'Leave the connected demo?', 'I will request Stop before leaving unfinished work. An unknown draft outcome will remain uncertain; leaving does not undo a draft.', () => leaveRuntime())));
-      else if (!runtimeQuarantined) connection.append(button('Connect to local demo', () => {
-        if (hasWork()) ask('Switch to the local demo?', 'This stops the unfinished scripted request. Your entered words and text size stay here.', connectRuntime);
-        else connectRuntime();
-      }, 'primary'));
       if (!runtimeMode && !runtimeQuarantined) {
-        const discover = button(runtimeConfigPending ? 'Checking availability…' : 'Check live model availability', discoverLiveRuntime);
-        discover.disabled = runtimeConfigPending;
-        connection.append(discover);
-        if (runtimeConfig?.liveAvailable) connection.append(button('Review live conversation consent', () => ask(
+        if (runtimeConfigPending)
+          connection.append(node('p', 'notice', 'Checking whether live AI is available…'));
+        if (runtimeConfig?.liveAvailable) connection.append(button('Use live AI chat', () => ask(
           'Use live synthetic conversation?',
           'Use fictional text only. Your new conversation, up to ten earlier messages and up to three relevant non-private references from the Room you are in will go to OpenRouter/Qwen. Home sends no Room references, and this demo does not retrieve across Rooms. Model interpretation is experimental and may fail. Creating a draft still needs its own exact confirmation. No recording, real accounts or sending are enabled. Continue starts a fresh conversation; it makes no model call until you submit text.',
-          () => connectRuntime('live'))));
-        else if (runtimeConfig || runtimeConfigError) connection.append(node('p', 'notice', 'The live model is unavailable. You can still try the local demo.'));
+          () => connectRuntime('live')), 'primary'));
+        else if (!runtimeConfigPending && (runtimeConfig || runtimeConfigError)) {
+          connection.append(node('p', 'notice', 'Live AI is unavailable. The server may need to be restarted with --live and a valid OPENROUTER_API_KEY.'));
+          connection.append(button('Check live AI again', discoverLiveRuntime));
+        }
+        connection.append(node('p', '', 'Offline test mode is not AI. It returns fixed replies for checking the local draft workflow.'));
+        connection.append(button('Use offline test replies', () => {
+          if (hasWork()) ask('Switch to offline test replies?', 'This stops the unfinished scripted request. Your entered words and text size stay here.', connectRuntime);
+          else connectRuntime();
+        }));
       }
       connection.append(button('Return to conversation', returnToConversation));
       thread.append(connection);
