@@ -43,7 +43,7 @@ public final class ConversationSpeechBridge implements SpeechOutputAdapter.Liste
     }
     public boolean repeat() {
         if (!available()) return false;
-        return start(output.repeat(revision, settings.snapshot().currentRate.multiplier()));
+        return start(output.repeat(visible, revision, settings.snapshot().currentRate.multiplier()));
     }
     public boolean preview(SpeechRate rate) {
         stop();
@@ -76,7 +76,7 @@ public final class ConversationSpeechBridge implements SpeechOutputAdapter.Liste
     public void sound(boolean enabled) { stop(); settings.setSoundEnabled(enabled); }
     public void onAvailabilityChanged(SpeechOutputAdapter.Availability availability, String explanation) {
         output.availabilityChanged(availability == SpeechOutputAdapter.Availability.AVAILABLE, explanation);
-        if (availability != SpeechOutputAdapter.Availability.AVAILABLE) { adapter.stop(); focus.release(); }
+        if (availability != SpeechOutputAdapter.Availability.AVAILABLE) { previewRate = null; settings.cancelPreview(); adapter.stop(); focus.release(); }
     }
     public void onStarted(long generation) { output.started(generation); }
     public void onCompleted(long generation) {

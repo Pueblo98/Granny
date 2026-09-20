@@ -68,6 +68,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private AccessibilityManager accessibility;
     private AccessibilityManager.TouchExplorationStateChangeListener explorationListener;
     private LinearLayout speechPanel;
+    private final java.util.List<Button> rateButtons = new java.util.ArrayList<>();
     private TextView speechStatus;
     private Button readAloud, stopSpeaking, repeatSpeech, sound, applyRate, restoreRate;
     private boolean speechSettingsOpen;
@@ -172,7 +173,10 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
             public void afterTextChanged(Editable s) {}
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!rendering && editor.isEnabled()) {
-                    conversation.edit(s.toString());
+                    ConversationSessionCoordinator.Provenance source = conversation.snapshot().provenance;
+                    if (source == ConversationSessionCoordinator.Provenance.FINAL_VOICE
+                            || source == ConversationSessionCoordinator.Provenance.EDITED_TRANSCRIPT) conversation.edit(s.toString());
+                    else conversation.typed(s.toString());
                     cancelAudioForRevision();
                     render();
                 }
@@ -542,10 +546,13 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         controls.addView(repeatSpeech, wrap()); controls.addView(sound, wrap());
         controls.addView(button("Speech speed", () -> { speechSettingsOpen = !speechSettingsOpen; render(); }), wrap());
         speechPanel = column();
-        for (SpeechRate rate : SpeechRate.values()) speechPanel.addView(button("Preview " + rate.label(), () -> {
+        for (SpeechRate rate : SpeechRate.values()) {
+            Button preview = button("Preview " + rate.label(), () -> {
             if (conversation.snapshot().surface == Surface.LISTENING || conversation.snapshot().surface == Surface.ACTIVE) return;
             speechBridge.preview(rate); render();
-        }), wrap());
+            });
+            rateButtons.add(preview); speechPanel.addView(preview, wrap());
+        }
         applyRate = button("Apply previewed speed", () -> { speechSettings.applyRate(); render(); });
         restoreRate = button("Restore previous speed", () -> { stopSpokenOutput(); speechSettings.restoreRate(); render(); });
         speechPanel.addView(applyRate, wrap()); speechPanel.addView(restoreRate, wrap());
@@ -566,6 +573,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         repeatSpeech.setEnabled(!busy && speechBridge.canRepeat());
         sound.setText(speechSettings.snapshot().soundEnabled ? "Sound off" : "Sound on");
         speechPanel.setVisibility(speechSettingsOpen && !busy ? View.VISIBLE : View.GONE);
+        for (Button preview : rateButtons) preview.setEnabled(!busy && spokenOutputAvailable());
         applyRate.setEnabled(speechSettings.snapshot().previewHeard && !speech.isActive());
         restoreRate.setEnabled(speechSettings.snapshot().restoreAvailable);
         if (speech.isActive()) { escape.setVisibility(View.VISIBLE); escape.setText("■ Stop"); }
@@ -581,6 +589,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         speechBridge.environment(false, accessibility != null && accessibility.isTouchExplorationEnabled());
         conversation.clearForBackground(() -> cancelAudioForRevision());
         voice.beginTyping(""); voice.stop("App left the foreground.");
+        rendering = true; editor.setText(""); provisional.setText(""); rendering = false;
         super.onStop();
     }
     @Override protected void onSaveInstanceState(Bundle out) {

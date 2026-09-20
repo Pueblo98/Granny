@@ -119,8 +119,8 @@ public final class SpeechOutputController {
         return new Request(generation, sample, rate, -1, purpose);
     }
 
-    public synchronized Request repeat(long visibleRevision, float rate) {
-        if (lastReadbackText.isBlank() || lastReadbackRevision != visibleRevision) {
+    public synchronized Request repeat(String visibleText, long visibleRevision, float rate) {
+        if (lastReadbackText.isBlank() || !lastReadbackText.equals(visibleText) || lastReadbackRevision != visibleRevision) {
             return null;
         }
         return beginReadback(lastReadbackText, lastReadbackRevision, rate);
