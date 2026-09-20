@@ -48,6 +48,31 @@ output, engine egress/offline behavior, language packs, audio focus, Stop
 latency, rate fidelity and TalkBack interaction remain unrun under
 EVAL-007/009 and RES-06. No gate passes from this implementation.
 
+## Core outcome modules visual review — 2026-09-20
+
+The proposed [core outcome modules iteration 1](../02-design/mockups/2026-09-20-core-outcome-modules/iteration-1/README.md)
+applies the Harbour Blue conversation shell to Photos, screen explanation,
+message drafting, media and reading assistance. Ten fictional-data frames pair
+each useful state with a no-result, guidance, prepared-handoff, unavailable or
+restore state. Each outcome remains one inline contextual module above the
+stable Round composer; none is a separate mini-app dashboard.
+
+This is a visual-review checkpoint only. It does not implement the modules,
+prove external retrieval or action, accept raster geometry, or change product
+contracts. Navigation and supporting surfaces were not specified in the
+request and remain a later bounded batch. The next step is Simon's review of
+which modules can proceed unchanged and which should be simplified while
+preserving source, state, consequence and recovery language.
+
+Simon subsequently authorized the active frontend session to implement all ten
+references through the bounded
+[core outcome-module implementation metaprompt](../02-design/mockups/2026-09-20-core-outcome-modules/iteration-1/CORE-OUTCOME-MODULES-IMPLEMENTATION-METAPROMPT.md).
+The handoff treats them as five reusable inline module families over the
+existing Home/Room conversation, specifies deterministic fictional fixtures,
+state transitions, responsive/accessibility checks and full prototype
+regression coverage, and stops before navigation/supporting surfaces, real
+services or Android work.
+
 ## T-120 native on-device voice decision and implementation — 2026-09-20
 
 Simon accepted [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md):
