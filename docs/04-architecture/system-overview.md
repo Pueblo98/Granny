@@ -54,13 +54,42 @@ Each anchor is a stable architecture owner referenced from [traceability](../01-
 **Offline/failure isolation:** Offline Home/settings/help; missing, stale, invalid or private panel candidate falls back to no panel; crash loses rendering, executor must stop on visibility loss.
 **Dependencies:** session, voice, audit.
 
+The bounded native integration uses [ConversationSessionCoordinator](../../android/stage1/app/src/main/java/org/pueblo98/stage1/conversation/ConversationSessionCoordinator.java)
+with an enforced creating-thread boundary (the Activity main thread). Home or
+fictional Kitchen place is independent of one temporary conversation surface.
+A finite interpreter proposes only C5; exact revision/consequence approval
+creates a private one-use permit. [CapabilityPorts](../../android/stage1/app/src/main/java/org/pueblo98/stage1/conversation/CapabilityPorts.java)
+separates execution from independently injected preference observation. The
+production adapter rechecks the frozen prior value/version and reads back the
+result; acknowledgment alone never means success. C5 is debug-fixture-only;
+C2 is unavailable in every product-shell build. T-103's fake core is not embedded.
+
+[ConversationSpeechBridge](../../android/stage1/app/src/main/java/org/pueblo98/stage1/speech/ConversationSpeechBridge.java)
+binds explicit speech to exact visible text plus an output content revision,
+stops capture before output, and invalidates output before Talk/Type cleanup.
+It refuses output outside foreground or during screen-reader touch exploration.
+The Activity acquires transient speech audio focus, stops on loss without
+resuming, and releases it on terminal paths. Rate preview completion never
+approves a capability. Only place/scroll and an uncertain-operation flag enter
+Activity state; transcripts, previews and permits are discarded on recreation.
+These are implemented source contracts, not physical lifecycle/audio evidence.
+
+[DictationSession](../../android/stage1/app/src/main/java/org/pueblo98/stage1/voice/DictationSession.java)
+owns one explicit Talk turn across up to eight successful recognizer segments,
+an absolute monotonic 30-second deadline, exact prior draft, completed sentence
+accumulation and a provisional current sentence. Each segment uses a fresh
+VoiceSessionController generation. Queued restart callbacks also bind the turn
+and conversation generation and recheck foreground/permission. Failure never
+retries. Only completed words enter editable transcript review; no partial
+becomes interpretation or action authority. Lifecycle exit clears the turn.
+
 <a id="voice"></a>
 ### Voice input/output
 
-**Responsibility / state / APIs:** Capture session state, revisioned provisional/verbatim/display transcript events, conservative cleanup, stop/output controls.
-**Placement/trust:** Local adapter around Android's on-device `SpeechRecognizer` for the initial route and a local TTS wrapper; recognizer output remains untrusted input.
-**Permissions/data:** Runtime microphone; audio focus; ephemeral audio/text.
-**Offline/failure isolation:** No on-device recognizer, locale support or permission → typed path; never fall back silently to network recognition; no ambient background promise. Destroy/cancel the recognizer on session replacement, Stop or lifecycle exit and reject callbacks from an old generation.
+**Responsibility / state / APIs:** Capture session state, revisioned provisional/verbatim/display transcript events, conservative cleanup, explicit readback requests, speech-rate preferences and independent stop/output controls.
+**Placement/trust:** Local adapters around Android's on-device `SpeechRecognizer` and `TextToSpeech`; recognizer output remains untrusted input. T-121 selects only an installed locale-compatible TTS voice whose Android metadata reports no network requirement.
+**Permissions/data:** Runtime microphone for input; no additional permission for output; audio focus and ephemeral audio/text. Exact user-selected readback text crosses the app/TTS-service boundary only for that utterance.
+**Offline/failure isolation:** No on-device recognizer, locale support or permission → typed path; no matching installed non-network-required TTS voice → written path. Never fall back silently to network recognition or speech. Destroy/cancel input and output on session replacement, Stop or lifecycle exit, and reject callbacks from an old generation/revision. T-120/T-121 host tests cover the controllers; physical recognizer/TTS, audio focus, engine egress and accessibility behavior remain unrun.
 **Dependencies:** shell, privacy; the replaceable provider boundary is unused by the initial recognition slice.
 
 <a id="session"></a>

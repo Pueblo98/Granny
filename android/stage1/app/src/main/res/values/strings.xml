@@ -1,25 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Stage 1 voice shell</string>
-    <string name="title">Talk to your assistant</string>
-    <string name="privacy_explanation">Speech stays with Android\'s on-device recognizer. Review the words before using them.</string>
-    <string name="transcript_hint">Your request appears here, or type it yourself</string>
-    <string name="talk">Talk</string>
-    <string name="done_listening">Done listening</string>
-    <string name="stop">Stop</string>
-    <string name="type_instead">Type instead</string>
-    <string name="use_request">Use this request</string>
-    <string name="test_boundary">Test shell: Use this request keeps the text on this screen. It does not send a message or take an action.</string>
-    <string name="hearing_format">Hearing: %1$s</string>
-    <string name="text_size_heading">Granny text size</string>
-    <string name="text_size_scope">Choose a preview, then Apply. This changes only Granny. Android and other apps keep their own text size.</string>
-    <string name="preview_size">Preview %1$s</string>
-    <string name="text_size_sample">Preview: Your plans and messages remain easy to read.</string>
-    <string name="apply_size">Apply previewed size</string>
-    <string name="restore_size">Restore previous size</string>
-    <string name="cancel_size_preview">Cancel preview</string>
-    <string name="size_preview_selected">Preview selected</string>
-    <string name="size_current">Current display size</string>
-    <string name="size_not_selected">Not selected</string>
-    <string name="preview_size_selected">✓ Preview %1$s — selected</string>
+    <string name="app_name">Granny native integration</string>
 </resources>

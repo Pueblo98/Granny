@@ -1,5 +1,5 @@
 ---
-title: "Current milestone — Context Rooms and the first native voice shell"
+title: "Current milestone — Context Rooms and native voice/readback shells"
 status: proposed
 owner: Simon
 last_updated: 2026-09-20
@@ -11,7 +11,54 @@ related:
   - ../01-product/prd.md
 ---
 
-# Current milestone — Context Rooms and the first native voice shell
+# Current milestone — Context Rooms and native voice/readback shells
+
+## Native voice continuity repair — 2026-09-20
+
+[Simon-reported smoke feedback](../08-research/2026-09-20-native-tablet-smoke-feedback.md)
+is positive for text-size cancellation, Apply/Restore and the background case,
+but identifies lost voice drafts, single-sentence cutoff and robotic readback.
+The [source repair](sessions/2026-09-20-native-voice-continuity.md) preserves
+existing words, collects bounded successful recognizer segments until Done/Stop,
+and ranks eligible offline voices by locale and declared quality. The repaired
+APK is host-checked and its package update succeeded; functional retest is unreported; no quality or gate
+acceptance is claimed. The earlier blanket testing hold was lifted for the
+reported smoke run only; new device actions remain separately scoped.
+
+## Native conversation integration — 2026-09-20
+
+The [integration session](sessions/2026-09-20-native-conversation-integration.md)
+joins committed T-120/C5 and T-121 source in the existing `android/stage1` app.
+One coordinator owns typed/final spoken requests, clarification, exact preview,
+one-use approval, Stop and known/unknown results while Home/fictional Kitchen
+remains the underlying place. Only debug C5 text size is enabled; candidate
+builds and C2 screen explanation fail closed. Explicit readback and speech-rate
+controls share input/output exclusion, exact rendered-text revisions, audio
+focus and touch-exploration suppression. Host checks are source/fixture evidence.
+All physical tablet testing is on hold at Simon's request. T-101 and
+GATE-03/04/06 remain open; T-104 has no admitted route. This mixed task branch
+is not a main merge or primary-vault synchronization.
+
+## T-121 explicit spoken readback and speech controls — 2026-09-20
+
+Simon authorized the first standalone spoken-output tablet slice. [T-121](backlog.md#t-121)
+is implemented for review on top of the published T-120/C5 Android shell. It
+adds explicit Read request aloud, Stop speaking, revision-bound Repeat, Sound
+off/on and four closed speech-rate choices with listen-before-Apply and
+one-step Restore. Nothing is read automatically. Talk/Type stops output, the
+global Stop interrupts it, editing invalidates the old utterance and late
+engine callbacks cannot revive stopped speech.
+
+The Android adapter accepts only an installed locale-compatible voice reporting
+that it does not require a network connection. There is no Internet permission,
+provider SDK, model, generated audio file or network fallback; the written path
+remains complete whenever speech is unavailable. Speech settings use private,
+versioned storage with compare-and-set and explicit readback. Host tests cover
+state, stale callbacks, exact revisions and persistence failure handling, while
+debug assembly and lint pass. No device or TTS engine was exercised, so audible
+output, engine egress/offline behavior, language packs, audio focus, Stop
+latency, rate fidelity and TalkBack interaction remain unrun under
+EVAL-007/009 and RES-06. No gate passes from this implementation.
 
 ## Profile and accessibility adaptation review — 2026-09-20
 
