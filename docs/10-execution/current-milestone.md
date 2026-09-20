@@ -21,7 +21,7 @@ but identifies lost voice drafts, single-sentence cutoff and robotic readback.
 The [source repair](sessions/2026-09-20-native-voice-continuity.md) preserves
 existing words, collects bounded successful recognizer segments until Done/Stop,
 and ranks eligible offline voices by locale and declared quality. The repaired
-APK is host-checked, not yet device-tested or installed; no quality or gate
+APK is host-checked and its package update succeeded; functional retest is unreported; no quality or gate
 acceptance is claimed. The earlier blanket testing hold was lifted for the
 reported smoke run only; new device actions remain separately scoped.
 

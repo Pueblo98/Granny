@@ -12,7 +12,7 @@ session_state: review
 record_basis: contemporaneous
 agent: GPT-6 Astra with Terra implementation and Sol review
 branch: fix/native-voice-continuity
-next_action: Review the published repair and separately authorize the versioned APK update and synthetic retest.
+next_action: Complete the authorized main merge and scoped cleanup; preserve overlapping primary design edits.
 changed_paths:
   - android/stage1/README.md
   - android/stage1/app/build.gradle.kts
@@ -197,3 +197,28 @@ retain Type/written output as complete fallbacks. A natural-sounding replacement
 engine or local model remains a dependency/privacy/product decision if the existing
 eligible voices still disappoint. T-101 is in progress, C2 is unadmitted,
 GATE-03/04/06 are open, and T-104 has no admitted route.
+
+## Authorized integration and cleanup follow-up
+
+Simon explicitly authorized merging all work from this session and cleaning up
+its completed worktrees/branches. This supersedes the earlier main-merge hold.
+The normal PR includes the full integration plus continuity repair. The same
+version-2 APK above was subsequently updated on the connected SM-X238U through
+an explicitly authorized package-only `adb install -r`; the command returned
+Success. No data clear, permission grant, launch or microphone action was
+performed. Simon has not supplied case-by-case retest observations for this
+version; installation success is not a recognition/voice-quality pass.
+
+Cleanup preserves both tested APKs and source-to-hash metadata outside the
+worktrees under `/home/lgtw/Work/granny-artifacts/2026-09-20-native-tablet`.
+Only clean worktrees/branches owned by this orchestration are cleanup targets;
+peer voice/TTS/design worktrees remain outside that scope. Root task history
+will be retained by the normal merge. Agent-only cherry-pick source histories
+are retained under local archive tags before their clean worktrees are removed.
+
+The primary checkout has new local design edits in mockups/README,
+current-milestone and cockpit-snapshot plus untracked design/session assets.
+Incoming integration overlaps milestone/snapshot. Leave this active local work
+untouched; main integration is separate from primary vault synchronization.
+The GitHub PR owns the eventual merge SHA; the final response reports actual
+merge, cleanup and local visibility results, without another self-hash commit.
