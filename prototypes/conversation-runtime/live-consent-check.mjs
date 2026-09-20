@@ -12,7 +12,7 @@ try{
  await b.waitFor('[...document.querySelectorAll("button")].some(e=>e.textContent === "Review live conversation consent")');
  assert.equal(calls,0);await button('Review live conversation consent');assert.equal(calls,0);await b.click('#confirm-dialog button[value=confirm]');
  await b.waitFor('document.querySelector("#current-task")?.dataset.stage === "idle"');assert.equal(calls,0);
- assert.ok(await b.evaluate('document.querySelector("#mode-notice").textContent.includes("fictional text goes to OpenRouter")'));
+ assert.ok(await b.evaluate('document.querySelector("#mode-notice").textContent.includes("go to OpenRouter")'));
  await b.fill('#request','Tell David Brother "Exact live-mode fixture!" via Example Messages');await b.click('#composer button[type=submit]');
  await b.waitFor('!!document.querySelector("[data-action=runtime-confirm]")');assert.equal(calls,1);
  assert.equal(await b.evaluate('document.querySelector("blockquote").textContent'),'Exact live-mode fixture!');

@@ -12,8 +12,11 @@ related:
 
 # Development cockpit
 
+> [!important] Room-aware connected assistant — 2026-09-20
+> Simon requested implementation of the existing server-side OpenRouter model across Home and every fictional Room. The bounded [change session](10-execution/sessions/2026-09-20-room-chat-openrouter.md) keeps one assistant, explicit live consent, server-only credentials and at most three current-Room fictional references with source receipts. Deterministic checks and one paid synthetic Room turn passed; the task remains a review-branch browser prototype, not Android/persistent/personal-data readiness.
+
 > [!important] Iteration-1 owner review — 2026-09-20
-> The integrated browser frontend is on `main` through PR #44. Simon completed a walkthrough and reported the iteration cohesive and good for now, including the Home/Rooms scrolling refinement; no frontend revision is queued. His follow-up tablet report is positive for the repaired interaction and requested access checks, while spoken readback remains only slightly improved and below the desired naturalness. These are owner-review/smoke observations, not representative-user evidence or a gate pass.
+> The integrated browser frontend is on `main` through PR #44. Simon completed a walkthrough and reported the iteration cohesive and good for now, including the Home/Rooms scrolling refinement. The later Room-aware chat request above supersedes only the earlier “no frontend revision queued” note. His follow-up tablet report is positive for the repaired interaction and requested access checks, while spoken readback remains only slightly improved and below the desired naturalness. These are owner-review/smoke observations, not representative-user evidence or a gate pass.
 
 > [!important] Context Rooms direction — 2026-09-19
 > Simon accepted [Context Rooms](02-design/context-rooms.md) as optional recognizable spaces around one global assistant and selected [Explicit Scroll Row](02-design/mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md) as the Home composition. Home stays universal and conversation-first; the selected row adds open portraits, written Previous/Next and direct See all rooms under [ADR-0016](09-decisions/ADR-0016-explicit-home-room-row.md). [T-119](10-execution/backlog.md#t-119)'s fictional browser iteration is integrated and owner-reviewed; proposed App V1 production placement, persistence and evidence remain gated.

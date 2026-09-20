@@ -1,18 +1,19 @@
 ---
-title: "Local conversation runtime — real MCP, fictional drafts"
+title: "Local conversation runtime — Room-aware chat and fictional drafts"
 status: review
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-20
 tags: [prototype, backend, mcp]
 related:
   - ../../docs/04-architecture/conversation-runtime-contract.md
   - ../../docs/10-execution/sessions/2026-09-15-mcp-backend-integration.md
+  - ../../docs/10-execution/sessions/2026-09-20-room-chat-openrouter.md
   - ../stage-1/README.md
 ---
 
 # Local conversation runtime
 
-One bounded slice: conversation → fictional contact resolution → exact preview → explicit confirmation → actual isolated local draft write → separate stored-record readback. Success means **“Draft created in the demo. Not sent.”** No real messaging account, Android integration or arbitrary MCP installation.
+One bounded local runtime serves the same assistant on Home and in all fictional Context Rooms, then supports fictional contact resolution → exact preview → explicit confirmation → actual isolated local draft write → separate stored-record readback. Success means **“Draft created in the demo. Not sent.”** No real messaging account, Android integration or arbitrary MCP installation.
 
 ## Start
 
@@ -37,7 +38,14 @@ Try `Hello`, then `Tell David Brother "Meet at six.  🌱" via Example Messages`
 node --env-file=/absolute/path/to/private/.env prototypes/conversation-runtime/server.mjs --live
 ```
 
-The existing private env defines OPENROUTER_API_KEY; never copy it into the checkout, browser, screenshots or command arguments. --live only makes the route available; explicit UI consent and a live session are still required. Use Menu → Demo connection → Check live model availability → Review live conversation consent. No paid request on page load/session creation. Synthetic text only. Latest input plus at most ten bounded prior conversation messages may leave the machine; no MCP output, confirmation, draft result, private file or secret enters model context. No raw transcript logging.
+The existing private env defines OPENROUTER_API_KEY; never copy it into the checkout, browser, screenshots or command arguments. --live only makes the route available; explicit UI consent and a live session are still required. Use Menu → Demo connection → Check live model availability → Review live conversation consent. No paid request on page load/session creation. Synthetic text only. Latest input plus at most ten bounded prior conversation messages may leave the machine. Home sends no Room sources; inside a Room, at most three query-relevant non-private current-Room fictional references are sent in a separate untrusted context message. No cross-room source, MCP output, confirmation, draft result, private file or secret enters model context. No raw transcript logging.
+
+The system prompt defines one respectful adult assistant across Home and Rooms,
+forbids action claims and treating reference content as instructions, and asks
+the model to name a source it uses. The browser shows the backend's source
+receipt below ordinary model text. Draft proposals still pass through exact
+slot/span validation and separate confirmation; a model answer never becomes
+action authority.
 
 Qwen3.8 Flash is replaceable behind provider.mjs. Prior limits retained: 20/process, six/minute, one in flight, 768 output tokens, 25s timeout, required parameter support, collection deny, no fallback, price ceilings $0.15/M input and $0.47/M output. No implicit retry or account-wide billing guarantee. Restart resets process counters, not provider charges. Do not run repeated live sessions to bypass caps.
 
@@ -57,7 +65,7 @@ One separately authorized synthetic live interpretation, **not CI**:
 node --env-file=/absolute/path/to/private/.env prototypes/conversation-runtime/live-smoke.mjs --live
 ```
 
-Exactly one provider request, no retry, no draft write; reports only state/code/timing/exact-match evidence. Failure is retained, not relabeled a pass. Deterministic success does not establish live language reliability or native Android capability.
+Exactly one provider request, no retry, no draft write; the current smoke asks one synthetic Kitchen question and reports only state/code/timing/source-binding/grounding evidence. Failure is retained, not relabeled a pass. Deterministic success does not establish general live language reliability or native Android capability.
 
 ## Lifecycle and scope
 
@@ -65,4 +73,4 @@ Ctrl+C shuts down HTTP and the MCP child and removes its temporary synthetic dra
 
 The trusted local UI is the confirmation source. This developer loopback service is not authenticated multi-user infrastructure and must not be exposed through LAN/tunnel/public hosting. Host/Origin/body validation blocks ordinary browser cross-origin access. Server-side policy protects against model/tool output, not malicious software already running as the same OS user.
 
-[Wire contract](../../docs/04-architecture/conversation-runtime-contract.md) owns all request/event/state semantics. [Session evidence](../../docs/10-execution/sessions/2026-09-15-mcp-backend-integration.md) distinguishes implemented, tested, published, frontend-reviewed, live and unavailable capabilities. Production gates remain unchanged.
+[Wire contract](../../docs/04-architecture/conversation-runtime-contract.md) owns all request/event/state semantics. [Original session evidence](../../docs/10-execution/sessions/2026-09-15-mcp-backend-integration.md) and the [Room-aware extension](../../docs/10-execution/sessions/2026-09-20-room-chat-openrouter.md) distinguish implemented, tested, published, frontend-reviewed, live and unavailable capabilities. Production gates remain unchanged.

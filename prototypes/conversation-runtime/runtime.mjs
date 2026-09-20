@@ -41,13 +41,17 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
     if(!s.slots.channelId){clarify(s,'channel',channels.map(c=>({...c,detail:'Fictional channel'})),requestId);return;}
     preview(s,requestId);
   }
-  async function interpret(s,text,requestId,epoch){
-    const proposal=parse(proposalSchema,await (s.mode==='live'?provider:stub).interpret(text,s.controller.signal,s.history));
+  async function interpret(s,text,context,requestId,epoch){
+    const safeContext=context??{place:{kind:'home'},sources:[]};
+    const boundedHistory=s.history.slice(),contextLength=JSON.stringify(safeContext).length;
+    while(boundedHistory.length&&boundedHistory.reduce((n,m)=>n+m.content.length,text.length+contextLength)>12000)boundedHistory.shift();
+    const proposal=parse(proposalSchema,await (s.mode==='live'?provider:stub).interpret(text,s.controller.signal,boundedHistory,safeContext));
     if(!active(s,epoch))return;
     s.history.push({role:'user',content:text});
     if(proposal.kind==='chat')s.history.push({role:'assistant',content:proposal.text});
     while(s.history.length>10||s.history.reduce((n,m)=>n+m.content.length,0)>10000)s.history.shift();
-    if(proposal.kind==='chat'){emit(s,'chat','idle',{text:proposal.text,source:s.mode==='live'?'live-model':'stub-model',verified:false},requestId);return;}
+    if(proposal.kind==='chat'){emit(s,'chat','idle',{text:proposal.text,source:s.mode==='live'?'live-model':'stub-model',verified:false,
+      place:safeContext.place,sources:safeContext.sources.map(({itemId,title,roomName,collectionLabel})=>({itemId,title,roomName,collectionLabel}))},requestId);return;}
     const {bodyStart:start,bodyEnd:end}=proposal;
     // Explicit user delimiters are independent evidence of the intended body span.
     // A model cannot trim punctuation/whitespace inside a quoted or marked exact body.
@@ -104,7 +108,7 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
       if(c.kind==='turn'){
         invalidate(s);s.turnId=id();s.operations=0;s.dispatched=false;s.slots=null;s.candidates=[];
         emit(s,'progress','interpreting',{phase:'interpreting'},c.requestId);
-        work(s,c.requestId,epoch=>interpret(s,p.text,c.requestId,epoch));
+        work(s,c.requestId,epoch=>interpret(s,p.text,p.context,c.requestId,epoch));
       }else if(c.kind==='clarify'){
         if(s.state!=='clarifying'||p.turnId!==s.turnId||!s.clarification?.choices.some(v=>v.id===p.choiceId))reject('clarification_stale');
         const field=s.clarification.field;s.slots[field==='recipient'?'recipientId':'channelId']=p.choiceId;finishPreparation(s,c.requestId);

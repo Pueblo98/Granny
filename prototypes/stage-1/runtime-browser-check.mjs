@@ -169,8 +169,34 @@ try {
   await button('Review live conversation consent');
   await b.click('#confirm-dialog button[value=confirm]'); await waitState('idle');
   check(await b.evaluate('window.__wire.requests.some(r=>r.body?.mode === "live" && r.body.consent === true)'), 'affirmative consent binds a live session');
-  check((await text()).includes('fictional text goes to OpenRouter'), 'persistent mode label identifies live egress');
+  check((await text()).includes('go to OpenRouter'), 'persistent mode label identifies live egress');
   check(await b.evaluate('window.__wire.requests.every(r=>r.body?.kind !== "turn")'), 'live connection makes no model turn automatically');
+  await command('Hello from Home');
+  const homeContext = await b.evaluate('window.__wire.requests.filter(r=>r.body?.kind === "turn").at(-1).body.payload.context');
+  check(homeContext.place.kind === 'home' && homeContext.sources.length === 0, 'Home sends no Room references');
+  const roomIds = ['kitchen','fitness','trips','garden','reading','projects'];
+  for (const id of roomIds) {
+    await b.click('#rooms-button'); await b.click('#library-room-' + id);
+    await b.waitFor(`document.querySelector('#room-surface')?.dataset.roomId === ${JSON.stringify(id)}`);
+    await command(id === 'kitchen' ? 'What is in the vegetable soup?' : 'What can I find in this room?');
+    const context = await b.evaluate('window.__wire.requests.filter(r=>r.body?.kind === "turn").at(-1).body.payload.context');
+    check(context.place.kind === 'room' && context.place.roomId === id,
+      'connected assistant sends current place for ' + id);
+    check(context.sources.length <= 3 && context.sources.every(source =>
+      source.roomName === context.place.roomName && source.provenance === 'fictional-local-fixture'),
+      'connected assistant bounds current-Room sources for ' + id);
+    check(!JSON.stringify(context).includes('Passport details'), 'private source absent for ' + id);
+  }
+  await b.click('#rooms-button'); await b.click('#library-room-kitchen');
+  await emit('chat','idle',{text:'The Vegetable soup card includes carrots.',source:'live-model',verified:false,
+    place:{kind:'room',roomId:'kitchen',roomName:'Kitchen',purpose:'Recipes, lists and cooking plans'},
+    sources:[{itemId:'vegetable-soup',title:'Vegetable soup',roomName:'Kitchen',collectionLabel:'Recipes'}]},1);
+  await command('Please use the vegetable soup card.');
+  await b.waitFor('document.body.innerText.includes("Used fictional Room source: Vegetable soup")');
+  check(await b.evaluate('document.querySelector("#room-surface")?.dataset.roomState === "conversation"'), 'live answer renders inside the current Room');
+  check((await text()).includes('Assistant text, not a verified action result.'), 'Room model answer remains explicitly non-action text');
+  await b.evaluate('document.querySelector("#current-task").scrollIntoView({block:"center"})');
+  await b.screenshot('connected-room-answer');
   check(b.errors.length === 0, 'no browser exceptions');
   check(b.network.every(url => url.startsWith(b.base) || url === 'about:blank'), 'no external runtime requests');
   console.log(JSON.stringify({checks, evidence:'frontend wire fixtures, not real MCP', screenshots:b.output, errors:b.errors},null,2));

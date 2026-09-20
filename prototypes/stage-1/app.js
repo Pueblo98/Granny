@@ -104,6 +104,8 @@
       if (text !== null) composerText.value = text;
       focus(composerText);
     },
+    assistantActive: () => runtimeMode,
+    renderAssistant: target => renderRuntime(target),
     announce
   });
   const outcomeUI = window.GrannyOutcomeUI.create({state, node, button, dispatch,
@@ -412,7 +414,7 @@
     if (v.error) return 'The local demo could not accept that step. Your draft has not been retried.';
     if (v.pending && !['interpreting', 'resolving', 'creating', 'verifying'].includes(v.snapshot?.state))
       return 'Waiting for the local demo…';
-    return ({idle: 'What would you like your fictional message to say?',
+    return ({idle: 'What would you like help with?',
       interpreting: 'Reading your request…', resolving: 'Looking up the fictional person…',
       clarifying: v.current?.data?.prompt || 'Which fictional person do you mean?',
       preview: 'Check the person, destination and words before creating this draft.',
@@ -445,9 +447,9 @@
     return runtimeCommand('revise', {actionId: data.actionId,
       recipientId: data.recipient.id, channelId: data.channel.id, body});
   }
-  function renderRuntime() {
+  function renderRuntime(target = thread) {
     const v = runtimeView, event = v?.current;
-    runtimeTurns.forEach(t => thread.append(turn(t.role, t.text)));
+    runtimeTurns.forEach(t => target.append(turn(t.role, t.text)));
     const c = card('Granny', runtimeCopy());
     c.id = 'current-task';
     c.dataset.kind = 'runtime-message';
@@ -456,6 +458,10 @@
     if (event?.type === 'chat') {
       c.append(node('p', '', event.data.text), node('p', 'notice',
         'Assistant text, not a verified action result.'));
+      if (event.data.place?.kind === 'room') c.append(node('p', 'notice', event.data.sources.length
+        ? 'Used fictional Room ' + (event.data.sources.length === 1 ? 'source: ' : 'sources: ') +
+          event.data.sources.map(source => source.title + ' · ' + source.roomName + ' · ' + source.collectionLabel).join('; ')
+        : 'No Room reference was sent for this answer.'));
     }
     if (runtimePreview) {
       const draft = runtimeDraft(runtimePreview, v?.snapshot?.state === 'completed');
@@ -504,7 +510,7 @@
         runtimeEditor = {body: data.body};
         runtime.invalidatePreview();
         render();
-        focus(thread.querySelector('[aria-label="Message"]'));
+        focus(target.querySelector('[aria-label="Message"]'));
       }), button('Change person or destination', () => {
         runtime.invalidatePreview();
         announce('Type a new request with the person or destination you want.');
@@ -516,7 +522,7 @@
     if (v?.snapshot?.state === 'unknown')
       c.append(node('p', 'notice', 'No retry is offered. This session cannot create another draft. The destination is fictional; no message was sent.'));
     c.append(actions);
-    thread.append(c);
+    target.append(c);
     const copy = runtimeCopy();
     if (lastAnnouncement !== copy) { lastAnnouncement = copy; announce(copy); }
   }
@@ -553,6 +559,7 @@
     runtimeEditor = null;
     runtimeMode = true;
     runtimeProviderMode = mode;
+    roomUI.showAssistant();
     const client = window.GrannyRuntime.create({onChange: view => {
       if (runtime !== client || !runtimeMode) return;
       const wasAtBottom = atBottom();
@@ -907,32 +914,31 @@
     const sharedTask = !runtimeMode && state.task?.kind === 'message' && dismissedTask !== state.task.id;
     document.body.dataset.surface = speechState || (sharedTask ? 'task' : hasOutcome ? 'outcome' : '');
     const browsing = ['rooms','room-search','all-items','unfiled','archived-rooms'].includes(homeView) || homeView.startsWith('item:');
-    $('room-content').hidden = !!menuPanel || runtimeMode ||
+    $('room-content').hidden = !!menuPanel ||
         (!browsing && !homeView.startsWith('room:'));
     const skipLink = document.querySelector('.skip-link');
     skipLink.href = $('room-content').hidden ? '#conversation' : '#room-content';
     skipLink.textContent = $('room-content').hidden ? 'Skip to conversation' : 'Skip to room content';
     $('conversation').hidden = false;
     document.querySelector('.composer-wrap').hidden = false;
-    document.body.dataset.libraryView = String(browsing && !menuPanel && !runtimeMode);
-    document.body.dataset.roomView = String(homeView.startsWith('room:') && !menuPanel && !runtimeMode);
-    document.body.dataset.roomPriority = !runtimeMode && homeView.startsWith('room:') ? homeView.slice(5) : '';
+    document.body.dataset.libraryView = String(browsing && !menuPanel);
+    document.body.dataset.roomView = String(homeView.startsWith('room:') && !menuPanel);
+    document.body.dataset.roomPriority = homeView.startsWith('room:') ? homeView.slice(5) : '';
     document.body.dataset.roomRoute = String(homeView.startsWith('room:') || browsing);
     $('room-home').hidden = homeView === 'home' || homeView === 'introduction';
-    $('rooms-button').disabled = runtimeMode;
-    $('rooms-button').title = runtimeMode ? 'Return to the scripted prototype in Menu to browse fictional rooms.' : '';
+    $('rooms-button').disabled = false;
+    $('rooms-button').title = '';
     $('mode-notice').hidden = !runtimeMode && !runtimeQuarantined;
     $('mode-notice').textContent = runtimeQuarantined
       ? 'An earlier connected draft outcome is unknown. No retry or new connected session is available in this tab. Switching views does not undo a draft.'
-      : (runtimeProviderMode === 'live' ? 'Live model · fictional text goes to OpenRouter · unsent demo drafts only' : 'Connected local demo · fictional people · unsent drafts only');
-    composerText.placeholder = roomUI.current && !runtimeMode ? 'Ask Granny in ' + roomUI.current.name + '…' : 'Ask me anything…';
-    if (runtimeMode && !speechState) renderRuntime();
+      : (runtimeProviderMode === 'live' ? 'Live model · your words and up to three current-Room fictional references go to OpenRouter · unsent demo drafts only' : 'Connected local demo · fictional people · unsent drafts only');
+    composerText.placeholder = roomUI.current ? 'Ask Granny in ' + roomUI.current.name + '…' : 'Ask me anything…';
     (!runtimeMode && !speechState && !dismissedTask ? state.turns || [] : []).forEach(t => {
       const article = turn(t.role, t.text);
       thread.append(article);
     });
-    if (!runtimeMode)
-      renderHomeDestination();
+    renderHomeDestination();
+    if (runtimeMode && !speechState && !roomUI.assistantVisible) renderRuntime();
     if (state.task && !runtimeMode && dismissedTask !== state.task.id && !speechState && !menuPanel) {
       const task = state.task,
             editingTask = !!(editor && editor.taskId === task.id),
@@ -1054,7 +1060,7 @@
         connection.append(discover);
         if (runtimeConfig?.liveAvailable) connection.append(button('Review live conversation consent', () => ask(
           'Use live synthetic conversation?',
-          'Use fictional text only. Your new conversation and up to ten earlier messages will go to OpenRouter/Qwen. Model interpretation is experimental and may fail. Creating a draft still needs its own exact confirmation. No recording, real accounts or sending are enabled. Continue starts a fresh conversation; it makes no model call until you submit text.',
+          'Use fictional text only. Your new conversation, up to ten earlier messages and up to three relevant non-private references from the Room you are in will go to OpenRouter/Qwen. Home sends no Room references, and this demo does not retrieve across Rooms. Model interpretation is experimental and may fail. Creating a draft still needs its own exact confirmation. No recording, real accounts or sending are enabled. Continue starts a fresh conversation; it makes no model call until you submit text.',
           () => connectRuntime('live'))));
         else if (runtimeConfig || runtimeConfigError) connection.append(node('p', 'notice', 'The live model is unavailable. You can still try the local demo.'));
       }
@@ -1210,23 +1216,24 @@
     }
     composerText.setCustomValidity('');
     if (runtimeMode) {
-      homeView = 'home';
-      homeReturn = null;
       if (runtimeQuarantined || runtimeView?.connection !== 'connected' || runtimeView?.stopping) {
         announce('Keep your words here until the connection and draft outcome are known.');
         return;
       }
       const send = async () => {
         if (runtimeView?.snapshot?.state === 'unknown') return;
+        const context = roomUI.assistantContext(text);
+        roomUI.showAssistant();
         if (runtimeTurns.length && runtimeView?.current)
-          runtimeTurns.push({role: 'assistant', text: runtimeCopy()});
+          runtimeTurns.push({role: 'assistant', text: runtimeView.current.type === 'chat'
+            ? runtimeView.current.data.text : runtimeCopy()});
         const submitted = {role: 'user', text};
         runtimeTurns.push(submitted);
         runtimePreview = null;
         runtimeEditor = null;
         composerText.value = '';
         menuPanel = '';
-        const accepted = await runtimeCommand('turn', {text});
+        const accepted = await runtimeCommand('turn', {text, context});
         if (!accepted) {
           submitted.text = text + '\nNot accepted or not yet acknowledged by the local demo.';
           if (!composerText.value) composerText.value = text;

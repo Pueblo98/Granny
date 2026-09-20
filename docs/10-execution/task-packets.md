@@ -213,6 +213,14 @@ must fall back without changing controls, context or room availability.
 
 **Evidence and completion:** Automated checks may prove deterministic fixture/state/semantics and zero forbidden egress/persistence. Screenshot review may assess visual hierarchy. Only a separate approved RES-03/08 study can support human comprehension or value. Report exact artifact version, cases/assertions, viewport/access modes and gaps. Passing T-119 does not admit App V1 storage or pass GATE-05/06/08.
 
+**2026-09-20 synthetic runtime extension:** Simon separately authorized the
+existing server-side OpenRouter adapter for Home and every fictional Room.
+Replace the original zero-egress oracle only for an explicitly consented live
+turn: Home sends no Room sources; a Room sends at most three non-private,
+non-excluded current-Room fixtures with source metadata. The browser never
+receives the key. Cross-room retrieval, real documents and persistent Room
+data remain forbidden. Demo/scripted modes retain zero provider egress.
+
 <a id="t-120-packet"></a>
 ## T-120 packet — Native on-device voice shell and cleanup boundary
 

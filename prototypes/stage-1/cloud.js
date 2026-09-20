@@ -79,7 +79,21 @@ function create(options = {}) {
     if (e.type === "chat")
       return e.state === "idle" && typeof e.data.text === "string" &&
              [ "stub-model", "live-model" ].includes(e.data.source) &&
-             e.data.verified === false;
+             e.data.verified === false && e.data.place &&
+             (e.data.place.kind === "home" ||
+              (e.data.place.kind === "room" &&
+               typeof e.data.place.roomId === "string" &&
+               typeof e.data.place.roomName === "string" &&
+               typeof e.data.place.purpose === "string")) &&
+             Array.isArray(e.data.sources) && e.data.sources.length <= 3 &&
+             e.data.sources.every(source => source &&
+               typeof source.itemId === "string" &&
+               typeof source.title === "string" &&
+               typeof source.roomName === "string" &&
+               typeof source.collectionLabel === "string" &&
+               e.data.place.kind === "room" &&
+               source.roomName === e.data.place.roomName) &&
+             (e.data.place.kind !== "home" || e.data.sources.length === 0);
     if (e.type === "clarification")
       return e.state === "clarifying" &&
              [ "recipient", "channel", "body" ].includes(e.data.field) &&

@@ -263,6 +263,18 @@ selection for this browser session only: six starter rooms and reversible
 same-room source examples. Cross-room retrieval and archive/delete remain
 later bounded work, not implied delivery.
 
+**Room-aware connected assistant checkpoint — 2026-09-20:** Simon explicitly
+requested the existing OpenRouter-backed local runtime be joined to Home and
+every fictional Room. The bounded task branch keeps one session/personality,
+the private key in the loopback backend, explicit live consent and existing
+draft confirmations. Home supplies no Room sources; a Room may supply at most
+three deterministic non-private current-Room fixtures, with a visible source
+receipt. Deterministic backend/browser checks cover all six Rooms, and one
+separately invoked paid synthetic Kitchen question returned a grounded answer
+with no draft write. The [session](sessions/2026-09-20-room-chat-openrouter.md)
+owns exact evidence. This does not admit real personal data, cross-room
+retrieval, Android integration, persistence or a production model/vendor.
+
 Production placement is proposed for App V1 because useful Rooms depend on
 durable organization and rights that the five-workflow MVP intentionally does
 not provide. Exact navigation, terminology, default rooms, visual treatment
@@ -392,7 +404,7 @@ Simon's subsequent 2026-09-14 request authorizes GitHub publication and future t
 
 Simon's 2026-09-14 follow-up requested a holistic documentation/skills/workflow system **before actual design and development**. T-113 supplied [delivery workflows and four repository skills](operating-workflows.md), [first task packets](task-packets.md), [transaction protocol](../03-agent/execution-protocol.md), [capability admission](../04-architecture/capability-admission.md), [evidence review](../06-evals/evidence-protocol.md) and [research execution protocols](../08-research/research-protocols.md). That historical package created no application code; T-103's cases were subsequently implemented and run in the bounded offline core described above. No external Figma file or participant/device study was created. The official remote Figma MCP connection was verified read-only on 2026-09-14; no canvas mutation or credential/config file was added to the repository.
 
-The next experience implementation request should start from T-119's named fictional-data packet; T-103's offline fake replay remains independently available. No new broad specification-writing milestone is needed. Remaining real-world evidence and Simon decisions still gate production work. Skills are repo-local. No new global setting, plugin or scheduled automation was installed by this repository task; the pre-existing official Figma plugin connection is documented in the Figma contract.
+The current experience implementation is the bounded T-119/T-117 Room-aware synthetic chat extension recorded above; after review, the next product slice still requires a separately ready packet. T-103's offline fake replay remains independently available. No new broad specification-writing milestone is needed. Remaining real-world evidence and Simon decisions still gate production work. Skills are repo-local. No new global setting, plugin or scheduled automation was installed by this repository task; the pre-existing official Figma plugin connection is documented in the Figma contract.
 
 The mission's documentation package is written for review. Only the stock-Android tablet app is active; no Android/runtime/backend implementation was started. Simon accepted the five MVP experiments and control posture on 2026-09-14; detailed product choices remain proposed and technical/user evals unrun. [Development readiness](development-readiness.md) is the authoritative gate/status assessment; [backlog](backlog.md) gives bounded next tasks, not another plan to write the PRD.
 

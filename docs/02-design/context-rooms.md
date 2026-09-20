@@ -233,6 +233,23 @@ scope must be directly configurable. A future shared room requires a separate
 identity/sharing design; room membership alone does not grant another person
 access.
 
+### Synthetic browser runtime checkpoint — 2026-09-20
+
+At Simon's explicit request, the local browser prototype now carries one
+connected assistant session between Home and all six fictional Rooms. Home
+sends no Room references. A Room turn deterministically selects at most three
+non-private, non-excluded references from that current Room, preferring the
+item the person explicitly chose; the live consent and persistent mode label
+name this OpenRouter egress. The answer shows the source titles returned by the
+backend. References are separate untrusted prompt data, never instructions or
+action authority.
+
+This is a reversible synthetic exception to the earlier no-provider T-119
+prototype boundary. It does not implement the broader accepted design above:
+no cross-room retrieval, persistent Rooms, real documents, sensitivity-policy
+engine, Android integration or personal-data admission follows from it. Direct
+Room browsing remains available when the model/provider is unavailable.
+
 ## Organization without making the person file everything
 
 Rooms contain references to canonical items rather than owning or duplicating
@@ -421,6 +438,12 @@ Implement one or two rooms in the browser prototype with deterministic fake
 content. Verify direct browse/search, cross-room provenance, Stop, offline use,
 room deletion and no underlying-data loss. Do not connect real documents,
 health data, accounts or remote storage.
+
+The 2026-09-20 task branch extends only the synthetic provider-facing portion
+across the six existing fixture Rooms. Deterministic tests cover current-Room
+selection, source receipts, private/excluded-source omission and all Room
+routes; the remaining cross-room, deletion and human-comprehension evidence in
+this phase is unchanged.
 
 ### Phase D — comprehension and admission evidence
 

@@ -1,4 +1,5 @@
-/* One fixture-driven room system. No room state enters the model or backend. */
+/* One fixture-driven room system. Connected mode may export only a bounded,
+ * non-private current-Room context object; credentials stay in the backend. */
 (() => {
   'use strict';
   const el = (tag, cls, text) => {
@@ -314,11 +315,13 @@
       detail.append(paper); surface.append(detail);
     }
     function conversationView(room, surface) {
-      const s = stateFor(room), region = el('section', 'room-conversation'); region.setAttribute('aria-label', 'Conversation in ' + room.name);
+      const s = stateFor(room), connected = options.assistantActive?.() === true,
+        region = el('section', 'room-conversation'); region.setAttribute('aria-label', 'Conversation in ' + room.name);
       region.append(action('browse-current-room', 'Browse ' + room.name, () => change(room, 'overview')));
-      if (!s.turns.length) region.append(heading('h1', 'Ask Granny in ' + room.name),
+      if (connected) options.renderAssistant?.(region);
+      else if (!s.turns.length) region.append(heading('h1', 'Ask Granny in ' + room.name),
         el('p', '', 'Review the fictional question below, or write your own. Choose Send when ready.'));
-      s.turns.forEach((turn, index) => {
+      if (!connected) s.turns.forEach((turn, index) => {
         const reply = el('article', 'room-reply'); reply.tabIndex = -1;
         reply.append(el('p', 'eyebrow', 'You asked'), el('p', 'room-question', turn.question),
           el('p', 'eyebrow', 'Granny · scripted fictional response'), el('p', 'room-answer', turn.answer));
@@ -368,6 +371,36 @@
         region.append(cue);
       }
       region.append(el('p', 'room-followup', 'You can keep asking here, or browse ' + room.name + ' directly.')); surface.append(region);
+    }
+
+    function assistantContext(question) {
+      const room = current();
+      if (!room) return {place: {kind: 'home'}, sources: []};
+      const s = stateFor(room), selectedId = s.source?.itemId;
+      const words = [...new Set(String(question).toLocaleLowerCase().match(/[\p{L}\p{N}]{3,}/gu) || [])];
+      const candidates = [];
+      room.collections.forEach(collection => collection.items.forEach(item => {
+        if (item.sensitivity === 'private' || s.excluded.has(item.id)) return;
+        const sections = (item.sections || []).flatMap(section => [section.heading, ...(section.lines || [])]);
+        const content = sections.filter(Boolean).join('\n') || item.body || item.summary || '';
+        if (!content.trim()) return;
+        const title = String(item.title || ''), summary = String(item.summary || '');
+        const haystack = (title + ' ' + summary + ' ' + content).toLocaleLowerCase();
+        const score = item.id === selectedId ? 1000 : words.reduce((total, word) =>
+          total + (title.toLocaleLowerCase().includes(word) ? 4 : 0) +
+          (summary.toLocaleLowerCase().includes(word) ? 2 : 0) + (haystack.includes(word) ? 1 : 0), 0);
+        if (score > 0) candidates.push({score, item, collection, content});
+      }));
+      candidates.sort((a, b) => b.score - a.score || a.item.title.localeCompare(b.item.title));
+      return {
+        place: {kind: 'room', roomId: room.id, roomName: room.name, purpose: String(room.purpose || '').slice(0, 240)},
+        sources: candidates.slice(0, 3).map(({item, collection, content}) => ({
+          itemId: String(item.id).slice(0, 64), title: String(item.title).slice(0, 120),
+          summary: String(item.summary || '').slice(0, 400), content: content.slice(0, 1200),
+          roomName: String(room.name).slice(0, 80), collectionLabel: String(collection.label).slice(0, 80),
+          provenance: 'fictional-local-fixture'
+        }))
+      };
     }
     function renderRoom(room) {
       const s = stateFor(room), shell = el('section', 'room-surface');
@@ -430,12 +463,15 @@
     return {
       get rooms() { return store.activeRooms; }, get current() { return current(); },
       get hasConversation() { return [...states.values()].some(s=>s.turns.length); },
+      get assistantVisible() { const room=current();return !!(room&&options.assistantActive?.()&&stateFor(room).view==='conversation'); },
       get availability() { return store.availability; },
       get supportItems() { return store.items().filter(i => i.sensitivity !== 'private').map(i => ({...i, rooms: store.roomNames(i.id)})); },
       get continuation() { const kitchen=store.activeRooms.find(r=>r.id==='kitchen');return kitchen&&safeItem('vegetable-soup')&&store.memberships('vegetable-soup').some(m=>m.roomId==='kitchen')?kitchen:null; },
       setAvailability(value) { store.setAvailability(value);states.clear();refresh(); },
       enter(next) { releaseSource(); route = next; if (current()) stateFor(current()).view = 'overview'; render(); },
-      show(next) { if (route !== next) { releaseSource(); route = next; render(); } },
+      show(next) { if (route !== next) { releaseSource(); route = next; render(); } else if (options.assistantActive?.()) render(); },
+      showAssistant() { const room=current();if(!room)return false;stateFor(room).view='conversation';render();return true; },
+      assistantContext,
       reply(question) {
         const room = current(); if (!room) return false;
         const s = stateFor(room), collection = room.collections.find(c => c.id === s.source?.collectionId);

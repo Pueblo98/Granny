@@ -2,7 +2,7 @@
 title: "Conversation runtime contract — local demo v1"
 status: proposed
 owner: Simon
-last_updated: 2026-09-15
+last_updated: 2026-09-20
 tags: [architecture, interface, prototype]
 related:
   - system-overview.md
@@ -10,6 +10,7 @@ related:
   - ../05-safety-privacy/action-policy.md
   - ../05-safety-privacy/safety-and-privacy.md
   - ../10-execution/sessions/2026-09-15-mcp-backend-integration.md
+  - ../10-execution/sessions/2026-09-20-room-chat-openrouter.md
 ---
 
 # Conversation runtime contract
@@ -18,7 +19,7 @@ Version **granny.conversation.v1**. Backend edits this boundary; frontend review
 
 ## Ownership and modes
 
-Backend is the sole owner of sessions, turns, prepared actions, confirmation validity, execution state, cancellation and verified results. Frontend owns layout, copy, keyboard/focus and presentation state. Connected events never run the scripted model/scheduler. Scripted mode remains a separate local UI experience. `demo` means stub model + real MCP + real isolated demo store, no egress. `live` means opt-in Qwen/OpenRouter interpretation + the same local authority/MCP/store, synthetic text only. Neither mode sends a message or operates Android.
+Backend is the sole owner of sessions, turns, prepared actions, confirmation validity, execution state, cancellation and verified results. Frontend owns layout, copy, keyboard/focus and presentation state. Connected events never run the scripted model/scheduler. Scripted mode remains a separate local UI experience. `demo` means stub model + real MCP + real isolated demo store, no egress. `live` means opt-in Qwen/OpenRouter interpretation + the same local authority/MCP/store, synthetic text only. One backend session and bounded history follow the user between Home and Rooms; Rooms do not create separate agents or personalities. Neither mode sends a message or operates Android.
 
 ## HTTP and identifiers
 
@@ -38,13 +39,26 @@ POST `/api/runtime/command`: common fields `{version,sessionId,requestId,kind,pa
 
 | kind | Exact payload | Effect |
 |---|---|---|
-| turn | `{text:string}` (1–2000 UTF-16 units, nonblank) | New turn; invalidates older preview/work before model interpretation |
+| turn | `{text:string,context?:ConversationContext}` (text 1–2000 UTF-16 units, nonblank) | New turn; invalidates older preview/work before model interpretation |
 | clarify | `{turnId,choiceId:string}` | Select one offered fictional person or channel; choice must belong to current clarification |
 | revise | `{actionId,recipientId,channelId,body}` | Replace exact current preview; IDs must be approved fictional IDs, body 1–2000; new action/token required |
 | confirm | `{actionId,confirmationToken}` | Explicit preview-button action only; single admission of exact immutable prepared action |
 | cancel | `{}` | Stop latch, epoch advance, invalidate all pending work/approval; no provider round |
 
 Returns HTTP 202 Snapshot after synchronous admission/denial validation, before asynchronous work. `turn` while an admitted draft effect is unresolved is HTTP 409 `effect_unknown`; no duplicate execution through a new request. User typed “yes” is an ordinary turn, never confirmation. A newer turn can replace model/lookup/preparation; it cannot hide an already-dispatched uncertain effect.
+
+`ConversationContext` is a strict union. Home is
+`{place:{kind:"home"},sources:[]}`. A Room is
+`{place:{kind:"room",roomId,roomName,purpose},sources:RoomSource[]}` with at
+most three sources, all carrying the same current `roomName`. A source has
+`{itemId,title,summary,content,roomName,collectionLabel,provenance:"fictional-local-fixture"}`;
+field and aggregate character limits are enforced by the backend. The current
+prototype resolver prefers an explicitly selected non-private item, otherwise
+ranks query matches only within the open Room. Excluded/private items, whole
+Room dumps and cross-room retrieval are not admitted in this slice. Context is
+serialized as a separate untrusted user-role reference message immediately
+before the exact latest user text; it never enters the system role or tool
+authority. Omitting context remains backward-compatible and means Home.
 
 GET `/api/runtime/events?sessionId=UUID&after=0` → Snapshot; `after` is last contiguous applied seq, nonnegative and no greater than server cursor. Poll only this route; no raw MCP endpoint available to browser.
 
@@ -57,7 +71,7 @@ Every Event has `{version,sessionId,turnId,requestId,actionId,eventId,seq,epoch,
 | type | state | data |
 |---|---|---|
 | progress | interpreting / resolving / creating / verifying | `{phase}` matching state |
-| chat | idle | `{text,source:"stub-model" or "live-model",verified:false}`; plain untrusted model prose, no action claim |
+| chat | idle | `{text,source:"stub-model" or "live-model",verified:false,place,sources:[{itemId,title,roomName,collectionLabel}]}`; plain untrusted model prose plus the bounded source receipt, no action claim |
 | clarification | clarifying | `{field:"recipient" or "channel" or "body",prompt,choices:[{id,label,detail}]}`; body has empty choices, answer with a new turn |
 | preview | preview | `{actionId,recipient:{id,label,detail},channel:{id,label},body,effect:"create_demo_draft",effectLabel:"Create an unsent draft in the local demo",confirmationToken,expiresAt,provenance:{turnId,source:"user-span" or "user-edit",start,end}}` |
 | result | completed | `{draftId,recipientId,channelId,body,effect:"demo_draft_created",verified:true,sent:false,message:"Draft created in the demo. Not sent."}` |
@@ -80,10 +94,10 @@ Stop invalidates queued work synchronously, aborts provider/MCP request waits, r
 
 Fixed in-repository server only. Official MCP client/server SDK **2.0.0**, Zod **4.6.5** and lockfile pin dependencies; MCP protocol 2025-11-25 is observed in initialization and required by an interoperability test. stdio child receives no OpenRouter key and accepts no arbitrary server path, network target or filesystem path from model/browser. Tools: `demo_contacts_resolve`, `demo_draft_create`, `demo_draft_read`. Strict input/output validation and a second independently read stored record precede completed. Tool descriptions/results are untrusted; no returned text is treated as instructions or provider context. Malformed/out-of-scope output fails closed.
 
-Per turn at most 8 MCP operations, each at most 5 seconds; model at most 25 seconds; no automatic retries. Shared live process limits remain Qwen's 20 calls/process, 6/minute, one in flight, 768 output tokens, 12 messages/12000 characters maximum context, $0.15/M input and $0.47/M output routing ceilings, data_collection deny, required parameters, no fallback. These are rate/token/route caps, not account-wide billing enforcement. No cap increase or paid CI calls.
+Per turn at most 8 MCP operations, each at most 5 seconds; model at most 25 seconds; no automatic retries. Shared live process limits remain Qwen's 20 calls/process, 6/minute, one in flight, 768 output tokens, ten bounded history messages plus system/current-reference/latest-user messages within 12000 characters, $0.15/M input and $0.47/M output routing ceilings, data_collection deny, required parameters, no fallback. These are rate/token/route caps, not account-wide billing enforcement. No cap increase or paid CI calls.
 
 Store contains only synthetic drafts in an isolated process-lifetime temporary directory, removed on graceful shutdown. Crashes can leave temporary synthetic files; no automatic action replay. No transcript/credential/raw MCP/provider-body logging. Diagnostics allow codes, counts, durations, versions and opaque IDs only. No production encryption/deletion guarantee or personal-data authority.
 
 ## Sources and evidence limits
 
-Official [MCP SDK v2](https://ts.sdk.modelcontextprotocol.io/v2/) and [stdio client](https://ts.sdk.modelcontextprotocol.io/v2/clients/connect) describe protocol transport; [OpenRouter tool calling](https://openrouter.ai/docs/guides/features/tool-calling) and [provider routing](https://openrouter.ai/docs/guides/routing/provider-selection) describe proposals and route limits (accessed 2026-09-15). They do not prove this implementation works. Deterministic MCP/browser evidence and separately bounded live evidence belong in the linked session. Frontend technically acknowledged v1 in its published FE003 checkpoint; runtime and initial tests now exist. Live proposal check failed (chat instead of structured fields); see session evidence.
+Official [MCP SDK v2](https://ts.sdk.modelcontextprotocol.io/v2/) and [stdio client](https://ts.sdk.modelcontextprotocol.io/v2/clients/connect) describe protocol transport; [OpenRouter tool calling](https://openrouter.ai/docs/guides/features/tool-calling) and [provider routing](https://openrouter.ai/docs/guides/routing/provider-selection) describe proposals and route limits (accessed 2026-09-15). They do not prove this implementation works. Deterministic MCP/browser evidence and separately bounded live evidence belong in the linked sessions. The 2026-09-20 single-call synthetic Room smoke returned a grounded chat answer with its source binding and no draft write; it does not establish general model reliability, personal-data suitability or Android capability.

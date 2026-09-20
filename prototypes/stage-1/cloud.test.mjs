@@ -90,6 +90,25 @@ test("no request occurs before explicit connect and session schema is exact",
          consent : true
        });
      });
+test("Room chat source receipts validate and mismatched provenance fails closed",
+     async () => {
+       const good = event(1, "chat", "idle", {
+         text : "The soup card lists carrots.", source : "live-model",
+         verified : false,
+         place : {kind : "room", roomId : "kitchen", roomName : "Kitchen", purpose : "Recipes"},
+         sources : [{itemId : "soup", title : "Soup", roomName : "Kitchen", collectionLabel : "Recipes"}]
+       });
+       const h = harness(); await connected(h);
+       h.queue.push({body : snap("idle", [ good ], {epoch : 1})});
+       assert.equal(await h.runtime.command("turn", {text : "Soup?"}), true);
+       assert.equal(h.runtime.view.current.data.sources[0].itemId, "soup");
+       const bad = {...good, eventId : "event-2", data : {...good.data,
+         sources : [{...good.data.sources[0], roomName : "Trips"}]}};
+       const h2 = harness(); await connected(h2);
+       h2.queue.push({body : snap("idle", [ bad ], {epoch : 1})});
+       assert.equal(await h2.runtime.command("turn", {text : "Soup?"}), false);
+       assert.equal(h2.runtime.view.error, "event_gap");
+     });
 test("confirmation stale stays readable until a fresh revised preview",
      async () => {
        const h = harness();

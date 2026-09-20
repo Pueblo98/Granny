@@ -19,6 +19,26 @@ test('real MCP handshake, chat, complete draft, readback, exact content, replay 
  assert.deepEqual(r.events(s.sessionId,result.cursor).events,[]);assert.deepEqual(r.events(s.sessionId,result.cursor-1).events,[result.events.at(-1)]);
  assert.deepEqual(result.events.map(e=>e.seq),Array.from({length:result.cursor},(_,i)=>i+1));
 }));
+test('validated Room context reaches interpretation and chat provenance without entering history',()=>fixture(async(_,m)=>{
+ let received;const r=createRuntime({mcp:m,provider:{available:true,interpret:async(text,signal,history,context)=>{received=structuredClone({text,history,context});return {kind:'chat',text:'The soup card says carrots.'};}}});
+ const s=r.create({version:VERSION,requestId:randomUUID(),mode:'live',consent:true});
+ const context={place:{kind:'room',roomId:'kitchen',roomName:'Kitchen',purpose:'Recipes and plans'},sources:[{itemId:'vegetable-soup',title:'Vegetable soup',summary:'A simple fixture.',content:'Carrots and stock.',roomName:'Kitchen',collectionLabel:'Recipes',provenance:'fictional-local-fixture'}]};
+ r.command(cmd(s,'turn',{text:'What is in the soup?',context}));const result=await r.settled(s.sessionId),event=result.events.at(-1);
+ assert.deepEqual(received,{text:'What is in the soup?',history:[],context});
+ assert.deepEqual(event.data.place,context.place);assert.deepEqual(event.data.sources,[{itemId:'vegetable-soup',title:'Vegetable soup',roomName:'Kitchen',collectionLabel:'Recipes'}]);
+ r.close();
+}));
+test('Room context rejects cross-room, private-shaped, oversized and excess references',()=>fixture(async(r)=>{
+ const s=create(r),source={itemId:'item',title:'Item',summary:'Fixture',content:'Text',roomName:'Kitchen',collectionLabel:'Notes',provenance:'fictional-local-fixture'};
+ const base={place:{kind:'room',roomId:'kitchen',roomName:'Kitchen',purpose:'Food'},sources:[source]};
+ for(const context of [
+  {...base,sources:[{...source,roomName:'Trips'}]},
+  {...base,sources:[{...source,sensitivity:'private'}]},
+  {...base,sources:Array(4).fill(source)},
+  {...base,sources:[{...source,content:'x'.repeat(1601)}]},
+  {place:{kind:'home'},sources:[source]}
+ ])assert.throws(()=>r.command(cmd(s,'turn',{text:'Hello',context})),/invalid_schema/);
+}));
 test('ambiguous identity, wrong-person selection, channel and exact revision',()=>fixture(async(r)=>{
  const s=create(r);await preview(r,s,'Tell David "Original, punctuation!"');let e=r.events(s.sessionId,0).events.at(-1);assert.equal(e.data.choices.length,2);
  assert.throws(()=>r.command(cmd(s,'clarify',{turnId:e.turnId,choiceId:'sophie-family'})),/clarification_stale/);

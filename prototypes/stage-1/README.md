@@ -13,7 +13,7 @@ related:
 
 A dependency-free browser frontend for the selected Explicit Scroll Row Home, six fictional Context Rooms and Granny's five scripted MVP workflows, with a separate opt-in connected local demo-draft mode. This is **not the Android application, production agent, persistent room system or T-103 runtime**. `Granny` remains a codename/placeholder marker. Scripted external actions/results are fictional fixtures; the connected backend can create real local demo drafts for fictional contacts, never send messages. Never enter personal data.
 
-Current connected runtime: [versioned local backend/MCP contract](../../docs/04-architecture/conversation-runtime-contract.md). Scripted remains default; local demo uses a stub model with actual MCP/store operations. Explicit live synthetic consent is available only when the backend enables it; the one live proposal check failed, so model reliability is not established.
+Current connected runtime: [versioned local backend/MCP contract](../../docs/04-architecture/conversation-runtime-contract.md). Scripted remains default; local demo uses a stub model with actual MCP/store operations. Explicit live synthetic consent is available only when the backend enables it. One 2026-09-20 paid synthetic Room question returned a grounded answer with the expected source receipt; a single success does not establish general model reliability.
 
 ## Run
 
@@ -211,8 +211,10 @@ overview; collection browser; item detail; and source-aware fictional
 conversation in [room-ui.js](room-ui.js). The shared Round composer, safety
 model, Stop and five workflows are retained. Only unsupported local requests
 use room fixture replies; recognized requests still use the existing model.
-No room data is sent to the optional connected backend. Rooms are disabled
-while connected mode is active; return to scripted mode through Menu first.
+In separately consented connected mode, the same backend session follows the
+user between Home and every Room. Home sends no Room references; a Room sends
+at most three deterministic non-private current-Room fixtures, with a visible
+source receipt. Scripted mode retains local fixture replies and zero egress.
 
 Selected packs: Kitchen **K01 / K-M01**, Fitness **F01 / F-M01**, Trips **T01 /
 T-M01**, Garden **G01 / G-M04**, Reading **R01 / R-M07**, Projects **P01 / P-M01**.
@@ -244,11 +246,11 @@ contrast targets are met.
 
 **Menu → Settings → About Granny → Demo connection → Connect to local demo** explicitly consents to fictional-data use. The static server above deliberately has no API, so this option requires the backend session's same-origin loopback runtime server serving these current frontend assets. Its canonical interface is [granny.conversation.v1 at the agreed checkpoint](https://github.com/Pueblo98/Granny/blob/aea7f442021347aab0130fcbe220ab5a1ab53b1b/docs/04-architecture/conversation-runtime-contract.md); frontend does not own or duplicate that runtime. See the [frontend coordination record](../../docs/10-execution/sessions/2026-09-15-ui-backend-frontend.md) for exact integrated commits and evidence before claiming a runnable combined build.
 
-The connected slice prepares an unsent message for a fictional person: request, required clarification, exact person/channel/body/effect preview, explicit **Create this unsent demo draft**, creating/checking, and a verified **not sent** result. Editing message words creates a fresh preview; changing person/destination returns to a new natural request because backend-approved identity choices must not be invented by the frontend. An expired approval keeps the readable draft and offers review again. Typed “yes” is not confirmation.
+The connected slice supports ordinary model conversation on Home and inside every Room, and prepares an unsent message for a fictional person: request, required clarification, exact person/channel/body/effect preview, explicit **Create this unsent demo draft**, creating/checking, and a verified **not sent** result. Editing message words creates a fresh preview; changing person/destination returns to a new natural request because backend-approved identity choices must not be invented by the frontend. An expired approval keeps the readable draft and offers review again. Typed “yes” is not confirmation.
 
 Connected state comes only from ordered runtime events. No scripted timing, model prose or browser timer manufactures completion. Stop disables approval immediately and waits for backend acknowledgment. Connection loss disables action controls and recovers events read-only; it does not retry a confirmation. Unknown effect blocks another connected draft/session in this tab and remains disclosed even after leaving the connected view. Returning to scripted mode requests cancellation first where needed; browser reset is not deletion of the backend's synthetic store.
 
-Text size and unfinished composer/editor content are preserved across secondary navigation. Scripted aliases, music and activity remain separate from backend contacts/execution. Connected mode currently exposes only the local demo, not a live/cloud-provider selector. No key is sent to the browser, no runtime calls occur before opting in, and CSP permits same-origin connections only. The default five-workflow scripted experience is unchanged.
+Text size and unfinished composer/editor content are preserved across secondary navigation. Scripted aliases, music and activity remain separate from backend contacts/execution. Live mode is available only through the separate availability check and consent. No key is sent to the browser, no runtime calls occur before opting in, and CSP permits same-origin connections only. The default five-workflow scripted experience is unchanged.
 
 ## Supported rule-based grammar
 
@@ -377,6 +379,6 @@ Design changes update the canonical behavior owner if behavior changes, then the
 
 ## Delegated live synthetic conversation entry — 2026-09-15
 
-Under Simon's backend integration mission and frontend's published FE006 file-scoped handoff, Menu → Settings → About Granny → Demo connection now offers **Check live model availability**. Only an explicitly enabled backend with liveAvailable exposes **Review live conversation consent**. Separate consent names synthetic conversation egress to OpenRouter/Qwen; cancel makes no session, and confirming creates a mode-bound session without a model call. Text submission starts interpretation. Default remains scripted; connected demo remains stub-only. Keys never enter the browser. No recording, account access, real sending, new capabilities or increased caps.
+Under Simon's backend integration mission and 2026-09-20 Room extension, Menu → Settings → About Granny → Demo connection offers **Check live model availability**. Only an explicitly enabled backend with liveAvailable exposes **Review live conversation consent**. Separate consent names synthetic conversation and bounded current-Room reference egress to OpenRouter/Qwen; cancel makes no session, and confirming creates a mode-bound session without a model call. Text submission starts interpretation. Default remains scripted; connected demo remains stub-only. Keys never enter the browser. No recording, account access, real sending, new capabilities or increased caps.
 
-Live-mode snapshots must match the explicitly consented mode. Mode labels and privacy text disclose provider egress, while exact draft confirmation and backend verification stay unchanged. Unknown/Stop/replay fences remain in force. Client/wire and actual live-mode HTTP/MCP tests use a stub provider, not paid model evidence. The backend's single live Qwen check failed to propose a structured draft; the mode entry does not imply reliable language interpretation. Existing interaction layout/style/other component behavior is unchanged by this delegated extension.
+Live-mode snapshots must match the explicitly consented mode. Mode labels and privacy text disclose provider egress, while exact draft confirmation and backend verification stay unchanged. Unknown/Stop/replay fences remain in force. Client/wire and actual live-mode HTTP/MCP tests use a stub provider. A separate single-call paid Qwen Room smoke on 2026-09-20 returned the expected grounded ingredient answer and source binding with no draft write; it does not imply reliable general interpretation. Existing interaction layout/style remains unchanged apart from enabling the shared connected conversation inside Rooms and its source receipt.
