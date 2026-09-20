@@ -290,7 +290,7 @@ function create(options = {}) {
         recover();
       }, immediate ? 0 : pollMs);
   }
-  async function connect({mode = "demo", consent = false} = {}) {
+  async function connect({mode = "demo", consent = false, conversationId = null} = {}) {
     if (!["demo", "live"].includes(mode) || (mode === "live" && consent !== true))
       return false;
     if (data.connection !== "disconnected")
@@ -307,7 +307,8 @@ function create(options = {}) {
           version : VERSION,
           requestId : uuid(),
           mode : requestedMode,
-          consent : true
+          consent : true,
+          ...(conversationId ? {conversationId} : {})
         })
       },
                                          g);

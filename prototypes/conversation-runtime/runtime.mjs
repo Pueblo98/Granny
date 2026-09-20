@@ -4,12 +4,12 @@ import {VERSION,sessionSchema,commandSchema,proposalSchema,people,channels,parse
 import {createStub} from './provider.mjs';
 const id=()=>randomUUID();
 const reject=(code,status=409)=>{throw new SafeError(code,status);};
-export function createRuntime({mcp,provider,stub=createStub(),now=()=>performance.now(),wall=Date.now,previewTTL=60000,sessionTTL=1800000}={}){
+export function createRuntime({mcp,provider,stub=createStub(),store=null,providerModel='qwen/qwen3.8-flash',now=()=>performance.now(),wall=Date.now,previewTTL=60000,sessionTTL=1800000}={}){
   const sessions=new Map(),creations=new Map();
   function get(sessionId){const s=sessions.get(sessionId);if(!s)reject('session_unavailable',404);if(now()>=s.expires){invalidate(s);reject('session_expired',404);}return s;}
-  function snapshot(s,after=0){if(!Number.isSafeInteger(after)||after<0||after>s.events.length)reject('invalid_cursor',400);return structuredClone({version:VERSION,sessionId:s.id,mode:s.mode,epoch:s.epoch,cursor:s.events.length,state:s.state,events:s.events.slice(after)});}
-  function emit(s,type,state,data,requestId){
-    s.state=state;s.events.push({version:VERSION,sessionId:s.id,turnId:s.turnId,requestId,actionId:s.preview?.actionId??null,eventId:id(),seq:s.events.length+1,epoch:s.epoch,type,state,data});
+  function snapshot(s,after=0){if(!Number.isSafeInteger(after)||after<0||after>s.events.length)reject('invalid_cursor',400);return structuredClone({version:VERSION,sessionId:s.id,conversationId:s.conversationId,mode:s.mode,epoch:s.epoch,cursor:s.events.length,state:s.state,events:s.events.slice(after)});}
+  function emit(s,type,state,data,requestId,eventId=id()){
+    s.state=state;s.events.push({version:VERSION,sessionId:s.id,conversationId:s.conversationId,turnId:s.turnId,requestId,actionId:s.preview?.actionId??null,eventId,seq:s.events.length+1,epoch:s.epoch,type,state,data});
   }
   function invalidate(s){s.epoch++;s.controller?.abort();s.controller=new AbortController();s.preview=null;s.clarification=null;}
   function active(s,epoch){return s.epoch===epoch&&!s.controller.signal.aborted&&now()<s.expires;}
@@ -25,6 +25,7 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
     s.pending=new Promise(resolve=>setImmediate(resolve)).then(async()=>{
       if(!active(s,epoch))return;
       try{await fn(epoch);}catch(e){if(!active(s,epoch))return;const unknown=s.dispatched;
+        if(s.providerRunId)store?.finishProviderRun(s.providerRunId,unknown?'unknown':'failed',e instanceof SafeError?e.code:'runtime_failure');
         s.quarantine ||= unknown;emit(s,'error',unknown?'unknown':'failed',{code:e instanceof SafeError?e.code:'runtime_failure',effect:unknown?'unknown':'none',retryable:false},requestId);
       }
     });
@@ -41,7 +42,7 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
     if(!s.slots.channelId){clarify(s,'channel',channels.map(c=>({...c,detail:'Fictional channel'})),requestId);return;}
     preview(s,requestId);
   }
-  async function interpret(s,text,context,requestId,epoch){
+  async function interpret(s,text,context,requestId,epoch,persisted){
     const safeContext=context??{place:{kind:'home'},sources:[]};
     const boundedHistory=s.history.slice(),contextLength=JSON.stringify(safeContext).length;
     while(boundedHistory.length&&boundedHistory.reduce((n,m)=>n+m.content.length,text.length+contextLength)>12000)boundedHistory.shift();
@@ -50,8 +51,11 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
     s.history.push({role:'user',content:text});
     if(proposal.kind==='chat')s.history.push({role:'assistant',content:proposal.text});
     while(s.history.length>10||s.history.reduce((n,m)=>n+m.content.length,0)>10000)s.history.shift();
-    if(proposal.kind==='chat'){emit(s,'chat','idle',{text:proposal.text,source:s.mode==='live'?'live-model':'stub-model',verified:false,
-      place:safeContext.place,sources:safeContext.sources.map(({itemId,title,roomName,collectionLabel})=>({itemId,title,roomName,collectionLabel}))},requestId);return;}
+    if(proposal.kind==='chat'){
+      const eventId=id(),stored=persisted&&store?store.completeAssistantMessage({providerRunId:persisted.providerRunId,eventId,text:proposal.text,usedSourceIds:proposal.usedSourceIds}):null;
+      emit(s,'chat','idle',{messageId:stored?.messageId||id(),text:proposal.text,source:s.mode==='live'?'live-model':'stub-model',verified:false,
+        place:safeContext.place,sources:stored?.citations||safeContext.sources.filter(source=>proposal.usedSourceIds.includes(source.itemId)).map(({itemId,title,roomName,collectionLabel})=>({itemId,title,roomName,collectionLabel}))},requestId,eventId);return;}
+    if(persisted&&store)store.completeProviderRunWithoutMessage(persisted.providerRunId);
     const {bodyStart:start,bodyEnd:end}=proposal;
     // Explicit user delimiters are independent evidence of the intended body span.
     // A model cannot trim punctuation/whitespace inside a quoted or marked exact body.
@@ -86,7 +90,9 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
       if(previous){if(!isDeepStrictEqual(previous.input,value))reject('request_conflict');return snapshot(get(previous.sessionId));}
       if(sessions.size>=8)reject('session_limit',429);
       if(value.mode==='live'&&!provider?.available)reject('provider_unavailable',503);
-      const s={id:id(),mode:value.mode,history:[],epoch:0,state:'idle',events:[],requests:new Map(),turnId:null,preview:null,controller:new AbortController(),operations:0,dispatched:false,quarantine:false,expires:now()+sessionTTL};
+      const sessionId=id(),conversationId=store?(value.conversationId||store.createConversation({requestId:value.requestId,mode:value.mode==='live'?'live':'offline_test'}).id):(value.conversationId||id());
+      store?.bindRuntimeSession(conversationId,sessionId,value.mode==='live'?'live':'offline_test');
+      const s={id:sessionId,conversationId,mode:value.mode,history:[],epoch:0,state:'idle',events:[],requests:new Map(),turnId:null,preview:null,controller:new AbortController(),operations:0,dispatched:false,quarantine:false,expires:now()+sessionTTL,providerRunId:null,userMessageId:null};
       sessions.set(s.id,s);creations.set(value.requestId,{input:value,sessionId:s.id});return snapshot(s);
     },
     events(sessionId,after){return snapshot(get(sessionId),after);},
@@ -100,6 +106,8 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
           if(s.requests.size<70)s.requests.set(c.requestId,c);return snapshot(s);
         }
         const uncertain=s.dispatched||s.quarantine;invalidate(s);s.quarantine ||= uncertain;
+        if(s.providerRunId)store?.finishProviderRun(s.providerRunId,uncertain?'unknown':'stopped','cancelled');
+        store?.recordAction({conversationId:s.conversationId,actionType:'runtime-stop',outcome:uncertain?'unknown':'stopped',evidenceGrade:uncertain?'unknown':'verified',code:uncertain?'effect-unknown':'stopped-before-effect',runtimeSessionId:s.id,requestId:c.requestId});
         emit(s,'cancellation',uncertain?'unknown':'stopped',{effect:uncertain?'unknown':'none'},c.requestId);
         if(s.requests.size<70)s.requests.set(c.requestId,c);return snapshot(s);
       }
@@ -107,8 +115,11 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
       const p=c.payload;
       if(c.kind==='turn'){
         invalidate(s);s.turnId=id();s.operations=0;s.dispatched=false;s.slots=null;s.candidates=[];
+        const rawContext=p.context??{place:{kind:'home'},sources:[]};
+        const persisted=store?.beginTurn({conversationId:s.conversationId,runtimeSessionId:s.id,requestId:c.requestId,text:p.text,context:rawContext,mode:s.mode==='live'?'live':'offline_test',model:s.mode==='live'?providerModel:'stub-model'});
+        s.providerRunId=persisted?.providerRunId||null;s.userMessageId=persisted?.userMessageId||null;
         emit(s,'progress','interpreting',{phase:'interpreting'},c.requestId);
-        work(s,c.requestId,epoch=>interpret(s,p.text,p.context,c.requestId,epoch));
+        work(s,c.requestId,epoch=>interpret(s,p.text,persisted?.context||rawContext,c.requestId,epoch,persisted));
       }else if(c.kind==='clarify'){
         if(s.state!=='clarifying'||p.turnId!==s.turnId||!s.clarification?.choices.some(v=>v.id===p.choiceId))reject('clarification_stale');
         const field=s.clarification.field;s.slots[field==='recipient'?'recipientId':'channelId']=p.choiceId;finishPreparation(s,c.requestId);
@@ -130,7 +141,10 @@ export function createRuntime({mcp,provider,stub=createStub(),now=()=>performanc
           const expected={...input,draftId:created.draftId,sent:false};
           if(!isDeepStrictEqual(observed.draft,expected))reject('verification_unknown');
           s.dispatched=false;
-          emit(s,'result','completed',{draftId:created.draftId,recipientId:prepared.recipientId,channelId:prepared.channelId,body:prepared.body,effect:'demo_draft_created',verified:true,sent:false,message:'Draft created in the demo. Not sent.'},c.requestId);
+          const eventId=id(),message='Draft created in the demo. Not sent.';
+          store?.appendActionResult({conversationId:s.conversationId,userMessageId:s.userMessageId,eventId,text:message,state:'completed',requestId:c.requestId});
+          store?.recordAction({conversationId:s.conversationId,actionType:'demo-draft-create',outcome:'completed',evidenceGrade:'verified',code:'independent-readback',runtimeSessionId:s.id,requestId:c.requestId});
+          emit(s,'result','completed',{draftId:created.draftId,recipientId:prepared.recipientId,channelId:prepared.channelId,body:prepared.body,effect:'demo_draft_created',verified:true,sent:false,message},c.requestId,eventId);
         });
       }
       s.requests.set(c.requestId,c);return snapshot(s);

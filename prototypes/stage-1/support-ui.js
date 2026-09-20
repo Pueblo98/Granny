@@ -89,18 +89,18 @@
     function newConversation() {
       if(!o.hasConversation()){finish();o.fresh();return;}
       confirm('Start a new conversation?', [
-        'This moves the current conversation into Today for this tab, then returns Home to a fresh conversation.',
-        'What stays\nEarlier conversations in this tab\nRooms and saved items\nAccessibility preferences\nMinimal task history',
+        'This archives the current synthetic conversation in the local loopback database, then returns Home to a fresh conversation.',
+        'What stays\nEarlier stored conversations\nRooms and saved items\nAccessibility preferences\nMinimal task history',
         'Nothing is deleted from another app.'
       ],'Start new conversation',()=>{finish();o.fresh();},false,'Keep this conversation');
     }
     function clearHistory() {
-      confirm('Clear history?', ['Remove prior conversation transcripts and minimal task summaries in this tab. The current conversation stays.', 'Rooms, saved items and preferences stay. Nothing in another app is deleted.'], 'Clear history',()=>{model.clearHistory();o.clearHistory();notice='History cleared.';render();o.announce(notice);},true);
+      confirm('Clear history?', ['Remove prior stored synthetic conversation transcripts and minimal task summaries. The active conversation stays.', 'Fictional samples, Rooms, saved items and preferences stay. Nothing in another app is deleted.'], 'Clear history',async()=>{model.clearHistory();await o.clearHistory();notice='History cleared.';render();o.announce(notice);},true);
     }
     const conversations = () => [...(o.conversations?.() || []), ...model.conversations];
     function renderHistory(){
-      heading('Today','Open this conversation, a prior tab-memory conversation, or a clearly labelled fictional sample.');
-      host.append(el('p','Nothing here is saved to browser storage. Reloading clears real conversation transcripts.','support-caption'));
+      heading('Today','Open this conversation, a prior stored synthetic conversation, or a clearly labelled fictional sample.');
+      host.append(el('p','Connected synthetic transcripts are stored by the local loopback database, not browser storage. Static scripted work still resets on reload.','support-caption'));
       const list=el('div','','support-list');
       const chats=conversations();
       list.append(el('h2','Conversations'));
@@ -109,8 +109,9 @@
         const label = conversation.active ? 'Current conversation · Continue' : conversation.fixture
           ? `${conversation.time} · ${conversation.place} · Fictional sample`
           : `${conversation.time} · ${conversation.place} · Open transcript`;
-        list.append(row('conversation-'+conversation.id,conversation.title,label,()=>{
+        list.append(row('conversation-'+conversation.id,conversation.title,label,async()=>{
           if(conversation.active){finish();return;}
+          await o.openConversation?.(conversation.id);
           open('saved-conversation');detail=conversation.id;render(true);
         }));
       }
@@ -123,10 +124,10 @@
       host.append(list,actions(...(hasClearableHistory?[btn('clear-history','Clear history',clearHistory)]:[]),backButton(o.place()==='home'?'Back to Home':'Back to conversation')));
     }
     function renderSavedConversation(){
-      const conversation=conversations().find(entry=>entry.id===detail);
+      const conversation=o.conversation?.(detail)||conversations().find(entry=>entry.id===detail);
       heading(conversation?.title||'Conversation unavailable',conversation?.fixture
         ? 'Fictional sample conversation — it was not generated from your messages.'
-        : 'Earlier conversation kept only in memory for this browser tab.');
+        : 'Earlier synthetic conversation stored in the local loopback database. It is read-only in this prototype slice.');
       if(conversation){
         const transcript=el('section','','support-transcript');transcript.setAttribute('aria-label','Conversation transcript');
         let sourceCount=0;
@@ -138,7 +139,7 @@
           for(const source of entry.sources||[]){
             const receipt=el('aside','','support-source-receipt');
             receipt.append(el('strong','Source used for this answer'),el('p',[source.title,source.roomName,source.collectionLabel].filter(Boolean).join(' · ')));
-            if(source.itemId)receipt.append(btn('saved-source-'+source.itemId+'-'+sourceCount++,'View source',()=>{finish();o.explore({kind:'saved-item',id:source.itemId});}));
+            if(source.itemId)receipt.append(btn('saved-source-'+source.itemId+'-'+sourceCount++,'View source',()=>o.viewCitation?.(source)));
             message.append(receipt);
           }
           transcript.append(message);

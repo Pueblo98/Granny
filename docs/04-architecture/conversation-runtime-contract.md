@@ -6,6 +6,7 @@ last_updated: 2026-09-20
 tags: [architecture, interface, prototype]
 related:
   - system-overview.md
+  - conversation-evidence-store.md
   - ../03-agent/execution-protocol.md
   - ../05-safety-privacy/action-policy.md
   - ../05-safety-privacy/safety-and-privacy.md
@@ -19,7 +20,7 @@ Version **granny.conversation.v1**. Backend edits this boundary; frontend review
 
 ## Ownership and modes
 
-Backend is the sole owner of sessions, turns, prepared actions, confirmation validity, execution state, cancellation and verified results. Frontend owns layout, copy, keyboard/focus and presentation state. Connected events never run the scripted model/scheduler. Scripted mode remains a separate local UI experience. `demo` means stub model + real MCP + real isolated demo store, no egress. `live` means opt-in Qwen/OpenRouter interpretation + the same local authority/MCP/store, synthetic text only. One backend session and bounded history follow the user between Home and Rooms; Rooms do not create separate agents or personalities. Neither mode sends a message or operates Android.
+Backend is the sole owner of conversations, persisted messages/evidence, runtime sessions, turns, prepared actions, confirmation validity, execution state, cancellation and verified results. Frontend owns layout, copy, keyboard/focus and temporary presentation state. Connected events never run the scripted model/scheduler. Scripted mode remains a separate local UI experience. `demo` means stub model + real MCP + real isolated demo store, no egress. `live` means opt-in Qwen/OpenRouter interpretation + the same local authority/MCP/store, synthetic text only. One conversation and its current backend session follow the user between Home and Rooms; Rooms do not create separate agents or personalities. Neither mode sends a message or operates Android. [The evidence-store contract](conversation-evidence-store.md) owns schema, persistence, retention and message/source relationships.
 
 ## HTTP and identifiers
 
@@ -33,7 +34,7 @@ POST `/api/runtime/session`:
 {"version":"granny.conversation.v1","requestId":"UUID","mode":"demo","consent":true}
 ```
 
-Returns HTTP 201 Snapshot. `consent:true` attests the UI's explicit fictional-data disclosure; live also requires the server's `--live` opt-in and private server-side key. Session creation is idempotent by requestId. No model call on create. Maximum 8 sessions/process; 64 commands/session; one active operation/session; 512 events/session; 30-minute absolute session lifetime. No session resume after process restart. No storage in browser localStorage; retain session/cursor in tab memory only.
+Returns HTTP 201 Snapshot. `consent:true` attests the UI's explicit fictional-data disclosure; live also requires the server's `--live` opt-in and private server-side key. An optional server-issued `conversationId` binds the runtime session to exactly one persisted conversation. Session creation is idempotent by requestId. No model call on create. Maximum 8 sessions/process; 64 commands/session; one active operation/session; 512 events/session; 30-minute absolute session lifetime. Runtime sessions and permits do not resume after process restart. Conversation/message/evidence records do; no authority-bearing state is stored in browser `localStorage` or `sessionStorage`.
 
 POST `/api/runtime/command`: common fields `{version,sessionId,requestId,kind,payload}`; all keys required, unknown keys rejected. Payload variants:
 
@@ -47,15 +48,12 @@ POST `/api/runtime/command`: common fields `{version,sessionId,requestId,kind,pa
 
 Returns HTTP 202 Snapshot after synchronous admission/denial validation, before asynchronous work. `turn` while an admitted draft effect is unresolved is HTTP 409 `effect_unknown`; no duplicate execution through a new request. User typed “yes” is an ordinary turn, never confirmation. A newer turn can replace model/lookup/preparation; it cannot hide an already-dispatched uncertain effect.
 
-`ConversationContext` is a strict union. Home is
+`ConversationContext` is a strict union and an untrusted candidate hint. Home is
 `{place:{kind:"home"},sources:[]}`. A Room is
 `{place:{kind:"room",roomId,roomName,purpose},sources:RoomSource[]}` with at
 most three sources, all carrying the same current `roomName`. A source has
 `{itemId,title,summary,content,roomName,collectionLabel,provenance:"fictional-local-fixture"}`;
-field and aggregate character limits are enforced by the backend. The current
-prototype resolver prefers an explicitly selected non-private item, otherwise
-ranks query matches only within the open Room. Excluded/private items, whole
-Room dumps and cross-room retrieval are not admitted in this slice. Context is
+field and aggregate character limits are enforced by the backend. The repository ignores client-supplied source content for authority and reconstructs eligible context from its stored canonical revision. The current prototype resolver prefers an explicitly selected non-private item, otherwise ranks query matches only within the open Room. Excluded/private/unavailable items, whole Room dumps and cross-room retrieval are rejected before provider egress and are not recorded as selected evidence. Context is
 serialized as a separate untrusted user-role reference message immediately
 before the exact latest user text; it never enters the system role or tool
 authority. Omitting context remains backward-compatible and means Home.
@@ -71,7 +69,7 @@ Every Event has `{version,sessionId,turnId,requestId,actionId,eventId,seq,epoch,
 | type | state | data |
 |---|---|---|
 | progress | interpreting / resolving / creating / verifying | `{phase}` matching state |
-| chat | idle | `{text,source:"stub-model" or "live-model",verified:false,place,sources:[{itemId,title,roomName,collectionLabel}]}`; plain untrusted model prose plus the bounded source receipt, no action claim |
+| chat | idle | `{messageId,text,source:"stub-model" or "live-model",verified:false,place,sources:[{itemId,revisionId,title,roomName,collectionLabel}]}`; plain untrusted model prose plus only the evidence links persisted for that exact assistant message, no action claim |
 | clarification | clarifying | `{field:"recipient" or "channel" or "body",prompt,choices:[{id,label,detail}]}`; body has empty choices, answer with a new turn |
 | preview | preview | `{actionId,recipient:{id,label,detail},channel:{id,label},body,effect:"create_demo_draft",effectLabel:"Create an unsent draft in the local demo",confirmationToken,expiresAt,provenance:{turnId,source:"user-span" or "user-edit",start,end}}` |
 | result | completed | `{draftId,recipientId,channelId,body,effect:"demo_draft_created",verified:true,sent:false,message:"Draft created in the demo. Not sent."}` |
@@ -86,7 +84,7 @@ Apply only matching version/session events. Deduplicate by seq/eventId, apply st
 
 Confirmation binds server-side immutable exact recipient ID, channel ID, body, effect, actionId, session, turn, epoch, policy version and expiry. The token is issued for preview and becomes authority only through the separate explicit confirm command; model never receives it. Any change mints a new action/token. Consumed/stale/missing/wrong/replayed tokens reject; duplicate identical command only retrieves its existing snapshot. Browser input is not authenticated human identity against malicious local software; this development service assumes a trusted same-origin UI and local machine.
 
-Transport loss does not prove cancellation. UI disables actions, shows connection uncertainty and attempts read-only event recovery for the existing session/cursor. Send cancel when reachable; await cancellation event before claiming stopped. Server continues an already-admitted bounded operation, retains events and never retries a write. Reload/process restart starts a new UI session; no pending confirmation is restored. A new runtime owns a new empty temporary demo store; old uncertainty cannot be treated as evidence of no earlier effect.
+Transport loss does not prove cancellation. UI disables actions, shows connection uncertainty and attempts read-only event recovery for the existing session/cursor. Send cancel when reachable; await cancellation event before claiming stopped. Server continues an already-admitted bounded operation, retains events and never retries a write. Reload/process restart starts a new runtime session; no pending confirmation is restored. Completed conversation records may be reopened, but old uncertainty cannot be treated as evidence of no earlier effect.
 
 Stop invalidates queued work synchronously, aborts provider/MCP request waits, rejects late results and emits stopped if no effect entered dispatch. Once a write entered MCP, Stop reports unknown, forbids further automatic reads and quarantines the session against additional drafts. An unknown effect is terminal for that session; no Retry action. Closing/mode changes issue cancel first, preserving uncertainty if unreachable.
 
@@ -96,7 +94,7 @@ Fixed in-repository server only. Official MCP client/server SDK **2.0.0**, Zod *
 
 Per turn at most 8 MCP operations, each at most 5 seconds; model at most 25 seconds; no automatic retries. Shared live process limits remain Qwen's 20 calls/process, 6/minute, one in flight, 768 output tokens, ten bounded history messages plus system/current-reference/latest-user messages within 12000 characters, $0.15/M input and $0.47/M output routing ceilings, data_collection deny, required parameters, no fallback. These are rate/token/route caps, not account-wide billing enforcement. No cap increase or paid CI calls.
 
-Store contains only synthetic drafts in an isolated process-lifetime temporary directory, removed on graceful shutdown. Crashes can leave temporary synthetic files; no automatic action replay. No transcript/credential/raw MCP/provider-body logging. Diagnostics allow codes, counts, durations, versions and opaque IDs only. No production encryption/deletion guarantee or personal-data authority.
+The MCP draft store contains only synthetic drafts in an isolated process-lifetime temporary directory and is removed on graceful shutdown. Separately, the versioned SQLite conversation/evidence store uses one fixed OS-temporary path and survives browser/backend restart until reset, manual removal or OS cleanup. Runtime permits and pending actions never resume. Crashes can leave synthetic files; no automatic action replay. No transcript/credential/raw MCP/provider-body logging. Diagnostics allow codes, counts, durations, versions and opaque IDs only. No production encryption/deletion/backup guarantee or personal-data authority.
 
 ## Sources and evidence limits
 

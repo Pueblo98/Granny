@@ -300,8 +300,9 @@
       const actions = el('div', 'room-actions item-actions');
       actions.append(action('organize-item','Organize item',event=>organize(item.id,room.id,event.currentTarget)), action('show-item-details', s.expanded ? 'Hide additional details' : item.actionLabel || 'Show details', () => {
         s.expanded = !s.expanded; render(); focus('#show-item-details');
-      }, 'primary'), action('ask-room-item', 'Ask Granny about this', () => {
+      }, 'primary'), action('ask-room-item', 'Ask Granny about this', async () => {
         if(s.inspectSource){s.inspectSource=null;change(room,'conversation','#view-cross-source');return;}
+        if(options.assistantActive?.()&&await options.selectSource?.(item.id)===false){options.announce('The local conversation store could not select this source. Nothing was sent.');return;}
         s.source = {collectionId: collection?.id, itemId: item.id}; s.sourcePending = true; s.excluded.delete(item.id);
         s.turns = []; s.view = 'conversation'; render();
         options.compose(item.question || 'What is in the ' + item.title + ' example?');
@@ -335,17 +336,19 @@
           ? 'This fictional Room item will be included only when you choose Send.'
           : 'This receipt stays with the answer. The fictional Room item was sent as untrusted reference text, not as an instruction.'));
       cue.append(copy);
-      if (!location) return cue;
       const controls = el('div', 'room-source-actions');
       const suffix = responseId ? '-' + String(responseId).replace(/[^a-z0-9-]/gi, '') : '';
-      const excluded = location.state.excluded.has(location.item.id);
+      const excluded = location?.state.excluded.has(location.item.id);
       controls.append(action(primary ? 'view-room-source' : 'view-room-source' + suffix, 'View source', () => {
+        if(source.revisionId){viewCitation(source);return;}
+        if(!location)return;
         if (current()?.id !== location.room.id) options.open('room:' + location.room.id);
         openItem(location.room, location.collection.id, location.item.id, 'conversation');
       }));
       if (excluded) controls.append(el('p', 'notice', 'Excluded from new replies. This earlier receipt is unchanged.'));
-      else controls.append(action(primary ? 'stop-room-source' : 'stop-room-source' + suffix,
-        pending ? 'Stop using this source' : 'Stop using for new replies', () => {
+      else if(location) controls.append(action(primary ? 'stop-room-source' : 'stop-room-source' + suffix,
+        pending ? 'Stop using this source' : 'Stop using for new replies', async () => {
+          if(options.assistantActive?.()&&await options.excludeSource?.(location.item.id)===false){options.announce('The source preference could not be saved. Earlier answers are unchanged.');return;}
           location.state.excluded.add(location.item.id);
           if (location.state.source?.itemId === location.item.id) {
             location.state.source = null; location.state.sourcePending = false;
@@ -357,6 +360,14 @@
         }));
       cue.append(controls);
       return cue;
+    }
+    function viewCitation(source){
+      modal.show('Source used for this answer',body=>{
+        body.append(el('p','eyebrow',[source.title,source.roomName,source.collectionLabel].filter(Boolean).join(' · ')),
+          el('p','',`Revision ${source.revision||1} · ${source.provenance||'fictional local fixture'}`));
+        if(source.availability&&source.availability!=='available')body.append(el('p','notice','The current source is '+source.availability+'. This historical receipt still shows the bounded revision used for the answer.'));
+        body.append(el('p','',source.content||source.excerpt||'The historical content snapshot is unavailable.'),action('room-dialog-cancel','Done',()=>modal.close()));
+      });
     }
     function conversationView(room, surface) {
       const s = stateFor(room), connected = options.assistantActive?.() === true,
@@ -516,6 +527,7 @@
         if(s.source && sources.some(source=>source.itemId===s.source.itemId))s.sourcePending=false;
       },
       sourceReceipt(source, responseId) { return sourceReceipt(source, {responseId}); },
+      viewCitation,
       reply(question) {
         const room = current(); if (!room) return false;
         const s = stateFor(room), collection = room.collections.find(c => c.id === s.source?.collectionId);

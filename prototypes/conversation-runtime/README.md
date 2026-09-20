@@ -6,6 +6,7 @@ last_updated: 2026-09-20
 tags: [prototype, backend, mcp]
 related:
   - ../../docs/04-architecture/conversation-runtime-contract.md
+  - ../../docs/04-architecture/conversation-evidence-store.md
   - ../../docs/10-execution/sessions/2026-09-15-mcp-backend-integration.md
   - ../../docs/10-execution/sessions/2026-09-20-room-chat-openrouter.md
   - ../stage-1/README.md
@@ -41,9 +42,9 @@ node --env-file=/absolute/path/to/private/.env prototypes/conversation-runtime/s
 The existing private env defines OPENROUTER_API_KEY; never copy it into the checkout, browser, screenshots or command arguments. `--live` only makes the route available; explicit UI consent and a live session are still required. Submit a question from Home, a Room or **Ask Granny about this**: the frontend checks same-origin availability, preserves the question and opens the disclosure. Continue connects and sends that question; cancel preserves it without creating a session or provider call. **Menu → Settings → About Granny → AI connection → Use live AI chat** remains an alternate entry. No paid request occurs on page load, availability check or session creation. Synthetic text only. Latest input plus at most ten bounded prior conversation messages may leave the machine. Home sends no Room sources; inside a Room, at most three query-relevant non-private current-Room fictional references are sent in a separate untrusted context message. No cross-room source, MCP output, confirmation, draft result, private file or secret enters model context. No raw transcript logging.
 
 The system prompt defines one respectful adult assistant across Home and Rooms,
-forbids action claims and treating reference content as instructions, and asks
-the model to name a source it uses. The browser shows the backend's source
-receipt below ordinary model text. Draft proposals still pass through exact
+forbids action claims and treating reference content as instructions, and requires
+the model to return the exact source IDs it used. The browser shows only the
+message-owned evidence receipts persisted for that answer. Draft proposals still pass through exact
 slot/span validation and separate confirmation; a model answer never becomes
 action authority.
 
@@ -54,6 +55,7 @@ Qwen3.8 Flash is replaceable behind provider.mjs. Prior limits retained: 20/proc
 ```bash
 node --test prototypes/conversation-runtime/*.test.mjs
 node prototypes/conversation-runtime/browser-check.mjs
+node prototypes/conversation-runtime/conversation-browser-check.mjs
 node prototypes/conversation-runtime/live-consent-check.mjs
 ```
 
@@ -67,9 +69,26 @@ node --env-file=/absolute/path/to/private/.env prototypes/conversation-runtime/l
 
 Exactly one provider request, no retry, no draft write; the current smoke asks one synthetic Kitchen question and reports only state/code/timing/source-binding/grounding evidence. Failure is retained, not relabeled a pass. Deterministic success does not establish general live language reliability or native Android capability.
 
+## Conversation/evidence persistence
+
+The CLI server opens a versioned SQLite database at the fixed OS-temporary path
+`granny-conversation-runtime/conversations-v1.sqlite3`; the browser cannot
+choose a path or submit SQL. Missing databases migrate to schema v1 and seed
+deterministic sources plus labelled fictional samples. Page reload and backend
+restart preserve completed conversations. New conversation creates a new ID
+and runtime session, while prior Today rows open their exact read-only IDs.
+
+Each turn persists the user message and retrieval decisions before provider
+work. The provider returns structured `usedSourceIds`; the backend transaction
+then creates the assistant message and links only those exact immutable source
+revisions. `GET /api/messages/:messageId/citations` is the only citation lookup.
+Selecting/excluding a source changes future retrieval and never edits earlier
+receipts. See the [schema/lifecycle contract](../../docs/04-architecture/conversation-evidence-store.md)
+for bounds, migrations, reset and rollback.
+
 ## Lifecycle and scope
 
-Ctrl+C shuts down HTTP and the MCP child and removes its temporary synthetic draft directory. The server creates its own directory; neither model nor browser can choose a path. Crash remnants can remain in the OS temporary directory, containing synthetic drafts only. Restart creates a new store and restores no permits or pending work. Each session expires after 30 minutes; eight sessions/process, 64 commands/session, bounded event history. Stop remains available at budget exhaustion.
+Ctrl+C shuts down HTTP, closes SQLite and removes the MCP child's temporary synthetic draft directory. Neither model nor browser can choose either location. Crash remnants can remain in the OS temporary directory and the bounded SQLite conversation file survives restart. Restart restores completed transcripts/evidence but no permits, runtime sessions or pending work. Each session expires after 30 minutes; eight sessions/process, 64 commands/session, bounded event history. Stop remains available at budget exhaustion.
 
 The trusted local UI is the confirmation source. This developer loopback service is not authenticated multi-user infrastructure and must not be exposed through LAN/tunnel/public hosting. Host/Origin/body validation blocks ordinary browser cross-origin access. Server-side policy protects against model/tool output, not malicious software already running as the same OS user.
 

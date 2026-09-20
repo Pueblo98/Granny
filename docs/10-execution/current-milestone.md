@@ -13,6 +13,22 @@ related:
 
 # Current milestone — Context Rooms and native voice/readback shells
 
+## Conversation and evidence ownership — 2026-09-20
+
+The authorized bounded local prototype now uses a versioned backend SQLite
+store for synthetic conversations, messages, source revisions, retrieval and
+provider runs, future source preferences and exact message-evidence links.
+Every rendered citation is queried by its assistant message ID; current Room
+candidates and selected-next state cannot become historical evidence. New
+conversation creates a fresh conversation/runtime session, Today opens exact
+read-only IDs, and completed transcripts survive reload/backend restart.
+
+[ADR-0017](../09-decisions/ADR-0017-local-conversation-evidence-store.md)
+proposes the storage choice and the [store contract](../04-architecture/conversation-evidence-store.md)
+defines schema/lifecycle. This is synthetic local evidence on an unmerged
+T-117/T-119 dependency line. It does not select Android Room, admit personal
+data, accept production retention/encryption/deletion or pass EVAL-008/012.
+
 ## Iteration-1 review checkpoint — 2026-09-20
 
 Simon completed the integrated browser walkthrough after PR #44 and reported
@@ -30,7 +46,8 @@ No cloud voice, alternate engine or provider/data-flow change is selected.
 Simon selected setup/capability status followed by a local fictional
 draft/clarification/preview as the next bounded product-app work. The draft
 slice may proceed entirely offline and must stop before external handoff or
-send. Recent activity still waits for its storage/backup/retention packet.
+send. Production Recent activity still waits for its storage/backup/retention packet;
+the synthetic browser database does not satisfy that dependency.
 T-101 separately owns selected-package, retention, egress and external-route
 evidence.
 

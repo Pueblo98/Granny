@@ -170,7 +170,7 @@ try {
 
   // 05/06 Exact message preview and prepared result use the shared preview
   // contract, not an outcome module with a second approval mechanism.
-  await fresh(false); await request('Tell David I’ll call after dinner.'); await press('[data-choice=david-family]'); await waitStage('preview');
+  await fresh(false); await request('Tell David I’ll call after dinner.'); await waitStage('clarify-person'); await press('[data-choice=david-family]'); await waitStage('preview');
   await oneModule('message', 'preview', 'exact message preview');
   check(await b.evaluate(`(() => { const t=document.querySelector('#current-task'); return t.innerText.includes('Check the draft') && t.innerText.includes('Nothing has been opened or sent yet.') && t.innerText.includes('David') && t.innerText.includes('Brother') && t.innerText.includes('Example Messages') && t.innerText.includes('I’ll call after dinner.') && !!t.querySelector('[data-action=approve]'); })()`), 'exact draft preview remains the single specific approval surface');
   await approve(); await waitStage('completed');

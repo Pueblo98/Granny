@@ -32,6 +32,7 @@ ADRs record consequential scope, distribution, authority/data, platform and inte
 | [ADR-0014](ADR-0014-stable-home-context-panel.md) | deprecated | Historical stable-anchor/one-panel Home, superseded for Context Rooms composition by ADR-0016 |
 | [ADR-0015](ADR-0015-context-rooms.md) | accepted | Context Rooms are the active M2 design direction and proposed App V1 organization layer around one assistant; direct access and scoped cross-room context remain required |
 | [ADR-0016](ADR-0016-explicit-home-room-row.md) | accepted | Future Context Rooms Home uses the selected Explicit Scroll Row with open portraits, written Previous/Next and direct Rooms access |
+| [ADR-0017](ADR-0017-local-conversation-evidence-store.md) | proposed | The local synthetic prototype uses backend SQLite and exact message-owned evidence; production Android storage remains undecided |
 
 Accepted history remains unchanged. Routine copy/file layout does not need an ADR. Do not recycle IDs. New proposal links affected requirements, architecture, policy, eval and gate; specify options, recommendation, reversibility, evidence and approver. Acceptance records date/authority and unresolved evidence conditions without pretending tests passed. If an accepted decision changes, add superseding record and mark prior record deprecated with forward link; preserve historical reasoning.
 

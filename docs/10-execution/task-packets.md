@@ -221,6 +221,18 @@ non-excluded current-Room fixtures with source metadata. The browser never
 receives the key. Cross-room retrieval, real documents and persistent Room
 data remain forbidden. Demo/scripted modes retain zero provider egress.
 
+**2026-09-20 conversation/evidence extension:** The bounded connected prototype
+may persist synthetic conversations through the loopback backend. Its data
+contract must keep canonical source revisions, retrieval candidates, future
+source preferences and answer evidence separate. A citation is visible only
+when an evidence-use record links that exact assistant message ID to the exact
+source revision the structured provider result declared used. New conversation
+creates a fresh ID/session; Today rows and fictional samples resolve only their
+own IDs. Backend SQLite is a prototype choice under proposed ADR-0017, not an
+Android/production storage decision. Repository, API and browser checks cover
+reload/restart, clear/reset, revision/deletion truth, exclusion, replay, stale
+responses, failure states and diagnostics without admitting personal data.
+
 <a id="t-120-packet"></a>
 ## T-120 packet — Native on-device voice shell and cleanup boundary
 

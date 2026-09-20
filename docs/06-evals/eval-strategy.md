@@ -54,6 +54,7 @@ Paired comparison with each participant's current method is within-person where 
 | Privacy minimization | Unapproved fields/egress events / inspected storage/export/network events | 0 leaks; absence in sampled logs not proof of all-system absence |
 | Room direct findability | Referenced items found through touch browse/search without model help / assigned room-find tasks | Report by access profile and text scale; inability to recover without chat blocks room admission |
 | Room scope/source comprehension | Correct unaided explanation of current room, one-assistant identity and material cross-room source / room teach-back trials | Proposed ≥90%; any belief that room membership grants sharing/action authority triggers redesign |
+| Citation ownership | Assistant answers whose displayed receipt set exactly equals persisted evidence links for that assistant message ID / deterministic turns | 100%; candidates, current Room sources and future preferences must never appear as historical evidence |
 | Room deletion comprehension | Correct distinction between Delete room and Delete underlying data / deletion-preview trials | 100% before destructive production support; T-119 is fictional and cannot establish release safety |
 
 ## Failure review and reporting

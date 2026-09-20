@@ -18,7 +18,7 @@ export const tools = Object.freeze({
   demo_draft_create: {input:z.strictObject({actionId:uuid,recipientId:personId,channelId,body:bodyText}),output:z.strictObject({draftId:uuid})},
   demo_draft_read: {input:z.strictObject({draftId:uuid}),output:z.strictObject({draft:draft.nullable()})}
 });
-export const sessionSchema = z.strictObject({version:z.literal(VERSION),requestId:uuid,mode:z.enum(['demo','live']),consent:z.literal(true)});
+export const sessionSchema = z.strictObject({version:z.literal(VERSION),requestId:uuid,mode:z.enum(['demo','live']),consent:z.literal(true),conversationId:uuid.optional()});
 export const roomSourceSchema = z.strictObject({
   itemId:z.string().min(1).max(64),
   title:z.string().min(1).max(120),
@@ -45,6 +45,10 @@ const roomContext = z.strictObject({
     ctx.addIssue({code:'custom',message:'source_context_too_large'});
 });
 export const conversationContextSchema = z.union([homeContext,roomContext]);
+export const conversationCreateSchema = z.strictObject({version:z.literal(VERSION),requestId:uuid,mode:z.enum(['live','offline_test']),place:z.union([homeContext.shape.place,roomContext.shape.place]).optional()});
+export const sourcePreferenceSchema = z.strictObject({version:z.literal(VERSION),requestId:uuid,sourceId:z.string().min(1).max(64),preference:z.enum(['selected_next','excluded_future']),effectiveAfterMessageId:uuid.nullable().optional()});
+export const clearHistorySchema = z.strictObject({version:z.literal(VERSION),requestId:uuid,activeConversationId:uuid});
+export const resetStoreSchema = z.strictObject({version:z.literal(VERSION),requestId:uuid});
 const common = {version:z.literal(VERSION),sessionId:uuid,requestId:uuid};
 export const commandSchema = z.discriminatedUnion('kind',[
   z.strictObject({...common,kind:z.literal('turn'),payload:z.strictObject({text:bodyText,context:conversationContextSchema.optional()})}),
@@ -54,7 +58,7 @@ export const commandSchema = z.discriminatedUnion('kind',[
   z.strictObject({...common,kind:z.literal('cancel'),payload:z.strictObject({})})
 ]);
 export const proposalSchema = z.discriminatedUnion('kind',[
-  z.strictObject({kind:z.literal('chat'),text:z.string().min(1).max(3000)}),
+  z.strictObject({kind:z.literal('chat'),text:z.string().min(1).max(3000),usedSourceIds:z.array(z.string().min(1).max(64)).max(3).default([])}),
   z.strictObject({kind:z.literal('draft'),recipientQuery:z.string().max(256),channelQuery:z.string().max(80),bodyStart:z.number().int().min(0),bodyEnd:z.number().int().min(0)})
 ]);
 export class SafeError extends Error { constructor(code,status=400){super(code);this.code=code;this.status=status;} }

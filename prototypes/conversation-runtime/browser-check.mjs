@@ -10,13 +10,13 @@ try{
  const text=()=>b.evaluate('document.body.innerText');
  const state=s=>b.waitFor(`document.querySelector('#current-task')?.dataset.stage===${JSON.stringify(s)}`);
  const input=async value=>{await b.fill('#request',value);await b.click('#composer button[type=submit]');};
- check(!b.network.some(url=>url.includes('/api/')),'scripted default makes no API call');
+ check(!b.network.some(url=>url.includes('/api/runtime/')),'scripted default makes no runtime API call');
  await b.click('#menu-button');await b.click('[data-menu=settings]');await b.click('#settings-about');await b.click('#about-connection');await button('Use offline test replies');await state('idle');
  await input('Hello');await b.waitFor('document.body.innerText.includes("I can prepare an unsent message in this fictional demo.")');check((await text()).includes('What would you like help with?'),'normal chat crosses real HTTP runtime');
  await b.click('#rooms-button');await b.click('#library-room-kitchen');await input('What is in the vegetable soup?');
  await b.waitFor('document.querySelector("#room-surface")?.dataset.roomState === "conversation"');
- await b.waitFor('document.body.innerText.includes("Used fictional Room source")');
- const roomText=await text();check(roomText.includes('Used fictional Room source')&&roomText.includes('Vegetable soup · Kitchen'),'actual runtime answer exposes its bounded Room source');
+ await b.waitFor('document.body.innerText.includes("Source used for this answer")');
+ const roomText=await text();check(roomText.includes('Source used for this answer')&&roomText.includes('Vegetable soup · Kitchen'),'actual runtime answer exposes its bounded Room source');
  const roomApiRequest=b.network.findLast(url=>url.includes('/api/runtime/events?'));
  const roomSessionId=new URL(roomApiRequest).searchParams.get('sessionId');const roomSnapshot=app.runtime.events(roomSessionId,0),roomChat=roomSnapshot.events.findLast(e=>e.type==='chat');
  check(roomChat.data.place.roomId==='kitchen'&&roomChat.data.sources.length<=3&&roomChat.data.sources.some(source=>source.itemId==='vegetable-soup'),'actual HTTP runtime receives current-Room context');
@@ -27,6 +27,7 @@ try{
  check((await text()).includes(body),'original punctuation and emoji preserved in actual preview');
  check(!b.network.some(url=>/confirm/.test(url)),'no automatic confirmation route');
  await button('Change message');const edited='  Exact <b>words</b>?! 🌱  ';await b.fill('[aria-label="Message"]',edited);await button('Review changes');await state('preview');
+ await b.waitFor('document.querySelector("blockquote")?.textContent.includes("Exact <b>words</b>?! 🌱")');
  check(await b.evaluate('!document.querySelector("blockquote b")'),'exact body is plain text, not interpreted HTML');
  check((await text()).includes('Exact <b>words</b>?! 🌱'),'edited body returned by backend');
  await button('Create this unsent demo draft');await state('completed');check((await text()).includes('created and checked. It has not been sent.'),'UI shows only verified unsent completion');

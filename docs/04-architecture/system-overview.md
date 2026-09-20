@@ -6,6 +6,7 @@ last_updated: 2026-09-20
 tags: [architecture, android]
 related:
   - ../02-design/context-rooms.md
+  - conversation-evidence-store.md
   - ../03-agent/tool-contracts.md
   - ../05-safety-privacy/safety-and-privacy.md
   - ../08-research/android-stage-1-feasibility.md
@@ -176,11 +177,13 @@ becomes interpretation or action authority. Lifecycle exit clears the turn.
 <a id="rooms"></a>
 ### Context Room index and resolver
 
-**Responsibility / state / APIs:** CAP-15 versioned Room and RoomMembership records, canonical item references, current-room priority, scoped cross-room candidate retrieval, source receipts, Unfiled/archive/delete transitions.
+**Responsibility / state / APIs:** CAP-15 versioned Room and RoomMembership records, canonical item references/revisions, current-room priority, scoped cross-room candidate retrieval, exact message-evidence links, future-only source preferences, Unfiled/archive/delete transitions.
 **Placement/trust:** Active T-119 fixture boundary and proposed App V1 local typed service beside memory/privacy; the model may propose queries or membership diffs but cannot read the whole store or commit changes directly.
 **Permissions/data:** References and provenance only by default; item content remains in its owning store and enters a task through existing sensitivity/scope/egress checks.
 **Offline/failure isolation:** Direct room browse/search and local membership changes remain available offline; failed resolution returns no context rather than guessed content; deleting a room invalidates room-scoped plans/permits and preserves canonical items unless separately deleted.
 **Dependencies:** shell, planner, memory, privacy, policy, audit; no production persistence before T-119 and EVAL-008/012 review.
+
+The [local conversation/evidence store](conversation-evidence-store.md) implements a bounded Node/SQLite synthetic prototype beside this proposed production component. Its foreign keys, immutable source revisions, retrieval decisions and message-evidence links are executable architecture evidence. It does not select the Android database or admit personal content.
 
 <a id="privacy"></a>
 ### Privacy/egress boundary
@@ -231,6 +234,8 @@ becomes interpretation or action authority. Lifecycle exit clears the turn.
 ## Local browser runtime experiment — 2026-09-15
 
 Simon authorized one actual local backend/MCP slice with synthetic contacts and an isolated unsent draft store. [Conversation runtime contract](conversation-runtime-contract.md) owns the browser API, backend authority and event boundaries; [source and startup](../../prototypes/conversation-runtime/README.md) implement them. It is separate from production Android and T-103. MCP is a protocol boundary, not permission; only fixed contact resolution, draft creation and readback tools exist. Model/provider choice is replaceable. No helper/sync/account platform is introduced.
+
+The 2026-09-20 conversation/evidence extension adds one versioned SQLite authority for synthetic conversations, messages, source revisions, retrieval/provider runs and exact message citations. The browser receives only narrow same-origin APIs. A historical answer never derives evidence from the Room's current sources or a selected-next preference. [ADR-0017](../09-decisions/ADR-0017-local-conversation-evidence-store.md) records the proposed storage choice; production storage and privacy remain undecided.
 
 ## Major sequences
 

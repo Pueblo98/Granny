@@ -26,22 +26,41 @@ const preview = (body = 'Call after dinner.', actionId = '00000000-0000-4000-800
 });
 const wire = async () => b.evaluate(`(() => {
   const version = 'granny.conversation.v1';
-  const sessionId = '00000000-0000-4000-8000-000000000001';
+  const conversationId = '00000000-0000-4000-8000-000000000010';
   const turnId = '00000000-0000-4000-8000-000000000002';
   const w = window.__wire = {requests: [], fail: false,
-    snapshot: {version, sessionId, mode:'demo', epoch:0, cursor:0, state:'idle', events:[]}};
+    conversations:[{id:conversationId,title:'Fixture conversation',state:'active',mode:'offline_test',fixture:false,active:true,updatedAt:new Date().toISOString(),place:'Home'}],
+    details:{[conversationId]:{id:conversationId,title:'Fixture conversation',state:'active',mode:'offline_test',fixture:false,active:true,messages:[]}},
+    snapshot: {version, sessionId:'00000000-0000-4000-8000-000000000001',conversationId, mode:'demo', epoch:0, cursor:0, state:'idle', events:[]}};
   w.emit = ({type,state,data,epoch}) => {
+    if(type==='chat'&&!data.messageId)data={...data,messageId:crypto.randomUUID()};
     const seq = w.snapshot.cursor + 1;
-    const event = {version, sessionId, turnId, requestId: crypto.randomUUID(),
+    const event = {version, sessionId:w.snapshot.sessionId,conversationId:w.snapshot.conversationId,turnId,requestId: crypto.randomUUID(),
       actionId: data.actionId || null, eventId: crypto.randomUUID(), seq, epoch, type, state, data};
     w.snapshot = {...w.snapshot, epoch, cursor:seq, state, events:[...w.snapshot.events,event]};
+    if(type==='chat')w.details[w.snapshot.conversationId].messages.push({id:data.messageId,role:'assistant',text:data.text,content:data.text,state:'completed',contentKind:'assistant_text',providerEventId:event.eventId,citations:data.sources||[]});
   };
   window.fetch = async (url, options = {}) => {
     const body = options.body ? JSON.parse(options.body) : null;
     w.requests.push({url, body});
     if (w.fail) throw new TypeError('fixture connection unavailable');
+    const path=String(url).split('?')[0];
+    if(path==='/api/conversations'&&options.method==='POST'){
+      w.conversations.forEach(value=>{if(value.active){value.active=false;value.state='archived';w.details[value.id].active=false;w.details[value.id].state='archived';}});
+      const id=crypto.randomUUID(),conversation={id,title:'New conversation',state:'active',mode:body.mode,fixture:false,active:true,updatedAt:new Date().toISOString(),place:'Home'};
+      w.conversations.unshift(conversation);w.details[id]={...conversation,messages:[]};return {ok:true,status:201,json:async()=>({version,conversation:structuredClone(conversation)})};
+    }
+    if(String(url).includes('/api/conversations?'))return {ok:true,status:200,json:async()=>({version,conversations:structuredClone(w.conversations)})};
+    const detailParts=path.split('/'),detailId=detailParts.length===4&&detailParts[1]==='api'&&detailParts[2]==='conversations'&&/^[0-9a-f-]+$/i.test(detailParts[3])?detailParts[3]:null;
+    if(detailId)return {ok:true,status:200,json:async()=>({version,conversation:structuredClone(w.details[detailId])})};
+    if(path.endsWith('/source-preferences'))return {ok:true,status:200,json:async()=>({version,preference:{conversationId:w.snapshot.conversationId,sourceId:body.sourceId,preference:body.preference}})};
+    if(path==='/api/conversations/clear-history')return {ok:true,status:200,json:async()=>({version,result:{activeConversationId:body.activeConversationId}})};
     if (url.endsWith('/config')) return {ok:true, status:200, json: async () => ({version, available:true, liveAvailable:w.liveAvailable === true, model:'stub',limits:{}})};
-    if (url.endsWith('/session') && body?.mode) w.snapshot.mode = body.mode;
+    if (url.endsWith('/session') && body?.mode) w.snapshot={version,sessionId:crypto.randomUUID(),conversationId:body.conversationId||w.conversations.find(value=>value.active).id,mode:body.mode,epoch:0,cursor:0,state:'idle',events:[]};
+    if(body?.kind==='turn'){
+      const detail=w.details[w.snapshot.conversationId];detail.messages.push({id:crypto.randomUUID(),role:'user',text:body.payload.text,content:body.payload.text,state:'completed',contentKind:'user_text',citations:[]});
+      if(['New conversation','Fixture conversation'].includes(detail.title)){detail.title=body.payload.text;const meta=w.conversations.find(value=>value.id===detail.id);if(meta)meta.title=detail.title;}
+    }
     if (body?.kind === 'cancel') w.emit({type:'cancellation', state:w.snapshot.state === 'unknown' ? 'unknown' : 'stopped',
       data:{effect:w.snapshot.state === 'unknown' ? 'unknown' : 'none'}, epoch:w.snapshot.epoch+1});
     if (w.reject && body?.kind === w.reject.kind) {
@@ -55,7 +74,7 @@ const wire = async () => b.evaluate(`(() => {
 try {
   await b.viewport(840, 1000);
   await b.navigate();
-  check(!b.network.some(url => url.includes('/api/')), 'scripted default performs no runtime request');
+  check(!b.network.some(url => url.includes('/api/runtime/')), 'scripted default performs no runtime request');
   await wire();
   await menu('settings'); await b.click('#settings-about'); await b.click('#about-connection');
   check((await text()).includes('fictional details only'), 'connection has explicit fictional-data disclosure');
@@ -199,15 +218,15 @@ try {
   await menu('settings'); await b.click('#settings-conversation'); await b.click('#conversation-new');
   await b.click('#confirm-dialog button[value=confirm]'); await waitState('idle');
   check(await b.evaluate(`(() => {
-    const sessions=window.__wire.requests.filter(r=>r.body?.mode);
+    const sessions=window.__wire.requests.filter(r=>r.url.endsWith('/api/runtime/session'));
     return sessions.length === 2 && sessions.at(-1).body.mode === 'live' &&
       document.querySelector('#mode-notice').textContent.includes('Live model');
   })()`), 'New conversation starts a fresh session without dropping live mode');
   await menu('history');
-  await b.waitFor('document.querySelector("#conversation-conversation-1")');
-  await b.click('#conversation-conversation-1');
+  await b.waitFor('[...document.querySelectorAll(".support-row strong")].some(node=>node.textContent==="Hello from Help")');
+  await b.evaluate('[...document.querySelectorAll(".support-row")].find(node=>node.querySelector("strong")?.textContent==="Hello from Help").click()');
   await b.waitFor('!!document.querySelector(".support-transcript")');
-  check(await b.evaluate('document.querySelector(".support-transcript")?.innerText.includes("Hello from Help")'), 'Today opens the prior live conversation as its own tab-memory transcript');
+  check(await b.evaluate('document.querySelector(".support-transcript")?.innerText.includes("Hello from Help")'), 'Today opens the prior transcript by its stored conversation ID');
   await b.click('#support-back'); await b.waitFor('document.querySelector("#support-heading")?.textContent === "Today"');
   await b.click('#support-back'); await waitState('idle');
   const roomIds = ['kitchen','fitness','trips','garden','reading','projects'];
@@ -234,12 +253,12 @@ try {
     place:{kind:'room',roomId:'kitchen',roomName:'Kitchen',purpose:'Recipes, lists and cooking plans'},
     sources:[{itemId:'vegetable-soup',title:'Vegetable soup',roomName:'Kitchen',collectionLabel:'Recipes'}]},1);
   await command('Please use the vegetable soup card.');
-  await b.waitFor('document.querySelector("#current-task")?.textContent.includes("The Vegetable soup card includes carrots.")');
+  await b.waitFor('[...document.querySelectorAll(".turn.assistant > p")].some(paragraph=>paragraph.textContent==="The Vegetable soup card includes carrots.")');
   check(await b.evaluate(`(() => {
-    const paragraphs = [...document.querySelectorAll('#current-task > p:not(.notice)')];
-    return paragraphs.length === 1 && paragraphs[0].textContent === 'The Vegetable soup card includes carrots.' &&
-      !document.querySelector('#current-task').textContent.includes('What would you like help with?');
-  })()`), 'chat card renders one model response without a duplicate generic prompt');
+    const paragraphs = [...document.querySelectorAll('.turn.assistant > p')]
+      .filter(paragraph=>paragraph.textContent==='The Vegetable soup card includes carrots.');
+    return paragraphs.length === 1;
+  })()`), 'persisted chat renders one model response without a duplicate generic prompt');
   await command('Continue once more.');
   await b.waitFor('!!document.querySelector(".turn.assistant .answer-source-receipt")');
   await b.waitFor('document.querySelector(".answer-source-receipt")?.textContent.includes("Vegetable soup · Kitchen · Recipes")');

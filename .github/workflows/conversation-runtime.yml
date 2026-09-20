@@ -26,4 +26,5 @@ jobs:
           GRANNY_CHROMIUM: /usr/bin/google-chrome
         run: |
           node prototypes/conversation-runtime/browser-check.mjs
+          node prototypes/conversation-runtime/conversation-browser-check.mjs
           node prototypes/conversation-runtime/live-consent-check.mjs

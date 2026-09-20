@@ -1,0 +1,51 @@
+import assert from 'node:assert/strict';
+import {browser} from '../stage-1/browser-driver.mjs';
+import {serve} from './server.mjs';
+
+const app=await serve({port:0});let b,checks=0;
+const check=(value,label)=>{assert(value,label);checks++;};
+try{
+  b=await browser({baseURL:app.url});await b.viewport(840,1000);await b.navigate();
+  const text=()=>b.evaluate('document.body.innerText');
+  const button=label=>b.evaluate(`(()=>{const node=[...document.querySelectorAll('button')].find(value=>value.textContent===${JSON.stringify(label)});if(!node||node.disabled)throw Error('Button unavailable: '+${JSON.stringify(label)});node.click()})()`);
+  const send=async value=>{await b.fill('#request',value);await b.click('#composer button[type=submit]');};
+  const waitReply=()=>b.waitFor('!!document.querySelector(".turn.assistant") && ![...document.querySelectorAll("#current-task")].some(node=>node.getClientRects().length && ["interpreting","resolving"].includes(node.dataset.stage))');
+  const menu=async name=>{await b.click('#menu-button');await b.click('[data-menu='+JSON.stringify(name)+']');};
+  const newConversation=async()=>{await menu('settings');await b.click('#settings-conversation');await b.click('#conversation-new');await b.click('#confirm-dialog button[value=confirm]');await b.waitFor('document.querySelector("#current-task")?.dataset.stage==="idle"');};
+  await menu('settings');await b.click('#settings-about');await b.click('#about-connection');await button('Use offline test replies');await b.waitFor('document.querySelector("#current-task")?.dataset.stage==="idle"');
+  await b.click('#rooms-button');await b.click('#library-room-kitchen');await b.click('#all-collections');await b.click('#collection-recipes');await b.click('[data-item-id="vegetable-soup"]');await b.click('#ask-room-item');
+  await b.waitFor('document.querySelector("#room-source-cue")?.innerText.includes("Source ready for the next answer")');
+  check(!(await text()).includes('Source used for this answer'),'selecting a source for the next reply is not displayed as historical evidence');
+  await b.click('#composer button[type=submit]');await waitReply();
+  check(await b.evaluate('document.querySelectorAll(".turn.assistant .answer-source-receipt").length===1 && document.querySelector(".turn.assistant .answer-source-receipt").innerText.includes("Vegetable soup · Kitchen · Recipes")'),'answer one displays only its persisted Vegetable soup evidence');
+  await button('View source');await b.waitFor('document.querySelector("#rooms-dialog-heading")?.textContent==="Source used for this answer"');
+  check((await text()).includes('Revision 1')&&(await text()).includes('2 carrots'),'View source opens the exact stored revision snapshot');await b.click('#room-dialog-cancel');
+  await button('Stop using for new replies');await b.waitFor('document.body.innerText.includes("Excluded from new replies")');
+  await send('What is in the vegetable soup?');await b.waitFor('document.querySelectorAll(".turn.assistant").length===2');
+  check(await b.evaluate('document.querySelectorAll(".turn.assistant")[1].querySelectorAll(".answer-source-receipt[data-source-item=vegetable-soup]").length===0'),'excluded source A is absent from the later answer');
+  check(await b.evaluate('document.querySelectorAll(".turn.assistant .answer-source-receipt[data-source-item=vegetable-soup]").length===1'),'earlier answer retains its source receipt after exclusion');
+
+  await newConversation();await send('Second conversation');await waitReply();
+  await newConversation();await send('Third conversation');await waitReply();
+  await menu('history');
+  await b.waitFor('[...document.querySelectorAll(".support-row strong")].some(node=>node.textContent==="Second conversation")');
+  const rowTitles=await b.evaluate('[...document.querySelectorAll(".support-row strong")].map(node=>node.textContent)');
+  check(rowTitles.includes('Second conversation')&&rowTitles.includes('Can I make this without tomatoes?'),'Today lists separate prior conversation IDs');
+  await b.evaluate('[...document.querySelectorAll(".support-row")].find(node=>node.querySelector("strong")?.textContent==="Second conversation").click()');await b.waitFor('!!document.querySelector(".support-transcript")');
+  check((await text()).includes('Second conversation')&&!(await text()).includes('Can I make this without tomatoes?'),'one Today row opens only its exact transcript');
+  await b.click('#support-back');await b.waitFor('document.querySelector("#support-heading")?.textContent==="Today"');
+  await b.evaluate('[...document.querySelectorAll(".support-row")].find(node=>node.querySelector("strong")?.textContent==="Can I make this without tomatoes?").click()');await b.waitFor('!!document.querySelector(".support-transcript")');
+  check((await text()).includes('Can I make this without tomatoes?')&&(await text()).includes('Source used for this answer'),'a different Today row opens the other transcript with its own evidence');
+  await b.click('#support-back');await b.waitFor('document.querySelector("#support-heading")?.textContent==="Today"');
+  await b.evaluate('[...document.querySelectorAll(".support-row")].find(node=>node.querySelector("strong")?.textContent==="Vegetable soup question").click()');await b.waitFor('!!document.querySelector(".support-transcript")');
+  check((await text()).includes('Fictional sample conversation')&&(await text()).includes('Can I make this without tomatoes?'),'fictional sample opens its fixed transcript rather than the active live conversation');
+  await b.click('#support-back');await b.waitFor('document.querySelector("#support-heading")?.textContent==="Today"');await b.click('#clear-history');await b.click('#confirm-dialog button[value=confirm]');
+  await b.waitFor('document.body.innerText.includes("History cleared.")');
+  const afterClear=await b.evaluate('[...document.querySelectorAll(".support-row strong")].map(node=>node.textContent)');
+  check(afterClear.includes('Third conversation')&&!afterClear.includes('Second conversation')&&!afterClear.includes('Can I make this without tomatoes?'),'Clear history removes prior stored transcripts and retains the active conversation');
+  await b.navigate();await menu('history');await b.waitFor('[...document.querySelectorAll(".support-row strong")].some(node=>node.textContent==="Third conversation")');
+  check((await text()).includes('Third conversation'),'active conversation survives a browser reload');
+  check(b.errors.length===0,'conversation persistence browser check has no browser exceptions');
+  check(b.network.every(url=>url.startsWith(app.url)||url==='about:blank'),'conversation browser uses only the loopback backend');
+  process.stdout.write(JSON.stringify({checks,evidence:'real HTTP + SQLite conversation ownership',screenshots:b.output})+'\n');
+}finally{await b?.close();await app.close();}

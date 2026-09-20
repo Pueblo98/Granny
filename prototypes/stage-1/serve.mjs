@@ -7,6 +7,7 @@ const types = { "/": ["index.html","text/html"], "/index.html": ["index.html","t
   "/fixtures.js": ["fixtures.js","text/javascript"], "/intent.js": ["intent.js","text/javascript"],
   "/scheduler.js": ["scheduler.js","text/javascript"],
   "/cloud.js": ["cloud.js","text/javascript"],
+  "/conversation-data.js": ["conversation-data.js","text/javascript"],
   "/room-fixtures.js": ["room-fixtures.js", "text/javascript"],
   "/rooms-store.js": ["rooms-store.js", "text/javascript"],
   "/room-dialog.js": ["room-dialog.js", "text/javascript"],

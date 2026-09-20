@@ -240,18 +240,14 @@ connected assistant session between Home and all six fictional Rooms. Home
 sends no Room references. A Room turn deterministically selects at most three
 non-private, non-excluded references from that current Room, preferring the
 item the person explicitly chose; the live consent and persistent mode label
-name this OpenRouter egress. The answer shows the source titles returned by the
-backend. The executable prototype keeps each returned source receipt inside the
-answer that used it instead of moving one source panel beneath the newest turn.
-Inspecting or excluding a source remains available from that receipt; exclusion
-changes future retrieval only and does not rewrite the earlier answer.
+name this OpenRouter egress. The answer shows only the source revisions that the provider's structured answer declared used and the backend attached to that exact assistant message. Candidate Room sources and a source selected for the next reply do not appear as historical citations. The executable prototype queries each receipt by assistant message ID instead of deriving it from mutable Room or conversation state. Inspecting opens the exact used revision. A changed source leaves that historical revision intact; a deleted/unavailable source leaves a redacted but truthful title/revision/provenance receipt. Excluding a source changes future retrieval only and does not rewrite the earlier answer.
 References are separate untrusted prompt data, never instructions or action
 authority.
 
 This is a reversible synthetic exception to the earlier no-provider T-119
 prototype boundary. It does not implement the broader accepted design above:
-no cross-room retrieval, persistent Rooms, real documents, sensitivity-policy
-engine, Android integration or personal-data admission follows from it. Direct
+no cross-room retrieval, production-persistent Rooms, real documents, production sensitivity-policy
+engine, Android integration or personal-data admission follows from it. The local SQLite store persists only deterministic synthetic fixtures and conversation/evidence relationships described in its [bounded contract](../04-architecture/conversation-evidence-store.md). Direct
 Room browsing remains available when the model/provider is unavailable.
 
 ## Organization without making the person file everything

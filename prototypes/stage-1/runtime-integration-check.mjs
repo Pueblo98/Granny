@@ -12,12 +12,14 @@ const button = label => b.evaluate(`(() => {
   el.click();
 })()`);
 const request = async text => { await b.fill('#request', text); await b.click('#composer button[type=submit]'); };
-const stage = state => b.waitFor(`document.querySelector('#current-task')?.dataset.stage===${JSON.stringify(state)}`, 15000);
+const stage = state => b.waitFor(`[...document.querySelectorAll('#current-task')].find(element=>element.getClientRects().length)?.dataset.stage===${JSON.stringify(state)}`, 15000);
 try {
   await b.viewport(840, 1050);
   await b.navigate();
+  await b.evaluate(`fetch('/api/conversations',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({version:'granny.conversation.v1',requestId:crypto.randomUUID(),mode:'offline_test',place:{kind:'home'}})}).then(response=>{if(!response.ok)throw Error('conversation_create_failed');})`);
+  await b.navigate();
   check(await b.evaluate('!!window.GrannyRuntime'), 'served frontend contains agreed client');
-  check(!b.network.some(url => url.includes('/api/')), 'no runtime request before explicit consent');
+  check(!b.network.some(url => url.includes('/api/runtime/')), 'no runtime session or provider request before explicit consent');
   await b.click('#menu-button'); await b.click('[data-menu=settings]'); await b.click('#settings-about'); await b.click('#about-connection');
   await button('Use offline test replies'); await stage('idle');
   await request('Tell David "Original, punctuation!"'); await stage('clarifying');
@@ -37,7 +39,7 @@ try {
   check(await b.evaluate('document.body.innerText.includes("created and checked. It has not been sent.")'), 'real runtime verified local draft, explicitly not sent');
   check(!await b.evaluate('!!document.querySelector("[data-action=runtime-confirm]")'), 'consumed confirmation not available');
   await b.screenshot('real-mcp-verified-draft');
-  await request('Hello'); await stage('idle');
+  await request('Hello'); await b.waitFor('document.querySelector(".turn.assistant .notice") && ![...document.querySelectorAll("#current-task")].some(element=>element.getClientRects().length && ["interpreting","resolving","creating","verifying"].includes(element.dataset.stage))');
   check(await b.evaluate('document.body.innerText.includes("Assistant text, not a verified action result.")'), 'model chat never represented as execution authority');
   await request('Tell David Brother "Stop this preparation." via Example Messages');
   await b.waitFor('!document.querySelector("#stop-button").hidden');

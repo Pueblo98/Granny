@@ -36,10 +36,11 @@ Problem/job chain: PROB-01→JOB-01 delegation; PROB-02→JOB-02 understanding/r
 [T-117](../10-execution/backlog.md#t-117) implements the [versioned conversation runtime](../04-architecture/conversation-runtime-contract.md) and [actual MCP backend](../../prototypes/conversation-runtime/README.md) for PRD-FR-002/003/008/013, PRD-SAF-001/002/003 and PRD-PRV-001 themes, UC-006/J-003, SCR-003/007 and CMP-001/003. [Runtime tests](../../prototypes/conversation-runtime/runtime.test.mjs), [provider tests](../../prototypes/conversation-runtime/provider.test.mjs) and [HTTP tests](../../prototypes/conversation-runtime/server.test.mjs) are executed local-prototype evidence for EVAL-003/006/008/009/010 themes. They do not promote the production implementation or canonical EVAL statuses below. Contacts/destination remain fictional; backend/MCP/store operations are actual.
 
 The [Room-aware extension](../10-execution/sessions/2026-09-20-room-chat-openrouter.md)
-links the same bounded T-117 runtime to T-119's Home and six fictional Rooms
-for PRD-FR-022/UC-026/J-009/SCR-016/017/CMP-011/012 design themes. Its strict
-context schema, current-Room fixture selector, answer-owned source receipts,
-tab-memory conversation separation in Today and browser checks are
+and [conversation/evidence store](../10-execution/sessions/2026-09-20-conversation-evidence-store.md)
+link the same bounded T-117 runtime to T-119's Home and six fictional Rooms
+for PRD-FR-022/UC-026/J-009/SCR-016/017/CMP-011/012 design themes. Their strict
+context schema, current-Room fixture selector, backend SQLite conversation isolation,
+immutable source revisions, exact message-evidence links and browser checks are
 local-prototype evidence only. One paid synthetic Room turn
 succeeded; production retrieval/privacy enforcement and EVAL-008/012 remain
 unrun.

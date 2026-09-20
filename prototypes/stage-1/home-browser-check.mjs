@@ -251,7 +251,7 @@ try {
       .map(url => new URL(url).pathname);
   const allowedPaths = new Set(['/', '/styles.css', '/fixtures.js', '/intent.js',
     '/room-fixtures.js', '/rooms-store.js', '/room-dialog.js', '/room-create.js', '/room-library.js', '/room-ui.js',
-    '/model.js', '/scheduler.js', '/cloud.js', '/outcome-ui.js', '/support-state.js', '/support-ui.js', '/app.js', '/favicon.ico',
+    '/model.js', '/scheduler.js', '/cloud.js', '/conversation-data.js', '/outcome-ui.js', '/support-state.js', '/support-ui.js', '/app.js', '/favicon.ico',
     '/assets/room-fitness-placeholder.svg', '/assets/room-trips-placeholder.svg',
     '/assets/room-reading-placeholder.svg', '/assets/missing-room-placeholder.svg']);
   for (const room of roomFixtures.rooms)
@@ -259,7 +259,8 @@ try {
       room.motif, room.empty, ...room.collections.map(c => c.symbol)]) allowedPaths.add(path);
   const apiPaths = requestedPaths.filter(path => path.startsWith('/api/'));
   allowedPaths.add('/api/runtime/config');
-  check(apiPaths.every(path => path === '/api/runtime/config') && !apiPaths.some(path => path.includes('/session') || path.includes('/command')), 'first chat may check local live availability but creates no runtime session or command');
+  allowedPaths.add('/api/conversations');
+  check(apiPaths.every(path => path === '/api/runtime/config' || path === '/api/conversations') && !apiPaths.some(path => path.includes('/session') || path.includes('/command')), 'first chat may check local runtime/history availability but creates no runtime session or command');
   check(requestedPaths.every(path => allowedPaths.has(path)), 'Home requests only allowlisted static fixtures');
   check(b.network.every(url => url === 'about:blank' || url.startsWith(b.base + '/')), 'only loopback runtime requests');
 

@@ -20,7 +20,7 @@ test('real MCP handshake, chat, complete draft, readback, exact content, replay 
  assert.deepEqual(result.events.map(e=>e.seq),Array.from({length:result.cursor},(_,i)=>i+1));
 }));
 test('validated Room context reaches interpretation and chat provenance without entering history',()=>fixture(async(_,m)=>{
- let received;const r=createRuntime({mcp:m,provider:{available:true,interpret:async(text,signal,history,context)=>{received=structuredClone({text,history,context});return {kind:'chat',text:'The soup card says carrots.'};}}});
+ let received;const r=createRuntime({mcp:m,provider:{available:true,interpret:async(text,signal,history,context)=>{received=structuredClone({text,history,context});return {kind:'chat',text:'The soup card says carrots.',usedSourceIds:['vegetable-soup']};}}});
  const s=r.create({version:VERSION,requestId:randomUUID(),mode:'live',consent:true});
  const context={place:{kind:'room',roomId:'kitchen',roomName:'Kitchen',purpose:'Recipes and plans'},sources:[{itemId:'vegetable-soup',title:'Vegetable soup',summary:'A simple fixture.',content:'Carrots and stock.',roomName:'Kitchen',collectionLabel:'Recipes',provenance:'fictional-local-fixture'}]};
  r.command(cmd(s,'turn',{text:'What is in the soup?',context}));const result=await r.settled(s.sessionId),event=result.events.at(-1);

@@ -20,7 +20,7 @@
       runtimeConfig = null, runtimeConfigPending = false, runtimeConfigError = false,
       runtimeConfigPromise = null, liveEntryPending = false;
   let conversationNumber = 1, activeConversationId = 'conversation-1',
-      conversationArchives = [];
+      conversationArchives = [], conversationData = null, conversationCache = [];
   let scheduler, pending = null, dialogReturn = null, menuPanel = '',
                  lastAnnouncement = '', restoreFocus = false, editor = null,
                  editingAliasId = null, panelReturn = null, panelScroll = 0,
@@ -109,6 +109,12 @@
     },
     assistantActive: () => runtimeMode,
     renderAssistant: target => renderRuntime(target),
+    selectSource: sourceId => conversationData?.activeId
+      ? conversationData.selectSourceForNextReply(conversationData.activeId, sourceId, latestStoredMessageId())
+      : Promise.resolve(false),
+    excludeSource: sourceId => conversationData?.activeId
+      ? conversationData.excludeSourceFromFutureReplies(conversationData.activeId, sourceId, latestStoredMessageId())
+      : Promise.resolve(false),
     announce
   });
   const outcomeUI = window.GrannyOutcomeUI.create({state, node, button, dispatch,
@@ -121,27 +127,21 @@
     render:()=>render(), announce, draft:value=>{composerText.value=value;focus(composerText);},
     applyScale:value=>{dispatch('setScale',value);dispatch('applyScale');},
     conversations:()=>conversationList(),
-    clearHistory:()=>{conversationArchives=[];dispatch('clearHistory');}, reset:fullReset,
-    fresh:()=>{
-      archiveCurrentConversation();
-      conversationNumber += 1;
-      activeConversationId = 'conversation-' + conversationNumber;
-      const reset=()=>{clearLocalView();dispatch('clearSession');focus(composerText);};
-      if(runtimeMode){
-        const mode=runtimeProviderMode;
-        leaveRuntime(()=>{reset();connectRuntime(mode);});
-      }else reset();
-    },
+    conversation:id=>uiConversationDetail(conversationData?.conversation(id))||conversationList().find(entry=>entry.id===id),
+    openConversation:async id=>conversationData ? conversationData.getConversation(id) : conversationList().find(entry=>entry.id===id),
+    clearHistory:async()=>{conversationArchives=[];dispatch('clearHistory');if(conversationData?.state.available)await conversationData.clearHistory();await refreshConversationData();}, reset:fullReset,
+    fresh:startFreshConversation,
     openRooms:()=>openHomeDestination('rooms',$('menu-button')),
     openRoom:id=>openHomeDestination('room:'+id,$('menu-button')),
     explore:result=>openHomeDestination(result.kind==='room'?'room:'+result.id:'item:'+result.id,$('menu-button')),
+    viewCitation:source=>roomUI.viewCitation(source),
     restorePlace:place=>{homeView=place;roomUI.show(place);render();},
     legacy:what=>{
       menuPanel=what;panelReturn=$('menu-button');panelScroll=scrollY;render();
       focus(thread.querySelector('[data-panel] h2'));
       if(what==='connection'&&!runtimeMode&&!runtimeQuarantined)discoverLiveRuntime();
     },
-    privacy:()=>runtimeMode ? 'Connected demo: browser reset does not delete backend drafts, backend sessions or provider-held data. Fictional details only.' : 'In-memory fictional simulation. No microphone, account, tracking or background storage. Reload resets the tab.',
+    privacy:()=>runtimeMode ? 'Connected synthetic conversations and answer-specific evidence persist in the local loopback SQLite store until Clear history or full reset. Provider-held data and demo drafts are separate. Fictional details only.' : 'The static scripted simulation remains in memory. Connected synthetic conversations use the local loopback store when it is available.',
     confirm:(title,text,fn,label,danger,keep)=>{ask(title,text,fn,$('menu-button'));const approve=$('confirm-dialog').querySelector('[value=confirm]');approve.textContent=label;approve.className=danger?'danger':'primary';$('confirm-dialog').querySelector('[value=cancel]').textContent=keep||'Cancel';},
     cancelConfirm:()=>{if($('confirm-dialog').open)$('confirm-dialog').close('cancel');}
   });
@@ -411,14 +411,39 @@
     return c;
   }
   const copyTurn = value => ({role: value.role, text: value.text,
+    ...(value.id ? {id: value.id} : {}),
     ...(value.eventId ? {eventId: value.eventId} : {}),
     ...(value.unverified ? {unverified: true} : {}),
     ...(value.place ? {place: structuredClone(value.place)} : {}),
     ...(value.sources?.length ? {sources: structuredClone(value.sources)} : {})});
+  const storedTurn = message => copyTurn({id:message.id,eventId:message.providerEventId,role:message.role,text:message.text||message.content,
+    unverified:message.role==='assistant'&&message.contentKind==='assistant_text',sources:message.citations||[]});
+  const uiConversationDetail = detail => detail ? {...detail,turns:(detail.messages||[]).map(storedTurn)} : null;
+  function latestStoredMessageId() {
+    return conversationData?.conversation(conversationData.activeId)?.messages?.at(-1)?.id || null;
+  }
+  async function refreshConversationData(loadActive=true) {
+    if(!conversationData)return false;
+    await conversationData.refresh();
+    conversationCache=conversationData.state.conversations;
+    activeConversationId=conversationData.activeId||activeConversationId;
+    if(loadActive&&conversationData.activeId){
+      const detail=await conversationData.getConversation(conversationData.activeId);
+      if(detail&&runtimeMode){
+        const current=runtimeView?.current;
+        runtimeTurns=detail.messages
+          .filter(message=>current?.type==='chat'||message.providerEventId!==current?.eventId)
+          .map(storedTurn);
+      }
+    }
+    if(conversationData.state.available&&supportUI?.active)supportUI.render();
+    if(loadActive&&runtimeMode)render();
+    return conversationData.state.available;
+  }
   function currentRuntimeTurns() {
     const turns = runtimeTurns.map(copyTurn), event = runtimeView?.current;
-    if (event?.type === 'chat' && !turns.some(turn => turn.eventId === event.eventId))
-      turns.push(copyTurn({role: 'assistant', text: event.data.text, eventId: event.eventId, unverified: true,
+    if (event?.type === 'chat' && !turns.some(turn => turn.eventId === event.eventId || turn.id === event.data.messageId))
+      turns.push(copyTurn({id:event.data.messageId,role: 'assistant', text: event.data.text, eventId: event.eventId, unverified: true,
         place: event.data.place, sources: event.data.sources}));
     return turns;
   }
@@ -434,16 +459,35 @@
       place: room || 'Home', active: true, fixture: false, turns};
   }
   function conversationList() {
+    if(conversationData?.state.available) return conversationCache.map(meta=>{
+      const detail=conversationData.conversation(meta.id),active=meta.id===conversationData.activeId;
+      return {...meta,active,time:active?'Now':new Intl.DateTimeFormat([], {hour:'numeric',minute:'2-digit'}).format(new Date(meta.updatedAt)),
+        turns:active&&runtimeMode?currentRuntimeTurns():(detail?.messages||[]).map(storedTurn)};
+    });
     const activeConversation = currentConversation();
     return [...(activeConversation ? [activeConversation] : []),
       ...conversationArchives.map(conversation => structuredClone(conversation))];
   }
   function archiveCurrentConversation() {
+    if(conversationData?.state.available)return;
     const current = currentConversation();
     if (!current) return;
     conversationArchives = [{...current, active: false,
       time: new Intl.DateTimeFormat([], {hour: 'numeric', minute: '2-digit'}).format(new Date())},
       ...conversationArchives.filter(conversation => conversation.id !== current.id)];
+  }
+  async function startFreshConversation(){
+    archiveCurrentConversation();
+    conversationNumber += 1;
+    const mode=runtimeProviderMode,storedMode=mode==='live'?'live':'offline_test';
+    let created=null;
+    if(conversationData?.state.available){
+      try{created=await conversationData.createConversation(storedMode,{kind:'home'});activeConversationId=created.id;conversationCache=conversationData.state.conversations;}
+      catch{announce('The conversation store could not create a new conversation. The current one is unchanged.');return false;}
+    }else activeConversationId='conversation-'+conversationNumber;
+    const reset=async()=>{clearLocalView();dispatch('clearSession');runtimeTurns=[];if(created)await refreshConversationData();focus(composerText);};
+    if(runtimeMode)await leaveRuntime(async()=>{await reset();await connectRuntime(mode,created?.id);});else await reset();
+    return true;
   }
   function runtimeTurn(entry, responseId) {
     const article = turn(entry.role, entry.text);
@@ -515,7 +559,7 @@
   function renderRuntime(target = thread) {
     const v = runtimeView, event = v?.current;
     runtimeTurns.forEach((entry, index) => target.append(runtimeTurn(entry, 'archived-' + index)));
-    const archivedCurrent = event?.eventId && runtimeTurns.some(entry => entry.eventId === event.eventId);
+    const archivedCurrent = event?.eventId && runtimeTurns.some(entry => entry.eventId === event.eventId || (event.data?.messageId && entry.id === event.data.messageId));
     if (archivedCurrent && !v?.pending) return;
     const currentChat = event?.type === 'chat' && !archivedCurrent;
     const c = card('Granny', currentChat ? event.data.text : runtimeCopy());
@@ -622,7 +666,7 @@
     })();
     return runtimeConfigPromise;
   }
-  async function connectRuntime(mode = 'demo') {
+  async function connectRuntime(mode = 'demo', conversationId = null) {
     if (!['demo', 'live'].includes(mode) || (mode === 'live' && !runtimeConfig?.liveAvailable)) return false;
     if (runtimeQuarantined) return false;
     if (!window.GrannyRuntime) { announce('The connected client is not available in this build.'); return false; }
@@ -641,12 +685,18 @@
       runtimeView = view;
       if (!view.pending && view.current?.type === 'preview') runtimePreview = view.current.data;
       if (view.snapshot?.state === 'unknown' || view.error === 'effect_unknown') runtimeQuarantined = true;
+      if(view.snapshot?.conversationId)activeConversationId=view.snapshot.conversationId;
+      if(view.current?.type==='chat')roomUI.markAssistantSourcesUsed(view.current.data.sources||[]);
+      if(view.connection==='connected'&&!conversationData?.state.available)refreshConversationData();
+      if(!view.pending&&['chat','result','error','cancellation'].includes(view.current?.type))refreshConversationData();
       render();
       scrollIfReadingEnd(wasAtBottom);
     }});
     runtime = client;
     runtimeView = client.view;
-    const connected = await client.connect({mode, consent: true});
+    const connected = await client.connect({mode, consent: true, conversationId:conversationId||conversationData?.activeId||null});
+    if(client.view.snapshot?.conversationId)activeConversationId=client.view.snapshot.conversationId;
+    await refreshConversationData();
     render();
     focus(composerText);
     return connected;
@@ -1255,8 +1305,12 @@
     focus(panelReturn || composerText);
     window.scrollTo(0, panelScroll);
   }
-  function fullReset() {
-    if (runtimeMode) { leaveRuntime(fullReset); return; }
+  async function fullReset() {
+    if (runtimeMode) { await leaveRuntime(fullReset); return; }
+    if(conversationData?.state.available){
+      try{const fresh=await conversationData.reset();activeConversationId=fresh.id;conversationCache=conversationData.state.conversations;}
+      catch{announce('The local database could not be reset. No stored conversation was silently hidden.');return;}
+    }
     pending=null;
     conversationNumber = 1;
     activeConversationId = 'conversation-1';
@@ -1330,9 +1384,9 @@
       const send = async () => {
         if (runtimeView?.snapshot?.state === 'unknown') return;
         const context = roomUI.assistantContext(text);
-        roomUI.markAssistantSourcesUsed(context.sources);
         roomUI.showAssistant();
-        if (runtimeTurns.length && runtimeView?.current)
+        if (runtimeTurns.length && runtimeView?.current && !runtimeTurns.some(entry=>
+          entry.eventId===runtimeView.current.eventId || (runtimeView.current.data?.messageId&&entry.id===runtimeView.current.data.messageId)))
           runtimeTurns.push({role: 'assistant', text: runtimeView.current.type === 'chat'
             ? runtimeView.current.data.text : runtimeCopy(),
             ...(runtimeView.current.type === 'chat' ? {
@@ -1692,6 +1746,12 @@
     updateComposerFocus();
     updateRoomLayout();
   });
+  if(window.GrannyConversationData){
+    conversationData=window.GrannyConversationData.create({onChange:view=>{
+      conversationCache=view.conversations;activeConversationId=view.activeId||activeConversationId;
+    }});
+    refreshConversationData(false).then(()=>{if(conversationData.state.available&&supportUI.active)supportUI.render();});
+  }
   renderRooms();
   render();
   const roomsFixture = new URLSearchParams(location.search).get('roomsFixture');

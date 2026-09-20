@@ -13,7 +13,7 @@ related:
 
 # Canonical Stage 1 evaluations
 
-**All complete EVAL-001–017 specifications remain unpassed.** The [T-103 offline report](../../prototypes/t103-authority-core/EVIDENCE.md) records executed deterministic fixture subsets of EVAL-006/008/009/010; it is not device, user, policy-approval, provider or full product-eval evidence. Existing EVAL-001–003 identities are preserved. [Traceability](../01-product/traceability.md) is the complete requirement-to-eval index.
+**All complete EVAL-001–017 specifications remain unpassed.** The [T-103 offline report](../../prototypes/t103-authority-core/EVIDENCE.md) records executed deterministic fixture subsets of EVAL-006/008/009/010. The [conversation/evidence store session](../10-execution/sessions/2026-09-20-conversation-evidence-store.md) records local repository/API/browser subsets for EVAL-008/009 privacy, provenance, isolation, replay and failure themes. Neither is device, user, policy-approval, production-provider or full product-eval evidence. Existing EVAL-001–003 identities are preserved. [Traceability](../01-product/traceability.md) is the complete requirement-to-eval index.
 
 ## Shared execution contract
 
