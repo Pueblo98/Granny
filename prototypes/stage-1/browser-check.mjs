@@ -84,23 +84,22 @@ try {
   check(await b.evaluate("!document.querySelector('#current-task [data-action=approve]')"), 'no approval on completed task');
 
   await request('Show me the photos Sophie sent yesterday.'); await finish();
-  check(await b.evaluate("document.querySelectorAll('#current-task .photo-item').length===2"), 'actual filtered inline collection');
+  check(await b.evaluate("document.querySelector('#photo-position').textContent==='Photo 1 of 2' && document.querySelectorAll('#current-task img').length===1"), 'actual filtered collection shows one dominant image');
   check(/Sophie/.test(await text()) && /2026-09-13|13 September/.test(await text()) && /Example/.test(await text()), 'photo provenance visible');
   await b.screenshot('photos-portrait');
   const beforePhoto = await b.evaluate('scrollY');
-  await b.evaluate("document.querySelector('.photo-item').focus(); document.querySelector('.photo-item').click()");
+  await b.evaluate("document.querySelector('#outcome-full-size').focus(); document.querySelector('#outcome-full-size').click()");
   check(await b.evaluate("!!document.querySelector('dialog[open] img')"), 'image opens');
-  await button('Next', 'dialog[open]'); await button('Previous', 'dialog[open]');
-  await button('Close', 'dialog[open]');
-  await b.waitFor("!document.querySelector('dialog[open]') && document.activeElement.classList.contains('photo-item')");
-  check(await b.evaluate("document.activeElement.classList.contains('photo-item')"), 'photo focus restored');
+  await button('Back', 'dialog[open]');
+  await b.waitFor("!document.querySelector('dialog[open]') && document.activeElement.id==='outcome-full-size'");
+  check(await b.evaluate("document.activeElement.id==='outcome-full-size'"), 'photo focus restored');
   check(Math.abs(await b.evaluate('scrollY') - beforePhoto) < 3, 'photo return retains scroll');
 
   await request('What am I looking at?'); check(await stage() === 'clarify-screen', 'screen context explicitly supplied');
   await choice('display-settings'); await finish();
-  await button('Explain more simply');
+  await button('Explain text size'); await button('Back to explanation');
   check(await b.evaluate("document.querySelector('#current-task').dataset.kind==='explain'"), 'simpler is contextual');
-  check(/Text size/.test(await text()) && /Display size/.test(await text()), 'visible plain explanation distinguishes the two settings');
+  check(/Text size/.test(await text()) && /Screen zoom/.test(await text()) && /Dark theme/.test(await text()), 'visible plain explanation distinguishes all three settings');
   await b.screenshot('screen-explanation');
 
   await request('Play some Nina Simone.'); check(await stage() === 'clarify-media', 'ambiguous music resolved inline');
@@ -116,7 +115,7 @@ try {
   await request('Make this easier to read.'); await choice('granny');
   check(await stage() === 'size-preview', 'readability offers preview before applying');
   const original = await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)");
-  await button('Apply this size'); check(await stage() === 'completed', 'explicit local size apply');
+  await button('Apply'); check(await stage() === 'completed', 'explicit local size apply');
   check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)") > original, 'actual text scales');
   await button('Restore previous size');
   check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)") === original, 'restore exact previous size');
@@ -150,7 +149,7 @@ try {
   }
   for (const failure of ['offline','permission','auth']) {
     await fresh(true); await select('#review-fault',failure); await request('Show me the photos Sophie sent yesterday'); await waitStage('failed');
-    check(!await b.evaluate("document.querySelector('#current-task .photo-item')"),failure+' cannot expose successful photos');
+    check(!await b.evaluate("document.querySelector('#current-task [id=photo-position], #current-task img')"),failure+' cannot expose successful photos');
   }
   await fresh(true); await select('#review-screen','signin'); await b.click('#composer button[type=submit]'); await waitStage('failed');
   check((await text()).includes('protected'),'review screen selection supplies actual protected fixture');

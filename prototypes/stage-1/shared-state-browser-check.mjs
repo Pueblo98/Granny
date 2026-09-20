@@ -209,7 +209,7 @@ try {
   await b.click('[data-choice="Example Messages"]'); await waitState('preview');
   check(await b.evaluate(`(() => {
     const t = document.querySelector('#current-task'), facts = [...t.querySelectorAll('dt')].map(e => e.textContent);
-    return facts.includes('To') && facts.includes('Which person') && facts.includes('Open in') && facts.includes('What happens') &&
+    return facts.includes('To') && facts.includes('Which person') && facts.includes('Channel') && facts.includes('What happens') &&
       t.querySelector('blockquote')?.textContent === 'I’ll call after dinner.' &&
       t.innerText.includes('David') && t.innerText.includes('Brother') && t.innerText.includes('Example Messages') &&
       t.innerText.includes('fictional unsent draft opens');

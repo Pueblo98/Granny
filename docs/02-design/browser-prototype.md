@@ -19,6 +19,20 @@ related:
 
 # Conversation-first browser experience
 
+## Inline core outcomes checkpoint
+
+The [ten-state outcome review](mockups/2026-09-20-core-outcome-modules/frontend-checkpoint-1/README.md)
+adds one contextual module within the existing Home/Room conversation: photo
+browsing/no-result, supplied-screen explanation/guidance, exact message review/
+prepared-not-sent, silent playing/unavailable media and local text preview/
+applied-restore. Message states reuse the shared consequence renderer; other
+variants share `outcome-ui.js` and the existing versioned task model. They are
+not new destinations. The composer stays in normal flow beneath the result.
+The [session record](../10-execution/sessions/2026-09-20-core-outcomes-frontend.md)
+owns exact tests and deviations. All outcomes remain explicit fictional browser
+fixtures, not evidence of capture, playback, sending, Android settings or access
+to another application.
+
 ## Fictional Rooms-system checkpoint
 
 The [Rooms-system review](mockups/2026-09-20-rooms-system/frontend-checkpoint-1/README.md)

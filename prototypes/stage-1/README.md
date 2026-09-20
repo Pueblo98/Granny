@@ -219,8 +219,49 @@ Clarification accepts the displayed choice label as a typed reply. `Change the m
 
 ## Checks
 
+### Inline core outcomes checkpoint
+
+The five outcome families remain inside the current Home/Room conversation.
+`outcome-ui.js` renders photos, supplied-screen guidance, silent media and local
+reading preferences from explicit model results. Message review/prepared reuse
+the existing shared `messageSurface`, exact approval version and result type.
+One outcome is interactive at a time; earlier turns remain text. Done does not
+repeat an effect. The Round composer follows modules in normal document flow.
+
+Try `Show photos of Sophie Book club from yesterday` (approve the existing
+fictional mark-read consequence), `Explain screen display-settings`,
+`Tell David I’ll call after dinner.`, `Play Sinnerman by Nina Simone.` and
+`Make Granny’s text larger.`. The existing Sophie alias still means Daughter;
+the explicit Book club differentiator reaches the reference's three-photo set.
+Reviewer-only `noPhotos` and `unavailable` fault fixtures reach the alternative
+photo/media states. These are rule-based examples, not general interpretation.
+
+Photos have bounded Previous/Next and a focused same-image viewer. Screen rows
+are inert supplied examples with written guidance, not device settings. Media
+Pause/Resume changes only silent fixture state; unavailable recovery explicitly
+reports that this fixture has no alternative provider and offers a manual route.
+Text preview changes only the sample until Apply; Restore returns the previous
+in-memory value. Canonical closed sizes remain Standard/Larger/Larger still/
+Largest (100/115/130/150%), not the raster's approximate Normal/Large labels.
+
+Existing local SVG illustrations substitute for photos; no new art is generated.
+No local font files were added: documented system-sans fallback remains, without
+an exact Bricolage/DM Sans fidelity claim. All disclosure, labels and controls
+survive missing artwork. This checkpoint adds no storage, capture, audio or
+external requests. Browser results cannot prove Android or real service behavior.
+
+See the [ten-state visual review](../../docs/02-design/mockups/2026-09-20-core-outcome-modules/frontend-checkpoint-1/README.md)
+and [scoped handoff](../../docs/10-execution/sessions/2026-09-20-core-outcomes-frontend.md).
+
+### Commands
+
 ```bash
 node prototypes/stage-1/model.test.mjs
+node prototypes/stage-1/outcomes.test.mjs
+node prototypes/stage-1/outcomes-browser-check.mjs
+node prototypes/stage-1/outcomes-review.mjs
+node prototypes/stage-1/shared-state-browser-check.mjs
+node prototypes/stage-1/room-layout-browser-check.mjs
 node prototypes/stage-1/scheduler.test.mjs
 node prototypes/stage-1/cloud.test.mjs
 node prototypes/stage-1/serve.test.mjs

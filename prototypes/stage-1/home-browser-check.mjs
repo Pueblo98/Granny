@@ -250,7 +250,7 @@ try {
       .map(url => new URL(url).pathname);
   const allowedPaths = new Set(['/', '/styles.css', '/fixtures.js', '/intent.js',
     '/room-fixtures.js', '/rooms-store.js', '/room-dialog.js', '/room-create.js', '/room-library.js', '/room-ui.js',
-    '/model.js', '/scheduler.js', '/cloud.js', '/app.js', '/favicon.ico',
+    '/model.js', '/scheduler.js', '/cloud.js', '/outcome-ui.js', '/app.js', '/favicon.ico',
     '/assets/room-fitness-placeholder.svg', '/assets/room-trips-placeholder.svg',
     '/assets/room-reading-placeholder.svg', '/assets/missing-room-placeholder.svg']);
   for (const room of roomFixtures.rooms)

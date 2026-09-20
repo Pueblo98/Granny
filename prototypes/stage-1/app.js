@@ -101,6 +101,8 @@
     },
     announce
   });
+  const outcomeUI = window.GrannyOutcomeUI.create({state, node, button, dispatch,
+    dismiss: dismissSurface, announce});
 
   function atBottom() {
     return window.innerHeight + window.scrollY >=
@@ -591,7 +593,7 @@
     const dl = node('dl');
     [[ 'To', recipient.name || 'Not chosen' ],
      [ 'Which person', recipient.detail || 'Not chosen' ],
-     [ 'Open in', slots.channel || 'Not chosen' ], [
+     [ 'Channel', slots.channel || 'Not chosen' ], [
        'What happens', sending ? 'A fictional message is sent'
                                : 'A fictional unsent draft opens'
      ]].forEach(([ a, b ]) => {
@@ -665,139 +667,14 @@
     dispatch('expire');
     focus(thread.querySelector('[aria-label=Message]'));
   }
-  function photoViewer(items, start, source) {
-    let index = start;
-    const dialog = document.createElement('dialog');
-    const draw = (restore) => {
-      const item = items[index], wrap = document.createElement('div');
-      wrap.append(
-          node('h2', '', item.title || 'Fictional photo'),
-          node('p', 'notice', item.description || 'Fictional illustration.'),
-          node('p', 'notice', [
-            item.sender, item.detail, item.source, item.date
-          ].filter(Boolean).join(' · ')));
-      const image = document.createElement('img');
-      image.src = item.asset || '/assets/garden.svg';
-      image.alt = item.alt || item.description || 'Fictional illustration';
-      wrap.append(image);
-      const actions = node('div', 'dialog-actions');
-      actions.append(button('Previous', () => {
-                       index = (index + items.length - 1) % items.length;
-                       draw('Previous');
-                     }), button('Next', () => {
-                       index = (index + 1) % items.length;
-                       draw('Next');
-                     }), button('Close', () => dialog.close()));
-      if (active())
-        actions.prepend(button('Stop current request', () => {
-          dispatch('stop');
-          dialog.close();
-        }, 'stop-button'));
-      wrap.append(actions);
-      dialog.replaceChildren(wrap);
-      if (restore)
-        focus([...dialog.querySelectorAll('button') ].find(
-            b => b.textContent === restore));
-    };
-    draw();
-    dialog.setAttribute('aria-label', 'Fictional photo viewer');
-    const position = scrollY;
-    document.body.append(dialog);
-    dialog.addEventListener('close', () => {
-      dialog.remove();
-      const replacement =
-          [...thread.querySelectorAll('[data-focus-key]') ].find(
-              e => e.dataset.focusKey === source?.dataset.focusKey);
-      focus(source?.isConnected ? source : replacement || composerText);
-      window.scrollTo(0, position);
-    });
-    dialog.showModal();
-  }
-  function resultView(task, archived = false) {
+  function resultView(task) {
+    // Exceptional/protected outcomes stay candid; they never borrow a success
+    // module merely because the requested metadata is available.
     const result = task.result || {}, c = node('div', 'result-detail');
-    if (task.kind === 'photos' && result.photos) {
-      const gallery = node('div', 'photo-gallery');
-      result.photos.forEach((item, index) => {
-        const b = button('', () => photoViewer(result.photos, index, b),
-                         'photo-item', 'photo-' + task.id + '-' + item.id);
-        const img = document.createElement('img');
-        img.src = item.asset || '/assets/garden.svg';
-        img.alt = item.alt || item.description || 'Fictional illustration';
-        b.append(img, node('strong', '', item.title || 'Open fictional photo'),
-                 node('span', 'notice', [
-                   item.sender, item.detail, item.source, item.date
-                 ].filter(Boolean).join(' · ')));
-        gallery.append(b);
-      });
-      c.append(gallery);
-      if (result.uncertainDate)
-        c.append(node('p', 'notice',
-                      'The date is uncertain in this fictional example.'));
-    } else if (task.kind === 'explain' && result.explanation) {
-      if (result.explanation !== task.text)
-        c.append(node('p', '', result.explanation));
-      if (result.screen?.fields) {
-        const source = node('details', 'screen-source');
-        source.append(
-            node('summary', '',
-                 'Supplied fictional screen: ' + result.screen.title));
-        const fields = node('dl');
-        result.screen.fields.forEach(
-            field => fields.append(
-                node('dt', '', field.label),
-                node('dd', '', field.value + ' — ' + field.description)));
-        source.append(fields);
-        c.append(source);
-      }
-      if (result.next === 'returned')
-        c.append(card(
-            'A garden for every season',
-            'Returned to this fictional article. No other app was opened.'));
-      if (archived || task.stage !== 'completed')
-        return c;
-      const a = node('div', 'inline-actions');
-      a.append(button('Explain more simply',
-                      () => dispatch('submit', 'Explain more simply')));
-      if (result.screen && result.screen.previousTarget &&
-          result.next !== 'returned')
-        a.append(button('Return to ' + result.screen.previousTarget,
-                        () => dispatch('submit', 'return'), 'primary'));
-      c.append(a);
-    } else if (task.kind === 'media' && result.track) {
-      const track = typeof result.track === 'string' ? result.track : [
-        result.track.title, result.track.performer
-      ].filter(Boolean).join(' — ');
-      c.classList.add('player-card');
-      const verified =
-          !archived && task.stage === 'completed' &&
-          state.player?.id === result.track.id &&
-          !['unknown', 'partial', 'paywall', 'unavailable'].includes(
-              task.outcome);
-      c.append(node('p', '', track));
-      if (verified) {
-        c.append(node('p', 'notice',
-                      state.playing
-                          ? 'Playing · silent simulation'
-                          : 'Playback is paused · silent simulation'));
-        c.append(button(state.playing ? 'Pause' : 'Resume',
-                        () => dispatch('playback'), 'primary'));
-      } else
-        c.append(node(
-            'p', 'notice',
-            archived
-                ? 'Earlier music request. Current playback is shown separately below.'
-                : 'Playback of this request has not been verified.'));
-    } else if (task.kind === 'readability' && result.scope) {
-      c.append(node(
-          'p', '',
-          result.externalOnly
-              ? 'This setting belongs to another app. I can explain where to change it, but I have not changed it.'
-              : 'Granny text is ' +
-                    Math.round((result.scale || state.scale) * 100) + '%.'));
-      if (!result.externalOnly && !archived)
-        c.append(
-            button('Restore previous size', () => dispatch('restoreScale')));
-    }
+    if (result.screen) c.append(node('p', '', 'Supplied fictional screen: ' + result.screen.title));
+    if (result.track) c.append(node('p', '', result.track.title + ' — ' + result.track.performer),
+      node('p', 'notice', 'Playback of this request has not been verified.'));
+    if (result.externalOnly) c.append(node('p', '', 'This setting belongs to another app. I can explain where to change it, but I have not changed it.'));
     return c;
   }
   function controls(task, c) {
@@ -809,15 +686,6 @@
         b.dataset.choice = choice.value;
         row.append(b);
       });
-    } else if (stage === 'size-preview') {
-      [1, 1.15, 1.3, 1.5].forEach(
-          scale => row.append(button(
-              Math.round(scale * 100) + '%', () => dispatch('setScale', scale),
-              state.previewScale === scale ? 'primary' : '')));
-      const apply =
-          button('Apply this size', () => dispatch('applyScale'), 'primary');
-      apply.dataset.action = 'apply';
-      row.append(apply, button('Stop', () => dispatch('stop')));
     } else if (stage === 'clarify-body') {
       const edit = document.createElement('textarea');
       edit.rows = 3;
@@ -874,6 +742,10 @@
       : prepared ? 'Draft opened' : kind === 'unknown' ? 'I can’t confirm whether it sent' : taskText(task);
     const c = node('section', 'shared-task-surface');
     c.dataset.surface = kind;
+    if (kind === 'preview' || prepared) {
+      c.dataset.outcomeModule = 'message';
+      c.dataset.outcomeState = prepared ? 'prepared' : 'preview';
+    }
     c.append(node('p', 'surface-place', (roomUI.current?.name || 'Home') + ' · Granny'));
     const heading = node('h2', '', title); heading.id = 'surface-heading'; heading.tabIndex = -1;
     c.setAttribute('aria-labelledby', heading.id); c.append(heading);
@@ -919,11 +791,14 @@
       exact.classList.add('surface-content');
       c.append(exact);
       if (!editingTask) {
+        if (task.effect === 'open-unsent-draft') c.append(node('p', 'surface-outcome', 'This does not send the message.'));
         controls(task, c);
         const change = c.querySelector('[data-action=change]');
         if (change) change.textContent = 'Change it';
         const cancel = c.querySelector('[data-action=cancel]');
         if (cancel) cancel.addEventListener('click', dismissSurface);
+        const row = c.querySelector(':scope > .inline-actions');
+        if (row) { actions.append(...row.children); row.remove(); }
         action('Repeat', () => announce('Check the draft. The exact recipient, destination, message and consequence remain available above. Nothing has been approved.'));
       }
     } else if (working) {
@@ -943,7 +818,7 @@
       c.append(details([
         ['What Granny verified', `A fictional unsent draft opened for ${person.name} — ${person.detail} in ${slots.channel}.`],
         ['What Granny did not do', 'Granny did not send the message. No real app was opened.'],
-        ['Next step', 'In a real handoff you would review the draft in the owning app. This example stays inside Granny.']
+        ['Next step', 'Review the draft there and tap Send yourself if it looks right. This fictional example stays inside Granny; no real app opens.']
       ]));
       action('Continue manually', () => { surfaceNotice = 'Fictional manual handoff only. No external app opens and no message is sent.'; render(); announce(surfaceNotice); }, 'surface-manual', true);
       action('Done', dismissSurface, 'surface-done');
@@ -991,8 +866,9 @@
       $('continuation').querySelector('.continuation-purpose').textContent = kitchen.name + ' · ' + kitchen.purpose;
     }
     document.body.dataset.home = String(emptyHome);
+    const hasOutcome = !runtimeMode && outcomeUI.supports(state.task) && dismissedTask !== state.task?.id;
     const sharedTask = !runtimeMode && state.task?.kind === 'message' && dismissedTask !== state.task.id;
-    document.body.dataset.surface = speechState || (sharedTask ? 'task' : '');
+    document.body.dataset.surface = speechState || (sharedTask ? 'task' : hasOutcome ? 'outcome' : '');
     const browsing = ['rooms','room-search','all-items','unfiled','archived-rooms'].includes(homeView) || homeView.startsWith('item:');
     $('room-content').hidden = !!menuPanel || runtimeMode ||
         (!browsing && !homeView.startsWith('room:'));
@@ -1014,10 +890,8 @@
       : (runtimeProviderMode === 'live' ? 'Live model · fictional text goes to OpenRouter · unsent demo drafts only' : 'Connected local demo · fictional people · unsent drafts only');
     composerText.placeholder = roomUI.current && !runtimeMode ? 'Ask Granny in ' + roomUI.current.name + '…' : 'Ask me anything…';
     if (runtimeMode && !speechState) renderRuntime();
-    (!runtimeMode && !sharedTask && !speechState && !dismissedTask ? state.turns || [] : []).forEach(t => {
+    (!runtimeMode && !speechState && !dismissedTask ? state.turns || [] : []).forEach(t => {
       const article = turn(t.role, t.text);
-      if (t.result && t.kind !== 'message')
-        article.append(resultView(t, true));
       thread.append(article);
     });
     if (!runtimeMode)
@@ -1025,7 +899,10 @@
     if (state.task && !runtimeMode && dismissedTask !== state.task.id && !speechState && !menuPanel) {
       const task = state.task,
             editingTask = !!(editor && editor.taskId === task.id),
-            c = task.kind === 'message' ? messageSurface(task, editingTask) : card('Granny', taskText(task));
+            c = task.kind === 'message' ? messageSurface(task, editingTask) : hasOutcome ? outcomeUI.render(task) : card('Granny', taskText(task));
+      if (hasOutcome) thread.append(turn('assistant', outcomeUI.response(task)));
+      else if (sharedTask && ['preview', 'completed'].includes(task.stage)) thread.append(turn('assistant', task.stage === 'preview'
+        ? 'I prepared the exact fictional draft for you to review.' : task.result?.effect === 'open-unsent-draft' ? 'The fictional draft is ready.' : task.text));
       c.id = 'current-task';
       c.dataset.stage = task.stage;
       c.dataset.kind = task.kind;
@@ -1034,17 +911,10 @@
         const slots = task.slots || {};
         c.append(card('Check this step', task.kind === 'photos' ? [slots.person && slots.person.name, slots.person && slots.person.detail, 'Example Messages', slots.date].filter(Boolean).join(' · ') + '. Opening this fictional source may mark it read while the selected photos are checked.' : 'Nothing will happen until you choose Continue.'));
       }
-      if (task.kind === 'readability' && task.stage === 'size-preview') {
-        const sample = node(
-            'p', 'preview-sample',
-            'This is a preview of Granny text. You can still change your mind.');
-        sample.style.fontSize = (state.previewScale / state.scale) + 'em';
-        c.append(sample);
-      }
-      if (task.kind !== 'message' &&
+      if (!hasOutcome && task.kind !== 'message' &&
           (task.result || [ 'completed', 'no-matches' ].includes(task.stage)))
         c.append(resultView(task));
-      if (!editingTask && task.kind !== 'message')
+      if (!hasOutcome && !editingTask && task.kind !== 'message')
         controls(task, c);
       thread.append(c);
 
@@ -1224,7 +1094,7 @@
       connection.append(button('Return to conversation', returnToConversation));
       thread.append(connection);
     }
-    if (!runtimeMode && state.player &&
+    if (!runtimeMode && !hasOutcome && !sharedTask && !speechState && state.player &&
         !(state.task?.kind === 'media' && state.task.stage === 'completed' &&
           state.task.result?.track?.id === state.player.id)) {
       const player = card('Your music',
@@ -1265,7 +1135,7 @@
     }
     window.scrollTo(0, position);
     restoreFocus = false;
-    const surfaceKey = speechState || (sharedTask ? state.task.id + ':' + state.task.stage : '');
+    const surfaceKey = speechState || (sharedTask || hasOutcome ? state.task.id + ':' + state.task.stage : '');
     if (userChange && surfaceKey && surfaceKey !== lastSurfaceKey && !active() && !menuPanel && !heldFocus) {
       const title = $('surface-heading');
       if (title) requestAnimationFrame(() => { focus(title); title.scrollIntoView({block: 'nearest'}); });

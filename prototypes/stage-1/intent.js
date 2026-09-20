@@ -45,7 +45,7 @@ function parse(text) {
     match = spoken.match(/^(?:play|listen to)\s+(?:some\s+)?(.+)$/i);
     if (match)
       return {kind : "media", request, query : match[1].trim()};
-    match = spoken.match(
+    match = spoken.replace(/Granny[’']s/gi, 'Granny').match(
         /^(?:make|set|change)\s+(?:(the|granny|external)\s+)?(?:text|words|writing)(?:\s+size)?\s+(?:to\s+)?(larger|largest|smaller|normal)$/i);
     if (match)
       return {

@@ -13,6 +13,13 @@ const channels = [ "Example Messages", "Example Mail" ];
 const surfaceChannels = {'david-family': 'Example Messages', 'david-garden': 'Example Mail'};
 const speechRequest = 'Tell David I’ll call after dinner.';
 const photos = [
+  // New result examples reuse honest local illustrations, not raster mockups.
+  ...[
+    ['book-seaside', 'Seaside path and blue water', '/assets/seaside.svg'],
+    ['book-garden', 'Flowers beside a garden table', '/assets/garden.svg'],
+    ['book-meal', 'A table prepared for dinner', '/assets/meal.svg']
+  ].map(([id, description, asset]) => ({id, title: description, description,
+    asset, sender: 'Sophie', detail: 'Book club', source: 'Example Messages', date: '2026-09-13'})),
   {
     id : "garden",
     title : "An afternoon in the garden",
@@ -52,15 +59,16 @@ const screens = [
         "A fictional display settings page with several similar text controls.",
     previousTarget : "A garden for every season",
     fields : [
+      {label: 'Screen zoom', value: 'Standard', description: 'Changes the size of controls and content.'},
       {
         label : "Text size",
         value : "Standard",
         description : "Changes how large words appear."
       },
       {
-        label : "Display size",
-        value : "Standard",
-        description : "Changes words, buttons, and other items."
+        label : "Dark theme",
+        value : "Off",
+        description : "Uses darker screen colours."
       }
     ]
   },
@@ -98,6 +106,11 @@ const tracks = [
   }
 ];
 const api = {
+  readingArticle: 'A garden changes with the seasons. This short example is here only to demonstrate returning to reading.',
+  playbackSample: {elapsed: 42, duration: 622, label: '0:42 / 10:22'},
+  readingSample: 'Your next appointment is on Tuesday at 10:30.',
+  textSizes: [{value: 1, label: 'Standard'}, {value: 1.15, label: 'Larger'},
+    {value: 1.3, label: 'Larger still'}, {value: 1.5, label: 'Largest'}],
   people,
   channels,
   surfaceChannels,
