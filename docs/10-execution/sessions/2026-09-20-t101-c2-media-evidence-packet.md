@@ -88,4 +88,7 @@ Local validation passed on 2026-09-20: cockpit write/check, documentation
 validation (0 errors), 47 documentation-tooling unit tests, handoff coverage
 against `origin/main` and `git diff --check`. External links were not fetched by
 the validator; the primary-source desk review above was performed separately.
-Publication and post-merge vault visibility are recorded after Git completes.
+The first branch commit `cc18252f44c5e663547ddbbadbfaea47f90203b5`
+was pushed and matched `origin/docs/t101-c2-media-evidence`; documentation-only
+[PR #46](https://github.com/Pueblo98/Granny/pull/46) owns review and integration.
+Post-merge vault visibility is verified separately after required checks pass.
