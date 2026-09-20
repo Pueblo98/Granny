@@ -273,7 +273,9 @@ is reducer/output state, separate from fake recognizer acknowledgements.
 Samsung only, record OS/API, recognizer component, locale/model availability
 and app SHA. Exercise permission grant/deny/revoke, offline mode, quiet and
 ordinary home-like noise, conversational distance, names/numbers/dates,
-10-second no-speech behavior, 30-second cap, Done, Stop, lock/background and
+10-second session-level no-speech behavior, absolute 30-second/eight-segment
+cap, append-to-existing-draft, multi-sentence pauses, Done/Stop in a restart gap,
+late prior-segment callbacks, lock/background and
 rotation. Record partial/final correctness, correction effort and timings;
 retain no raw audio or personal transcript. Use synthetic phrases. Host build
 success cannot establish any device or human claim.
@@ -354,6 +356,14 @@ interaction remains supported. Host completion requires unit tests, assemble,
 lint, manifest/dependency/data inspection and exact unrun gaps. T-121 reaches
 review after those checks. Device/participant evidence and release gates remain
 separate.
+
+### Combined native integration follow-up
+
+The [integration record](sessions/2026-09-20-native-conversation-integration.md)
+owns the combined artifact, exact host checks and deferred synthetic matrix.
+T-120/T-121 device sequences must be revised for this shared surface before any
+later exact authorization: do not install or reuse an earlier APK implicitly.
+Simon has placed physical-tablet testing on hold while code is integrated.
 
 ## Restart prompts
 

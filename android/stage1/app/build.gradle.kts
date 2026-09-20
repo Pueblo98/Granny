@@ -10,8 +10,8 @@ android {
         applicationId = "org.pueblo98.stage1"
         minSdk = 31
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1-t120"
+        versionCode = 2
+        versionName = "0.2-voice-continuity"
     }
 
     buildTypes {

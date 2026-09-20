@@ -27,6 +27,8 @@ Local backend/MCP experiment: [versioned runtime contract](04-architecture/conve
 
 Latest Simon-authored planning input: [class brainstorming capture](08-research/source-material/2026-09-17-class-brainstorming.md) · [resolved OQ-14 alignment packet](10-execution/brainstorming-alignment.md). All six product conflicts have explicit direction; visual and human evidence remains open.
 
+[Native tablet integration contract](10-execution/t120-tablet-integration-handoff.md) · [Current native integration session](10-execution/sessions/2026-09-20-native-conversation-integration.md).
+
 ## First read / current state
 
 [Current milestone](10-execution/current-milestone.md) → [readiness/gates/DoR](10-execution/development-readiness.md) → [backlog](10-execution/backlog.md) → [open decisions](10-execution/open-questions.md). The development-readiness specification is written for review. It does not establish runtime feasibility, user demand or final brand acceptance. Start bounded fake-interface/evidence work, not broad MVP implementation.

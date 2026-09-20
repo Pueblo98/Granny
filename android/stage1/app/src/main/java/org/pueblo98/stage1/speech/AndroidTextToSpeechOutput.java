@@ -17,10 +17,14 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
     private static final String UTTERANCE_PREFIX = "granny-readback-";
 
     private final Listener availabilityListener;
-    private final ConcurrentHashMap<String, Long> generations = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Binding> generations = new ConcurrentHashMap<>();
     private TextToSpeech engine;
     private Availability availability = Availability.INITIALIZING;
-    private Listener activeListener;
+    private static final class Binding {
+        final long generation;
+        final Listener listener;
+        Binding(long generation, Listener listener) { this.generation = generation; this.listener = listener; }
+    }
     private boolean destroyed;
 
     public AndroidTextToSpeechOutput(Context context, Listener listener) {
@@ -45,15 +49,14 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
                     "This text is too long for spoken readback. It remains available on screen.");
             return false;
         }
-        activeListener = listener;
-        engine.stop();
+        stop();
         if (engine.setSpeechRate(rate) != TextToSpeech.SUCCESS) {
             listener.onError(generation,
                     "This speech rate is unavailable. The written text remains available.");
             return false;
         }
         String utteranceId = UTTERANCE_PREFIX + generation;
-        generations.put(utteranceId, generation);
+        generations.put(utteranceId, new Binding(generation, listener));
         int result = engine.speak(exactText, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
         if (result != TextToSpeech.SUCCESS) {
             generations.remove(utteranceId);
@@ -66,6 +69,7 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
 
     @Override
     public void stop() {
+        generations.clear();
         if (engine != null) {
             engine.stop();
         }
@@ -91,22 +95,23 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
             unavailable("Spoken readback could not start on this tablet. Written text is still available.");
             return;
         }
+        engine.setAudioAttributes(new android.media.AudioAttributes.Builder()
+                .setUsage(android.media.AudioAttributes.USAGE_ASSISTANCE_ACCESSIBILITY)
+                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SPEECH).build());
         engine.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
-                Long generation = generations.get(utteranceId);
-                Listener listener = activeListener;
-                if (generation != null && listener != null) {
-                    listener.onStarted(generation);
+                Binding binding = generations.get(utteranceId);
+                if (binding != null) {
+                    binding.listener.onStarted(binding.generation);
                 }
             }
 
             @Override
             public void onDone(String utteranceId) {
-                Long generation = generations.remove(utteranceId);
-                Listener listener = activeListener;
-                if (generation != null && listener != null) {
-                    listener.onCompleted(generation);
+                Binding binding = generations.remove(utteranceId);
+                if (binding != null) {
+                    binding.listener.onCompleted(binding.generation);
                 }
             }
 
@@ -117,25 +122,23 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
 
             @Override
             public void onError(String utteranceId, int errorCode) {
-                Long generation = generations.remove(utteranceId);
-                Listener listener = activeListener;
-                if (generation != null && listener != null) {
-                    listener.onError(generation,
+                Binding binding = generations.remove(utteranceId);
+                if (binding != null) {
+                    binding.listener.onError(binding.generation,
                             "Spoken readback stopped. Continue with the written text.");
                 }
             }
 
             @Override
             public void onStop(String utteranceId, boolean interrupted) {
-                Long generation = generations.remove(utteranceId);
-                Listener listener = activeListener;
-                if (generation != null && listener != null) {
-                    listener.onStopped(generation);
+                Binding binding = generations.remove(utteranceId);
+                if (binding != null) {
+                    binding.listener.onStopped(binding.generation);
                 }
             }
         });
 
-        Voice selected = selectInstalledVoice(engine.getVoices(), Locale.getDefault());
+        Voice selected = selectInstalledVoice(engine.getVoices(), engine.getDefaultVoice(), Locale.getDefault());
         if (selected == null || engine.setVoice(selected) != TextToSpeech.SUCCESS) {
             unavailable("No installed offline voice matches this tablet language. Written text is still available.");
             return;
@@ -156,20 +159,19 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
         availabilityListener.onAvailabilityChanged(availability, explanation);
     }
 
-    static Voice selectInstalledVoice(Set<Voice> voices, Locale locale) {
+    static Voice selectInstalledVoice(Set<Voice> voices, Voice defaultVoice, Locale locale) {
         if (voices == null || locale == null) {
             return null;
         }
-        List<Voice> candidates = new ArrayList<>();
+        List<OfflineVoiceSelection.VoiceMetadata> metadata = new ArrayList<>();
         for (Voice voice : voices) {
-            if (voice != null && !voice.isNetworkConnectionRequired()
-                    && locale.getLanguage().equals(voice.getLocale().getLanguage())) {
-                candidates.add(voice);
-            }
+            if (voice != null) metadata.add(new OfflineVoiceSelection.VoiceMetadata(voice.getName(), voice.getLocale(),
+                    voice.getQuality(), voice.equals(defaultVoice), voice.isNetworkConnectionRequired(),
+                    (voice.getFeatures() == null || !voice.getFeatures().contains(TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED))));
         }
-        candidates.sort(Comparator
-                .comparing((Voice voice) -> !locale.equals(voice.getLocale()))
-                .thenComparing(Voice::getName));
-        return candidates.isEmpty() ? null : candidates.get(0);
+        OfflineVoiceSelection.VoiceMetadata selected = OfflineVoiceSelection.select(metadata, locale);
+        if (selected == null) return null;
+        for (Voice voice : voices) if (selected.name.equals(voice.getName())) return voice;
+        return null;
     }
 }

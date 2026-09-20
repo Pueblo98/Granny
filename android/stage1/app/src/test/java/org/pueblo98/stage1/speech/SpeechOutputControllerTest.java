@@ -8,6 +8,12 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public final class SpeechOutputControllerTest {
+    @Test public void sameRevisionCannotRepeatDifferentText() {
+        SpeechOutputController controller = availableController();
+        controller.beginReadback("First", 7, 1f);
+        assertNull(controller.repeat("Different", 7, 1f));
+    }
+
     @Test
     public void unavailableOutputRefusesReadbackAndKeepsWrittenFallbackMessage() {
         SpeechOutputController controller = new SpeechOutputController();
@@ -46,7 +52,7 @@ public final class SpeechOutputControllerTest {
         assertEquals(SpeechOutputController.Phase.STOPPED, controller.snapshot().phase);
         assertFalse(controller.completed(request.generation));
         assertTrue(controller.snapshot().canRepeat);
-        SpeechOutputController.Request repeat = controller.repeat(2, 1f);
+        SpeechOutputController.Request repeat = controller.repeat("Keep this text", 2, 1f);
         assertEquals("Keep this text", repeat.exactText);
         assertTrue(repeat.generation > request.generation);
     }
@@ -60,7 +66,7 @@ public final class SpeechOutputControllerTest {
         assertTrue(controller.contentChanged(8));
         assertEquals(SpeechOutputController.Phase.IDLE, controller.snapshot().phase);
         assertFalse(controller.snapshot().canRepeat);
-        assertNull(controller.repeat(8, 1f));
+        assertNull(controller.repeat("Current text", 8, 1f));
         assertFalse(controller.completed(request.generation));
     }
 
@@ -86,7 +92,7 @@ public final class SpeechOutputControllerTest {
         controller.started(preview.generation);
         controller.completed(preview.generation);
         assertFalse(controller.snapshot().canRepeat);
-        assertNull(controller.repeat(1, 1f));
+        assertNull(controller.repeat("Current text", 1, 1f));
     }
 
     @Test
@@ -110,7 +116,7 @@ public final class SpeechOutputControllerTest {
         assertTrue(controller.clear());
         assertFalse(controller.snapshot().canRepeat);
         assertFalse(controller.started(request.generation));
-        assertNull(controller.repeat(3, 1f));
+        assertNull(controller.repeat("Current text", 3, 1f));
     }
 
     @Test
@@ -135,7 +141,7 @@ public final class SpeechOutputControllerTest {
         controller.availabilityChanged(true, null);
 
         assertFalse(controller.snapshot().canRepeat);
-        assertNull(controller.repeat(4, 1f));
+        assertNull(controller.repeat("Current text", 4, 1f));
     }
 
     private static SpeechOutputController availableController() {
