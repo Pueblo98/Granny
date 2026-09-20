@@ -116,9 +116,10 @@
       model.syncScale(o.scale());const p=model.prefs;
       heading('Settings','Choose a category. These preferences change Granny only.');
       const list=el('div','','support-list');
+      const connection=o.connectionMode?.()||'';
       list.append(row('settings-access','Accessibility',`Text size ${size(p.scale)} · Reduced motion ${on(p.reducedMotion)}`,()=>open('text')),
         row('settings-voice','Talk and voice',`Speech speed ${p.speechSpeed} · Private content Not spoken`,()=>open('voice')),
-        row('settings-privacy','Privacy and data',o.connected()?'Connected demo · review its separate data limits':'Cloud processing Off · Minimal task history',()=>open('privacy')),
+        row('settings-privacy','Privacy and data',connection==='live'?'Live AI connected · review provider data limits':connection==='demo'?'Offline test replies connected · no cloud model':'Cloud processing Off · Minimal task history',()=>open('privacy')),
         row('settings-conversation','Conversation',`${p.explanation} · New conversation`,()=>open('conversation')),
         row('settings-about','About Granny','App information and limits',()=>open('about')));
       host.append(list,backButton(o.place()==='home'?'Back to Home':'Back to conversation'));

@@ -112,12 +112,19 @@
     dismiss: dismissSurface, announce});
   const supportUI = window.GrannySupportUI.create({
     scale:()=>state.scale, place:()=>homeView, connected:()=>runtimeMode,
+    connectionMode:()=>runtimeMode ? runtimeProviderMode : '',
     hasConversation:()=>!!(state.turns.length || state.task || composerText.value.trim() || roomUI.hasConversation || runtimeTurns.length),
     rooms:()=>roomUI.rooms, items:()=>roomUI.supportItems,
     render:()=>render(), announce, draft:value=>{composerText.value=value;focus(composerText);},
     applyScale:value=>{dispatch('setScale',value);dispatch('applyScale');},
     clearHistory:()=>dispatch('clearHistory'), reset:fullReset,
-    fresh:()=>{const run=()=>{clearLocalView();dispatch('clearSession');focus(composerText);};if(runtimeMode)leaveRuntime(run);else run();},
+    fresh:()=>{
+      const reset=()=>{clearLocalView();dispatch('clearSession');focus(composerText);};
+      if(runtimeMode){
+        const mode=runtimeProviderMode;
+        leaveRuntime(()=>{reset();connectRuntime(mode);});
+      }else reset();
+    },
     openRooms:()=>openHomeDestination('rooms',$('menu-button')),
     openRoom:id=>openHomeDestination('room:'+id,$('menu-button')),
     explore:result=>openHomeDestination(result.kind==='room'?'room:'+result.id:'item:'+result.id,$('menu-button')),
@@ -454,14 +461,13 @@
   function renderRuntime(target = thread) {
     const v = runtimeView, event = v?.current;
     runtimeTurns.forEach(t => target.append(turn(t.role, t.text)));
-    const c = card('Granny', runtimeCopy());
+    const c = card('Granny', event?.type === 'chat' ? event.data.text : runtimeCopy());
     c.id = 'current-task';
     c.dataset.kind = 'runtime-message';
     c.dataset.stage = v?.snapshot?.state || 'connecting';
     c.querySelector('h2').tabIndex = -1;
     if (event?.type === 'chat') {
-      c.append(node('p', '', event.data.text), node('p', 'notice',
-        'Assistant text, not a verified action result.'));
+      c.append(node('p', 'notice', 'Assistant text, not a verified action result.'));
       if (event.data.place?.kind === 'room') c.append(node('p', 'notice', event.data.sources.length
         ? 'Used fictional Room ' + (event.data.sources.length === 1 ? 'source: ' : 'sources: ') +
           event.data.sources.map(source => source.title + ' · ' + source.roomName + ' · ' + source.collectionLabel).join('; ')

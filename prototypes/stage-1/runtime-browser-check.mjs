@@ -171,9 +171,25 @@ try {
   check(await b.evaluate('window.__wire.requests.some(r=>r.body?.mode === "live" && r.body.consent === true)'), 'affirmative consent binds a live session');
   check((await text()).includes('go to OpenRouter'), 'persistent mode label identifies live egress');
   check(await b.evaluate('window.__wire.requests.every(r=>r.body?.kind !== "turn")'), 'live connection makes no model turn automatically');
+  await menu('help'); await b.click('#help-ask'); await b.waitFor('document.activeElement.id === "request"');
+  check(await b.evaluate('document.activeElement.id === "request" && document.querySelector("#mode-notice").textContent.includes("Live model")'), 'Help Ask Granny returns to the shared live composer');
+  await command('Hello from Help');
+  check(await b.evaluate('window.__wire.requests.filter(r=>r.body?.kind === "turn").at(-1).body.payload.text === "Hello from Help"'), 'Help conversation entry routes through the live runtime');
+  await menu('search'); await b.fill('#support-query', 'a question not in saved fixtures');
+  await b.waitFor('!!document.querySelector("#search-ask")'); await b.click('#search-ask');
+  check(await b.evaluate('document.querySelector("#request").value === "a question not in saved fixtures"'), 'Search Ask Granny hands its words to the shared composer');
+  await b.click('#composer button[type=submit]');
+  check(await b.evaluate('window.__wire.requests.filter(r=>r.body?.kind === "turn").at(-1).body.payload.text === "a question not in saved fixtures"'), 'Search conversation entry routes through the live runtime');
   await command('Hello from Home');
   const homeContext = await b.evaluate('window.__wire.requests.filter(r=>r.body?.kind === "turn").at(-1).body.payload.context');
   check(homeContext.place.kind === 'home' && homeContext.sources.length === 0, 'Home sends no Room references');
+  await menu('settings'); await b.click('#settings-conversation'); await b.click('#conversation-new');
+  await b.click('#confirm-dialog button[value=confirm]'); await waitState('idle');
+  check(await b.evaluate(`(() => {
+    const sessions=window.__wire.requests.filter(r=>r.body?.mode);
+    return sessions.length === 2 && sessions.at(-1).body.mode === 'live' &&
+      document.querySelector('#mode-notice').textContent.includes('Live model');
+  })()`), 'New conversation starts a fresh session without dropping live mode');
   const roomIds = ['kitchen','fitness','trips','garden','reading','projects'];
   for (const id of roomIds) {
     await b.click('#rooms-button'); await b.click('#library-room-' + id);
@@ -188,10 +204,22 @@ try {
     check(!JSON.stringify(context).includes('Passport details'), 'private source absent for ' + id);
   }
   await b.click('#rooms-button'); await b.click('#library-room-kitchen');
+  await b.click('#all-collections'); await b.click('#collection-recipes');
+  await b.click('[data-item-id="vegetable-soup"]'); await b.click('#ask-room-item');
+  await b.waitFor('document.querySelector("#request").value.trim().length > 0 && !!document.querySelector("#room-source-cue")');
+  await b.click('#composer button[type=submit]');
+  const itemContext = await b.evaluate('window.__wire.requests.filter(r=>r.body?.kind === "turn").at(-1).body.payload.context');
+  check(itemContext.place.roomId === 'kitchen' && itemContext.sources.some(source=>source.itemId === 'vegetable-soup'), 'item-level Ask Granny routes through live runtime with its bounded Room source');
   await emit('chat','idle',{text:'The Vegetable soup card includes carrots.',source:'live-model',verified:false,
     place:{kind:'room',roomId:'kitchen',roomName:'Kitchen',purpose:'Recipes, lists and cooking plans'},
     sources:[{itemId:'vegetable-soup',title:'Vegetable soup',roomName:'Kitchen',collectionLabel:'Recipes'}]},1);
   await command('Please use the vegetable soup card.');
+  await b.waitFor('document.querySelector("#current-task")?.textContent.includes("The Vegetable soup card includes carrots.")');
+  check(await b.evaluate(`(() => {
+    const paragraphs = [...document.querySelectorAll('#current-task p:not(.notice)')];
+    return paragraphs.length === 1 && paragraphs[0].textContent === 'The Vegetable soup card includes carrots.' &&
+      !document.querySelector('#current-task').textContent.includes('What would you like help with?');
+  })()`), 'chat card renders one model response without a duplicate generic prompt');
   await b.waitFor('document.body.innerText.includes("Used fictional Room source: Vegetable soup")');
   check(await b.evaluate('document.querySelector("#room-surface")?.dataset.roomState === "conversation"'), 'live answer renders inside the current Room');
   check((await text()).includes('Assistant text, not a verified action result.'), 'Room model answer remains explicitly non-action text');
