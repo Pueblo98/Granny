@@ -9,7 +9,7 @@ session_state: review
 record_basis: contemporaneous
 agent: Codex lead with Terra audits
 branch: feature/explicit-scroll-row-home
-next_action: Review the supporting surfaces and safely synchronize the dirty primary checkout
+next_action: Review the supporting surfaces after authorized integration
 related:
   - ../backlog.md
   - ../../../prototypes/stage-1/README.md
@@ -18,6 +18,7 @@ changed_paths:
   - docs/10-execution/sessions/2026-09-20-navigation-support-frontend.md
   - prototypes/stage-1/README.md
   - prototypes/stage-1/app.js
+  - prototypes/stage-1/assets/context-rooms/asset-manifest.json
   - prototypes/stage-1/browser-check.mjs
   - prototypes/stage-1/home-browser-check.mjs
   - prototypes/stage-1/index.html
@@ -162,6 +163,16 @@ open. This preserves consequence-before-approval reading order.
 Repository checks: cockpit write/check passed; validate-docs passed with zero
 errors; documentation-tool unit tests passed (47); scoped handoff coverage and
 `git diff --check` passed. Cockpit snapshot is generated, not a product change.
+Final whole-branch whitespace review found and removed one trailing empty line
+in the earlier room asset manifest; no asset metadata changed.
+
+Publication: implementation commit `652bfeb`; current-main integration commit
+`98d574c` was pushed and its remote SHA verified. PR 44 gathers this authorized
+frontend branch and its prior scoped deliveries. Simon's current instruction
+authorizes normal merge after CI. The primary checkout now has only unrelated
+untracked `.claude/`, `.playwright-mcp/`, `docs/Notes.md` and
+`docs/To do table features.md`; retain them during safe fast-forward. The task
+worktree remains live for the localhost server and is not removed.
 
 `support-review.mjs` captured 39 states (13 each at 1440×900, 360×640 and
 840×600 with 200% review text), 42 geometry checks and zero script errors.
