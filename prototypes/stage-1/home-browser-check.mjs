@@ -257,7 +257,9 @@ try {
   for (const room of roomFixtures.rooms)
     for (const path of [room.mark, room.portrait, room.backdrop, room.decor,
       room.motif, room.empty, ...room.collections.map(c => c.symbol)]) allowedPaths.add(path);
-  check(!requestedPaths.some(path => path.startsWith('/api/')), 'default Home makes no API request');
+  const apiPaths = requestedPaths.filter(path => path.startsWith('/api/'));
+  allowedPaths.add('/api/runtime/config');
+  check(apiPaths.every(path => path === '/api/runtime/config') && !apiPaths.some(path => path.includes('/session') || path.includes('/command')), 'first chat may check local live availability but creates no runtime session or command');
   check(requestedPaths.every(path => allowedPaths.has(path)), 'Home requests only allowlisted static fixtures');
   check(b.network.every(url => url === 'about:blank' || url.startsWith(b.base + '/')), 'only loopback runtime requests');
 

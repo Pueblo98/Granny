@@ -17,7 +17,8 @@
   let runtime = null, runtimeMode = false, runtimeView = null,
       runtimeEditor = null, runtimePreview = null, runtimeTurns = [],
       runtimeQuarantined = false, runtimeProviderMode = "demo",
-      runtimeConfig = null, runtimeConfigPending = false, runtimeConfigError = false;
+      runtimeConfig = null, runtimeConfigPending = false, runtimeConfigError = false,
+      runtimeConfigPromise = null, liveEntryPending = false;
   let scheduler, pending = null, dialogReturn = null, menuPanel = '',
                  lastAnnouncement = '', restoreFocus = false, editor = null,
                  editingAliasId = null, panelReturn = null, panelScroll = 0,
@@ -537,30 +538,35 @@
     if (lastAnnouncement !== copy) { lastAnnouncement = copy; announce(copy); }
   }
   async function discoverLiveRuntime() {
-    if (runtimeConfigPending) return;
+    if (runtimeConfigPending) return runtimeConfigPromise;
     runtimeConfigPending = true;
     runtimeConfigError = false;
     render();
-    try {
-      const response = await fetch('/api/runtime/config', {signal: AbortSignal.timeout(5000)});
-      const config = await response.json();
-      if (!response.ok || config.version !== window.GrannyRuntime?.VERSION ||
-          config.available !== true || typeof config.liveAvailable !== 'boolean')
-        throw new Error('runtime_unavailable');
-      runtimeConfig = {liveAvailable: config.liveAvailable};
-    } catch { runtimeConfig = null; runtimeConfigError = true; }
-    finally {
-      runtimeConfigPending = false;
-      if (menuPanel === 'connection') {
-        render();
-        announce(runtimeConfig?.liveAvailable ? 'Live synthetic conversation is available. Review the separate consent before connecting.' : 'The live model is unavailable. The local demo remains separate.');
+    runtimeConfigPromise = (async () => {
+      try {
+        const response = await fetch('/api/runtime/config', {signal: AbortSignal.timeout(5000)});
+        const config = await response.json();
+        if (!response.ok || config.version !== window.GrannyRuntime?.VERSION ||
+            config.available !== true || typeof config.liveAvailable !== 'boolean')
+          throw new Error('runtime_unavailable');
+        runtimeConfig = {liveAvailable: config.liveAvailable};
+      } catch { runtimeConfig = null; runtimeConfigError = true; }
+      finally {
+        runtimeConfigPending = false;
+        runtimeConfigPromise = null;
+        if (menuPanel === 'connection') {
+          render();
+          announce(runtimeConfig?.liveAvailable ? 'Live synthetic conversation is available. Review the separate consent before connecting.' : 'The live model is unavailable. The local demo remains separate.');
+        }
       }
-    }
+      return runtimeConfig;
+    })();
+    return runtimeConfigPromise;
   }
-  function connectRuntime(mode = 'demo') {
-    if (!['demo', 'live'].includes(mode) || (mode === 'live' && !runtimeConfig?.liveAvailable)) return;
-    if (runtimeQuarantined) return;
-    if (!window.GrannyRuntime) { announce('The connected client is not available in this build.'); return; }
+  async function connectRuntime(mode = 'demo') {
+    if (!['demo', 'live'].includes(mode) || (mode === 'live' && !runtimeConfig?.liveAvailable)) return false;
+    if (runtimeQuarantined) return false;
+    if (!window.GrannyRuntime) { announce('The connected client is not available in this build.'); return false; }
     dispatch('stop');
     editor = null;
     menuPanel = '';
@@ -581,9 +587,35 @@
     }});
     runtime = client;
     runtimeView = client.view;
-    client.connect({mode, consent: true});
+    const connected = await client.connect({mode, consent: true});
     render();
     focus(composerText);
+    return connected;
+  }
+  const liveConsentCopy = 'Use fictional text only. Your new conversation, up to ten earlier messages and up to three relevant non-private references from the Room you are in will go to OpenRouter/Qwen. Home sends no Room references, and this demo does not retrieve across Rooms. Model interpretation is experimental and may fail. Creating a draft still needs its own exact confirmation. No recording, real accounts or sending are enabled.';
+  function reviewLiveRuntime(onConfirm, source = composerText, pendingQuestion = false) {
+    ask('Use live synthetic conversation?', liveConsentCopy + (pendingQuestion
+      ? ' You already chose Send. Continue creates the live session and sends the question still shown in the composer.'
+      : ' Continue starts a fresh conversation; it makes no model call until you submit text.'), onConfirm, source);
+  }
+  async function offerLiveRuntime(text) {
+    if (runtimeMode || runtimeQuarantined || liveEntryPending) return false;
+    liveEntryPending = true;
+    try {
+      const config = runtimeConfig || await discoverLiveRuntime();
+      if (!config?.liveAvailable) return false;
+      reviewLiveRuntime(async () => {
+        const connected = await connectRuntime('live');
+        if (connected) newRequest(text);
+        else {
+          composerText.value = text;
+          announce('Live AI could not connect. Your question is still here.');
+        }
+      }, composerText, true);
+      return true;
+    } finally {
+      liveEntryPending = false;
+    }
   }
   async function leaveRuntime(after) {
     if (runtimeView?.snapshot && !['completed', 'stopped', 'failed', 'idle'].includes(runtimeView.snapshot.state))
@@ -1063,10 +1095,8 @@
       if (!runtimeMode && !runtimeQuarantined) {
         if (runtimeConfigPending)
           connection.append(node('p', 'notice', 'Checking whether live AI is available…'));
-        if (runtimeConfig?.liveAvailable) connection.append(button('Use live AI chat', () => ask(
-          'Use live synthetic conversation?',
-          'Use fictional text only. Your new conversation, up to ten earlier messages and up to three relevant non-private references from the Room you are in will go to OpenRouter/Qwen. Home sends no Room references, and this demo does not retrieve across Rooms. Model interpretation is experimental and may fail. Creating a draft still needs its own exact confirmation. No recording, real accounts or sending are enabled. Continue starts a fresh conversation; it makes no model call until you submit text.',
-          () => connectRuntime('live')), 'primary'));
+        if (runtimeConfig?.liveAvailable) connection.append(button('Use live AI chat', () =>
+          reviewLiveRuntime(() => connectRuntime('live')), 'primary'));
         else if (!runtimeConfigPending && (runtimeConfig || runtimeConfigError)) {
           connection.append(node('p', 'notice', 'Live AI is unavailable. The server may need to be restarted with --live and a valid OPENROUTER_API_KEY.'));
           connection.append(button('Check live AI again', discoverLiveRuntime));
@@ -1218,7 +1248,7 @@
       return dispatch('submit', text);
     return false;
   }
-  function newRequest(text) {
+  async function newRequest(text) {
     if(supportUI.active) supportUI.finish(false);
     if (speechState) return;
     if (!text.trim()) {
@@ -1228,6 +1258,8 @@
       return;
     }
     composerText.setCustomValidity('');
+    if (!runtimeMode && (runtimeConfig?.liveAvailable ||
+        (!runtimeConfig && !runtimeConfigError)) && await offerLiveRuntime(text)) return;
     if (runtimeMode) {
       if (runtimeQuarantined || runtimeView?.connection !== 'connected' || runtimeView?.stopping) {
         announce('Keep your words here until the connection and draft outcome are known.');

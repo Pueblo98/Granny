@@ -26,7 +26,7 @@ const key = async (key, code = key, modifiers = 0) => {
 };
 const fresh = async (review = false) => { await b.navigate(review ? '/?review=1' : '/'); if (review) await select('#review-delay', '0'); };
 const message = async (body = 'I’ll call after dinner.') => {
-  await request('Tell David ' + body); await choice('david-family');
+  await request('Tell David ' + body); await waitStage('clarify-person'); await choice('david-family');
   await waitStage('preview');
 };
 const hittableStop = () => b.evaluate(`(() => {
@@ -66,6 +66,7 @@ try {
   check(await b.evaluate("document.querySelectorAll('#room-list .room-entry').length===6 && document.querySelector('#continuation') && document.querySelector('#see-all-rooms')"), 'one continuation and explicit six-room row');
   await geometry('portrait home'); await b.screenshot('home-portrait');
   await request('Tell David I’ll call after dinner.');
+  await waitStage('clarify-person');
   check(await stage() === 'clarify-person', 'direct intent, no category selection');
   await request('Brother'); check(await stage() === 'clarify-channel', 'typed person reply keeps task');
   await request('Example Mail'); check(await stage() === 'preview', 'typed channel reply reaches preview');
