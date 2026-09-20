@@ -8,7 +8,7 @@ const app=await serve({port:0,provider:{available:true,interpret:async(...args)=
 try{
  b=await browser({baseURL:app.url});await b.navigate();
  const button=label=>b.evaluate(`(()=>{const e=[...document.querySelectorAll('button')].find(e=>e.textContent===${JSON.stringify(label)});if(!e||e.disabled)throw Error('Button unavailable');e.click()})()`);
- await b.click('#menu-button');await b.click('[data-menu=connection]');await button('Check live model availability');
+ await b.click('#menu-button');await b.click('[data-menu=settings]');await b.click('#settings-about');await b.click('#about-connection');await button('Check live model availability');
  await b.waitFor('[...document.querySelectorAll("button")].some(e=>e.textContent === "Review live conversation consent")');
  assert.equal(calls,0);await button('Review live conversation consent');assert.equal(calls,0);await b.click('#confirm-dialog button[value=confirm]');
  await b.waitFor('document.querySelector("#current-task")?.dataset.stage === "idle"');assert.equal(calls,0);

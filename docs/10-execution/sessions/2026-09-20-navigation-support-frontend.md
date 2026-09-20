@@ -14,6 +14,8 @@ related:
   - ../backlog.md
   - ../../../prototypes/stage-1/README.md
 changed_paths:
+  - prototypes/conversation-runtime/browser-check.mjs
+  - prototypes/conversation-runtime/live-consent-check.mjs
   - docs/02-design/browser-prototype.md
   - docs/10-execution/sessions/2026-09-20-navigation-support-frontend.md
   - prototypes/stage-1/README.md
@@ -191,6 +193,12 @@ the committed scripts but is not durable repository artwork.
 Live `runtime-integration-check.mjs` is unrun: the separately authorized runtime
 endpoint on port 4180 is unavailable. The mocked runtime browser suite passes;
 no backend/provider was started to manufacture integration evidence.
+CI subsequently exposed two older runtime-harness Menu selectors outside the
+stage-1 suite. Both now traverse Settings → About Granny → Demo connection;
+their consent, exact-body, cancellation and verified-unsent assertions are
+unchanged. Local MCP dependencies are absent, so these two existing harnesses
+run in the repository's existing CI, which installs its pinned dependencies and
+uses only a stub provider, loopback runtime and temporary fictional demo store.
 
 ### Deliberate differences and limits
 
