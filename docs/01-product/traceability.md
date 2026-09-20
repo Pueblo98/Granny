@@ -14,6 +14,13 @@ related:
 
 # Stage 1 requirements traceability
 
+The [native integration record](../10-execution/sessions/2026-09-20-native-conversation-integration.md)
+links PRD-FR-001/002/011/013/016, PRD-ACC-003, PRD-PRV-002,
+UC-013/J-007 and UC-007/J-006 to the actual shared coordinator, closed C5
+adapter/oracle and speech bridge. Host authority and output-interruption tests
+extend T-120/T-121/C5 source coverage; EVAL-005/006/007/008/009/012 device
+and human outcomes remain unrun. No capability or gate is admitted by this link.
+
 ## Executable design artifact
 
 [T-102 browser coverage](../02-design/browser-prototype.md#journey-and-component-coverage) maps J-001/002/003/005/006/007, their UC/PRD IDs, view keys and planned EVALs to [actual source](../../prototypes/stage-1/README.md). [Model checks](../../prototypes/stage-1/model.test.mjs) and [browser checks](../../prototypes/stage-1/browser-check.mjs) test the design simulation only. They do not change any EVAL row to passed or demonstrate two external delegated jobs.

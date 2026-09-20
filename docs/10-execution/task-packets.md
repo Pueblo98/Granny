@@ -355,6 +355,14 @@ lint, manifest/dependency/data inspection and exact unrun gaps. T-121 reaches
 review after those checks. Device/participant evidence and release gates remain
 separate.
 
+### Combined native integration follow-up
+
+The [integration record](sessions/2026-09-20-native-conversation-integration.md)
+owns the combined artifact, exact host checks and deferred synthetic matrix.
+T-120/T-121 device sequences must be revised for this shared surface before any
+later exact authorization: do not install or reuse an earlier APK implicitly.
+Simon has placed physical-tablet testing on hold while code is integrated.
+
 ## Restart prompts
 
 These are scoped examples, not standing authorization:

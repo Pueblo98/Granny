@@ -24,8 +24,9 @@ text remains visible and complete; the app never starts readback automatically.
 
 It is not a complete Granny app. It has no planner, external app adapter,
 message send, model, cloud speech, downloadable TTS voice management, background
-capture, wake word, persistent transcript or analytics. Submitting a request only
-freezes and displays the exact local text revision.
+capture, wake word, persistent transcript or analytics. Submitting exact fixture
+requests opens clarification; only a separately approved exact C5 preview can
+change the local text preference in debug builds.
 
 ## Boundary
 
@@ -58,11 +59,10 @@ Use the already prepared JDK 17 / API 36 toolchain:
 ./gradlew --no-daemon clean testDebugUnitTest assembleDebug lintDebug
 ```
 
-The latest command passes 55 cases across the combined voice, text-size and speech suites,
-debug assembly and lint with zero
-errors. Lint retains two deliberate version notices because this shell targets
-the selected Android 16/API 36 reference configuration while API 37 is present
-in the local SDK. `aapt2 dump permissions` reports only `RECORD_AUDIO`, and the
+The integrated command passes 110 cases across 13 suites, debug assembly and
+lint with zero errors. Remaining lint warnings concern API targeting, the
+API-33 Back attribute on minSdk 31, and English fixture strings. This shell
+targets the selected Android 16/API 36 reference configuration. `aapt2 dump permissions` reports only `RECORD_AUDIO`, and the
 debug runtime dependency report is empty.
 
 Host tests cover input/output generation state, stale callback and revision
@@ -91,14 +91,17 @@ The native shell now provides Standard / Larger / Larger still / Largest
 Selecting a choice only changes the sample. Apply writes the private,
 versioned `granny_text_scale` preference; readback must match before success.
 Restore reinstates the previous saved value once. Cancel abandons a preview;
-true backgrounding cancels it, while configuration recreation retains only
-preference/preview state. No transcript is retained by this mechanism.
+backgrounding and configuration recreation cancel it. Only place/scroll and
+an uncertain-outcome flag enter Activity saved state; no transcript or approval
+is restored. The independently stored text preference survives recreation.
 
 The store contains schema/version/current/previous enum only, uses synchronous
 commit and a single-process compare-and-set lock, and remains excluded from
 backup and transfer. Unknown save outcomes block further writes in that process.
-There is no Android/third-party settings control or natural-language dispatch.
-The inherited voice entry and local request submission remain separate.
+There is no Android/third-party settings control. A finite fixture interpreter
+recognizes “make text larger”, “make Granny text larger” and “make this bigger”;
+all other requests fail to clarification without an effect. Typed and final
+spoken requests share the same revision/approval path.
 
 See the [session record](../../docs/10-execution/sessions/2026-09-20-c5-native-text-scale.md)
 and [exact tablet verification](../../docs/10-execution/t101-c5-tablet-verification.md).
