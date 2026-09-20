@@ -14,8 +14,8 @@ session_state: review
 record_basis: contemporaneous
 agent: Codex
 branch: feature/room-chat-openrouter
-artifact_commit: 932fe23abbcd7d0cfb7dfbe5bf3e6850af621969
-next_action: Simon reloads the loopback UI and verifies that Use live AI chat answers an ordinary Home or Room question
+artifact_commit: 75490c56b3188a2d3158a73d916af8ba16408d74
+next_action: Simon reloads the loopback UI and submits one recipe question directly from the composer, then accepts the live-provider disclosure
 changed_paths:
   - docs/01-product/traceability.md
   - docs/02-design/browser-prototype.md
@@ -41,8 +41,10 @@ changed_paths:
   - prototypes/conversation-runtime/schema.mjs
   - prototypes/stage-1/README.md
   - prototypes/stage-1/app.js
+  - prototypes/stage-1/browser-check.mjs
   - prototypes/stage-1/cloud.js
   - prototypes/stage-1/cloud.test.mjs
+  - prototypes/stage-1/home-browser-check.mjs
   - prototypes/stage-1/room-ui.js
   - prototypes/stage-1/runtime-browser-check.mjs
   - prototypes/stage-1/runtime-integration-check.mjs
@@ -125,6 +127,18 @@ creates a fresh session in the already selected live or offline mode instead
 of silently returning to scripted behavior. Full reset and the explicit leave
 control still disconnect.
 
+Simon then supplied a Room transcript showing that the bottom composer still
+used `Granny · scripted fictional response` unless the hidden connection flow
+had already been completed. This invalidated the claim that all chat entries
+were integrated by default. The first Home, Room or item-level composer
+submission now checks only the same-origin runtime configuration. When live AI
+is available it preserves the exact question, opens the provider disclosure,
+and, only after consent, creates a live session and sends that question with
+its bounded Home/Room context. Cancel preserves the question and creates no
+session/model turn. The live path cannot fall through to the scripted Room
+responder; the scripted prototype remains the fallback when live availability
+is absent.
+
 ## Actual validation
 
 Node 26.8.1 and Chromium 151.0.7922.173 were used. Dependencies were installed
@@ -137,7 +151,7 @@ or lockfile changed.
 | Stage-1 model/scheduler/cloud/rooms-store/outcomes/serve checks | 67 + 7 + 28 + 58 + 11 + 1 passed | Scripted regressions, frontend receipt validation, Room state and static allowlist |
 | `rooms-browser-check.mjs` | 350 checks passed | Existing six-Room fictional fixture and adverse UI states |
 | `home-browser-check.mjs` | 158 checks passed, 0 browser errors | Selected Home and navigation regressions |
-| `runtime-browser-check.mjs` | 66 checks passed, 0 browser errors | One rendered model answer; Home, Help, Search, all six Rooms and item-level Ask use the live runtime; new conversation preserves mode; Room context and source receipt remain bounded |
+| `runtime-browser-check.mjs` | 70 checks passed, 0 browser errors | First recipe submit offers consent, creates no session/turn before approval, preserves the question/source after approval and never creates a scripted Room reply; connected-entry and duplicate-output coverage remains |
 | Stage-1 `browser-check.mjs` | 137 checks passed, 0 browser errors | Existing conversation-first interaction regression |
 | Conversation-runtime `browser-check.mjs` | 19 checks passed | Actual browser → HTTP → runtime → MCP/store path, including current-Room context |
 | `live-consent-check.mjs` | 10 checks passed, one stub-provider call | Explicit live mode/consent and unchanged verified draft path; no paid request |
@@ -155,7 +169,7 @@ committed.
 ## Handoff and limits
 
 Latest implementation checkpoint is
-`932fe23abbcd7d0cfb7dfbe5bf3e6850af621969` on
+`75490c56b3188a2d3158a73d916af8ba16408d74` on
 `feature/room-chat-openrouter` in
 `/home/lgtw/Work/granny-worktrees/room-chat-openrouter`. The final handoff
 commit and verified remote SHA are recorded in Git rather than recursively in
