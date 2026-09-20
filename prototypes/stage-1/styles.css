@@ -470,6 +470,81 @@ body:not([data-home="true"]) .composer-wrap {
 .composer-wrap:focus-within .composer-focus-frame { opacity: 1; }
 .composer:focus-within { outline: 0; }
 
+/* Shared transient conversation family. Intrinsic flow keeps the current
+   place mounted; no state is a full-screen replacement route. */
+body[data-surface]:not([data-surface=""]) .composer-wrap {
+  --line: #597DA0;
+  --send: #165D9C;
+  position: relative;
+  margin-top: .5em;
+  background: transparent;
+}
+body[data-surface]:not([data-surface=""]) .welcome h1 { font-size: 1.8em; }
+body[data-surface]:not([data-surface=""]) .welcome { margin-bottom: 1em; }
+body[data-surface]:not([data-surface=""]) .room-atmosphere { opacity: .45; }
+.shared-task-surface {
+  --line: #597DA0;
+  --accent: #2C5981;
+  --send: #165D9C;
+  max-width: 52em;
+  margin: .5em 0 0;
+  color: #2E2D32;
+}
+.shared-task-surface > h2, #speech-heading {
+  margin: 0 0 .25em;
+  font-size: 1.8em;
+  line-height: 1.15;
+  letter-spacing: -.025em;
+}
+.shared-task-surface > p { margin: .45em 0 .8em; }
+.surface-content, .surface-facts, .surface-choices {
+  background: #FFFFFF;
+  border: 2px solid #597DA0;
+  border-radius: 18px;
+  padding: 1em;
+  margin: .8em 0;
+}
+.surface-facts { display: grid; grid-template-columns: minmax(8em, 1fr) minmax(0, 3fr); gap: .7em 1.2em; }
+.surface-facts dt { color: #2E2D32; font-weight: 600; }
+.surface-facts dd { margin: 0; overflow-wrap: anywhere; }
+.surface-outcome { color: #2C5981; font-weight: 700; font-size: 1.2em; }
+.surface-actions, .shared-task-surface > .inline-actions { display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px; margin-top: .65em; }
+.shared-task-surface .surface-content { max-width: none; }
+.surface-place { font-size: .82em; font-weight: 600; }
+.surface-actions button, .shared-task-surface > .inline-actions button { flex: 0 1 auto; width: auto; }
+.surface-actions .primary, .shared-task-surface .primary { background: #2C5981; border-color: #2C5981; color: #FFFFFF; }
+.surface-choices { padding: 0; }
+.surface-choice { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; text-align: left; border: 0; border-radius: 0; padding: .7em 1em; gap: .15em 1em; }
+.surface-choice + .surface-choice { border-top: 1px solid #597DA0; }
+.surface-choice:first-child { border-radius: 16px 16px 0 0; }
+.surface-choice:last-child { border-radius: 0 0 16px 16px; }
+.surface-choice > strong { font-size: 1.15em; }
+.surface-choice > span { grid-column: 1; }
+.surface-choice > .choice-destination { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.surface-choice:focus-visible { position: relative; z-index: 1; }
+.retained-request { font-weight: 600; }
+#speech-surface { grid-column: 1 / -1; min-width: 0; }
+#speech-surface p { margin: .4em 0 .8em; }
+#speech-surface textarea { width: 100%; min-height: 3em; font-size: 1.15em; }
+#speech-surface #heard-copy { font-size: 1.15em; min-height: 3em; white-space: pre-wrap; }
+.provisional-caret { font-weight: 400; }
+#speech-surface label { display: block; }
+#speech-surface .notice, #speech-disclosure { font-size: .85em; }
+#composer[data-speech]:not([data-speech=""]) > :not(#speech-surface) { display: none; }
+#composer[data-speech]:not([data-speech=""]) { display: block; }
+#stop-button { display: flex; align-items: center; gap: .5em; width: auto; margin: 0; border: 0; background: transparent; color: #2E2D32; }
+.stop-symbol { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: #962F43; color: white; }
+body[data-large-text="true"] .surface-facts { grid-template-columns: minmax(0, 1fr); }
+body[data-large-text="true"] .surface-choice { grid-template-columns: minmax(0, 1fr); }
+body[data-large-text="true"] .surface-choice > .choice-destination { grid-column: 1; grid-row: auto; }
+@media (max-width: 700px) {
+  .surface-facts { grid-template-columns: minmax(0, 1fr); gap: .35em; }
+  .surface-facts dd { margin-bottom: .7em; }
+  .surface-choice { grid-template-columns: minmax(0, 1fr); }
+  .surface-choice > .choice-destination { grid-column: 1; grid-row: auto; }
+  .surface-actions > button, .shared-task-surface > .inline-actions > button { flex: 1 1 100%; }
+}
+
 .composer label {
   grid-column: 1;
   color: var(--muted);
@@ -633,7 +708,7 @@ dialog img { width: 100%; height: auto; border-radius: 14px; }
 .screen-source dd { margin: 0 0 12px; }
 
 .stop-dock {
-  position: sticky;
+  position: fixed;
   z-index: 12;
   top: 0;
   width: min(100%, 1480px);

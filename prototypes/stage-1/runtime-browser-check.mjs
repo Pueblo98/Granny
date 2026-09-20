@@ -106,7 +106,7 @@ try {
   await command('Tell David Another fictional message.');
   await waitState('interpreting');
   check(await b.evaluate('document.documentElement.scrollWidth <= innerWidth'), 'connected large text narrow viewport has no page overflow');
-  check(await b.evaluate('(() => {const r=document.querySelector("#stop-button").getBoundingClientRect();return r.top>=0 && r.bottom<=innerHeight;})()'), 'Stop remains visible at narrow constrained height');
+  check(await b.evaluate('[...document.querySelectorAll("#stop-button,#stop-fallback")].some(e=>{const r=e.getBoundingClientRect();return e.getClientRects().length && r.top>=0 && r.bottom<=innerHeight && e.contains(document.elementFromPoint((r.left+r.right)/2,(r.top+r.bottom)/2));})'), 'Stop remains visible and hittable at narrow constrained height');
   await b.screenshot('connected-narrow-stop');
   await b.click('#stop-button');
   await waitState('stopped');

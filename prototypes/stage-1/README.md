@@ -78,6 +78,31 @@ The server binds only 127.0.0.1 and serves an exact allowlist of runtime scripts
 
 ## Review
 
+### Shared conversation surfaces (20 September)
+
+Talk now expands the existing Round composer into **Listening**, then an
+editable **Check what I heard** state. Use this request interprets only; typed
+requests bypass these speech states. The fictional David rows explicitly show
+both person and destination. Exact preview, activity, Prepared and Unknown use
+one task renderer above the composer, in Home and every Room. Rooms stay mounted
+with their current collection/item state; Cancel/Done restore origin focus and
+scroll. Stop replaces Send while acting; an offscreen fallback keeps Stop
+reachable on long/large-text pages. No microphone or speech service is called.
+
+The [shared-state review](../../docs/02-design/mockups/2026-09-20-shared-state-pack/frontend-checkpoint-1/README.md)
+maps all seven images to code, captures Home/Kitchen and records intentional
+adaptations. Preview remains inline/nonmodal; interruption dialogs retain
+native focus containment. Navigation resolves work before switching place;
+leaving a result requires Done and leave. Secondary settings expire preview
+authority while retaining unsaved edits. Prepared and Unknown are alternative
+fixture outcomes; manual handoff/review never opens a real app or retries.
+
+Run `node prototypes/stage-1/shared-state-browser-check.mjs` for the new
+state/return/reflow regression family and
+`node prototypes/stage-1/shared-state-review.mjs` to reproduce screenshots.
+The old Talk dialog was removed; existing model/scheduler and connected-demo
+authority were reused, not replaced by a separate seven-step wizard.
+
 - Start on Home: review the Round writing surface, optional Kitchen continuation, and open six-room row. When the rendered row overflows, written Previous/Next controls move it; when everything fits they disappear. **See all rooms** provides a direct vertical fallback.
 - Type a goal or open **Talk (simulated)** without choosing a Room. Supported requests need no category selection. Talk never uses a microphone or speech API.
 - Open Kitchen, Fitness, Trips, Garden, Reading or Projects. Each overview has four labelled symbols and an explicit route to all eight collections. Select a collection, search, open a fictional item, then **Ask Granny about this**. Review the prefilled question and Send. **View source** reopens the item; **Stop using this source** excludes it from later replies while earlier answers remain labelled as history. Returning Home clears current-room priority.

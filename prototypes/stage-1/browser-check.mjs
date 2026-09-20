@@ -26,7 +26,25 @@ const key = async (key, code = key, modifiers = 0) => {
 };
 const fresh = async (review = false) => { await b.navigate(review ? '/?review=1' : '/'); if (review) await select('#review-delay', '0'); };
 const message = async (body = 'I’ll call after dinner.') => {
-  await request('Tell David ' + body); await choice('david-family'); await choice('Example Messages');
+  await request('Tell David ' + body); await choice('david-family');
+  await waitStage('preview');
+};
+const hittableStop = () => b.evaluate(`(() => {
+  for (const selector of ['#stop-button', '#stop-fallback']) {
+    const el = document.querySelector(selector), rect = el?.getBoundingClientRect();
+    if (el && !el.hidden && rect.width && rect.height && rect.top >= 0 &&
+        rect.bottom <= innerHeight && rect.left >= 0 && rect.right <= innerWidth &&
+        el.contains(document.elementFromPoint((rect.left + rect.right) / 2,
+                                             (rect.top + rect.bottom) / 2)))
+      return selector;
+  }
+  return '';
+})()`);
+const stop = async () => {
+  await b.evaluate('new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))');
+  const selector = await hittableStop();
+  if (!selector) throw Error('No hittable Stop control');
+  await b.click(selector);
 };
 const geometry = async label => {
   const result = await b.evaluate(`({
@@ -52,7 +70,7 @@ try {
   await request('Brother'); check(await stage() === 'clarify-channel', 'typed person reply keeps task');
   await request('Example Mail'); check(await stage() === 'preview', 'typed channel reply reaches preview');
   check((await text()).includes('I’ll call after dinner.'), 'exact body retained');
-  await button('Change');
+  await button('Change it');
   await b.fill('[aria-label="Message"]', '<script>window.injection=1</script> Dinner at 7?');
   await select('[aria-label="Recipient"]', 'david-garden');
   await button('Save changes');
@@ -107,7 +125,7 @@ try {
   await b.evaluate("window.oldApproval=document.querySelector('[data-action=approve]')");
   await b.click('#review-expire'); check(await stage() === 'expired', 'review expiry works');
   check((await text()).includes('Retain this draft.'), 'expiry retains exact draft');
-  await button('Review again'); await button('Change');
+  await button('Review again'); await button('Change it');
   await b.fill('[aria-label="Message"]', 'Changed exact body.'); await button('Save changes');
   await b.evaluate('window.oldApproval.click()');
   check(!['planning','acting','waiting','verifying','completed'].includes(await stage()), 'historical button cannot approve current version');
@@ -119,8 +137,8 @@ try {
   await fresh(true); await select('#review-fault', 'unknown'); await message(); await b.click('[data-action=approve]');
   await waitStage('unknown');
   check(await b.evaluate("!document.querySelector('#current-task [data-action=approve]')"), 'unknown no resend button');
-  await button('I understand');
-  check(await stage() !== 'unknown', 'unknown acknowledgement has real exit');
+  await button('Done');
+  check(await b.evaluate("!document.querySelector('#current-task')"), 'unknown Done dismisses the surface without converting it to completed');
   await select('#review-fault','');
   await message(); await b.click('[data-action=approve]'); await finish();
   check((await text()).includes('not sent'), 'None clears prior injected outcome');
@@ -147,10 +165,17 @@ try {
   await b.click('[data-action=approve]'); await finish();
   check((await text()).includes('may now be marked read'),'mark-read result reports side effect');
   await fresh(true); await message(); await select('#review-delay','1500'); await b.click('[data-action=approve]');
-  await b.click('#talk'); await b.click('#talk-stop'); await waitStage('stopped');
-  await b.evaluate('new Promise(resolve=>setTimeout(resolve,1700))'); check(await stage()==='stopped','Talk Stop cancels pending progression');
+  await b.click('#talk');
+  check(await b.evaluate("!!document.querySelector('#confirm-dialog[open]')"), 'Talk asks to interrupt active work before listening');
+  await b.click('#confirm-dialog button[value=confirm]');
+  await b.waitFor("!document.querySelector('#speech-surface').hidden");
+  check(await b.evaluate("!document.querySelector('#speech-surface').hidden"), 'confirmed interruption opens simulated listening after the task stops');
+  await b.click('#speech-cancel'); await waitStage('stopped');
+  await b.evaluate('new Promise(resolve=>setTimeout(resolve,1700))'); check(await stage()==='stopped','active Talk interruption prevents pending completion');
   await fresh(true); await select('#review-delay','1500'); await request('Show me the photos Sophie sent yesterday'); await menu('new');
   check(await b.evaluate("!!document.querySelector('#confirm-dialog[open]')"),'all-task unfinished protection');
+  await b.click('#confirm-dialog button[value=confirm]');
+  await b.waitFor("!!document.querySelector('#confirm-dialog[open]')");
   await b.click('#confirm-dialog button[value=confirm]'); await b.waitFor("!document.querySelector('#current-task')");
   await b.evaluate('new Promise(resolve=>setTimeout(resolve,1700))'); check(!await stage(),'new conversation prevents stale lookup callback');
   await b.fill('#request','Keep this input'); await menu('new'); await key('Escape');
@@ -195,18 +220,22 @@ try {
   for (const [width,height] of [[360,480],[840,900]]) {
     await b.viewport(width,height);
     for (const where of ['0','document.documentElement.scrollHeight']) {
-      const visible = await b.evaluate(`(() => { scrollTo(0,${where}); const e=document.querySelector('#stop-button'),r=e.getBoundingClientRect(); return r.top>=0 && r.bottom<=innerHeight && e.contains(document.elementFromPoint((r.left+r.right)/2,(r.top+r.bottom)/2)); })()`);
-      check(visible,'300% Stop immediately reachable '+width+' at '+where);
+      await b.evaluate(`scrollTo(0,${where});new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
+      check(await hittableStop(),'300% Stop immediately reachable '+width+' at '+where);
     }
   }
-  await b.click('#stop-button');
+  await stop();
   await select('#review-scale','1'); await b.viewport(840,1100);
   await b.screenshot('harbour-blue-active-task');
 
   await fresh();
-  await b.click('#talk'); check(await b.evaluate("!!document.querySelector('#talk-dialog[open]')"), 'simulated Talk opens');
-  const decline = await b.evaluate("[...document.querySelectorAll('#talk-dialog button')].find(x=>/touch|type|decline/i.test(x.textContent))?.textContent.trim()");
-  check(!!decline,'no-microphone path offered'); await button(decline,'#talk-dialog');
+  await b.click('#talk'); check(await b.evaluate("!document.querySelector('#speech-surface').hidden"), 'simulated Talk expands the composer surface');
+  await b.click('#speech-done');
+  check(await b.evaluate("document.querySelector('#speech-surface').dataset.state==='transcript' && !document.querySelector('#speech-use').hidden"), 'Done listening opens the editable transcript surface');
+  await b.click('#speech-use'); await waitStage('clarify-person');
+  check(await b.evaluate("document.querySelector('#speech-surface').hidden"), 'Use this request collapses the speech surface before interpretation');
+  await fresh(); await b.click('#talk');
+  check(await b.evaluate("!document.querySelector('#speech-type').hidden"), 'no-microphone Type instead path offered'); await b.click('#speech-type');
   await b.fill('#request','Unfinished words');
   await menu('new');
   check(await b.evaluate("!!document.querySelector('#confirm-dialog[open]')"), 'new conversation guards unfinished composer');
@@ -219,12 +248,12 @@ try {
   await key('Tab'); check(await b.evaluate("document.activeElement.id==='talk'"), 'keyboard reaches Talk after input');
   await key('Tab'); check(await b.evaluate("document.activeElement.matches('#composer button[type=submit]')"), 'keyboard reaches typed submission');
   await key('Enter'); await waitStage('clarify-person');
-  await b.evaluate("document.querySelector('[data-choice=david-family]').focus()"); await key('Enter'); await waitStage('clarify-channel');
-  await b.evaluate("document.querySelector('[data-choice]').focus()"); await key('Enter'); await waitStage('preview');
+  await b.evaluate("document.querySelector('[data-choice=david-family]').focus()"); await key('Enter'); await waitStage('preview');
+  check(await b.evaluate("document.querySelector('#current-task').innerText.includes('David') && document.querySelector('#current-task').innerText.includes('Example Messages')"), 'keyboard David row explicitly chooses the displayed person and destination');
   check(await stage()==='preview','keyboard-only activation reaches exact preview');
   await b.click('#talk'); await key('Escape');
-  await b.waitFor("!document.querySelector('#talk-dialog[open]') && document.activeElement.id==='talk'");
-  check(await b.evaluate("document.activeElement.id==='talk'"),'Escape returns dialog focus');
+  await b.waitFor("document.querySelector('#speech-surface').hidden && document.activeElement.id==='talk'");
+  check(await b.evaluate("document.activeElement.id==='talk'"),'Escape restores Talk focus after dismissing the speech surface');
   await menu('privacy'); await button('Reset everything'); await b.click('#confirm-dialog button[value=confirm]');
   await b.waitFor("!document.querySelector('#current-task') && document.querySelector('#request').value===''");
   check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===22"),'privacy reset restores local baseline');
@@ -242,7 +271,7 @@ try {
   check(await b.evaluate("document.activeElement.id==='request' && document.querySelector('#request').value==='Keep these unfinished words while you work.'"),'progress preserves composer focus and unfinished words');
   check(await b.evaluate("document.querySelector('#request').selectionStart===5 && document.querySelector('#request').selectionEnd===10"),'progress retains composer selection');
   check(Math.abs(await b.evaluate('scrollY')-readingPosition)<3,'progress does not scroll a reader away from the top');
-  await fresh(true); await message('Original exact words.'); await button('Change');
+  await fresh(true); await message('Original exact words.'); await button('Change it');
   await b.fill('[aria-label=Message]','Uncommitted edit stays here.');
   await menu('text'); await button('115%','[data-panel=text]'); await button('Apply this size','[data-panel=text]'); await button('Return to conversation','[data-panel=text]');
   check(await b.evaluate("document.querySelector('[aria-label=Message]').value==='Uncommitted edit stays here.'"),'text settings retain unsaved draft editor');

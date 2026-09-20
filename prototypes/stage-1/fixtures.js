@@ -8,6 +8,10 @@ const people = [
   {id : "sophie-book", name : "Sophie", detail : "Book club"}
 ];
 const channels = [ "Example Messages", "Example Mail" ];
+// Explicit destination labels on the shared-state person rows, not inferred
+// account preferences. Clicking a row chooses both of its written values.
+const surfaceChannels = {'david-family': 'Example Messages', 'david-garden': 'Example Mail'};
+const speechRequest = 'Tell David I’ll call after dinner.';
 const photos = [
   {
     id : "garden",
@@ -96,6 +100,8 @@ const tracks = [
 const api = {
   people,
   channels,
+  surfaceChannels,
+  speechRequest,
   photos,
   screens,
   tracks

@@ -20,7 +20,7 @@
 </head>
 <body>
   <div id="stop-dock" class="stop-dock" hidden>
-    <button type="button" class="stop-button" id="stop-button" hidden>Stop</button>
+    <button type="button" class="stop-button" id="stop-fallback" hidden>■ Stop</button>
   </div>
   <a class="skip-link" href="#conversation">Skip to conversation</a>
   <main class="app-shell" id="app-shell">
@@ -73,6 +73,23 @@
         <path id="composer-outline-path"></path>
       </svg>
       <form class="composer" id="composer" novalidate>
+        <section id="speech-surface" aria-labelledby="speech-heading" hidden>
+          <p id="speech-place" class="surface-place">Home · Granny</p>
+          <h2 id="speech-heading" tabindex="-1">Listening</h2>
+          <p id="speech-instruction">Say what you would like to do.</p>
+          <p class="notice">Simulated listening — no microphone is used.</p>
+          <label for="talk-text" id="speech-label">Heard so far</label>
+          <p id="heard-copy" aria-labelledby="speech-label" aria-describedby="speech-disclosure"><span id="heard-words"></span><span class="provisional-caret" aria-hidden="true">│</span></p>
+          <textarea id="talk-text" rows="2" maxlength="2000" aria-describedby="speech-disclosure"></textarea>
+          <p id="speech-disclosure">Provisional example words. Nothing is submitted while listening.</p>
+          <div class="surface-actions">
+            <button type="button" id="speech-done" class="primary">Done listening</button>
+            <button type="button" id="speech-use" class="primary" hidden>Use this request</button>
+            <button type="button" id="speech-again" hidden>Listen again</button>
+            <button type="button" id="speech-cancel">Cancel</button>
+            <button type="button" id="speech-type">Type instead</button>
+          </div>
+        </section>
         <label for="request">Type a request</label>
         <textarea id="request" rows="1" maxlength="2000" placeholder="Ask me anything…" aria-describedby="composer-help"></textarea>
         <span class="sr-only" id="composer-help">Type a fictional request, then choose Send. Talk is simulated and does not use a microphone.</span>
@@ -84,6 +101,7 @@
             </span>
             <span>Send</span>
           </button>
+          <button type="button" class="composer-action stop-button" id="stop-button" hidden><span class="stop-symbol" aria-hidden="true">■</span>Stop</button>
         </div>
       </form>
     </div>
@@ -120,20 +138,6 @@
     </section>
 
   </main>
-
-  <dialog id="talk-dialog" aria-labelledby="talk-title">
-    <form method="dialog">
-      <h2 id="talk-title">Listening · simulated</h2>
-      <p>Your microphone is not being used. Edit this sample transcript, then choose Use transcript.</p>
-      <label for="talk-text">Transcript</label>
-      <textarea id="talk-text" rows="3">Tell David I’ll call after dinner.</textarea>
-      <div class="dialog-actions">
-        <button value="decline">Microphone declined — use touch</button>
-        <button id="talk-stop" value="cancel">Stop</button>
-        <button value="use" class="primary">Use transcript</button>
-      </div>
-    </form>
-  </dialog>
 
   <dialog id="confirm-dialog" aria-labelledby="confirm-title">
     <form method="dialog">

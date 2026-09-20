@@ -239,7 +239,7 @@ try {
   await fresh();
   check(await b.evaluate("window.__micCalls===0 && window.__speechCalls===0"), 'no microphone or speech capture during initialization');
   await b.click('#talk');
-  check(await b.evaluate("window.__micCalls===0 && window.__speechCalls===0 && document.querySelector('#talk-dialog[open]').textContent.includes('microphone is not being used')"), 'Talk is simulated without microphone or speech capture');
+  check(await b.evaluate("window.__micCalls===0 && window.__speechCalls===0 && !document.querySelector('#speech-surface').hidden && document.querySelector('#speech-surface').textContent.includes('no microphone is used')"), 'Talk is simulated without microphone or speech capture');
   await key('Escape');
   check(await b.evaluate("localStorage.length===0 && sessionStorage.length===0 && document.cookie===''"), 'no Web Storage or cookies');
   check(await b.evaluate("(async()=>!(await indexedDB.databases()).length)()"), 'no IndexedDB');

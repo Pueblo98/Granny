@@ -19,6 +19,25 @@ related:
 
 # Conversation-first browser experience
 
+## Shared temporary conversation surfaces
+
+The [20 September shared-state checkpoint](mockups/2026-09-20-shared-state-pack/frontend-checkpoint-1/README.md)
+implements the accepted [place-preserving contract](shared-conversation-state-surfaces.md)
+over Home and all six existing Rooms. Listening/transcript expand the Round
+composer; clarification, exact preview, activity and alternative Prepared/
+Unknown outcomes use one message-surface renderer. Existing model approval
+versions, cancellation, scheduler and optional connected wire behavior remain
+the authority. This is not seven routes or a production speech implementation.
+
+Stop replaces Send and a fixed fallback appears only when the composer Stop
+is offscreen. Navigation resolves active work before leaving; result departure
+requires Done and leave. Inline preview remains nonmodal, secondary settings
+expire its approval while retaining edits, and native interruption dialogs
+own focus only while open. Origins preserve Room subview, scroll and focus.
+The [session record](../10-execution/sessions/2026-09-20-shared-state-frontend.md)
+owns exact files/checks and limitations. No microphone, provider, external app,
+new persistence, Android or real outcome evidence is introduced.
+
 ## Selected Home checkpoint
 
 The [content/art separation refinement](mockups/2026-09-20-room-content-separation/README.md)
