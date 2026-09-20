@@ -29,6 +29,8 @@ jobs:
         run: python scripts/cockpit.py --check
       - name: Test repository tooling
         run: python -m unittest discover -s scripts -p 'test_*.py'
+      - name: Test offline perception contracts without OCR or device access
+        run: python -m unittest discover -s experiments/ui-perception -p 'test_*.py'
       - name: Require scoped handoff
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}

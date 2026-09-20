@@ -46,6 +46,12 @@ and [tablet verification packet](t101-c5-tablet-verification.md). Device layout,
 preference durability and accessibility remain unrun; this does not count as
 an admitted external workflow or finish T-101.
 
+The [screen-understanding lab](../../experiments/ui-perception/README.md) adds
+real host OCR, semantic fusion, numbered maps and an isolated read-only Android
+fixture observer. [Evidence and JEV fit](../08-research/2026-09-20-screen-understanding.md)
+separate already-tested offline features from this implementation. No arbitrary
+app control, production admission or new device evidence is implied.
+
 <a id="t-102"></a>
 ## T-102 — Prototype conversation/input/permission and access interaction
 
