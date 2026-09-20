@@ -1,0 +1,24 @@
+{
+  "iteration": "profile-accessibility-iteration-1",
+  "date": "2026-09-20",
+  "status": "proposed",
+  "generator": "built-in image generation tool",
+  "prompt_log": "prompts.md",
+  "assets": [
+    {"id":"profile","role":"support-destination","path":"01-profile.png","width":1586,"height":992,"alpha":false,"review_status":"selected-for-review"},
+    {"id":"home-200-percent","role":"accessibility-state","path":"02-home-200-percent-text.png","width":1586,"height":992,"alpha":false,"review_status":"selected-for-review"},
+    {"id":"kitchen-narrow","role":"accessibility-state","path":"03-kitchen-narrow-window.png","width":1586,"height":992,"alpha":false,"review_status":"selected-for-review"},
+    {"id":"keyboard-open","role":"accessibility-state","path":"04-keyboard-open-layout.png","width":1586,"height":992,"alpha":false,"review_status":"selected-for-review"},
+    {"id":"keyboard-focus","role":"accessibility-state","path":"05-keyboard-focus.png","width":1586,"height":992,"alpha":false,"review_status":"selected-for-review"},
+    {"id":"reduced-motion","role":"accessibility-state","path":"06-reduced-motion.png","width":1586,"height":992,"alpha":false,"review_status":"selected-for-review"},
+    {"id":"no-microphone","role":"accessibility-state","path":"07-no-microphone.png","width":1586,"height":992,"alpha":false,"review_status":"selected-for-review"},
+    {"id":"artwork-disabled","role":"accessibility-state","path":"08-artwork-disabled.png","width":1586,"height":992,"alpha":false,"review_status":"selected-for-review"},
+    {"id":"long-copy","role":"accessibility-state","path":"09-long-copy.png","width":1586,"height":992,"alpha":false,"review_status":"selected-for-review"},
+    {"id":"screen-reader-order","role":"design-annotation","path":"10-screen-reader-reading-order.png","width":1586,"height":992,"alpha":false,"review_status":"selected-for-review"},
+    {"id":"comparison","role":"derived-review-sheet","path":"comparison.png","width":1632,"height":3065,"alpha":true,"opaque":true,"review_status":"derived"}
+  ],
+  "rejected": [
+    {"path":"rejected/02-home-200-percent-device-frame-rejected.png","reason":"Added a physical tablet bezel instead of a flat UI reference."},
+    {"path":"rejected/10-screen-reader-wrong-date-rejected.png","reason":"Invented an inaccurate October 2024 metadata line."}
+  ]
+}

@@ -60,6 +60,42 @@ output, engine egress/offline behavior, language packs, audio focus, Stop
 latency, rate fidelity and TalkBack interaction remain unrun under
 EVAL-007/009 and RES-06. No gate passes from this implementation.
 
+## Profile and accessibility adaptation review — 2026-09-20
+
+The proposed [Profile and accessibility iteration 1](../02-design/mockups/2026-09-20-profile-accessibility/iteration-1/README.md)
+adds one local Profile support destination and nine representative Harbour Blue
+stress states: 200% text, narrow window, keyboard open, keyboard focus, reduced
+motion, no microphone, artwork disabled, long copy and annotated screen-reader
+order. The adaptations preserve the current Home/Room/conversation, written
+controls and stable composer rather than creating separate accessible pages.
+
+This is a visual-review checkpoint. Profile does not authorize an account,
+public identity or new personal-data store. The accessibility frames establish
+patterns to review but do not prove the complete per-screen matrix, Android
+insets, TalkBack, switch access, actual permission state, runtime motion or
+representative-user comprehension. Canonical propagation and an implementation
+metaprompt wait for Simon's feedback.
+
+## Navigation and supporting surfaces visual review — 2026-09-20
+
+The proposed [navigation and supporting surfaces iteration 1](../02-design/mockups/2026-09-20-navigation-supporting-surfaces/iteration-1/README.md)
+adds 13 Harbour Blue references for Menu, minimal Today history, Settings,
+Privacy/data, Accessibility, Help, new conversation, return from an external
+app, global search and three-step skippable onboarding. Navigation stays a
+quiet written layer around the conversation; supporting destinations use one
+readable sequence rather than dashboards, and onboarding separates reversible
+preferences from optional access reviews.
+
+The rasters do not themselves implement navigation, persist history or
+preferences, request Android permissions, search external apps or prove
+return-state verification. Simon subsequently approved the direction for the
+active frontend session through the bounded
+[navigation/supporting-surface implementation metaprompt](../02-design/mockups/2026-09-20-navigation-supporting-surfaces/iteration-1/NAVIGATION-SUPPORTING-SURFACES-IMPLEMENTATION-METAPROMPT.md).
+The handoff defines each screen's purpose, exact fixture copy, entry/exit,
+state ownership, focus and responsive behavior, cross-surface journeys and
+tests. It remains fictional browser work and stops before Android, real
+permissions, durable personal data, external-app claims or mixed-task merge.
+
 ## Core outcome modules visual review — 2026-09-20
 
 The proposed [core outcome modules iteration 1](../02-design/mockups/2026-09-20-core-outcome-modules/iteration-1/README.md)

@@ -1,0 +1,1439 @@
+{
+  "iteration": "context-rooms-iteration-1",
+  "status": "complete-awaiting-simon-review",
+  "generated_with": "built-in image generation tool",
+  "selected_asset_count": 84,
+  "rejected_retry_count": 16,
+  "source_reference": "docs/02-design/mockups/2026-09-19-style-boards/final-harbour-blue/harbour-blue-final.png",
+  "visual_bible": "docs/02-design/mockups/context-rooms/iteration-1/visual-bible.md",
+  "entries": [
+    {
+      "asset_id": "room-fitness-f01-backdrop-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "interior-backdrop",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/room-fitness-f01-backdrop-i01.png",
+      "dimensions": {
+        "width": 1586,
+        "height": 992
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Large quiet central content region confirmed; decorative edges remain removable."
+    },
+    {
+      "asset_id": "room-fitness-f01-decor-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "transparent-decor-cluster",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/room-fitness-f01-decor-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-after-retry-with-known-alpha-halo",
+      "review_note": "RGBA transparency confirmed, but a visible soft alpha halo remains after one targeted retry."
+    },
+    {
+      "asset_id": "room-fitness-f01-empty-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "transparent-empty-state",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/room-fitness-f01-empty-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-after-retry-with-known-alpha-halo",
+      "review_note": "RGBA transparency confirmed, but a visible soft alpha halo remains after one targeted retry."
+    },
+    {
+      "asset_id": "room-fitness-f01-mark-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": "F-M01",
+      "symbol_label": null,
+      "role": "room-mark",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/room-fitness-f01-mark-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-raster-study-with-known-tonal-shading",
+      "review_note": "Distinct at 64px and 96px; generated raster retains slight tonal shading and is not an SVG master."
+    },
+    {
+      "asset_id": "room-fitness-f01-motif-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "surface-motif",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/room-fitness-f01-motif-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-with-unrun-seamless-repeat-check",
+      "review_note": "Low-contrast and removable; seamless repetition is not technically proven."
+    },
+    {
+      "asset_id": "room-fitness-f01-portrait-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "outside-room-portrait",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/room-fitness-f01-portrait-i01.png",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Recognizable at small Home/library scale through threshold shape and dossier-owned key objects."
+    },
+    {
+      "asset_id": "room-fitness-symbol-classes-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": "Classes",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-classes-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-fitness-symbol-cycling-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": "Cycling",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-cycling-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-fitness-symbol-equipment-notes-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": "Equipment Notes",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-equipment-notes-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-fitness-symbol-routines-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": "Routines",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-routines-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-fitness-symbol-strength-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": "Strength",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-strength-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-fitness-symbol-stretching-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": "Stretching",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-stretching-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-fitness-symbol-swimming-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": "Swimming",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-swimming-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-fitness-symbol-walking-i01",
+      "room": "fitness",
+      "pack": "F01",
+      "mark_id": null,
+      "symbol_label": "Walking",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/symbols/room-fitness-symbol-walking-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/fitness/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-garden-g01-backdrop-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "interior-backdrop",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/room-garden-g01-backdrop-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Large quiet central content region confirmed; decorative edges remain removable."
+    },
+    {
+      "asset_id": "room-garden-g01-decor-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "transparent-decor-cluster",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/room-garden-g01-decor-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-after-retry-with-known-alpha-halo",
+      "review_note": "RGBA transparency confirmed, but a visible soft alpha halo remains after one targeted retry."
+    },
+    {
+      "asset_id": "room-garden-g01-empty-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "transparent-empty-state",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/room-garden-g01-empty-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-after-retry-with-known-alpha-halo",
+      "review_note": "RGBA transparency confirmed, but a visible soft alpha halo remains after one targeted retry."
+    },
+    {
+      "asset_id": "room-garden-g01-mark-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": "G-M04",
+      "symbol_label": null,
+      "role": "room-mark",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/room-garden-g01-mark-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-raster-study-with-known-tonal-shading",
+      "review_note": "Distinct at 64px and 96px; generated raster retains slight tonal shading and is not an SVG master."
+    },
+    {
+      "asset_id": "room-garden-g01-motif-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "surface-motif",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/room-garden-g01-motif-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-with-unrun-seamless-repeat-check",
+      "review_note": "Low-contrast and removable; seamless repetition is not technically proven."
+    },
+    {
+      "asset_id": "room-garden-g01-portrait-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "outside-room-portrait",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/room-garden-g01-portrait-i01.png",
+      "dimensions": {
+        "width": 1214,
+        "height": 1295
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Recognizable at small Home/library scale through threshold shape and dossier-owned key objects."
+    },
+    {
+      "asset_id": "room-garden-symbol-garden-journal-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": "Garden Journal",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-garden-journal-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-garden-symbol-photos-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": "Photos",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-photos-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-garden-symbol-plants-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": "Plants",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-plants-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-garden-symbol-seasonal-plans-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": "Seasonal Plans",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-seasonal-plans-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-garden-symbol-seeds-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": "Seeds",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-seeds-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-garden-symbol-supplies-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": "Supplies",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-supplies-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-garden-symbol-things-to-do-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": "Things to Do",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-things-to-do-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-garden-symbol-watering-i01",
+      "room": "garden",
+      "pack": "G01",
+      "mark_id": null,
+      "symbol_label": "Watering",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/symbols/room-garden-symbol-watering-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/garden/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-kitchen-k01-backdrop-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "interior-backdrop",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/room-kitchen-k01-backdrop-i01.png",
+      "dimensions": {
+        "width": 1586,
+        "height": 992
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Large quiet central content region confirmed; decorative edges remain removable."
+    },
+    {
+      "asset_id": "room-kitchen-k01-decor-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "transparent-decor-cluster",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/room-kitchen-k01-decor-i01.png",
+      "dimensions": {
+        "width": 1484,
+        "height": 1060
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "RGBA transparency confirmed; removable decor carries no navigation or baked text."
+    },
+    {
+      "asset_id": "room-kitchen-k01-empty-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "transparent-empty-state",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/room-kitchen-k01-empty-i01.png",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "RGBA transparency confirmed; no baked copy, personal data or completion claim."
+    },
+    {
+      "asset_id": "room-kitchen-k01-mark-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": "K-M01",
+      "symbol_label": null,
+      "role": "room-mark",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/room-kitchen-k01-mark-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-raster-study-with-known-tonal-shading",
+      "review_note": "Distinct at 64px and 96px; generated raster retains slight tonal shading and is not an SVG master."
+    },
+    {
+      "asset_id": "room-kitchen-k01-motif-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "surface-motif",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/room-kitchen-k01-motif-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-with-unrun-seamless-repeat-check",
+      "review_note": "Low-contrast and removable; seamless repetition is not technically proven."
+    },
+    {
+      "asset_id": "room-kitchen-k01-portrait-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "outside-room-portrait",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/room-kitchen-k01-portrait-i01.png",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Recognizable at small Home/library scale through threshold shape and dossier-owned key objects."
+    },
+    {
+      "asset_id": "room-kitchen-symbol-appliance-notes-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": "Appliance Notes",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-appliance-notes-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-kitchen-symbol-favorites-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": "Favorites",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-favorites-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-kitchen-symbol-ingredients-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": "Ingredients",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-ingredients-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-kitchen-symbol-meal-plans-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": "Meal Plans",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-meal-plans-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-kitchen-symbol-recently-used-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": "Recently Used",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-recently-used-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-kitchen-symbol-recipes-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": "Recipes",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-recipes-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-kitchen-symbol-shopping-lists-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": "Shopping Lists",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-shopping-lists-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-kitchen-symbol-unfiled-i01",
+      "room": "kitchen",
+      "pack": "K01",
+      "mark_id": null,
+      "symbol_label": "Unfiled",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/symbols/room-kitchen-symbol-unfiled-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/kitchen/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-projects-p01-backdrop-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "interior-backdrop",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/room-projects-p01-backdrop-i01.png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Large quiet central content region confirmed; decorative edges remain removable."
+    },
+    {
+      "asset_id": "room-projects-p01-decor-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "transparent-decor-cluster",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/room-projects-p01-decor-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-after-retry-with-known-alpha-halo",
+      "review_note": "RGBA transparency confirmed, but a visible soft alpha halo remains after one targeted retry."
+    },
+    {
+      "asset_id": "room-projects-p01-empty-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "transparent-empty-state",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/room-projects-p01-empty-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-after-retry-with-known-alpha-halo",
+      "review_note": "RGBA transparency confirmed, but a visible soft alpha halo remains after one targeted retry."
+    },
+    {
+      "asset_id": "room-projects-p01-mark-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": "P-M01",
+      "symbol_label": null,
+      "role": "room-mark",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/room-projects-p01-mark-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-raster-study-with-known-tonal-shading",
+      "review_note": "Distinct at 64px and 96px; generated raster retains slight tonal shading and is not an SVG master."
+    },
+    {
+      "asset_id": "room-projects-p01-motif-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "surface-motif",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/room-projects-p01-motif-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-with-unrun-seamless-repeat-check",
+      "review_note": "Low-contrast and removable; seamless repetition is not technically proven."
+    },
+    {
+      "asset_id": "room-projects-p01-portrait-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "outside-room-portrait",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/room-projects-p01-portrait-i01.png",
+      "dimensions": {
+        "width": 1214,
+        "height": 1295
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Recognizable at small Home/library scale through threshold shape and dossier-owned key objects."
+    },
+    {
+      "asset_id": "room-projects-symbol-archive-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": "Archive",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-archive-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-projects-symbol-drafts-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": "Drafts",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-drafts-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-projects-symbol-materials-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": "Materials",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-materials-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-projects-symbol-notes-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": "Notes",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-notes-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-projects-symbol-plans-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": "Plans",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-plans-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-projects-symbol-recently-used-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": "Recently Used",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-recently-used-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-projects-symbol-reference-images-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": "Reference Images",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-reference-images-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-projects-symbol-things-to-do-i01",
+      "room": "projects",
+      "pack": "P01",
+      "mark_id": null,
+      "symbol_label": "Things to Do",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/symbols/room-projects-symbol-things-to-do-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/projects/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-reading-r01-backdrop-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "interior-backdrop",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/room-reading-r01-backdrop-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Large quiet central content region confirmed; decorative edges remain removable."
+    },
+    {
+      "asset_id": "room-reading-r01-decor-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "transparent-decor-cluster",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/room-reading-r01-decor-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-after-retry-with-known-alpha-halo",
+      "review_note": "RGBA transparency confirmed, but a visible soft alpha halo remains after one targeted retry."
+    },
+    {
+      "asset_id": "room-reading-r01-empty-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "transparent-empty-state",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/room-reading-r01-empty-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-after-retry-with-known-alpha-halo",
+      "review_note": "RGBA transparency confirmed, but a visible soft alpha halo remains after one targeted retry."
+    },
+    {
+      "asset_id": "room-reading-r01-mark-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": "R-M07",
+      "symbol_label": null,
+      "role": "room-mark",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/room-reading-r01-mark-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-raster-study-with-known-tonal-shading",
+      "review_note": "Distinct at 64px and 96px; generated raster retains slight tonal shading and is not an SVG master."
+    },
+    {
+      "asset_id": "room-reading-r01-motif-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "surface-motif",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/room-reading-r01-motif-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-with-unrun-seamless-repeat-check",
+      "review_note": "Low-contrast and removable; seamless repetition is not technically proven."
+    },
+    {
+      "asset_id": "room-reading-r01-portrait-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "outside-room-portrait",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/room-reading-r01-portrait-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Recognizable at small Home/library scale through threshold shape and dossier-owned key objects."
+    },
+    {
+      "asset_id": "room-reading-symbol-articles-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": "Articles",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-articles-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-reading-symbol-book-club-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": "Book Club",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-book-club-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-reading-symbol-books-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": "Books",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-books-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-reading-symbol-currently-reading-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": "Currently Reading",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-currently-reading-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-reading-symbol-finished-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": "Finished",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-finished-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-reading-symbol-notes-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": "Notes",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-notes-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-reading-symbol-reading-list-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": "Reading List",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-reading-list-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-reading-symbol-sources-i01",
+      "room": "reading",
+      "pack": "R01",
+      "mark_id": null,
+      "symbol_label": "Sources",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/symbols/room-reading-symbol-sources-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/reading/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-trips-t01-backdrop-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "interior-backdrop",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/room-trips-t01-backdrop-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Large quiet central content region confirmed; decorative edges remain removable."
+    },
+    {
+      "asset_id": "room-trips-t01-decor-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "transparent-decor-cluster",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/room-trips-t01-decor-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-after-retry-with-known-alpha-halo",
+      "review_note": "RGBA transparency confirmed, but a visible soft alpha halo remains after one targeted retry."
+    },
+    {
+      "asset_id": "room-trips-t01-empty-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "transparent-empty-state",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/room-trips-t01-empty-i01.png",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-after-retry-with-known-alpha-halo",
+      "review_note": "RGBA transparency confirmed, but a visible soft alpha halo remains after one targeted retry."
+    },
+    {
+      "asset_id": "room-trips-t01-mark-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": "T-M01",
+      "symbol_label": null,
+      "role": "room-mark",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/room-trips-t01-mark-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-raster-study-with-known-tonal-shading",
+      "review_note": "Distinct at 64px and 96px; generated raster retains slight tonal shading and is not an SVG master."
+    },
+    {
+      "asset_id": "room-trips-t01-motif-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "surface-motif",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/room-trips-t01-motif-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-with-unrun-seamless-repeat-check",
+      "review_note": "Low-contrast and removable; seamless repetition is not technically proven."
+    },
+    {
+      "asset_id": "room-trips-t01-portrait-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": null,
+      "role": "outside-room-portrait",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/room-trips-t01-portrait-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "opaque-rgb",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Recognizable at small Home/library scale through threshold shape and dossier-owned key objects."
+    },
+    {
+      "asset_id": "room-trips-symbol-day-plans-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": "Day Plans",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-day-plans-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-trips-symbol-packing-lists-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": "Packing Lists",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-packing-lists-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-trips-symbol-past-trips-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": "Past Trips",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-past-trips-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-trips-symbol-people-to-visit-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": "People to Visit",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-people-to-visit-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-trips-symbol-places-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": "Places",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-places-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-trips-symbol-reservations-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": "Reservations",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-reservations-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-trips-symbol-transport-notes-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": "Transport Notes",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-transport-notes-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    },
+    {
+      "asset_id": "room-trips-symbol-travel-documents-i01",
+      "room": "trips",
+      "pack": "T01",
+      "mark_id": null,
+      "symbol_label": "Travel Documents",
+      "role": "collection-symbol",
+      "file_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/symbols/room-trips-symbol-travel-documents-i01.png",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "alpha_state": "transparent-rgba",
+      "prompt_log_path": "docs/02-design/mockups/context-rooms/iteration-1/trips/prompts.md",
+      "review_status": "selected-after-original-detail-and-small-scale-review",
+      "review_note": "Distinct beside the required written label at 96px; image alone is not treated as navigation."
+    }
+  ]
+}
