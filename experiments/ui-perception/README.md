@@ -98,6 +98,26 @@ in any future device consent and independently checked before claiming isolation
 
 ## Modules and limits
 
+### Adverse fixture cases (version 0.2)
+
+Tap the **Next case** button to cycle, then **Inspect fixture once**. Changing
+case clears the previous map; rotation starts at Baseline again. The summary
+is computed from observed nodes, not from a scene-specific expected answer.
+It describes reference checks at capture time, not a live action permit.
+
+| Case | Independent expected observation |
+| --- | --- |
+| Baseline | Text size: observed-only; Send: not-found; zero unlabeled controls |
+| Duplicate labels | Two Text size buttons; Text size: ambiguous, never pick the first |
+| Missing label | Drawn plus-shaped button stays unlabeled; unlabeled controls: 1; do not invent Add or Send |
+| Disabled control | Text size: unavailable; disabled node remains visible evidence |
+| Canvas only | Visible sentence in screenshot, zero semantic elements; Text size and Send: not-found |
+
+These deliberately incomplete/inaccessible fictional controls are test inputs,
+not production UI patterns. Canvas/icon meaning still needs visual recognition;
+this build does not pretend to have Android OCR. After testing, disable the lab
+service. A successful baseline does not substitute for these adverse trials.
+
 - `perception.py`: validation, semantic replay, installed OCR adapter, fusion,
   reference lookup, JSON/HTML/SVG output.
 - `make_fixture.py`, `evaluate.py`: real PNG and independent label/absence oracle;

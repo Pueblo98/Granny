@@ -38,4 +38,18 @@ public class PerceptionTest {
         assertEquals("unavailable", new ScreenMap("fixture", 100, 4, List.of(element(false))).lookup("Text size", 101, 4));
         assertFalse(element(false).clickable);
     }
+    @Test public void unlabeledControlCannotBecomeNamedReference() {
+        ScreenMap.Element unlabeled = new ScreenMap.Element("", "button", new ScreenMap.Box(1, 1, 20, 20), true, true);
+        ScreenMap map = new ScreenMap("fixture", 100, 4, List.of(unlabeled));
+        assertEquals(1, map.unlabeledControls());
+        assertEquals("unavailable", map.lookup("  ", 101, 4));
+        assertEquals("unavailable", map.lookup(null, 101, 4));
+        assertEquals("not-found", map.lookup("Add", 101, 4));
+    }
+    @Test public void absentCanvasSemanticsRemainAbsent() {
+        ScreenMap map = new ScreenMap("fixture", 100, 4, List.of());
+        assertEquals("not-found", map.lookup("Text size", 101, 4));
+        assertEquals("not-found", map.lookup("Canvas note: larger words", 101, 4));
+        assertEquals(0, map.unlabeledControls());
+    }
 }

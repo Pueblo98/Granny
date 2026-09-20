@@ -46,11 +46,19 @@ public final class ScreenMap {
 
     public String lookup(String label, long now, int currentWindow) {
         if (now < capturedAt || now - capturedAt > 2000 || currentWindow != windowId) return "stale";
+        if (label == null || normalize(label).isEmpty()) return "unavailable";
         List<Element> matches = new ArrayList<>();
         for (Element element : elements) if (normalize(element.label).equals(normalize(label))) matches.add(element);
         if (matches.isEmpty()) return "not-found";
         if (matches.size() > 1) return "ambiguous";
         return matches.get(0).enabled ? "observed-only" : "unavailable";
+    }
+
+    public int unlabeledControls() {
+        int count = 0;
+        for (Element element : elements)
+            if (normalize(element.label).isEmpty() && (element.clickable || "button".equals(element.role))) count++;
+        return count;
     }
 
     private static String normalize(String text) { return text.strip().toLowerCase(Locale.ROOT).replaceAll("\\s+", " "); }

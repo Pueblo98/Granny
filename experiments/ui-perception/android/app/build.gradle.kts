@@ -6,8 +6,8 @@ android {
         applicationId = "org.pueblo98.granny.perceptionlab"
         minSdk = 34
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1-read-only-lab"
+        versionCode = 2
+        versionName = "0.2-adverse-fixtures"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

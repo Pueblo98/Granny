@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.view.View;
 import android.view.WindowInsets;
@@ -29,6 +30,9 @@ public final class MainActivity extends Activity {
     private ImageView preview;
     private Bitmap retained;
     private long generation;
+    private int scene;
+    private Button sceneButton;
+    private static final String[] SCENES = {"Baseline", "Duplicate labels", "Missing label", "Disabled control", "Canvas only"};
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -43,13 +47,46 @@ public final class MainActivity extends Activity {
         button(root, "Open accessibility settings", () -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
         button(root, "Inspect fixture once", this::inspect);
         button(root, "Stop and clear", () -> { clear(); report.setText("Stopped. Image and map cleared."); });
+        sceneButton = new Button(this);
+        sceneButton.setOnClickListener(view -> { clear(); scene = (scene + 1) % SCENES.length; populateFixture(); });
+        root.addView(sceneButton);
         ScrollView scroll = new ScrollView(this);
         LinearLayout body = new LinearLayout(this); body.setOrientation(LinearLayout.VERTICAL);
         fixture = new LinearLayout(this); fixture.setOrientation(LinearLayout.VERTICAL);
         fixture.setBackgroundColor(Color.rgb(244, 247, 250));
-        button(fixture, "Screen zoom", () -> fixtureChanged());
-        button(fixture, "Text size", () -> fixtureChanged());
-        button(fixture, "Dark theme", () -> fixtureChanged());
+        populateFixture();
+        body.addView(fixture);
+        report = new TextView(this); report.setText("No observation. Select a fixture case, then Inspect. Android OCR is not implemented.");
+        body.addView(report);
+        preview = new ImageView(this); preview.setAdjustViewBounds(true);
+        preview.setContentDescription("Numbered fixture screenshot; equivalent element labels are in the text report.");
+        body.addView(preview);
+        scroll.addView(body); root.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
+        setContentView(root);
+    }
+
+    private void populateFixture() {
+        fixture.removeAllViews();
+        sceneButton.setText("Case " + (scene + 1) + "/5: " + SCENES[scene] + " — Next case");
+        if (scene != 4) {
+            button(fixture, scene == 1 ? "Text size" : "Screen zoom", this::fixtureChanged);
+            button(fixture, "Text size", this::fixtureChanged);
+            if (scene == 3) fixture.getChildAt(1).setEnabled(false);
+            if (scene == 2) {
+                // An intentionally inaccessible drawn icon. Do not leak a label via fixture metadata.
+                View unlabeled = new Button(this) {
+                    private final Paint iconPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                    @Override protected void onDraw(Canvas canvas) {
+                        super.onDraw(canvas); iconPaint.setColor(Color.DKGRAY); iconPaint.setStrokeWidth(5);
+                        float x = getWidth() / 2f, y = getHeight() / 2f;
+                        canvas.drawLine(x - 10, y, x + 10, y, iconPaint);
+                        canvas.drawLine(x, y - 10, x, y + 10, iconPaint);
+                    }
+                };
+                unlabeled.setOnClickListener(view -> fixtureChanged());
+                fixture.addView(unlabeled);
+            } else button(fixture, "Dark theme", this::fixtureChanged);
+        }
         View canvasText = new View(this) {
             private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
             @Override protected void onDraw(Canvas canvas) {
@@ -59,14 +96,6 @@ public final class MainActivity extends Activity {
         };
         canvasText.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         fixture.addView(canvasText, new LinearLayout.LayoutParams(-1, 64));
-        body.addView(fixture);
-        report = new TextView(this); report.setText("No observation. Canvas text deliberately has no semantics; this Android lab does not run OCR.");
-        body.addView(report);
-        preview = new ImageView(this); preview.setAdjustViewBounds(true);
-        preview.setContentDescription("Numbered fixture screenshot; equivalent element labels are in the text report.");
-        body.addView(preview);
-        scroll.addView(body); root.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
-        setContentView(root);
     }
 
     private void button(LinearLayout parent, String label, Runnable action) {
@@ -121,7 +150,15 @@ public final class MainActivity extends Activity {
                                 .put("windowId", map.windowId).put("coordinateSpace", "fixture-image-pixels")
                                 .put("completeness", "partial").put("ocr", "not-implemented-on-device")
                                 .put("executionAuthorized", false).put("elements", elements);
-                        preview.setImageBitmap(retained); report.setText(output.toString(2));
+                        long now = SystemClock.elapsedRealtime();
+                        String textSize = map.lookup("Text size", now, map.windowId);
+                        String send = map.lookup("Send", now, map.windowId);
+                        output.put("referenceChecksAtCapture", new JSONObject().put("textSize", textSize)
+                                .put("send", send).put("unlabeledControls", map.unlabeledControls()));
+                        preview.setImageBitmap(retained);
+                        report.setText("Snapshot only — no actions authorized.\nText size: " + textSize
+                                + "\nSend: " + send + "\nUnlabeled controls: " + map.unlabeledControls()
+                                + "\nObserved elements: " + map.elements.size() + "\n\n" + output.toString(2));
                     } catch (Exception error) { clear(); report.setText("Unsupported observation; result cleared."); }
                     finally { image.recycle(); }
                 }
