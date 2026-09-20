@@ -14,7 +14,7 @@ session_state: review
 record_basis: contemporaneous
 agent: Codex
 branch: feature/room-chat-openrouter
-artifact_commit: cd311603212881047b1ecbcad0ffcc03d1c54b0b
+artifact_commit: 932fe23abbcd7d0cfb7dfbe5bf3e6850af621969
 next_action: Simon reloads the loopback UI and verifies that Use live AI chat answers an ordinary Home or Room question
 changed_paths:
   - docs/01-product/traceability.md
@@ -115,6 +115,16 @@ are not AI. The provider disclosure and explicit consent still occur before a
 live session, and the availability request itself creates no session or paid
 model call.
 
+Simon's next live transcript confirmed the provider answer but exposed a
+second presentation defect: the chat card rendered its generic idle helper
+above the actual model text. The card now renders model text as its single
+answer paragraph and retains the non-action disclosure separately. A frontend
+entry audit also confirmed Home, all six Rooms, item-level **Ask Granny**, Help
+and Search share the connected composer. **Start a new conversation** now
+creates a fresh session in the already selected live or offline mode instead
+of silently returning to scripted behavior. Full reset and the explicit leave
+control still disconnect.
+
 ## Actual validation
 
 Node 26.8.1 and Chromium 151.0.7922.173 were used. Dependencies were installed
@@ -127,7 +137,7 @@ or lockfile changed.
 | Stage-1 model/scheduler/cloud/rooms-store/outcomes/serve checks | 67 + 7 + 28 + 58 + 11 + 1 passed | Scripted regressions, frontend receipt validation, Room state and static allowlist |
 | `rooms-browser-check.mjs` | 350 checks passed | Existing six-Room fictional fixture and adverse UI states |
 | `home-browser-check.mjs` | 158 checks passed, 0 browser errors | Selected Home and navigation regressions |
-| `runtime-browser-check.mjs` | 59 checks passed, 0 browser errors | Automatic availability discovery creates no session; live AI is the primary action; offline fixed replies are explicit; Home/Room context and source receipt remain bounded |
+| `runtime-browser-check.mjs` | 66 checks passed, 0 browser errors | One rendered model answer; Home, Help, Search, all six Rooms and item-level Ask use the live runtime; new conversation preserves mode; Room context and source receipt remain bounded |
 | Stage-1 `browser-check.mjs` | 137 checks passed, 0 browser errors | Existing conversation-first interaction regression |
 | Conversation-runtime `browser-check.mjs` | 19 checks passed | Actual browser → HTTP → runtime → MCP/store path, including current-Room context |
 | `live-consent-check.mjs` | 10 checks passed, one stub-provider call | Explicit live mode/consent and unchanged verified draft path; no paid request |
@@ -144,7 +154,7 @@ committed.
 ## Handoff and limits
 
 Latest implementation checkpoint is
-`cd311603212881047b1ecbcad0ffcc03d1c54b0b` on
+`932fe23abbcd7d0cfb7dfbe5bf3e6850af621969` on
 `feature/room-chat-openrouter` in
 `/home/lgtw/Work/granny-worktrees/room-chat-openrouter`. The final handoff
 commit and verified remote SHA are recorded in Git rather than recursively in
