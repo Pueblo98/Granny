@@ -14,8 +14,8 @@ session_state: review
 record_basis: contemporaneous
 agent: Codex
 branch: feature/room-chat-openrouter
-artifact_commit: ec61011c79786bd454b4ea1297bec15bc482600b
-next_action: Simon reviews the published Home-and-Rooms live-chat branch before any integration
+artifact_commit: cd311603212881047b1ecbcad0ffcc03d1c54b0b
+next_action: Simon reloads the loopback UI and verifies that Use live AI chat answers an ordinary Home or Room question
 changed_paths:
   - docs/01-product/traceability.md
   - docs/02-design/browser-prototype.md
@@ -45,6 +45,8 @@ changed_paths:
   - prototypes/stage-1/cloud.test.mjs
   - prototypes/stage-1/room-ui.js
   - prototypes/stage-1/runtime-browser-check.mjs
+  - prototypes/stage-1/runtime-integration-check.mjs
+  - prototypes/stage-1/support-ui.js
 ---
 
 # Room-aware OpenRouter chat prototype
@@ -103,6 +105,16 @@ Rooms. Existing live consent now names bounded Room-reference egress; draft
 preview, exact confirmation, MCP readback, Stop, uncertainty quarantine and
 resource limits are unchanged.
 
+Simon then reported that ordinary questions still produced the stub's exact
+fixed fallback. The runtime was live-capable, but the connection screen made
+**Connect to local demo** the primary action and hid OpenRouter behind a manual
+availability check. The corrected screen checks the same-origin runtime
+configuration automatically, makes **Use live AI chat** the primary action
+when available, and labels **Use offline test replies** as fixed responses that
+are not AI. The provider disclosure and explicit consent still occur before a
+live session, and the availability request itself creates no session or paid
+model call.
+
 ## Actual validation
 
 Node 26.8.1 and Chromium 151.0.7922.173 were used. Dependencies were installed
@@ -115,7 +127,7 @@ or lockfile changed.
 | Stage-1 model/scheduler/cloud/rooms-store/outcomes/serve checks | 67 + 7 + 28 + 58 + 11 + 1 passed | Scripted regressions, frontend receipt validation, Room state and static allowlist |
 | `rooms-browser-check.mjs` | 350 checks passed | Existing six-Room fictional fixture and adverse UI states |
 | `home-browser-check.mjs` | 158 checks passed, 0 browser errors | Selected Home and navigation regressions |
-| `runtime-browser-check.mjs` | 58 checks passed, 0 browser errors | Home sends no Room sources; every Room sends its own bounded place; private source absent; Room answer/source receipt rendered |
+| `runtime-browser-check.mjs` | 59 checks passed, 0 browser errors | Automatic availability discovery creates no session; live AI is the primary action; offline fixed replies are explicit; Home/Room context and source receipt remain bounded |
 | Stage-1 `browser-check.mjs` | 137 checks passed, 0 browser errors | Existing conversation-first interaction regression |
 | Conversation-runtime `browser-check.mjs` | 19 checks passed | Actual browser → HTTP → runtime → MCP/store path, including current-Room context |
 | `live-consent-check.mjs` | 10 checks passed, one stub-provider call | Explicit live mode/consent and unchanged verified draft path; no paid request |
@@ -130,8 +142,8 @@ committed.
 
 ## Handoff and limits
 
-Implementation checkpoint is
-`ec61011c79786bd454b4ea1297bec15bc482600b` on
+Latest implementation checkpoint is
+`cd311603212881047b1ecbcad0ffcc03d1c54b0b` on
 `feature/room-chat-openrouter` in
 `/home/lgtw/Work/granny-worktrees/room-chat-openrouter`. The final handoff
 commit and verified remote SHA are recorded in Git rather than recursively in
@@ -142,8 +154,10 @@ node --env-file=/home/lgtw/Work/granny/.env prototypes/conversation-runtime/serv
 ```
 
 Then open the printed loopback URL and use **Menu → Settings → About Granny →
-Demo connection → Check live model availability → Review live conversation
-consent**. No model call occurs until text is submitted.
+AI connection → Use live AI chat**, review the disclosure and continue. The
+screen checks availability automatically; no model call occurs until text is
+submitted. **Use offline test replies** intentionally selects the fixed stub
+and is not an AI conversation.
 
 One successful paid synthetic answer is not general reliability evidence.
 Real personal/health/account data, cross-room retrieval, provider retention
