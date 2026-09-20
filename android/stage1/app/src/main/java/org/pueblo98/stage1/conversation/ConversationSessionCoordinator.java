@@ -2,6 +2,7 @@ package org.pueblo98.stage1.conversation;
 
 import java.util.List;
 import java.util.Objects;
+import org.pueblo98.stage1.media.MediaPlayFromSearchPort;
 import org.pueblo98.stage1.readability.TextScale;
 import org.pueblo98.stage1.readability.TextScaleController;
 import org.pueblo98.stage1.readability.TextScaleStore;
@@ -10,10 +11,11 @@ import org.pueblo98.stage1.readability.TextScaleStore;
 public final class ConversationSessionCoordinator {
     public enum Surface {
         IDLE, LISTENING, TRANSCRIPT, CLARIFICATION, PREVIEW, ACTIVE, KNOWN, UNKNOWN,
-        DRAFT_RECIPIENT, DRAFT_PREVIEW, DRAFT_READY
+        DRAFT_RECIPIENT, DRAFT_PREVIEW, DRAFT_READY,
+        MEDIA_SERVICE, MEDIA_PREVIEW, MEDIA_DISPATCHING, MEDIA_REQUESTED, MEDIA_UNKNOWN
     }
     public enum Provenance { TYPED, PARTIAL_VOICE, FINAL_VOICE, EDITED_TRANSCRIPT, DIRECT_CONTROL }
-    public enum Capability { TEXT_SCALE, LOCAL_DRAFT, SCREEN_EXPLANATION }
+    public enum Capability { TEXT_SCALE, LOCAL_DRAFT, MEDIA_PLAY_FROM_SEARCH, SCREEN_EXPLANATION }
     public enum BuildMode { SYNTHETIC_LAB, CANDIDATE }
     public enum Result { ACCEPTED, STALE, DENIED, QUEUED, DISPATCHED, KNOWN, UNKNOWN }
 
@@ -21,7 +23,11 @@ public final class ConversationSessionCoordinator {
     public interface InterpreterPort { Proposal propose(String exactRequest, long generation, long revision); }
     public static final class Proposal {
         public final Capability capability;
-        public Proposal(Capability capability) { this.capability = capability; }
+        public final String exactArtist;
+        public Proposal(Capability capability) { this(capability, ""); }
+        public Proposal(Capability capability, String exactArtist) {
+            this.capability = capability; this.exactArtist = exactArtist == null ? "" : exactArtist;
+        }
         /** Compatibility for synthetic fixtures; text cannot define an action or grant authority. */
         public Proposal(String ignoredDescription) { this(Capability.TEXT_SCALE); }
     }
@@ -33,8 +39,14 @@ public final class ConversationSessionCoordinator {
                     || request.equalsIgnoreCase("make this bigger");
             boolean localDraft = request.replace('\'', '’')
                     .equalsIgnoreCase("Tell David I’ll call after dinner.");
+            boolean media = request.equalsIgnoreCase("play Elton John")
+                    || request.equalsIgnoreCase("play Elton John.")
+                    || request.equalsIgnoreCase("play some Elton John")
+                    || request.equalsIgnoreCase("play some Elton John.");
             return new Proposal(textScale ? Capability.TEXT_SCALE
-                    : localDraft ? Capability.LOCAL_DRAFT : null);
+                    : localDraft ? Capability.LOCAL_DRAFT
+                    : media ? Capability.MEDIA_PLAY_FROM_SEARCH : null,
+                    media ? "Elton John" : "");
         }
     }
     public static final class DraftRecipient {
@@ -56,13 +68,20 @@ public final class ConversationSessionCoordinator {
             this.capability = capability; this.enabled = enabled;
             permissions = List.of();
             schema = capability == Capability.TEXT_SCALE ? "closed TextScale / Restore; exact prior version"
-                    : capability == Capability.LOCAL_DRAFT ? "two fictional endpoints; exact in-memory body; no dispatch" : "unavailable";
+                    : capability == Capability.LOCAL_DRAFT ? "two fictional endpoints; exact in-memory body; no dispatch"
+                    : capability == Capability.MEDIA_PLAY_FROM_SEARCH
+                    ? "exact artist plus exact discovered Android handler; handoff only" : "unavailable";
             cancellation = capability == Capability.LOCAL_DRAFT
                     ? "Edit, Cancel, Stop or background clears process-only state; no external entry"
+                    : capability == Capability.MEDIA_PLAY_FROM_SEARCH
+                    ? "Stop before dispatch revokes authority; after handoff, playback and pause are unverified"
                     : "Cancel before entry; unknown after entry until independent verification";
             outcomeOracle = capability == Capability.TEXT_SCALE ? "private preference readback"
-                    : capability == Capability.LOCAL_DRAFT ? "coordinator snapshot only; no external effect" : "unadmitted";
+                    : capability == Capability.LOCAL_DRAFT ? "coordinator snapshot only; no external effect"
+                    : capability == Capability.MEDIA_PLAY_FROM_SEARCH ? "activity handoff acknowledgement only; not playback"
+                    : "unadmitted";
             admittedModes = capability == Capability.TEXT_SCALE || capability == Capability.LOCAL_DRAFT
+                    || capability == Capability.MEDIA_PLAY_FROM_SEARCH
                     ? List.of(BuildMode.SYNTHETIC_LAB) : List.of();
         }
     }
@@ -78,6 +97,8 @@ public final class ConversationSessionCoordinator {
         public final String place, editableRequest, heardSoFar, consequence, message;
         public final String draftBody, draftRecipientId, draftRecipientLabel, draftChannel;
         public final List<DraftRecipient> draftRecipients;
+        public final String mediaArtist, mediaHandlerLabel;
+        public final List<MediaPlayFromSearchPort.Handler> mediaHandlers;
         public final ReturnAnchor returnAnchor;
         public final Surface surface;
         public final long generation, revision;
@@ -87,23 +108,30 @@ public final class ConversationSessionCoordinator {
             place = c.place; returnAnchor = c.anchor; surface = c.surface;
             generation = c.generation; revision = c.revision; provenance = c.provenance;
             editableRequest = c.editable; heardSoFar = c.partial; consequence = c.consequence;
-            message = c.message; permitQueued = c.permit != null; choicesAvailable = c.choicesAvailable;
+            message = c.message; permitQueued = c.permit != null || c.mediaPermit != null; choicesAvailable = c.choicesAvailable;
             draftBody = c.draftBody;
             draftRecipientId = c.draftRecipient == null ? "" : c.draftRecipient.endpointId;
             draftRecipientLabel = c.draftRecipient == null ? "" : c.draftRecipient.label;
             draftChannel = c.draftRecipient == null ? "" : c.draftRecipient.channel;
             draftRecipients = c.surface == Surface.DRAFT_RECIPIENT ? DRAFT_RECIPIENTS : List.of();
+            mediaArtist = c.mediaArtist;
+            mediaHandlerLabel = c.mediaHandler == null ? "" : c.mediaHandler.label;
+            mediaHandlers = c.surface == Surface.MEDIA_SERVICE ? c.mediaHandlers : List.of();
         }
     }
     private final CapabilityPorts.CapabilityAdapter adapter;
     private final CapabilityPorts.OutcomeObserver observer;
     private final InterpreterPort interpreter;
+    private final MediaPlayFromSearchPort mediaPort;
     private final Runnable cancelCleanup;
     private final BuildMode mode;
     private final Thread owner = Thread.currentThread();
     private String place = "Home", editable = "", partial = "", consequence = "";
     private String draftBody = "";
     private DraftRecipient draftRecipient;
+    private String mediaArtist = "";
+    private List<MediaPlayFromSearchPort.Handler> mediaHandlers = List.of();
+    private MediaPlayFromSearchPort.Handler mediaHandler;
     private String message = "Type or talk to make a request.";
     private ReturnAnchor anchor = new ReturnAnchor("Home", "composer", 0);
     private Surface surface = Surface.IDLE;
@@ -112,12 +140,18 @@ public final class ConversationSessionCoordinator {
     private boolean proposalPending, choicesAvailable, entered;
     private CapabilityPorts.Prepared prepared;
     private Permit permit;
+    private MediaPermit mediaPermit;
 
     public ConversationSessionCoordinator(TextScaleController controller, TextScaleStore store) {
         this(controller, store, BuildMode.SYNTHETIC_LAB);
     }
     public ConversationSessionCoordinator(TextScaleController controller, TextScaleStore store, BuildMode mode) {
-        this(controller, new CapabilityPorts.C5Adapter(controller, store), new CapabilityPorts.StoreObserver(store), null, () -> {}, mode);
+        this(controller, store, MediaPlayFromSearchPort.unavailable(), mode);
+    }
+    public ConversationSessionCoordinator(TextScaleController controller, TextScaleStore store,
+            MediaPlayFromSearchPort mediaPort, BuildMode mode) {
+        this(controller, new CapabilityPorts.C5Adapter(controller, store), new CapabilityPorts.StoreObserver(store),
+                null, () -> {}, mediaPort, mode);
     }
     public ConversationSessionCoordinator(TextScaleController controller, TextScaleStore store, Runnable cleanup) {
         this(controller, store, null, cleanup);
@@ -131,8 +165,14 @@ public final class ConversationSessionCoordinator {
     }
     public ConversationSessionCoordinator(TextScaleController unused, CapabilityPorts.CapabilityAdapter adapter,
             CapabilityPorts.OutcomeObserver observer, InterpreterPort interpreter, Runnable cleanup, BuildMode mode) {
+        this(unused, adapter, observer, interpreter, cleanup, MediaPlayFromSearchPort.unavailable(), mode);
+    }
+    public ConversationSessionCoordinator(TextScaleController unused, CapabilityPorts.CapabilityAdapter adapter,
+            CapabilityPorts.OutcomeObserver observer, InterpreterPort interpreter, Runnable cleanup,
+            MediaPlayFromSearchPort mediaPort, BuildMode mode) {
         this.adapter = Objects.requireNonNull(adapter); this.observer = Objects.requireNonNull(observer);
         this.interpreter = interpreter == null ? new FixtureInterpreter() : interpreter;
+        this.mediaPort = mediaPort == null ? MediaPlayFromSearchPort.unavailable() : mediaPort;
         this.cancelCleanup = cleanup == null ? () -> {} : cleanup; this.mode = mode;
     }
     public Snapshot snapshot() { checkThread(); return new Snapshot(this); }
@@ -206,8 +246,86 @@ public final class ConversationSessionCoordinator {
             message = "Two fictional Davids match. Choose one before the local draft is prepared.";
             return Result.ACCEPTED;
         }
+        if (proposal.capability == Capability.MEDIA_PLAY_FROM_SEARCH) {
+            return prepareMedia(proposal.exactArtist);
+        }
         choicesAvailable = true; message = "Choose Standard, Larger, Larger still, or Largest.";
         return Result.ACCEPTED;
+    }
+    private Result prepareMedia(String artist) {
+        mediaArtist = value(artist).trim();
+        if (mediaArtist.isEmpty()) {
+            surface = Surface.MEDIA_SERVICE; choicesAvailable = false;
+            message = "I need an artist before asking a music app. Nothing was opened.";
+            return Result.DENIED;
+        }
+        try { mediaHandlers = List.copyOf(mediaPort.compatibleHandlers()); }
+        catch (RuntimeException unavailable) { mediaHandlers = List.of(); }
+        if (mediaHandlers.isEmpty()) {
+            surface = Surface.MEDIA_SERVICE; choicesAvailable = false;
+            message = "No compatible music app is visible for this Android handoff. Nothing was opened.";
+            return Result.DENIED;
+        }
+        if (mediaHandlers.size() == 1) return bindMediaHandler(mediaHandlers.get(0), false);
+        surface = Surface.MEDIA_SERVICE; choicesAvailable = true;
+        message = "More than one compatible music app is available. Choose where to send this request.";
+        return Result.ACCEPTED;
+    }
+    public Result chooseMediaHandler(String componentId) { checkThread();
+        if (surface != Surface.MEDIA_SERVICE || !choicesAvailable || !isEnabled(Capability.MEDIA_PLAY_FROM_SEARCH)) {
+            return Result.DENIED;
+        }
+        MediaPlayFromSearchPort.Handler selected = mediaHandlers.stream()
+                .filter(item -> item.componentId.equals(componentId)).findFirst().orElse(null);
+        return selected == null ? Result.DENIED : bindMediaHandler(selected, true);
+    }
+    private Result bindMediaHandler(MediaPlayFromSearchPort.Handler selected, boolean newRevision) {
+        String artist = mediaArtist;
+        List<MediaPlayFromSearchPort.Handler> handlers = mediaHandlers;
+        if (newRevision) { invalidate(); revision++; }
+        mediaArtist = artist; mediaHandlers = handlers; mediaHandler = selected;
+        consequence = "Ask " + selected.label + " to play artist “" + artist
+                + "”. This opens another app; Granny cannot yet verify playback or pause it.";
+        surface = Surface.MEDIA_PREVIEW; choicesAvailable = false;
+        message = "Check the artist and music app. Nothing has been opened yet.";
+        return Result.ACCEPTED;
+    }
+    public Result approveMedia(long g, long r, String shownConsequence) { checkThread();
+        if (g != generation || r != revision || !Objects.equals(shownConsequence, consequence)) return Result.STALE;
+        if (surface != Surface.MEDIA_PREVIEW || mediaHandler == null || mediaArtist.isEmpty()
+                || !isEnabled(Capability.MEDIA_PLAY_FROM_SEARCH)) return Result.DENIED;
+        mediaPermit = new MediaPermit(generation, revision, editable, consequence, mediaArtist, mediaHandler);
+        surface = Surface.MEDIA_DISPATCHING;
+        message = "Waiting to send the approved request. Stop is available until the handoff begins.";
+        return Result.QUEUED;
+    }
+    public Result dispatchMedia(long g) { checkThread();
+        if (g != generation || mediaPermit == null || surface != Surface.MEDIA_DISPATCHING
+                || !isEnabled(Capability.MEDIA_PLAY_FROM_SEARCH)) return Result.STALE;
+        MediaPermit active = mediaPermit; mediaPermit = null;
+        if (active.revision != revision || !active.request.equals(editable)
+                || !active.consequence.equals(consequence)) return Result.STALE;
+        entered = true;
+        MediaPlayFromSearchPort.LaunchResult result;
+        try { result = mediaPort.requestArtist(active.handler, active.artist); }
+        catch (RuntimeException uncertain) { result = MediaPlayFromSearchPort.LaunchResult.UNKNOWN; }
+        if (g != generation) return Result.STALE;
+        entered = false;
+        if (result == MediaPlayFromSearchPort.LaunchResult.HANDOFF_ACCEPTED) {
+            surface = Surface.MEDIA_REQUESTED;
+            message = "Request sent to " + active.handler.label
+                    + ". Granny has not verified what is playing and cannot pause that app here.";
+            return Result.DISPATCHED;
+        }
+        if (result == MediaPlayFromSearchPort.LaunchResult.NO_HANDLER) {
+            surface = Surface.MEDIA_SERVICE;
+            choicesAvailable = false;
+            message = "That music app was no longer available. Nothing was opened; edit or cancel this request.";
+            return Result.DENIED;
+        }
+        surface = Surface.MEDIA_UNKNOWN;
+        message = "The music-app handoff has an unknown outcome. Granny will not retry automatically.";
+        return Result.UNKNOWN;
     }
     public Result chooseDraftRecipient(String endpointId) { checkThread();
         if (surface != Surface.DRAFT_RECIPIENT || !choicesAvailable || !isEnabled(Capability.LOCAL_DRAFT)) {
@@ -302,9 +420,16 @@ public final class ConversationSessionCoordinator {
     }
     public Result stop() { checkThread(); return stop(null); }
     public Result stop(Runnable cleanup) { checkThread();
-        boolean uncertain = entered || surface == Surface.UNKNOWN;
+        boolean wasEntered = entered;
+        boolean mediaUncertain = surface == Surface.MEDIA_REQUESTED || surface == Surface.MEDIA_UNKNOWN;
+        boolean mediaInFlight = surface == Surface.MEDIA_DISPATCHING;
+        boolean uncertain = wasEntered || surface == Surface.UNKNOWN || mediaUncertain;
         invalidate(); surface = uncertain ? Surface.UNKNOWN : Surface.IDLE;
-        message = uncertain ? "Stopped. The text-size result remains unknown." : "Cancelled before any new change. You can type or talk.";
+        if (mediaUncertain || mediaInFlight) {
+            surface = Surface.MEDIA_UNKNOWN;
+            message = "The handoff may already have reached the music app. Granny cannot stop or verify its playback here.";
+        } else message = uncertain ? "Stopped. The text-size result remains unknown."
+                : "Cancelled before any new change. You can type or talk.";
         runCleanup(cleanup); return Result.ACCEPTED;
     }
     public Result clearForBackground(Runnable cleanup) { checkThread();
@@ -312,12 +437,17 @@ public final class ConversationSessionCoordinator {
         return Result.ACCEPTED;
     }
     public Result dismissResult() { checkThread();
-        if (surface != Surface.KNOWN && surface != Surface.UNKNOWN && surface != Surface.DRAFT_READY) return Result.DENIED;
+        if (surface != Surface.KNOWN && surface != Surface.UNKNOWN && surface != Surface.DRAFT_READY
+                && surface != Surface.MEDIA_REQUESTED && surface != Surface.MEDIA_UNKNOWN) return Result.DENIED;
         invalidate(); surface = Surface.IDLE; editable = ""; message = "Type or talk to make a request.";
         return Result.ACCEPTED;
     }
     public void restoreUnknownOutcome() { checkThread();
         invalidate(); editable = ""; surface = Surface.UNKNOWN; message = "The earlier text-size result is unknown.";
+    }
+    public void restoreMediaUnknownOutcome() { checkThread();
+        invalidate(); editable = ""; surface = Surface.MEDIA_UNKNOWN;
+        message = "The earlier music-app handoff remains unknown. Granny will not retry it automatically.";
     }
     public Result reviewStatus() { checkThread();
         if (surface != Surface.UNKNOWN) return Result.DENIED;
@@ -328,7 +458,8 @@ public final class ConversationSessionCoordinator {
         return Result.UNKNOWN;
     }
     public boolean isEnabled(Capability capability) { checkThread();
-        return (capability == Capability.TEXT_SCALE || capability == Capability.LOCAL_DRAFT)
+        return (capability == Capability.TEXT_SCALE || capability == Capability.LOCAL_DRAFT
+                || capability == Capability.MEDIA_PLAY_FROM_SEARCH)
                 && mode == BuildMode.SYNTHETIC_LAB;
     }
     public CapabilityMetadata metadata(Capability capability) { checkThread(); return new CapabilityMetadata(capability, isEnabled(capability)); }
@@ -336,8 +467,9 @@ public final class ConversationSessionCoordinator {
         if (Thread.currentThread() != owner) throw new IllegalStateException("Conversation calls must use their creating thread");
     }
     private void invalidate() {
-        generation++; permit = null; prepared = null; proposalPending = false; choicesAvailable = false;
-        partial = ""; consequence = ""; entered = false; draftBody = ""; draftRecipient = null; safeCancel();
+        generation++; permit = null; mediaPermit = null; prepared = null; proposalPending = false; choicesAvailable = false;
+        partial = ""; consequence = ""; entered = false; draftBody = ""; draftRecipient = null;
+        mediaArtist = ""; mediaHandlers = List.of(); mediaHandler = null; safeCancel();
     }
     private void safeCancel() { try { adapter.cancel(); } catch (RuntimeException ignored) { /* Authority was already removed. */ } }
     private void runCleanup(Runnable extra) {
@@ -356,6 +488,16 @@ public final class ConversationSessionCoordinator {
         Permit(long generation, long revision, String request, String consequence, CapabilityPorts.Prepared prepared) {
             this.generation = generation; this.revision = revision; this.request = request;
             this.consequence = consequence; this.prepared = prepared;
+        }
+    }
+    private static final class MediaPermit {
+        final long generation, revision;
+        final String request, consequence, artist;
+        final MediaPlayFromSearchPort.Handler handler;
+        MediaPermit(long generation, long revision, String request, String consequence,
+                String artist, MediaPlayFromSearchPort.Handler handler) {
+            this.generation = generation; this.revision = revision; this.request = request;
+            this.consequence = consequence; this.artist = artist; this.handler = handler;
         }
     }
 }

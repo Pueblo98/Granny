@@ -10,7 +10,8 @@ public final class ConversationSurfaceModel {
         DONE_LISTENING("Done listening"), TYPE("Type instead"), CANCEL("Cancel"),
         EDIT("Edit request"), NONE("None of these"), APPLY("Apply this text size"),
         CHANGE("Change it"), KEEP_DRAFT("Keep this draft here"), REPEAT("Repeat"), STOP("■ Stop"),
-        RESTORE("Restore previous size"), REVIEW("Review status"), DONE("Done");
+        REQUEST_PLAY("Ask music app to play"), RESTORE("Restore previous size"),
+        REVIEW("Review status"), DONE("Done");
         public final String label;
         Action(String label) { this.label = label; }
     }
@@ -75,9 +76,29 @@ public final class ConversationSurfaceModel {
                 return new ConversationSurfaceModel("Local draft ready",
                         "Not sent and not handed off. This fictional draft exists only in the current session and clears when you leave.",
                         false, false, Action.CHANGE, Action.REPEAT, Action.DONE);
+            case MEDIA_SERVICE:
+                return new ConversationSurfaceModel("Which music app?",
+                        "Choose an app that Android reports can receive this exact play-from-search request. No app has been opened.",
+                        true, false, Action.EDIT, Action.CANCEL);
+            case MEDIA_PREVIEW:
+                return new ConversationSurfaceModel("Check this playback request",
+                        "This will ask the selected app to play the artist. Opening the app is not proof that playback started.",
+                        false, false, Action.REQUEST_PLAY, Action.CHANGE, Action.REPEAT, Action.CANCEL);
+            case MEDIA_DISPATCHING:
+                return new ConversationSurfaceModel("Sending playback request",
+                        "Latest verified step: exact artist and app approved. Current step: opening that app.",
+                        false, false, Action.REPEAT, Action.STOP);
+            case MEDIA_REQUESTED:
+                return new ConversationSurfaceModel("Playback request sent",
+                        "The selected app accepted the Android handoff. Granny has not verified the artist or playing state and cannot pause it here.",
+                        false, false, Action.REPEAT, Action.DONE);
+            case MEDIA_UNKNOWN:
+                return new ConversationSurfaceModel("I can’t confirm the music handoff",
+                        "The handoff may have reached the music app. Granny will not retry automatically and cannot claim playback or pause it here.",
+                        false, false, Action.REPEAT, Action.DONE);
             default:
                 return new ConversationSurfaceModel("How can I help?",
-                        "Try “make text larger” or “Tell David I’ll call after dinner.” This bounded fixture uses local fictional data only.",
+                        "Try “make text larger”, “Tell David I’ll call after dinner.”, or “play Elton John”. External media is an evidence-lab handoff only.",
                         false, false);
         }
     }

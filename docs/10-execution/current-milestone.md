@@ -70,6 +70,28 @@ declares only `RECORD_AUDIO`. Device/accessibility and external-message evidence
 unrun, T-105 remains incomplete and this slice does not count toward ADR-0009's
 external-workflow bar.
 
+## T-124 Android media play-from-search handoff — 2026-09-20
+
+Simon selected Android's standard media play-from-search intent as the next
+narrow route to try after noting that Granny can first interpret “play Elton
+John” and then choose the person's music app. The revised route inventory now
+separates this provider-neutral platform handoff from Spotify's SDK, whose
+voice-assistant policy remains a no-go.
+
+The bounded source slice is debug/synthetic-lab only. It discovers activities
+for the exact Android action, asks when multiple compatible apps exist, binds
+artist and exact component through a fresh preview and dispatches once. Launch
+acceptance is reported only as `playback requested`; the app explicitly says it
+cannot verify what is playing or Pause it. Candidate builds deny the route. No
+provider SDK, account, Internet/media-control permission or persistent service
+preference is added.
+
+Host evidence and documentation review can establish adapter mechanics only.
+No tablet/provider app is authorized or exercised. Exact handler/version,
+provider terms, account/auth/offline/ad behavior, independent content/playing
+state and Pause remain open, so T-106, CAP-10 play/pause, GATE-04 and
+ADR-0009's external-workflow bar remain incomplete.
+
 ## Native voice continuity repair — 2026-09-20
 
 [Simon-reported smoke feedback](../08-research/2026-09-20-native-tablet-smoke-feedback.md)
@@ -444,7 +466,7 @@ Current official Play policy does not permit a general-assistant AccessibilitySe
 
 ## Proposed next milestone
 
-Evidence-led foundation: MVP/control review T-100 and the bounded offline T-103 core are complete. T-101 Step A/C plans, partial Step B inventory, four bounded C2 device runs and the unrun identity/retention/egress packet now exist. Build the controlled fixture-origin and privacy-audit harnesses before another C2 claim-bearing run; any tablet access still requires fresh exact authority. Proceed with the bounded local fictional draft without external handoff/send. T-104 waits for sent-photo route/device evidence; T-106 waits for Simon's media-route decision. Do not begin broad MVP implementation or personal-data automation.
+Evidence-led foundation: MVP/control review T-100 and the bounded offline T-103 core are complete. T-101 Step A/C plans, partial Step B inventory, four bounded C2 device runs and the unrun identity/retention/egress packet now exist. Build the controlled fixture-origin and privacy-audit harnesses before another C2 claim-bearing run; any tablet access still requires fresh exact authority. Review T-123's bounded local fictional draft and T-124's Android media-handoff source slice. T-104 waits for sent-photo route/device evidence; T-106 now has a handoff experiment but still waits for named-handler policy/device evidence and an independent playback oracle. Do not begin broad MVP implementation or personal-data automation.
 
 Naming recommendation: Daykind / Handspan / Clearfold, all uncleared with documented concerns. Identity recommendation: test Open Day against challengers. Neither is accepted. That initial browser used provisional grayscale; the current conversation build adds reviewer-only territory comparisons. Figma remains a partial paused artifact.
 

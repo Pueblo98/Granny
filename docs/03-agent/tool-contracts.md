@@ -2,7 +2,7 @@
 title: "Stage 1 Typed Capability Contracts"
 status: proposed
 owner: Simon
-last_updated: 2026-09-19
+last_updated: 2026-09-20
 tags: [agent, interfaces]
 related:
   - device-control.md
@@ -12,11 +12,11 @@ related:
 
 # Typed capability contracts
 
-Specification only; no runtime exists. These vendor-neutral interfaces define the proposed MVP. [Policy](../05-safety-privacy/action-policy.md) owns grants/consequence/permit rules; [device control](device-control.md) owns budgets/freshness and [execution protocol](execution-protocol.md) owns transaction/event/journal semantics. [Capability admission](../04-architecture/capability-admission.md) owns build/configuration support. There is no generic shell, arbitrary HTTP, raw credential, unbounded tap or model-defined script capability.
+These vendor-neutral interfaces define the proposed MVP; bounded fixture implementations are listed below and do not imply production admission. [Policy](../05-safety-privacy/action-policy.md) owns grants/consequence/permit rules; [device control](device-control.md) owns budgets/freshness and [execution protocol](execution-protocol.md) owns transaction/event/journal semantics. [Capability admission](../04-architecture/capability-admission.md) owns build/configuration support. There is no generic shell, arbitrary HTTP, raw credential, unbounded tap or model-defined script capability.
 
-## Local prototype implementation exception
+## Local prototype implementation exceptions
 
-The [conversation runtime](../04-architecture/conversation-runtime-contract.md) now implements a narrowly authorized local demo interpretation of CAP-05/07/12: real MCP calls against fictional contacts and an isolated unsent store. Those prototype tool names do not admit CAP-08/09, Android automation or real sending. The generic vendor-neutral production contracts below remain proposed; T-103 and canonical device evals are not completed by this experiment.
+The [conversation runtime](../04-architecture/conversation-runtime-contract.md) implements a narrowly authorized local demo interpretation of CAP-05/07/12: real MCP calls against fictional contacts and an isolated unsent store. The native debug shell implements a local CAP-11 preference slice and [T-124](../10-execution/backlog.md#t-124) implements only CAP-10 `media.requestHandoff` mechanics against locally discovered Android handlers. It does not implement CAP-10 play/pause evidence. These prototype names do not admit CAP-08/09, real sending or candidate external control. The generic vendor-neutral production contracts below remain proposed; T-103 and canonical device evals are not completed by these experiments.
 
 ## Common types and trust
 
@@ -87,13 +87,13 @@ All calls inherit: active unlocked task, actual permission and scope recheck, cu
 | CAP-07 message.prepare {recipientRef, channelRef, exactBodyRef} → PreparedAction | Local only POL-02; no external insertion | Resolved endpoint, supported route, no unresolved content; digest immutable canonical bytes; read-back preview | New content produces new version; safe local recompute keyed by draft ID; message body Personal |
 | CAP-08 message.handoff {preparedRef} → Prepared externalDraft | POL-03 fresh permit; registered native/approved route | Digest matches exact endpoint/body/channel; adapter declares sync/typing effects; verify draft UI if available else opened-only | No handler/auth/unknown → no send assertion; no automatic repeat after uncertain handoff; no clipboard fallback |
 | CAP-09 message.commit {preparedRef} → Verified sendReceipt or Unknown | POL-03 permit; only separately admitted supported send integration; **disabled until gates** | Exact preview, authenticated owning route; journal before dispatch; validate receipt target/content reference/status | Retry Never on unknown; reconcile status read once; no coordinate/accessibility catch-all send; Personal output redacted |
-| CAP-10 media.play {registeredService, selectedContentRef} / media.pause {playbackRef} → PlaybackEvidence | Admitted media API/recipe, no paid transaction; POL-01 | Resolved title/artist, allowed source; verify content identity + playing/paused state, not launch | Ads/paywall/auth stop; one no-effect retry only; query Personal; no subscription acceptance |
+| CAP-10 media.requestHandoff {registeredHandler, mediaFocus, exactQuery} → HandoffEvidence or Unknown; media.play {registeredService, selectedContentRef} / media.pause {playbackRef} → PlaybackEvidence | Handoff: exact locally discovered/reviewed handler in synthetic lab; play/pause: admitted media API/recipe; no paid transaction; POL-01 | Handoff binds exact handler/focus/query and proves only launch acceptance; play/pause require resolved content and independent identity + playing/paused state | Stop revokes pre-launch handoff; after launch user takes over and playback remains unverified; unknown never retries; ads/paywall/auth stop; query Personal; no subscription acceptance |
 | CAP-11 preferences.preview/apply {key: TextScale / SpeechRate / PrivateSpeech / ReducedMotion, value, priorVersion} → LocalPreferenceEvidence | Local settings POL-02; explicit local user action | Typed range and previous value; apply compare-and-set; read back and verify UI accessible | Version conflict re-preview; same request id idempotent; no global Android settings writes |
 | CAP-12 task.cancel {taskId, reason: Stop / Takeover / Revoked / Locked} → CancelReceipt + InFlightStatus | Trusted local control, never needs model/permit/network | Atomic cancel epoch advance; deny later dispatch; stop capture/speech; reconcile in-flight journal | Must succeed locally or service disables itself; repeat idempotent; no raw content |
 | CAP-13 memory.list/edit/delete {scope: ExplicitPreferences / Aliases, itemId?, expectedVersion?, valueRef?} → ItemEvidence | User-local scope; POL-00 read, POL-02 edit, POL-03 bulk delete/export | Provenance explicit; derivative lookup invalidated transactionally; tombstone/read-back | Version conflict → review; deletion idempotent; no automatic inferred writes; policy governs retention |
 | CAP-14 audit.summary/export {taskIds?, exportPreviewRef?} → RedactedSummary or ExportRef | Own user; POL-00 summary, POL-03 export | Export preview digest matches output; no audio/screens/tree/content/secrets | Export cancelled/no grant stops; no implicit upload; summary minimal |
 
-CAP-10 and CAP-11 are namespaces of separate typed operations with separate schemas; do not accept a generic verb string. CAP-13 operation schemas prohibit arbitrary queries or store access. CAP-04 is available only to the admitted deterministic recipe engine (or isolated synthetic dynamic lab), never a public unbounded model click tool. General structured UI automation frameworks are test tools, not production privileges.
+CAP-10 and CAP-11 are namespaces of separate typed operations with separate schemas; do not accept a generic verb string. CAP-10 handoff evidence cannot satisfy a `media.play` or `media.pause` postcondition. CAP-13 operation schemas prohibit arbitrary queries or store access. CAP-04 is available only to the admitted deterministic recipe engine (or isolated synthetic dynamic lab), never a public unbounded model click tool. General structured UI automation frameworks are test tools, not production privileges.
 
 ## Provider and simulation ports
 

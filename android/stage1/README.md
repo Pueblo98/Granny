@@ -1,5 +1,5 @@
 ---
-title: "T-120/T-121 native voice and spoken-readback shell"
+title: "Native conversation and evidence-lab shell"
 status: review
 owner: Simon
 last_updated: 2026-09-20
@@ -10,7 +10,7 @@ related:
   - ../../docs/10-execution/task-packets.md
 ---
 
-# T-120/T-121 native voice and spoken-readback shell
+# Native conversation and evidence-lab shell
 
 This is the first bounded own-app Android shell. T-120 implements explicit
 tap-to-talk with Android's on-device `SpeechRecognizer`, a complete typed
@@ -56,9 +56,34 @@ current Granny text size and closed speech-rate choice.
 spoken answer** speaks one fixed synthetic sentence only after a tap and cannot
 be repeated as task content or authorize a setting/action. Android app settings
 opens only after a direct tap; actual state is rechecked when the app returns.
-Message, media and screen routes are explicitly unavailable in this build.
-There is no forced onboarding, permission loop, download, network diagnosis or
-claim that host inspection proves installed-engine privacy or quality.
+Message and screen routes are explicitly unavailable. In debug builds only,
+music reports compatible Android play-from-search handlers as an evidence-lab
+handoff; it never reports verified playback. There is no forced onboarding,
+permission loop, download, network diagnosis or claim that host inspection
+proves installed-engine privacy, media behavior or quality.
+
+## Android media handoff evidence lab
+
+In debug/synthetic-lab builds, the exact typed or final spoken fixture requests
+`play Elton John` and `play some Elton John` propose artist `Elton John`. Local
+code queries only activities advertising Android's
+`INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH`. Zero handlers stops with no effect; one
+advances to an exact preview; multiple handlers require a direct choice. The
+preview binds the request revision, artist and exact component to a one-use
+dispatch. A package/component from model output is never accepted.
+
+The explicit intent carries artist media focus, `EXTRA_MEDIA_ARTIST` and
+`SearchManager.QUERY`. The handler is re-resolved before launch. A successful
+`startActivity` return is shown only as **Playback request sent**: Granny has
+not verified the artist or playing state and cannot Pause the receiving app.
+Missing handlers produce known no effect; exceptions are unknown and are not
+retried. Candidate builds deny the route. No preferred app is persisted.
+
+The manifest adds only the exact media-intent package-visibility query. It adds
+no permission, provider SDK, account/auth, Internet path, notification listener
+or media-control privilege. No tablet/provider app was exercised by the source
+slice; named-handler behavior, provider terms, independent playback evidence
+and Pause remain T-106/T-101 work.
 
 ## Boundary
 
@@ -91,8 +116,8 @@ Use the already prepared JDK 17 / API 36 toolchain:
 ./gradlew --no-daemon clean testDebugUnitTest assembleDebug lintDebug
 ```
 
-The T-123 host command passes 153 cases across 17 suites, debug assembly and
-lint with zero errors. Remaining lint warnings concern API targeting, the
+The T-124 host command passes 161 cases across 17 suites, debug assembly and
+lint with zero errors and 17 existing-category warnings. Remaining lint warnings concern API targeting, the
 API-33 Back attribute on minSdk 31, and English fixture strings. This shell
 targets the selected Android 16/API 36 reference configuration. `aapt2 dump permissions` reports only `RECORD_AUDIO`, and the
 debug runtime dependency report is empty.
@@ -101,10 +126,12 @@ Host tests cover input/output generation state, stale callback and revision
 rejection, hypothesis selection, cleanup, and settings failure/readback
 contracts. The local-draft cases cover same-name fictional endpoints, exact
 body binding, typed/voice parity, edit/Stop/background invalidation and
-candidate denial. They do not exercise a microphone, recognizer/TTS service, Android
+candidate denial. Media cases cover handler absence/ambiguity, exact binding,
+stale/Stop invalidation, accepted/no-handler/unknown results, one-use dispatch
+and candidate denial with pure fakes. They do not exercise a microphone, recognizer/TTS service, Android
 permission UI, installed voice/locale pack, acoustic condition, audible
 output, audio focus, TalkBack, process lifecycle, contact resolver, messaging
-app or external handoff/send.
+app, installed media handler, playback/Pause or external message send.
 
 ## Device evidence still required
 

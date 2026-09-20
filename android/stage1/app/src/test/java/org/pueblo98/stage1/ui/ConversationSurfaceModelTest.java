@@ -28,7 +28,8 @@ public final class ConversationSurfaceModelTest {
         for (Surface state : Surface.values()) {
             ConversationSurfaceModel model = ConversationSurfaceModel.forSurface(state);
             assertEquals(state == Surface.PREVIEW, model.actions.contains(Action.APPLY));
-            assertEquals(state == Surface.ACTIVE, model.actions.contains(Action.STOP));
+            assertEquals(state == Surface.ACTIVE || state == Surface.MEDIA_DISPATCHING,
+                    model.actions.contains(Action.STOP));
         }
     }
     @Test public void transcriptSubmitsMeaningNotAnAction() {
@@ -68,5 +69,19 @@ public final class ConversationSurfaceModelTest {
         assertTrue(model.explanation.contains("not handed off"));
         assertFalse(model.actions.contains(Action.KEEP_DRAFT));
         assertFalse(model.actions.contains(Action.STOP));
+    }
+    @Test public void mediaSurfacesSeparateHandoffFromPlaybackEvidence() {
+        ConversationSurfaceModel choose = ConversationSurfaceModel.forSurface(Surface.MEDIA_SERVICE);
+        assertTrue(choose.choices);
+        assertTrue(choose.explanation.contains("No app has been opened"));
+        ConversationSurfaceModel preview = ConversationSurfaceModel.forSurface(Surface.MEDIA_PREVIEW);
+        assertTrue(preview.actions.contains(Action.REQUEST_PLAY));
+        assertTrue(preview.explanation.contains("not proof"));
+        ConversationSurfaceModel requested = ConversationSurfaceModel.forSurface(Surface.MEDIA_REQUESTED);
+        assertTrue(requested.explanation.contains("not verified"));
+        assertTrue(requested.explanation.contains("cannot pause"));
+        assertFalse(requested.actions.contains(Action.REQUEST_PLAY));
+        ConversationSurfaceModel unknown = ConversationSurfaceModel.forSurface(Surface.MEDIA_UNKNOWN);
+        assertTrue(unknown.explanation.contains("will not retry automatically"));
     }
 }

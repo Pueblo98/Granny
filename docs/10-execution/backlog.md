@@ -100,7 +100,7 @@ an admitted external workflow or finish T-101.
 - **Bounded deliverable:** Resolve title/service, play via admitted route, independently verify metadata/state, Pause, handle ad/paywall/auth/offline; instrument cold/warm response and task time.
 - **Acceptance / evidence:** 20 nominal + adverse variants; no purchase and no false playing claim; actual latency/cost recorded only if provider used with authority.
 - **Excluded / rollback:** No subscription acceptance, ambient mic or unsupported app-general control. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
-- **Status:** blocked pending route decision — Spotify's current developer policy prohibits the accepted voice-assistant control behavior. Apple MusicKit is a desk lead only; its Android SDK currency, distribution/commercial terms, privacy/security and voice compatibility are unreviewed. Do not start dependency, account or device work until Simon selects a policy-compatible route or explicitly revises the outcome.
+- **Status:** partial handoff experiment in review through [T-124](backlog.md#t-124) — Android documents a provider-neutral play-from-search intent suitable for a debug-only request handoff. It does not verify matching content/playing state or provide generic Pause, so T-106 completion remains blocked on a named handler/version, provider-policy review and independent playback oracle. Spotify's SDK route remains policy no-go. No account or device work is authorized.
 
 <a id="t-107"></a>
 ## T-107 — Implement local privacy/memory/audit rights slice
@@ -288,6 +288,17 @@ or cloud voice remains a separately scoped dependency/privacy/product decision.
 - **Acceptance:** Host tests cover ambiguity, exact binding, voice/typed parity, edit/Stop/background invalidation and candidate denial; no permit, external dispatch, persistence, dependency, network or new permission; build/lint/docs checks pass.
 - **Status:** review on `feature/t123-local-draft` — 153 host cases across 17 suites, debug assembly and lint pass; the debug runtime graph remains empty and the APK declares only `RECORD_AUDIO`. Device/accessibility behavior and any external message route remain unrun.
 - **Excluded / rollback:** No contact lookup, external compose/handoff, send/delivery, real identity, account, package, provider, network, durable draft, audit/history or claim toward the two-external-workflow bar. Remove the finite fixture path without changing T-122 or C5.
+
+<a id="t-124"></a>
+## T-124 — Try Android media play-from-search handoff
+
+- **Scope / authority:** Simon explicitly requested revising the media plan and trying the standard Android route on 2026-09-20. Implement one debug/synthetic-lab path for the exact fixture request `play Elton John`, compatible-handler discovery, explicit service choice when ambiguous, exact preview and package/component-targeted handoff.
+- **Trace / owner:** PRD-FR-010/012/013, UC-004/017, J-005, SCR-005/006/008, CAP-10 `media.requestHandoff`, POL-01, EVAL-004/006/009.
+- **Dependencies / entry:** T-123/T-122 native branch chain; Android's documented `INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH`; [T-124 packet](task-packets.md#t-124-packet). No provider SDK, account, network permission or device access.
+- **Deliverables:** Exact-action package visibility query; finite artist proposal; zero/one/multiple-handler flow; local exact-component binding; one-use reviewed dispatch; Setup status; truthful requested/unknown/no-effect results.
+- **Acceptance:** Host tests cover typed/voice-shared interpretation path, handler ambiguity, model-supplied/stale component denial, exact artist binding, preview/revision/Stop invalidation, launch accepted/no-handler/unknown, no retry and candidate denial. Assemble/lint/manifest/dependency/docs checks pass. No screen says playback is verified or exposes Pause.
+- **Status:** review on `feature/t124-media-play-search` — 161 host cases across 17 suites, debug assembly and lint pass; the runtime dependency graph is empty and the APK still declares only `RECORD_AUDIO`. No device/provider evidence is claimed, so this remains a handoff experiment rather than CAP-10 playback admission.
+- **Excluded / rollback:** No persisted preferred service, broad package query, implicit default, Spotify/provider SDK, account/auth, personal query, purchase, analytics, notification-listener/media-control privilege, generic playback verification, Pause or candidate admission. Remove the adapter/query and finite flow without changing local draft, Setup, speech or C5.
 
 ## Session handoff
 

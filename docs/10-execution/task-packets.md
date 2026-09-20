@@ -450,6 +450,54 @@ fixture behavior. It does not complete T-105, prove external compose/send,
 resolve an actual contact, pass EVAL-003/010 or count toward ADR-0009's external
 workflow bar.
 
+<a id="t-124-packet"></a>
+## T-124 packet — Android media play-from-search handoff
+
+**Requested mode and outcome:** Implement the smallest source/host experiment
+for the platform route Simon selected for investigation. The exact fixture
+requests `play Elton John` and `play some Elton John` resolve to artist `Elton
+John`, then local code—not model output—discovers and binds an exact Android
+handler for `INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH`.
+
+**Boundary:** Debug/synthetic-lab build only. Candidate mode denies the route.
+Add only the exact package-visibility intent query; no `QUERY_ALL_PACKAGES`,
+provider SDK, Internet or media-control permission, notification listener,
+account/auth, persistent service preference, personal query, purchase or
+analytics. Device/app/account activity requires a later exact authorization.
+
+**State and authority:** Zero handlers yields known no effect. One handler may
+advance to preview; multiple handlers require an explicit choice from the
+locally discovered finite list. Preview names the exact artist and app and says
+the external app will open. Approval binds generation, revision, exact request,
+consequence, artist and component to one dispatch. Edit, Stop or background
+invalidates pre-dispatch authority. A model-supplied package/component is never
+accepted.
+
+**Android contract:** Set artist focus, `EXTRA_MEDIA_ARTIST` and
+`SearchManager.QUERY`, then target the exact selected activity component. Recheck
+that it still resolves immediately before launch. `startActivity` returning is
+only `handoff accepted`; report `playback requested` and state that Granny has
+not verified the artist/playing state and cannot Pause. Missing handler is known
+no effect. Runtime exception is unknown with no automatic retry.
+
+**Host oracle:** Pure port fakes cover zero/one/two handlers, exact choice and
+artist, stale choice/approval, Stop-before-dispatch, removed handler, unknown,
+one-use/no retry and candidate denial. Surface tests require the handoff versus
+playback distinction. Setup reports `Evidence lab only` only in a debug build
+with at least one compatible handler.
+
+**Unrun device/provider evidence:** Named package/component/version; whether it
+advertises and correctly interprets artist focus; signed-in/out, offline,
+ad/paywall and ambiguity behavior; lifecycle/return; independent media identity
+and playing state; Pause; provider terms; TalkBack/large-text/rotation. Until
+those are reviewed, this does not admit CAP-10 play/pause, complete T-106 or
+count toward ADR-0009's external workflow bar.
+
+**Rollback and completion:** Remove the adapter, manifest query and finite media
+surfaces without affecting T-122/T-123, speech or C5. Host completion requires
+unit tests, assemble, lint, permission/dependency inspection, documentation
+validation and an explicit statement that no device run occurred.
+
 ## Restart prompts
 
 These are scoped examples, not standing authorization:

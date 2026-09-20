@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import java.util.List;
+import org.pueblo98.stage1.media.MediaPlayFromSearchPort;
 import org.pueblo98.stage1.readability.TextScale;
 import org.pueblo98.stage1.readability.TextScaleController;
 import org.pueblo98.stage1.readability.TextScaleStore;
@@ -157,7 +159,117 @@ public final class ConversationSessionCoordinatorTest {
         assertFalse(c.metadata(ConversationSessionCoordinator.Capability.LOCAL_DRAFT).enabled);
         assertEquals(ConversationSessionCoordinator.Result.DENIED,c.chooseDraftRecipient("person-a"));
     }
+    @Test public void oneMediaHandlerProducesExactPreviewAndAcceptedHandoffIsNotPlayback() {
+        FakeMedia media = new FakeMedia(handler("music/.Play", "music", "Fixture Music"));
+        ConversationSessionCoordinator c = mediaCoordinator(media, ConversationSessionCoordinator.BuildMode.SYNTHETIC_LAB);
+        c.typed("play Elton John");
+        assertEquals(ConversationSessionCoordinator.Result.ACCEPTED, c.submit());
+        assertEquals(ConversationSessionCoordinator.Surface.MEDIA_PREVIEW, c.snapshot().surface);
+        assertEquals("Elton John", c.snapshot().mediaArtist);
+        assertEquals("Fixture Music", c.snapshot().mediaHandlerLabel);
+        assertTrue(c.snapshot().consequence.contains("cannot yet verify playback or pause"));
+        ConversationSessionCoordinator.Snapshot preview = c.snapshot();
+        assertEquals(ConversationSessionCoordinator.Result.QUEUED,
+                c.approveMedia(preview.generation, preview.revision, preview.consequence));
+        assertTrue(c.snapshot().permitQueued);
+        assertEquals(ConversationSessionCoordinator.Result.DISPATCHED, c.dispatchMedia(c.snapshot().generation));
+        assertEquals(1, media.launches);
+        assertEquals("Elton John", media.lastArtist);
+        assertEquals(ConversationSessionCoordinator.Surface.MEDIA_REQUESTED, c.snapshot().surface);
+        assertTrue(c.snapshot().message.contains("has not verified what is playing"));
+    }
+    @Test public void finalVoiceAndTypedMediaUseTheSameReviewedPath() {
+        FakeMedia media = new FakeMedia(handler("music/.Play", "music", "Fixture Music"));
+        ConversationSessionCoordinator typed = mediaCoordinator(media, ConversationSessionCoordinator.BuildMode.SYNTHETIC_LAB);
+        typed.typed("play Elton John"); typed.submit();
+        ConversationSessionCoordinator voice = mediaCoordinator(media, ConversationSessionCoordinator.BuildMode.SYNTHETIC_LAB);
+        long generation = voice.beginListening();
+        voice.finalVoice(generation, "play Elton John"); voice.submit();
+        assertEquals(ConversationSessionCoordinator.Surface.MEDIA_PREVIEW, voice.snapshot().surface);
+        assertEquals(typed.snapshot().consequence, voice.snapshot().consequence);
+        assertEquals(ConversationSessionCoordinator.Provenance.FINAL_VOICE, voice.snapshot().provenance);
+    }
+    @Test public void multipleMediaHandlersRequireExactChoiceAndStaleChoiceCannotDispatch() {
+        FakeMedia media = new FakeMedia(handler("a/.Play", "a", "Alpha"), handler("b/.Play", "b", "Beta"));
+        ConversationSessionCoordinator c = mediaCoordinator(media, ConversationSessionCoordinator.BuildMode.SYNTHETIC_LAB);
+        c.typed("play some Elton John."); c.submit();
+        assertEquals(ConversationSessionCoordinator.Surface.MEDIA_SERVICE, c.snapshot().surface);
+        assertEquals(2, c.snapshot().mediaHandlers.size());
+        assertEquals(ConversationSessionCoordinator.Result.DENIED, c.chooseMediaHandler("model.supplied/.Fake"));
+        assertEquals(ConversationSessionCoordinator.Result.ACCEPTED, c.chooseMediaHandler("b/.Play"));
+        ConversationSessionCoordinator.Snapshot preview = c.snapshot();
+        c.approveMedia(preview.generation, preview.revision, preview.consequence);
+        long old = c.snapshot().generation;
+        c.edit("play something else");
+        assertEquals(ConversationSessionCoordinator.Result.STALE, c.dispatchMedia(old));
+        assertEquals(0, media.launches);
+    }
+    @Test public void stopBeforeMediaDispatchRevokesPermit() {
+        FakeMedia media = new FakeMedia(handler("music/.Play", "music", "Fixture Music"));
+        ConversationSessionCoordinator c = mediaCoordinator(media, ConversationSessionCoordinator.BuildMode.SYNTHETIC_LAB);
+        c.typed("play Elton John"); c.submit();
+        ConversationSessionCoordinator.Snapshot preview = c.snapshot();
+        c.approveMedia(preview.generation, preview.revision, preview.consequence);
+        long old = c.snapshot().generation; c.stop();
+        assertEquals(ConversationSessionCoordinator.Result.STALE, c.dispatchMedia(old));
+        assertEquals(0, media.launches);
+    }
+    @Test public void noHandlerAndChangedHandlerFailWithoutPlaybackClaimOrRetry() {
+        FakeMedia none = new FakeMedia();
+        ConversationSessionCoordinator c = mediaCoordinator(none, ConversationSessionCoordinator.BuildMode.SYNTHETIC_LAB);
+        c.typed("play Elton John");
+        assertEquals(ConversationSessionCoordinator.Result.DENIED, c.submit());
+        assertEquals(ConversationSessionCoordinator.Surface.MEDIA_SERVICE, c.snapshot().surface);
+        assertTrue(c.snapshot().message.contains("Nothing was opened"));
+
+        FakeMedia changed = new FakeMedia(handler("music/.Play", "music", "Fixture Music"));
+        ConversationSessionCoordinator d = mediaCoordinator(changed, ConversationSessionCoordinator.BuildMode.SYNTHETIC_LAB);
+        d.typed("play Elton John"); d.submit();
+        ConversationSessionCoordinator.Snapshot preview = d.snapshot();
+        d.approveMedia(preview.generation, preview.revision, preview.consequence);
+        changed.result = MediaPlayFromSearchPort.LaunchResult.NO_HANDLER;
+        assertEquals(ConversationSessionCoordinator.Result.DENIED, d.dispatchMedia(d.snapshot().generation));
+        assertEquals(1, changed.launches);
+        assertFalse(d.snapshot().message.contains("playing"));
+        assertEquals(ConversationSessionCoordinator.Result.STALE, d.dispatchMedia(d.snapshot().generation));
+    }
+    @Test public void unknownMediaHandoffNeverRetriesAndCandidateModeDeniesRoute() {
+        FakeMedia media = new FakeMedia(handler("music/.Play", "music", "Fixture Music"));
+        media.result = MediaPlayFromSearchPort.LaunchResult.UNKNOWN;
+        ConversationSessionCoordinator c = mediaCoordinator(media, ConversationSessionCoordinator.BuildMode.SYNTHETIC_LAB);
+        c.typed("play Elton John"); c.submit();
+        ConversationSessionCoordinator.Snapshot preview = c.snapshot();
+        c.approveMedia(preview.generation, preview.revision, preview.consequence);
+        assertEquals(ConversationSessionCoordinator.Result.UNKNOWN, c.dispatchMedia(c.snapshot().generation));
+        assertEquals(ConversationSessionCoordinator.Surface.MEDIA_UNKNOWN, c.snapshot().surface);
+        assertEquals(ConversationSessionCoordinator.Result.STALE, c.dispatchMedia(c.snapshot().generation));
+        assertEquals(1, media.launches);
+
+        ConversationSessionCoordinator candidate = mediaCoordinator(media, ConversationSessionCoordinator.BuildMode.CANDIDATE);
+        candidate.typed("play Elton John");
+        assertEquals(ConversationSessionCoordinator.Result.DENIED, candidate.submit());
+        assertFalse(candidate.metadata(ConversationSessionCoordinator.Capability.MEDIA_PLAY_FROM_SEARCH).enabled);
+    }
     private static ConversationSessionCoordinator coordinator() { FakeStore store = new FakeStore(); return new ConversationSessionCoordinator(new TextScaleController(store), store); }
+    private static MediaPlayFromSearchPort.Handler handler(String id, String pkg, String label) {
+        return new MediaPlayFromSearchPort.Handler(id, pkg, label);
+    }
+    private static ConversationSessionCoordinator mediaCoordinator(FakeMedia media,
+            ConversationSessionCoordinator.BuildMode mode) {
+        FakeStore store = new FakeStore();
+        return new ConversationSessionCoordinator(new TextScaleController(store), store, media, mode);
+    }
+    private static final class FakeMedia implements MediaPlayFromSearchPort {
+        List<Handler> handlers;
+        LaunchResult result = LaunchResult.HANDOFF_ACCEPTED;
+        int launches;
+        String lastArtist = "";
+        FakeMedia(Handler... handlers) { this.handlers = List.of(handlers); }
+        public List<Handler> compatibleHandlers() { return handlers; }
+        public LaunchResult requestArtist(Handler handler, String exactArtist) {
+            launches++; lastArtist = exactArtist; return result;
+        }
+    }
     private static final class FakeStore implements TextScaleStore {
         StoredValue value; int writes; boolean readbackMismatch;
         public ReadResult read() { if (readbackMismatch && writes > 0) return ReadResult.present(new StoredValue(1, TextScale.COMFORTABLE, TextScale.DEFAULT)); return value == null ? ReadResult.absent() : ReadResult.present(value); }

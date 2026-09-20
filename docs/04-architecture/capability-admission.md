@@ -37,7 +37,7 @@ These are logical separation requirements, not a chosen Gradle flavor, package n
 
 ## Capability manifest contract
 
-One entry identifies one operation/route version; namespace CAP-10 play/pause still have distinct operation schemas. Fields are finite and locally validated. Proposed record:
+One entry identifies one operation/route version; namespace CAP-10 handoff/play/pause have distinct operation schemas. Fields are finite and locally validated. Proposed record:
 
 | Field | Meaning / validation |
 |---|---|
@@ -67,7 +67,7 @@ The planner receives a redacted subset of available operation schemas, never wri
 | UC-006 draft / CAP-07 | Granny-local preparation | Exact locally reviewed text/recipient/channel | Go to own-app synthetic experiment; specified, not implemented. T-105 remains separate |
 | UC-006 handoff / CAP-08 | Android SMS/email compose or system chooser; exact owner integration if later found | Opened handoff vs independently read-back external draft distinguished | Conditional for truthful manual handoff; unknown for verified consumer-app draft. [T-101 desk evidence](../08-research/2026-09-19-t101-route-inventory.md#route-3--exact-message-preparation-and-confirmation); no sent claim |
 | UC-006 commit / CAP-09 | Supported send integration only | Receipt matched to exact intended effect | Disabled; no working consumer-messenger integration established |
-| UC-004 media / CAP-10 | Owner-exposed Media3 route, named approved integration, or lab-only fixed recipe | Exact content + active playback | Conditional per named owner/version; Spotify App Remote 0.8.0/Auth 2.1.0 is the current concrete candidate, not selected support. [T-101 route evidence](../08-research/2026-09-19-t101-route-inventory.md#route-4--requested-media); Spotify is absent from the partial `TBL-01` inventory and device/provider evidence is unrun |
+| UC-004 media / CAP-10 | Debug-only package-targeted Android play-from-search handoff; owner-exposed Media3 route, named approved integration, or lab-only fixed recipe for completion | Handoff: exact handler/focus/query plus launch acknowledgement only. Completion: exact content + active playback; Pause independently observed | [T-124](../10-execution/backlog.md#t-124) implements the standard-intent handoff as a source/host experiment and candidate mode denies it. It is not CAP-10 playback completion. Named handler/device/provider terms and independent player/session evidence are unrun; Spotify's SDK route remains policy no-go. [T-101 route evidence](../08-research/2026-09-19-t101-route-inventory.md#route-4--requested-media) |
 | UC-007 text / CAP-11 | Granny-owned preference/UI | Stored value + accessible reflow | Own-app synthetic [C5 source slice](../../android/stage1/README.md) implements preview/apply/restore and private preference readback; device persistence/reflow evidence unrun, not admitted; no device-wide claim. [T-101 desk evidence](../08-research/2026-09-19-t101-route-inventory.md#route-5--granny-owned-text-adjustment) |
 | Stop / CAP-12 | Local coordinator plus tested adapter cancellation boundary | No post-latch dispatch and honest in-flight status | Fake proof T-103 first, device proof EVAL-006 later |
 

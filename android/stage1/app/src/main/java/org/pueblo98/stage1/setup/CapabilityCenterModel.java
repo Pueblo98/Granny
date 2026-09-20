@@ -12,16 +12,21 @@ public final class CapabilityCenterModel {
         public final boolean onDeviceRecognizerAvailable;
         public final boolean spokenOutputAvailable;
         public final boolean soundEnabled;
+        public final boolean mediaLabEnabled;
+        public final int mediaHandlerCount;
         public final String textSize;
         public final String speechRate;
 
         public Input(boolean microphoneAllowed, boolean onDeviceRecognizerAvailable,
                 boolean spokenOutputAvailable, boolean soundEnabled,
+                boolean mediaLabEnabled, int mediaHandlerCount,
                 String textSize, String speechRate) {
             this.microphoneAllowed = microphoneAllowed;
             this.onDeviceRecognizerAvailable = onDeviceRecognizerAvailable;
             this.spokenOutputAvailable = spokenOutputAvailable;
             this.soundEnabled = soundEnabled;
+            this.mediaLabEnabled = mediaLabEnabled;
+            this.mediaHandlerCount = Math.max(0, mediaHandlerCount);
             this.textSize = Objects.requireNonNull(textSize);
             this.speechRate = Objects.requireNonNull(speechRate);
         }
@@ -82,6 +87,22 @@ public final class CapabilityCenterModel {
                     Tone.READY);
         }
 
+        Row media;
+        if (!input.mediaLabEnabled) {
+            media = row("Music handoff", "Not available in this build",
+                    "Candidate builds keep this route disabled until device and provider evidence is accepted.",
+                    Tone.UNAVAILABLE);
+        } else if (input.mediaHandlerCount == 0) {
+            media = row("Music handoff", "No compatible app found",
+                    "Android reported no app for the play-from-search handoff. Nothing can be opened.",
+                    Tone.UNAVAILABLE);
+        } else {
+            media = row("Music handoff", "Evidence lab only",
+                    input.mediaHandlerCount + (input.mediaHandlerCount == 1 ? " compatible app is" : " compatible apps are")
+                            + " visible. Granny can request playback, but cannot verify or pause it.",
+                    Tone.NEEDS_ATTENTION);
+        }
+
         return new CapabilityCenterModel(List.of(
                 row("Type", "Ready", "Type works without microphone access or spoken output.", Tone.READY),
                 talk,
@@ -90,8 +111,9 @@ public final class CapabilityCenterModel {
                         "This changes Granny only, not Android or other apps.", Tone.READY),
                 row("Speech speed", input.speechRate,
                         "Preview a closed speed choice before applying it.", Tone.READY),
-                row("Messages, media and screen help", "Not available in this build",
-                        "External routes remain under evidence review. This app will not open, send or play them.",
+                media,
+                row("Messages and screen help", "Not available in this build",
+                        "These external routes remain under evidence review. This app will not send messages or inspect another app.",
                         Tone.UNAVAILABLE)),
                 input.onDeviceRecognizerAvailable,
                 input.spokenOutputAvailable && input.soundEnabled);

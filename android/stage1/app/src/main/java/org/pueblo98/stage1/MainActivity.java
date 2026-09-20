@@ -43,6 +43,8 @@ import org.pueblo98.stage1.conversation.ConversationSessionCoordinator.Surface;
 import org.pueblo98.stage1.readability.SharedPreferencesTextScaleStore;
 import org.pueblo98.stage1.readability.TextScale;
 import org.pueblo98.stage1.readability.TextScaleController;
+import org.pueblo98.stage1.media.AndroidMediaPlayFromSearchPort;
+import org.pueblo98.stage1.media.MediaPlayFromSearchPort;
 import org.pueblo98.stage1.setup.CapabilityCenterModel;
 import org.pueblo98.stage1.ui.ConversationSurfaceModel;
 import org.pueblo98.stage1.ui.ConversationSurfaceModel.Action;
@@ -64,6 +66,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private final Map<TextView, Float> textSizes = new LinkedHashMap<>();
     private final Map<String, Integer> placeScroll = new LinkedHashMap<>();
     private ConversationSessionCoordinator conversation;
+    private MediaPlayFromSearchPort mediaPort;
+    private boolean syntheticLab;
     private TextScaleController textScale;
     private VoiceRecognizerAdapter recognizer;
     private long conversationVoiceGeneration = -1;
@@ -98,8 +102,10 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         SharedPreferencesTextScaleStore store = new SharedPreferencesTextScaleStore(
                 getSharedPreferences("granny_text_scale", MODE_PRIVATE));
         textScale = new TextScaleController(store);
-        conversation = new ConversationSessionCoordinator(textScale, store,
-                (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        syntheticLab = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        mediaPort = syntheticLab ? new AndroidMediaPlayFromSearchPort(this) : MediaPlayFromSearchPort.unavailable();
+        conversation = new ConversationSessionCoordinator(textScale, store, mediaPort,
+                syntheticLab
                 ? ConversationSessionCoordinator.BuildMode.SYNTHETIC_LAB
                 : ConversationSessionCoordinator.BuildMode.CANDIDATE);
         initializeSpeech();
@@ -110,7 +116,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
             String place = "Kitchen".equals(savedState.getString("place")) ? "Kitchen" : "Home";
             int position = Math.max(0, savedState.getInt("scroll", 0));
             conversation.setPlace(place, new ConversationSessionCoordinator.ReturnAnchor(place, "composer", position));
-            if (savedState.getBoolean("uncertainOperation", false)) conversation.restoreUnknownOutcome();
+            if (savedState.getBoolean("uncertainMediaHandoff", false)) conversation.restoreMediaUnknownOutcome();
+            else if (savedState.getBoolean("uncertainOperation", false)) conversation.restoreUnknownOutcome();
             scroll.post(() -> scroll.scrollTo(0, position));
         }
         if (Build.VERSION.SDK_INT >= 33) {
@@ -137,7 +144,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         conversationContent.addView(setup, wrap());
         textSettings = button("Granny text size", this::openTextSettings);
         conversationContent.addView(textSettings, wrap());
-        TextView boundary = text("Native integration fixture: no external app control or message sending. Screen explanation is unavailable.", 18);
+        TextView boundary = text("Native integration fixture: media can use a debug-only Android handoff, but playback is not verified or controlled. No message sending. Screen explanation is unavailable.", 18);
         conversationContent.addView(boundary, spaced());
         View space = new View(this);
         conversationContent.addView(space, new LinearLayout.LayoutParams(-1, 0, 1));
@@ -289,12 +296,17 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     }
 
     private void renderCapabilityCenter() {
+        int mediaHandlers = 0;
+        if (syntheticLab) {
+            try { mediaHandlers = mediaPort.compatibleHandlers().size(); }
+            catch (RuntimeException ignored) { mediaHandlers = 0; }
+        }
         CapabilityCenterModel model = CapabilityCenterModel.from(new CapabilityCenterModel.Input(
                 checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED,
                 recognizer.isAvailable(),
                 speechAdapter.availability() == SpeechOutputAdapter.Availability.AVAILABLE,
                 speechSettings.snapshot().soundEnabled,
-                textScale.snapshot().current.label(),
+                syntheticLab, mediaHandlers, textScale.snapshot().current.label(),
                 speechSettings.snapshot().currentRate.label()));
         for (int i = 0; i < capabilityRows.getChildCount(); i++) {
             View child = capabilityRows.getChildAt(i);
@@ -548,6 +560,18 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
                     render();
                 });
                 return;
+            case REQUEST_PLAY:
+                if (conversation.approveMedia(displayed.generation, displayed.revision, displayed.consequence)
+                        != ConversationSessionCoordinator.Result.QUEUED) { render(); return; }
+                stopSpokenOutput();
+                long mediaGeneration = conversation.snapshot().generation;
+                render();
+                handler.post(() -> {
+                    if (!foreground) return;
+                    conversation.dispatchMedia(mediaGeneration);
+                    render();
+                });
+                return;
             case KEEP_DRAFT:
                 conversation.keepLocalDraft(); break;
             case RESTORE:
@@ -611,7 +635,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
             editor.setText(state.editableRequest);
             editor.setSelection(editor.length());
         }
-        boolean busy = state.surface == Surface.LISTENING || state.surface == Surface.ACTIVE;
+        boolean busy = state.surface == Surface.LISTENING || state.surface == Surface.ACTIVE
+                || state.surface == Surface.MEDIA_DISPATCHING;
         editor.setEnabled(!busy);
         editor.setVisibility(state.surface == Surface.LISTENING ? View.GONE : View.VISIBLE);
         requestLabel.setVisibility(editor.getVisibility());
@@ -622,8 +647,10 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         home.setEnabled(!busy); kitchen.setEnabled(!busy); textSettings.setEnabled(!busy);
         setup.setEnabled(state.surface == Surface.IDLE);
         escape.setVisibility(state.surface == Surface.IDLE ? View.GONE : View.VISIBLE);
-        escape.setText(state.surface == Surface.ACTIVE || state.surface == Surface.LISTENING ? "■ Stop" : "Cancel");
-        escape.setTextColor(state.surface == Surface.ACTIVE || state.surface == Surface.LISTENING ? 0xff962f43 : BLUE);
+        boolean stopState = state.surface == Surface.ACTIVE || state.surface == Surface.LISTENING
+                || state.surface == Surface.MEDIA_DISPATCHING;
+        escape.setText(stopState ? "■ Stop" : "Cancel");
+        escape.setTextColor(stopState ? 0xff962f43 : BLUE);
         // Buttons are projected from one state; no parallel task cards or inferred authority.
         for (int i = 0; i < actions.getChildCount(); i++) textSizes.remove(actions.getChildAt(i));
         actions.removeAllViews();
@@ -635,6 +662,17 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
                         if (latest.generation != state.generation || latest.revision != state.revision) return;
                         conversation.chooseDraftRecipient(recipient.endpointId); render();
                     });
+                    pick.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20 * size.current.multiplier());
+                    actions.addView(pick, wrap());
+                }
+            } else if (state.surface == Surface.MEDIA_SERVICE) {
+                for (MediaPlayFromSearchPort.Handler media : state.mediaHandlers) {
+                    Button pick = button(media.label + "\n" + media.packageName, () -> {
+                        ConversationSessionCoordinator.Snapshot latest = conversation.snapshot();
+                        if (latest.generation != state.generation || latest.revision != state.revision) return;
+                        conversation.chooseMediaHandler(media.componentId); render();
+                    });
+                    pick.setContentDescription(media.label + " music app");
                     pick.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20 * size.current.multiplier());
                     actions.addView(pick, wrap());
                 }
@@ -734,7 +772,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
 
     private void renderSpeech(ConversationSessionCoordinator.Snapshot state) {
         if (speechStatus == null) return;
-        boolean busy = state.surface == Surface.LISTENING || state.surface == Surface.ACTIVE;
+        boolean busy = state.surface == Surface.LISTENING || state.surface == Surface.ACTIVE
+                || state.surface == Surface.MEDIA_DISPATCHING;
         // Include exact request and surface text so a new outcome cannot Repeat an old preview.
         speechBridge.visibleText(heading.getText() + ". " + explanation.getText() + " " + outcome.getText()
                 + (state.editableRequest.isEmpty() ? "" : " Request: " + state.editableRequest));
@@ -769,7 +808,10 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         out.putString("place", conversation.snapshot().place);
         out.putInt("scroll", scroll.getScrollY());
         Surface current = conversation.snapshot().surface;
-        out.putBoolean("uncertainOperation", current == Surface.ACTIVE || current == Surface.UNKNOWN);
+        boolean mediaUnknown = current == Surface.MEDIA_DISPATCHING || current == Surface.MEDIA_REQUESTED
+                || current == Surface.MEDIA_UNKNOWN;
+        out.putBoolean("uncertainMediaHandoff", mediaUnknown);
+        out.putBoolean("uncertainOperation", !mediaUnknown && (current == Surface.ACTIVE || current == Surface.UNKNOWN));
         // No request, hypothesis, approval, pending operation or spoken text enters saved state.
         super.onSaveInstanceState(out);
     }
@@ -783,7 +825,9 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private void back() {
         if (capabilityCenterOpen) closeCapabilityCenter();
         else if (conversation.snapshot().surface == Surface.IDLE) finish();
-        else if (conversation.snapshot().surface == Surface.KNOWN || conversation.snapshot().surface == Surface.UNKNOWN) {
+        else if (conversation.snapshot().surface == Surface.KNOWN || conversation.snapshot().surface == Surface.UNKNOWN
+                || conversation.snapshot().surface == Surface.MEDIA_REQUESTED
+                || conversation.snapshot().surface == Surface.MEDIA_UNKNOWN) {
             conversation.dismissResult(); render(); restoreOrigin();
         } else stopEverything("Cancelled.");
     }
