@@ -5,7 +5,7 @@ import {VERSION,SafeError} from './schema.mjs';
 import {connectDemo} from './mcp-host.mjs';
 import {createProvider,MODEL,LIMITS} from './provider.mjs';
 import {createRuntime} from './runtime.mjs';
-const assets={'/':'index.html','/index.html':'index.html','/app.js':'app.js','/cloud.js':'cloud.js','/styles.css':'styles.css','/model.js':'model.js','/intent.js':'intent.js','/fixtures.js':'fixtures.js','/scheduler.js':'scheduler.js','/assets/garden.svg':'assets/garden.svg','/assets/seaside.svg':'assets/seaside.svg','/assets/meal.svg':'assets/meal.svg'};
+import {prototypeAssets as assets} from '../stage-1/serve.mjs';
 export async function serve({port=4180,live=false,key='',provider:provided,mcp:providedMcp,runtimeOptions={}}={}){
   const mcp=providedMcp??await connectDemo();const provider=provided??createProvider({enabled:live,key});const runtime=createRuntime({mcp,provider,...runtimeOptions});
   const server=http.createServer(async(req,res)=>{
@@ -29,7 +29,7 @@ export async function serve({port=4180,live=false,key='',provider:provided,mcp:p
         send(url.pathname.endsWith('/session')?201:202,url.pathname.endsWith('/session')?runtime.create(body):runtime.command(body));return;
       }
       if(['GET','HEAD'].includes(req.method)&&Object.hasOwn(assets,url.pathname)){
-        const item=assets[url.pathname],ext=item.split('.').at(-1);const mime={html:'text/html',js:'text/javascript',css:'text/css',svg:'image/svg+xml'}[ext];
+        const [item,mime]=assets[url.pathname];
         const bytes=await readFile(new URL('../stage-1/'+item,import.meta.url));
         res.writeHead(200,{'Content-Type':mime+'; charset=utf-8','Content-Security-Policy':"default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"});res.end(req.method==='HEAD'?undefined:bytes);return;
       }

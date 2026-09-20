@@ -18,7 +18,7 @@ test('actual loopback API and MCP complete draft, idempotency, cursor and static
  const replay=await (await fetch(`${app.url}/api/runtime/events?sessionId=${s.sessionId}&after=${result.cursor-1}`)).json();assert.equal(replay.events.length,1);
  const config=await (await fetch(app.url+'/api/runtime/config')).json();assert.equal(config.liveAvailable,false);assert.ok(!JSON.stringify(config).includes('SYNTHETIC-SECRET'));
  for(const path of ['/.env','/../.env','/provider.mjs','/mcp-server.mjs','/node_modules/zod/package.json'])assert.equal((await fetch(app.url+path)).status,404);
- for(const path of ['/','/app.js','/styles.css']){const asset=await fetch(app.url+path);assert.equal(asset.status,200);assert.ok(!(await asset.text()).includes('SYNTHETIC-SECRET'));}
+ for(const path of ['/','/app.js','/styles.css','/room-ui.js','/rooms-store.js','/outcome-ui.js','/support-state.js','/support-ui.js']){const asset=await fetch(app.url+path);assert.equal(asset.status,200);assert.ok(!(await asset.text()).includes('SYNTHETIC-SECRET'));}
  }finally{await app.close();}
 });
 test('HTTP origin Host schema content-type and body bounds',async()=>{

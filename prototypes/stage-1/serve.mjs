@@ -29,6 +29,7 @@ for (const room of roomFixtures.rooms) {
     types[path] = [path.slice(1), 'image/png'];
   }
 }
+export { types as prototypeAssets };
 export function serve(port = 4173) {
   const server = http.createServer(async (req,res) => {
     const path = new URL(req.url, "http://127.0.0.1").pathname, item = Object.hasOwn(types, path) ? types[path] : null;

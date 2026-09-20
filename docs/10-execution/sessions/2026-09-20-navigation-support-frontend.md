@@ -16,6 +16,8 @@ related:
 changed_paths:
   - prototypes/conversation-runtime/browser-check.mjs
   - prototypes/conversation-runtime/live-consent-check.mjs
+  - prototypes/conversation-runtime/server.mjs
+  - prototypes/conversation-runtime/server.test.mjs
   - docs/02-design/browser-prototype.md
   - docs/10-execution/sessions/2026-09-20-navigation-support-frontend.md
   - prototypes/stage-1/README.md
@@ -199,6 +201,11 @@ their consent, exact-body, cancellation and verified-unsent assertions are
 unchanged. Local MCP dependencies are absent, so these two existing harnesses
 run in the repository's existing CI, which installs its pinned dependencies and
 uses only a stub provider, loopback runtime and temporary fictional demo store.
+That run also revealed the older runtime server's static allowlist omitted the
+room/outcome/support scripts. Both local servers now reuse the exact checked-in
+static allowlist, retaining host/origin checks, CSP, permissions policy and no
+arbitrary path serving. Runtime server tests explicitly require the shared
+frontend scripts and continue testing secret/path isolation.
 
 ### Deliberate differences and limits
 
