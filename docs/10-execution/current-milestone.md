@@ -225,11 +225,16 @@ bounded atmosphere, retain direct browse/search, and separate deleting the
 room from deleting underlying data.
 
 Simon subsequently directed the entire notebook and future sessions to use
-this direction. The next bounded plan is [T-119](backlog.md#t-119): extend the
+this direction. The original bounded plan was [T-119](backlog.md#t-119): extend the
 conversation-first shell with global Home, a direct Rooms library, one Kitchen
 room, direct browse/search, one provenance-carrying cross-room example and the
 archive/delete-room distinction, all with fictional in-memory data. Stable
 owners are PRD-FR-022, UC-026, J-009, SCR-016/017 and CMP-011.
+
+The September 20 implementation checkpoint below supersedes that first-slice
+selection for this browser session only: six starter rooms and reversible
+same-room source examples. Cross-room retrieval and archive/delete remain
+later bounded work, not implied delivery.
 
 Production placement is proposed for App V1 because useful Rooms depend on
 durable organization and rights that the five-workflow MVP intentionally does
@@ -265,15 +270,15 @@ bible and no contact-sheet composites or later-pack expansion.
 
 **Home composition selected — Explicit Scroll Row:** Simon selected [round 4 option A](../02-design/mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md) as the Home direction to use and develop in future sessions because it is direct, accessible and visually strong. [ADR-0016](../09-decisions/ADR-0016-explicit-home-room-row.md) now carries the accepted composition: stable conversation anchors, one compact continuation when useful, open unframed room portraits, truthful written Previous/Next for overflow and direct See all rooms. It supersedes ADR-0014's conflicting zero-or-one-region limit for the Context Rooms App V1/T-119 extension while retaining the simpler MVP baseline. [Round 4](../02-design/mockups/2026-09-19-harbour-blue-home/round-4/README.md) and rounds 1–3 remain preserved comparison history. Selection does not prove Android geometry, access behavior or comprehension and does not authorize room interiors or frontend implementation by itself.
 
-**Selected Home implementation handoff prepared:** Simon subsequently authorized
-the next development session to implement that exact Home in the existing
-browser prototype, including real scroll/overflow behavior and honest logo,
-room-art and destination placeholders. The
-[bounded implementation metaprompt](../02-design/mockups/2026-09-19-harbour-blue-home/selected-explicit-scroll-row/FRONTEND-IMPLEMENTATION-METAPROMPT.md)
-requires technical inspection, responsive/list fallbacks, accessibility and
-regression checks, then stops before the full Rooms library, room interiors,
-persistence, backend context, Android or Figma work. This handoff is prepared;
-the implementation and its evidence have not run yet.
+**Frontend implementation checkpoint:** The selected Home is implemented in
+the existing browser shell. Simon then explicitly expanded the active session
+from three to six fictional rooms using the new Kitchen vertical-slice
+mockups. The [current session](sessions/2026-09-19-context-rooms-frontend.md)
+records reusable room overviews, 48 collection controls, library/search,
+fictional item details, reversible source-aware replies and explicit local
+creation. The task branch is not main integration or final design acceptance.
+Production persistence, backend room context, archive/delete, Android, Figma
+and human/device evidence remain outside this implementation checkpoint.
 
 **Iteration 5 — selected Linen foundation:** Simon selected Linen canvas with the existing white surface and dark ink, keeping Soft Plum as baseline while explicitly authorizing blue Send/accent alternatives. [Four final-shortlist boards](../02-design/mockups/2026-09-19-style-boards/iteration-5/README.md) hold the composition fixed, distinguish ordinary border from offset focus ring, and preserve red Stop. The assistant recommends Plum + Cobalt; Simon's main-board choice remains next. [Canonical selection](../02-design/brand-and-visual-identity.md#selected-foundation--linen) and [session evidence](sessions/2026-09-19-linen-final-shortlist.md) separate selected foundation from proposed action values and unrun access evidence. Earlier round summaries below are historical.
 

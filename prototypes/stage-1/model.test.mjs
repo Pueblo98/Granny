@@ -212,7 +212,7 @@ test("display explanation distinguishes controls and gives next step", () => {
   assert.match(s.task.text, /Text size changes how large words appear/i);
   assert.match(s.task.text, /Display size changes words, buttons/i);
   assert.match(s.task.text, /Choose Text size/i);
-  assert.equal(s.task.result.screen.fields[0].label, "Text size");
+  assert.deepEqual(s.task.result.screen.fields.map(x => x.label), ["Screen zoom", "Text size", "Dark theme"]);
   P.dispatch(s, "submit", "explain more simply");
   assert.match(s.task.text, /words larger.*buttons.*items larger/i);
 });
@@ -747,9 +747,10 @@ test(
       P.dispatch(s, "submit", "Play Quiet Harbour");
       for (let i = 0; i < 4; i++)
         advance(s);
+      const historyBefore = structuredClone(s.history);
       P.dispatch(s, "clearSession");
       assert.deepEqual(s.turns, []);
-      assert.deepEqual(s.history, []);
+      assert.deepEqual(s.history, historyBefore);
       assert.equal(s.task, null);
       assert.equal(s.player, null);
       assert.equal(s.playing, false);

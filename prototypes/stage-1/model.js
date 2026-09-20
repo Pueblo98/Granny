@@ -226,7 +226,8 @@ function createWorkflow(s, p) {
   }
   if (p.kind === "media") {
     t.slots = {track : null, query : p.query};
-    const matches = F.tracks.filter(
+    const exact = F.tracks.filter(x => p.query.toLowerCase() === `${x.title} by ${x.performer}`.toLowerCase());
+    const matches = exact.length ? exact : F.tracks.filter(
         x => `${x.title} ${x.performer}`.toLowerCase().includes(
                  p.query.toLowerCase()) ||
              p.query.toLowerCase().includes(x.performer.toLowerCase()));
@@ -529,6 +530,43 @@ function dispatch(s, e, v, g) {
   if (!s || typeof e !== "string")
     return false;
   const t = s.task;
+  // Outcome actions are registered transitions bound to the current task.
+  // They do not mint approval or perform external effects.
+  if (e === 'outcome') {
+    if (!t || !v || v.taskId !== t.id || v.version !== t.version) return false;
+    const action = v.action;
+    if (t.kind === 'photos' && ['completed', 'no-matches'].includes(t.stage)) {
+      if (action === 'photo') {
+        if (!Number.isInteger(v.index) || !t.result?.photos[v.index]) return false;
+        t.result.index = v.index; return true;
+      }
+      if (['date', 'person'].includes(action)) {
+        invalidate(s, t); t.result = null; t.outcome = '';
+        if (action === 'date') askPhotoDate(t, '');
+        else {
+          t.stage = 'clarify-person'; t.prompt = 'Which Sophie do you mean?';
+          t.text = t.prompt; t.choices = choices('Sophie');
+        }
+        return true;
+      }
+    }
+    if (t.kind === 'explain' && t.stage === 'completed' && t.result?.screen?.fields) {
+      if (['guidance', 'explanation', 'option'].includes(action)) {
+        t.result.view = action === 'guidance' ? 'guidance' : 'explanation';
+        if (action === 'option') t.result.option = ((t.result.option ?? 1) + 1) % t.result.screen.fields.length;
+        t.text = action === 'guidance' ? 'Text size is the second option. I’ve highlighted it below.'
+          : t.result.option != null ? 'Highlighted option: ' + t.result.screen.fields[t.result.option].label + '.'
+          : 'This is the tablet’s Display settings. The highlighted section changes text size.';
+        return true;
+      }
+    }
+    if (t.kind === 'media' && t.outcome === 'unavailable' && t.stage === 'failed') {
+      if (action === 'sources') { t.result.view = 'source-choice'; return true; }
+      if (action === 'source-back') { t.result.view = ''; return true; }
+      if (action === 'manual') { t.result.view = 'manual'; return true; }
+    }
+    return false;
+  }
   if (e === "reset") {
     const epoch = s.epoch + 1, nextId = s.nextId;
     Object.assign(s, create(), {epoch, nextId});
@@ -739,7 +777,7 @@ function dispatch(s, e, v, g) {
       t.stage = found.length ? "completed" : "no-matches";
       t.outcome = found.length ? "matching fictional photos found"
                                : "no matching fictional photos";
-      t.result = {photos : found, uncertainDate : uncertain};
+      t.result = {photos : found, uncertainDate : uncertain, index: 0};
       t.dispatched = false;
       t.text =
           found.length
@@ -748,12 +786,12 @@ function dispatch(s, e, v, g) {
                            found.length} fictional photo${
                            found.length === 1 ? " is a possible match"
                                               : "s are possible matches"}.`
-                     : `Found ${found.length} fictional photo${
-                           found.length === 1 ? "" : "s"}.${
+                     : `I found ${found.length} fictional photo${
+                           found.length === 1 ? "" : "s"} from ${t.slots.person.name}.${
                            t.effect === "open-source-mark-read"
                                ? " The simulated source was opened and may now be marked read."
                                : ""}`)
-              : "I found no matching fictional photos. Try another person or date.";
+              : "I found the conversation, but no photos for that date.";
       record(s, t, t.outcome);
     } else if (t.kind === "explain") {
       const screen = t.slots.screen;
@@ -894,8 +932,10 @@ function dispatch(s, e, v, g) {
     if (!scales.includes(v))
       return false;
     s.previewScale = v;
-    if (t && t.kind === "readability" && t.stage === "size-preview")
+    if (t && t.kind === "readability" && t.stage === "size-preview") {
+      invalidate(s, t);
       t.slots.scale = v;
+    }
     return true;
   }
   if (e === "applyScale") {
@@ -916,12 +956,16 @@ function dispatch(s, e, v, g) {
     return true;
   }
   if (e === "restoreScale") {
+    if (v && (!t || v.taskId !== t.id || v.version !== t.version ||
+        t.kind !== 'readability' || !t.result || t.result.restored ||
+        !scales.includes(t.result.previousScale))) return false;
     const old = s.scale;
-    s.scale = s.previousScale;
+    s.scale = v ? t.result.previousScale : s.previousScale;
     s.previousScale = old;
     s.previewScale = s.scale;
     if (t && t.kind === "readability" && t.result) {
       t.result.scale = s.scale;
+      t.result.restored = true;
       t.text = "Restored the previous Granny text size.";
     }
     return true;
@@ -955,6 +999,7 @@ function dispatch(s, e, v, g) {
       previousScale : s.previousScale,
       previewScale : s.previewScale,
       aliases : s.aliases.map(a => ({...a})),
+      history : s.history.map(entry => ({...entry})),
       settings : {...s.settings}
     };
     Object.assign(s, create(), kept);

@@ -11,7 +11,7 @@ try{
  const state=s=>b.waitFor(`document.querySelector('#current-task')?.dataset.stage===${JSON.stringify(s)}`);
  const input=async value=>{await b.fill('#request',value);await b.click('#composer button[type=submit]');};
  check(!b.network.some(url=>url.includes('/api/')),'scripted default makes no API call');
- await b.click('#menu-button');await b.click('[data-menu="connection"]');await button('Connect to local demo');await state('idle');
+ await b.click('#menu-button');await b.click('[data-menu=settings]');await b.click('#settings-about');await b.click('#about-connection');await button('Connect to local demo');await state('idle');
  await input('Hello');await b.waitFor('document.body.innerText.includes("I can prepare an unsent message in this fictional demo.")');check((await text()).includes('What would you like help with?'),'normal chat crosses real HTTP runtime');
  const body='Meet at six.  🌱';await input(`Tell David "${body}"`);await state('clarifying');
  check((await text()).includes('David — Brother')&&(await text()).includes('David — Gardening group'),'MCP returns ambiguous fictional identities');

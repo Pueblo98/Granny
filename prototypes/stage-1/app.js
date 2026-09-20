@@ -8,6 +8,10 @@
   const state = P.create();
   const $ = id => document.getElementById(id);
   const thread = $('thread'), composerText = $('request');
+  const continuationPortrait = document.querySelector('.continuation-portrait');
+  continuationPortrait.addEventListener('error', () => {
+    continuationPortrait.style.visibility = 'hidden';
+  });
   // Connected execution belongs exclusively to the backend. Scripted task
   // state/timers are never used to advance or verify a connected request.
   let runtime = null, runtimeMode = false, runtimeView = null,
@@ -17,16 +21,117 @@
   let scheduler, pending = null, dialogReturn = null, menuPanel = '',
                  lastAnnouncement = '', restoreFocus = false, editor = null,
                  editingAliasId = null, panelReturn = null, panelScroll = 0,
-                 aliasDraft = null;
+                 aliasDraft = null, continuationVisible = true,
+                 homeView = 'home', homeReturn = null,
+                 homeReturnScroll = 0, homeFixture = 'default',
+                 roomScrollFrame = 0;
+  // Place belongs to homeView/roomUI. These records only own a temporary
+  // conversation surface and its return position; they never enter a Room.
+  let speechState = '', surfaceOrigin = null, speechReturn = null,
+      dismissedTask = null, surfaceNotice = '', lastSurfaceKey = '', externalReturn = null;
+  function rememberSurface(source = document.activeElement) {
+    if (!surfaceOrigin) surfaceOrigin = {
+      place: homeView, source: source?.isConnected ? source : composerText,
+      scroll: scrollY, selection: [composerText.selectionStart, composerText.selectionEnd]
+    };
+  }
+  function restoreOrigin(typing = false) {
+    const origin = surfaceOrigin;
+    surfaceOrigin = null;
+    requestAnimationFrame(() => {
+      focus(typing ? composerText : origin?.source || composerText);
+      if (origin) {
+        composerText.setSelectionRange(...origin.selection);
+        window.scrollTo(0, origin.scroll);
+      }
+    });
+  }
+  function dismissSurface() {
+    if (hasWork()) dispatch('stop');
+    // An in-flight Stop can become unknown; never hide that reconciliation.
+    if (state.task?.stage === 'unknown') {
+      dispatch('acknowledge');
+    }
+    dismissedTask = state.task?.id;
+    surfaceNotice = '';
+    editor = null;
+    render();
+    restoreOrigin();
+  }
+  function interruptPlace(next) {
+    if (pendingResult()) {
+      ask('Finish reviewing this result?', 'Done dismisses this result without repeating any action. Keep working returns to its evidence and recovery controls.', () => {
+        if (state.task.stage === 'unknown') dispatch('acknowledge');
+        dismissedTask = state.task.id;
+        surfaceOrigin = null;
+        next();
+      });
+      $('confirm-dialog').querySelector('[value=confirm]').textContent = 'Done and leave';
+      return;
+    }
+    if (!speechState && !hasWork()) { next(); return; }
+    const listening = !!speechState;
+    ask(listening ? 'Cancel listening and leave?' : 'Stop this request and leave?',
+      'The current request will not follow you into another place. Any uncertain result stays here for review.', async () => {
+        if(runtimeMode){
+          await runtime?.cancel();
+          if(active() || runtimeQuarantined){announce('Review the stopping or unknown result before leaving.');return;}
+          next();return;
+        }
+        if (listening) endSpeech(false);
+        if (hasWork()) dispatch('stop');
+        if (state.task?.stage === 'unknown') {
+          announce('Stopped. Review the unknown outcome here before leaving.');
+          return;
+        }
+        dismissedTask = state.task?.id;
+        surfaceOrigin = null;
+        next();
+      });
+  }
+  function pendingResult() {
+    return !runtimeMode && state.task?.kind === 'message' && dismissedTask !== state.task.id &&
+      ['unknown', 'completed'].includes(state.task.stage);
+  }
   const focus = element =>
       element?.isConnected && element.focus({preventScroll : true});
+  const roomUI = window.GrannyRoomUI.create($('room-content'), {
+    home: backToHome,
+    open: (destination, focusId) => openHomeDestination(destination, document.activeElement, focusId),
+    changed: renderRooms,
+    refresh: () => render(),
+    compose: text => {
+      if (text !== null) composerText.value = text;
+      focus(composerText);
+    },
+    announce
+  });
+  const outcomeUI = window.GrannyOutcomeUI.create({state, node, button, dispatch,
+    dismiss: dismissSurface, announce});
+  const supportUI = window.GrannySupportUI.create({
+    scale:()=>state.scale, place:()=>homeView, connected:()=>runtimeMode,
+    hasConversation:()=>!!(state.turns.length || state.task || composerText.value.trim() || roomUI.hasConversation || runtimeTurns.length),
+    rooms:()=>roomUI.rooms, items:()=>roomUI.supportItems,
+    render:()=>render(), announce, draft:value=>{composerText.value=value;focus(composerText);},
+    applyScale:value=>{dispatch('setScale',value);dispatch('applyScale');},
+    clearHistory:()=>dispatch('clearHistory'), reset:fullReset,
+    fresh:()=>{const run=()=>{clearLocalView();dispatch('clearSession');focus(composerText);};if(runtimeMode)leaveRuntime(run);else run();},
+    openRooms:()=>openHomeDestination('rooms',$('menu-button')),
+    openRoom:id=>openHomeDestination('room:'+id,$('menu-button')),
+    explore:result=>openHomeDestination(result.kind==='room'?'room:'+result.id:'item:'+result.id,$('menu-button')),
+    restorePlace:place=>{homeView=place;roomUI.show(place);render();},
+    legacy:what=>{menuPanel=what;panelReturn=$('menu-button');panelScroll=scrollY;render();focus(thread.querySelector('[data-panel] h2'));},
+    privacy:()=>runtimeMode ? 'Connected demo: browser reset does not delete backend drafts, backend sessions or provider-held data. Fictional details only.' : 'In-memory fictional simulation. No microphone, account, tracking or background storage. Reload resets the tab.',
+    confirm:(title,text,fn,label,danger,keep)=>{ask(title,text,fn,$('menu-button'));const approve=$('confirm-dialog').querySelector('[value=confirm]');approve.textContent=label;approve.className=danger?'danger':'primary';$('confirm-dialog').querySelector('[value=cancel]').textContent=keep||'Cancel';},
+    cancelConfirm:()=>{if($('confirm-dialog').open)$('confirm-dialog').close('cancel');}
+  });
 
   function atBottom() {
     return window.innerHeight + window.scrollY >=
            document.documentElement.scrollHeight - 100;
   }
   function scrollIfReadingEnd(wasAtBottom) {
-    if (wasAtBottom)
+    if (wasAtBottom && document.activeElement !== composerText)
       requestAnimationFrame(() => window.scrollTo({
         top : document.documentElement.scrollHeight,
         behavior : 'auto'
@@ -55,11 +160,19 @@
       scheduler.elapse();
     const changed = P.dispatch(state, event, value, guard);
     if (changed) {
+      if (['choose', 'edit', 'approve', 'submit', 'stop'].includes(event)) surfaceNotice = '';
       restoreFocus = true;
       render();
       if (scheduler && scheduler.sync)
         scheduler.sync();
       scrollIfReadingEnd(wasAtBottom);
+      if (event === 'stop' && surfaceOrigin) {
+        const origin = surfaceOrigin;
+        requestAnimationFrame(() => {
+          if (state.task?.stage === 'unknown') focus($('surface-heading') || composerText);
+          else { focus(origin.source); window.scrollTo(0, origin.scroll); }
+        });
+      }
     }
     return changed;
   }
@@ -77,6 +190,199 @@
     b.dataset.focusKey = focusKey || label;
     b.addEventListener('click', fn);
     return b;
+  }
+  function idleHome() {
+    return homeView === 'home' && !runtimeMode && !menuPanel &&
+           (!state.task || dismissedTask === state.task.id) && !speechState;
+  }
+  function currentHomeRooms() {
+    const rooms = roomUI.rooms.map(room => ({...room, asset: room.decor || room.mark}));
+    if (homeFixture === 'no-rooms')
+      return [];
+    if (homeFixture === 'one-room')
+      return rooms.slice(0, 1);
+    if (homeFixture === 'overflow')
+      return rooms.slice(0, 3); // Stable three-entry first/middle/last review fixture.
+    if (homeFixture === 'image-failure' && rooms[0])
+      rooms[0].asset = '/assets/missing-room-placeholder.svg';
+    return rooms;
+  }
+  function roomButton(room, context = 'home') {
+    const b = button('', () => openHomeDestination('room:' + room.id, b),
+                     'room-entry', 'room-' + room.id);
+    b.id = context === 'home' ? 'room-' + room.id : '';
+    b.dataset.roomId = room.id;
+    b.setAttribute('aria-label', room.name + ' — ' + room.purpose);
+    const image = document.createElement('img');
+    image.className = 'room-art';
+    image.src = room.asset;
+    image.alt = '';
+    image.setAttribute('aria-hidden', 'true');
+    image.addEventListener('error', () => {
+      // Preserve the portrait slot: failed decoration must not move labels.
+      image.style.visibility = 'hidden';
+      b.classList.add('image-missing');
+    }, {once : true});
+    b.append(image, node('strong', '', room.name),
+             node('span', '', room.purpose));
+    return b;
+  }
+  function renderRooms() {
+    const rooms = currentHomeRooms();
+    const list = $('room-list');
+    list.replaceChildren(...rooms.map(room => roomButton(room)));
+    $('empty-rooms').hidden = rooms.length !== 0;
+    document.body.dataset.homeFixture = homeFixture;
+    $('room-viewport').scrollLeft = 0;
+    requestAnimationFrame(updateRoomLayout);
+  }
+  function visibleRoomNames() {
+    const viewport = $('room-viewport');
+    const bounds = viewport.getBoundingClientRect();
+    const entries = [...viewport.querySelectorAll('.room-entry')];
+    let visible = entries.filter(entry => {
+      const rect = entry.getBoundingClientRect();
+      const center = (rect.left + rect.right) / 2;
+      return center >= bounds.left + 8 && center <= bounds.right - 8;
+    });
+    if (!visible.length && entries.length)
+      visible = [entries.reduce((best, entry) =>
+        Math.abs((entry.getBoundingClientRect().left +
+                  entry.getBoundingClientRect().right) / 2 -
+                 (bounds.left + bounds.right) / 2) <
+                Math.abs((best.getBoundingClientRect().left +
+                          best.getBoundingClientRect().right) / 2 -
+                         (bounds.left + bounds.right) / 2)
+            ? entry : best, entries[0])];
+    return visible.map(entry =>
+      currentHomeRooms().find(room => room.id === entry.dataset.roomId)?.name)
+        .filter(Boolean);
+  }
+  function updateRoomPosition() {
+    const viewport = $('room-viewport');
+    if (!$('home-secondary') || $('home-secondary').hidden)
+      return;
+    const listMode = document.body.dataset.homeList === 'true';
+    const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    const overflow = !listMode && max > 2;
+    const previous = $('rooms-previous'), next = $('rooms-next');
+    $('room-controls').hidden = !overflow;
+    $('rooms-position').hidden = !overflow;
+    viewport.dataset.overflow = String(overflow);
+    previous.disabled = false;
+    next.disabled = false;
+    if (!overflow) {
+      previous.setAttribute('aria-disabled', 'true');
+      next.setAttribute('aria-disabled', 'true');
+      $('rooms-position').textContent = currentHomeRooms().length > 1
+          ? 'All rooms are visible. Previous and Next are not needed.'
+          : currentHomeRooms().length === 1
+              ? 'The only room is visible. Previous and Next are not needed.'
+              : 'There are no rooms to move through.';
+      viewport.dataset.range = currentHomeRooms().map(room => room.name).join('–');
+      return;
+    }
+    const atStart = viewport.scrollLeft <= 2;
+    const atEnd = viewport.scrollLeft >= max - 2;
+    previous.setAttribute('aria-disabled', String(atStart));
+    next.setAttribute('aria-disabled', String(atEnd));
+    const names = visibleRoomNames();
+    const range = names.length > 1
+        ? names[0] + ' through ' + names[names.length - 1]
+        : names[0] || 'rooms';
+    viewport.dataset.range = range;
+    $('rooms-position').textContent = atStart
+        ? 'Showing ' + range + '. Start of row — Previous unavailable.'
+        : atEnd
+            ? 'Showing ' + range + '. End of row — Next unavailable.'
+            : 'Showing ' + range + '. Previous and Next available.';
+  }
+  function updateRoomLayout() {
+    const reviewScale = Number.parseFloat(
+        getComputedStyle(document.documentElement)
+            .getPropertyValue('--review-scale')) || 1;
+    const listMode = innerWidth <= 700 || (state.scale || 1) * reviewScale >= 2;
+    document.body.dataset.homeList = String(listMode);
+    document.body.dataset.largeText = String((state.scale || 1) * reviewScale >= 2);
+    if (listMode)
+      $('room-viewport').scrollLeft = 0;
+    requestAnimationFrame(updateRoomPosition);
+  }
+  function moveRooms(direction, control) {
+    const viewport = $('room-viewport');
+    const entries = [...viewport.querySelectorAll('.room-entry')];
+    const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    if (control.getAttribute('aria-disabled') === 'true' ||
+        !entries.length || max <= 2)
+      return;
+    const current = viewport.scrollLeft;
+    const origin = entries[0].offsetLeft;
+    const positions = entries.map(entry => entry.offsetLeft - origin);
+    const target = direction > 0
+        ? positions.find(position => position > current + 4) ?? max
+        : [...positions].reverse().find(position => position < current - 4) ?? 0;
+    viewport.scrollTo({left : Math.max(0, Math.min(max, target)), behavior : 'auto'});
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      updateRoomPosition();
+      focus(control);
+      const names = visibleRoomNames();
+      if (names.length)
+        announce('Rooms now showing ' + (names.length > 1
+            ? names[0] + ' through ' + names[names.length - 1]
+            : names[0]) + '.');
+    }));
+  }
+  function openHomeDestination(destination, source, focusId, interrupted = false) {
+    supportUI.forgetSearch();
+    if(supportUI.active)supportUI.finish();
+    if (!interrupted && (speechState || hasWork() || pendingResult()))
+      return interruptPlace(() => openHomeDestination(destination, source, focusId, true));
+    if (!hasWork() && state.task) dismissedTask = state.task.id;
+    surfaceOrigin = null;
+    const previousRoom = homeView.startsWith('room:') ? homeView.slice(5) : '';
+    if (homeView === 'home') {
+      homeReturn = {id: source?.id || '', focusKey: source?.dataset?.focusKey || ''};
+      homeReturnScroll = scrollY;
+    }
+    homeView = destination === 'kitchen' ? 'room:kitchen' : destination;
+    menuPanel = '';
+    $('menu').hidden = true;
+    $('menu-button').setAttribute('aria-expanded', 'false');
+    roomUI.enter(homeView);
+    render();
+    const destinationFocus = focusId ? $(focusId)
+      : destination === 'rooms' && previousRoom ? $('library-room-' + previousRoom)
+      : $('room-content').querySelector('h1, h2');
+    requestAnimationFrame(() => {
+      if (!destinationFocus?.isConnected) return;
+      destinationFocus.focus();
+      if (!focusId && !(destination === 'rooms' && previousRoom)) window.scrollTo(0, 0);
+    });
+  }
+  function backToHome(interrupted = false) {
+    supportUI.forgetSearch();
+    if(supportUI.active)supportUI.finish();
+    if (interrupted !== true && (speechState || hasWork() || pendingResult()))
+      return interruptPlace(() => backToHome(true));
+    if (!hasWork() && state.task) dismissedTask = state.task.id;
+    surfaceOrigin = null;
+    const returned = homeReturn;
+    const position = homeReturnScroll;
+    homeView = 'home';
+    homeReturn = null;
+    roomUI.show('home');
+    render();
+    requestAnimationFrame(() => {
+      const target = (returned?.id && $(returned.id)) ||
+          (returned?.focusKey && [...document.querySelectorAll('[data-focus-key]')]
+            .find(item => item.dataset.focusKey === returned.focusKey)) ||
+          composerText;
+      focus(target);
+      window.scrollTo(0, position);
+    });
+  }
+  function renderHomeDestination() {
+    roomUI.show(homeView);
   }
   function turn(role, text) {
     const c = node('article', 'turn ' + role);
@@ -313,13 +619,13 @@
     const dl = node('dl');
     [[ 'To', recipient.name || 'Not chosen' ],
      [ 'Which person', recipient.detail || 'Not chosen' ],
-     [ 'Open in', slots.channel || 'Not chosen' ], [
+     [ 'Channel', slots.channel || 'Not chosen' ], [
        'What happens', sending ? 'A fictional message is sent'
                                : 'A fictional unsent draft opens'
      ]].forEach(([ a, b ]) => {
       dl.append(node('dt', '', a), node('dd', '', b));
     });
-    c.append(dl, node('blockquote', '', slots.body || 'No message text yet.'));
+    c.append(dl, node('p', 'eyebrow', 'Message'), node('blockquote', '', slots.body || 'No message text yet.'));
     return c;
   }
   function editablePreview(task) {
@@ -387,139 +693,14 @@
     dispatch('expire');
     focus(thread.querySelector('[aria-label=Message]'));
   }
-  function photoViewer(items, start, source) {
-    let index = start;
-    const dialog = document.createElement('dialog');
-    const draw = (restore) => {
-      const item = items[index], wrap = document.createElement('div');
-      wrap.append(
-          node('h2', '', item.title || 'Fictional photo'),
-          node('p', 'notice', item.description || 'Fictional illustration.'),
-          node('p', 'notice', [
-            item.sender, item.detail, item.source, item.date
-          ].filter(Boolean).join(' · ')));
-      const image = document.createElement('img');
-      image.src = item.asset || '/assets/garden.svg';
-      image.alt = item.alt || item.description || 'Fictional illustration';
-      wrap.append(image);
-      const actions = node('div', 'dialog-actions');
-      actions.append(button('Previous', () => {
-                       index = (index + items.length - 1) % items.length;
-                       draw('Previous');
-                     }), button('Next', () => {
-                       index = (index + 1) % items.length;
-                       draw('Next');
-                     }), button('Close', () => dialog.close()));
-      if (active())
-        actions.prepend(button('Stop current request', () => {
-          dispatch('stop');
-          dialog.close();
-        }, 'stop-button'));
-      wrap.append(actions);
-      dialog.replaceChildren(wrap);
-      if (restore)
-        focus([...dialog.querySelectorAll('button') ].find(
-            b => b.textContent === restore));
-    };
-    draw();
-    dialog.setAttribute('aria-label', 'Fictional photo viewer');
-    const position = scrollY;
-    document.body.append(dialog);
-    dialog.addEventListener('close', () => {
-      dialog.remove();
-      const replacement =
-          [...thread.querySelectorAll('[data-focus-key]') ].find(
-              e => e.dataset.focusKey === source?.dataset.focusKey);
-      focus(source?.isConnected ? source : replacement || composerText);
-      window.scrollTo(0, position);
-    });
-    dialog.showModal();
-  }
-  function resultView(task, archived = false) {
+  function resultView(task) {
+    // Exceptional/protected outcomes stay candid; they never borrow a success
+    // module merely because the requested metadata is available.
     const result = task.result || {}, c = node('div', 'result-detail');
-    if (task.kind === 'photos' && result.photos) {
-      const gallery = node('div', 'photo-gallery');
-      result.photos.forEach((item, index) => {
-        const b = button('', () => photoViewer(result.photos, index, b),
-                         'photo-item', 'photo-' + task.id + '-' + item.id);
-        const img = document.createElement('img');
-        img.src = item.asset || '/assets/garden.svg';
-        img.alt = item.alt || item.description || 'Fictional illustration';
-        b.append(img, node('strong', '', item.title || 'Open fictional photo'),
-                 node('span', 'notice', [
-                   item.sender, item.detail, item.source, item.date
-                 ].filter(Boolean).join(' · ')));
-        gallery.append(b);
-      });
-      c.append(gallery);
-      if (result.uncertainDate)
-        c.append(node('p', 'notice',
-                      'The date is uncertain in this fictional example.'));
-    } else if (task.kind === 'explain' && result.explanation) {
-      if (result.explanation !== task.text)
-        c.append(node('p', '', result.explanation));
-      if (result.screen?.fields) {
-        const source = node('details', 'screen-source');
-        source.append(
-            node('summary', '',
-                 'Supplied fictional screen: ' + result.screen.title));
-        const fields = node('dl');
-        result.screen.fields.forEach(
-            field => fields.append(
-                node('dt', '', field.label),
-                node('dd', '', field.value + ' — ' + field.description)));
-        source.append(fields);
-        c.append(source);
-      }
-      if (result.next === 'returned')
-        c.append(card(
-            'A garden for every season',
-            'Returned to this fictional article. No other app was opened.'));
-      if (archived || task.stage !== 'completed')
-        return c;
-      const a = node('div', 'inline-actions');
-      a.append(button('Explain more simply',
-                      () => dispatch('submit', 'Explain more simply')));
-      if (result.screen && result.screen.previousTarget &&
-          result.next !== 'returned')
-        a.append(button('Return to ' + result.screen.previousTarget,
-                        () => dispatch('submit', 'return'), 'primary'));
-      c.append(a);
-    } else if (task.kind === 'media' && result.track) {
-      const track = typeof result.track === 'string' ? result.track : [
-        result.track.title, result.track.performer
-      ].filter(Boolean).join(' — ');
-      c.classList.add('player-card');
-      const verified =
-          !archived && task.stage === 'completed' &&
-          state.player?.id === result.track.id &&
-          !['unknown', 'partial', 'paywall', 'unavailable'].includes(
-              task.outcome);
-      c.append(node('p', '', track));
-      if (verified) {
-        c.append(node('p', 'notice',
-                      state.playing
-                          ? 'Playing · silent simulation'
-                          : 'Playback is paused · silent simulation'));
-        c.append(button(state.playing ? 'Pause' : 'Resume',
-                        () => dispatch('playback'), 'primary'));
-      } else
-        c.append(node(
-            'p', 'notice',
-            archived
-                ? 'Earlier music request. Current playback is shown separately below.'
-                : 'Playback of this request has not been verified.'));
-    } else if (task.kind === 'readability' && result.scope) {
-      c.append(node(
-          'p', '',
-          result.externalOnly
-              ? 'This setting belongs to another app. I can explain where to change it, but I have not changed it.'
-              : 'Granny text is ' +
-                    Math.round((result.scale || state.scale) * 100) + '%.'));
-      if (!result.externalOnly && !archived)
-        c.append(
-            button('Restore previous size', () => dispatch('restoreScale')));
-    }
+    if (result.screen) c.append(node('p', '', 'Supplied fictional screen: ' + result.screen.title));
+    if (result.track) c.append(node('p', '', result.track.title + ' — ' + result.track.performer),
+      node('p', 'notice', 'Playback of this request has not been verified.'));
+    if (result.externalOnly) c.append(node('p', '', 'This setting belongs to another app. I can explain where to change it, but I have not changed it.'));
     return c;
   }
   function controls(task, c) {
@@ -531,15 +712,6 @@
         b.dataset.choice = choice.value;
         row.append(b);
       });
-    } else if (stage === 'size-preview') {
-      [1, 1.15, 1.3, 1.5].forEach(
-          scale => row.append(button(
-              Math.round(scale * 100) + '%', () => dispatch('setScale', scale),
-              state.previewScale === scale ? 'primary' : '')));
-      const apply =
-          button('Apply this size', () => dispatch('applyScale'), 'primary');
-      apply.dataset.action = 'apply';
-      row.append(apply, button('Stop', () => dispatch('stop')));
     } else if (stage === 'clarify-body') {
       const edit = document.createElement('textarea');
       edit.rows = 3;
@@ -585,9 +757,131 @@
           button('I understand', () => dispatch('acknowledge')));
     c.append(row);
   }
+  function messageSurface(task, editingTask) {
+    const stage = task.stage, slots = task.slots || {}, person = slots.recipient || {};
+    const working = P.ACTIVE.includes(stage);
+    const prepared = stage === 'completed' && task.result?.effect === 'open-unsent-draft' && !task.outcome.startsWith('unknown');
+    const returned = externalReturn === task.id;
+    const kind = returned ? 'external-return' : stage.startsWith('clarify') ? 'clarification' : working ? 'active'
+      : prepared ? 'prepared' : stage === 'unknown' ? 'unknown' : ['preview', 'expired'].includes(stage) ? 'preview' : 'result';
+    const title = returned ? 'Back from Example Messages' : kind === 'clarification' ? (stage === 'clarify-person' ? `Which ${task.requestedName || 'person'}?` : task.prompt)
+      : kind === 'preview' ? 'Check the draft' : working ? 'Opening the draft'
+      : prepared ? 'Draft opened' : kind === 'unknown' ? 'I can’t confirm whether it sent' : taskText(task);
+    const c = node('section', 'shared-task-surface');
+    c.dataset.surface = kind;
+    if (kind === 'preview' || prepared) {
+      c.dataset.outcomeModule = 'message';
+      c.dataset.outcomeState = returned ? 'unknown-return' : prepared ? 'prepared' : 'preview';
+    }
+    c.append(node('p', 'surface-place', (roomUI.current?.name || 'Home') + ' · Granny'));
+    const heading = node('h2', '', title); heading.id = 'surface-heading'; heading.tabIndex = -1;
+    c.setAttribute('aria-labelledby', heading.id); c.append(heading);
+    const details = rows => {
+      const dl = node('dl', 'surface-facts');
+      rows.forEach(([label, value]) => dl.append(node('dt', '', label), node('dd', '', value)));
+      return dl;
+    };
+    const actions = node('div', 'surface-actions');
+    const action = (label, fn, id, primary = false) => {
+      const b = button(label, fn, primary ? 'primary' : '', id || label);
+      if (id) b.id = id;
+      actions.append(b); return b;
+    };
+    if (kind === 'clarification') {
+      c.append(node('p', '', stage === 'clarify-person' ? 'Choose the person you mean.' : 'Choose or answer in your own words.'), node('p', 'retained-request', task.request));
+      const choices = node('div', 'surface-choices');
+      (task.choices || []).forEach(choice => {
+        const person = window.GrannyFixtures.people.find(p => p.id === choice.value);
+        const channel = person && (slots.channel || window.GrannyFixtures.surfaceChannels[person.id]);
+        const b = button('', () => {
+          dispatch('choose', choice.value);
+          // This broad choice explicitly names BOTH person and destination.
+          if (channel && state.task?.stage === 'clarify-channel') dispatch('choose', channel);
+        }, 'surface-choice', 'choice-' + choice.value);
+        b.dataset.choice = choice.value;
+        if (person && channel) b.append(node('strong', '', person.name), node('span', '', person.detail), node('span', 'choice-destination', channel));
+        else b.textContent = choice.label;
+        choices.append(b);
+      });
+      c.append(choices);
+      if (stage === 'clarify-body') {
+        c.append(node('p', '', 'Type the exact message below.'));
+      }
+      action('None of these', () => { surfaceNotice = 'No person selected. Add a different name or destination below.'; render(); focus(composerText); });
+      action('Edit request', () => { const text = task.request; dispatch('stop'); dismissedTask = task.id; render(); composerText.value = text; focus(composerText); });
+      action('Cancel', dismissSurface, 'surface-cancel');
+    } else if (kind === 'preview') {
+      c.dataset.private = 'message';
+      c.append(node('p', '', stage === 'expired' ? 'This preview expired. Review it again before any action.' : 'Nothing has been opened or sent yet.'));
+      const exact = editingTask ? editablePreview(task) : preview(task);
+      exact.querySelector('h2')?.remove();
+      exact.classList.add('surface-content');
+      c.append(exact);
+      if (!editingTask) {
+        if (task.effect === 'open-unsent-draft') c.append(node('p', 'surface-outcome', 'This does not send the message.'));
+        controls(task, c);
+        const change = c.querySelector('[data-action=change]');
+        if (change) change.textContent = 'Change it';
+        const cancel = c.querySelector('[data-action=cancel]');
+        if (cancel) cancel.addEventListener('click', dismissSurface);
+        const row = c.querySelector(':scope > .inline-actions');
+        if (row) { actions.append(...row.children); row.remove(); }
+        action('Repeat', () => announce('Check the draft. The exact recipient, destination, message and consequence remain available above. Nothing has been approved.'));
+      }
+    } else if (working) {
+      c.append(node('p', '', 'Granny is working on the request you approved.'));
+      c.append(details([
+        ['Goal', task.request],
+        ['Latest verified step', 'The fictional recipient, app and draft text still match your review.'],
+        ['Current step', taskText(task)]
+      ]));
+      c.append(node('p', 'notice', stage === 'waiting'
+        ? 'Simulated activity only. Waiting for the fictional app; no real app is opened.'
+        : 'Simulated activity only. No real app is opened.'));
+      action('Take over', () => dispatch('stop'), 'surface-takeover');
+      action('Repeat status', () => announce(taskText(task)), 'surface-repeat');
+    } else if (kind === 'prepared') {
+      c.append(node('p', 'surface-outcome', 'Prepared — not sent'));
+      c.append(details([
+        ['What Granny verified', `A fictional unsent draft opened for ${person.name} — ${person.detail} in ${slots.channel}.`],
+        ['What Granny did not do', 'Granny did not send the message. No real app was opened.'],
+        ['Next step', 'Review the draft there and tap Send yourself if it looks right. This fictional example stays inside Granny; no real app opens.']
+      ]));
+      action('Continue manually', () => { surfaceNotice = 'Fictional manual handoff only. No external app opens and no message is sent.'; render(); announce(surfaceNotice); }, 'surface-manual', true);
+      action('Simulate returning to Granny', () => { externalReturn=task.id;surfaceNotice='Returned to this conversation · position restored. Simulated return — no external app opened.';render();announce('Welcome back. I can’t confirm whether the message sent.'); }, 'surface-return');
+      action('Done', dismissSurface, 'surface-done');
+    } else if (kind === 'external-return') {
+      c.append(node('p','surface-outcome','Send status unknown'),details([
+        ['Known','A fictional draft was opened for '+person.name+' — '+person.detail+'.'],
+        ['Unknown','Whether anyone tapped Send in Example Messages.'],
+        ['Before trying again','Check the conversation to avoid a duplicate. Granny will not retry automatically.']
+      ]));
+      action('Review status',()=>{surfaceNotice='Send status remains unknown. No action was repeated.';render();announce(surfaceNotice);},'surface-review',true);
+      action('Open app yourself',()=>{surfaceNotice='Simulated manual route only. No app is opened and no message is sent.';render();announce(surfaceNotice);},'surface-manual');
+      action('Done',dismissSurface,'surface-done');
+    } else if (kind === 'unknown') {
+      c.append(node('p', 'surface-outcome', 'Unknown outcome'));
+      c.append(details([
+        ['Known', 'The fictional attempt ended without reliable outcome evidence.'],
+        ['Unknown', 'Whether the fictional action completed. This browser does not send real messages.'],
+        ['Next step', `Check the conversation in ${slots.channel || 'the example app'} before trying again.`]
+      ]));
+      c.append(node('p', '', 'Granny will not retry this message automatically.'));
+      action('Review status', () => { surfaceNotice = task.text + ' No action was repeated.'; render(); announce(surfaceNotice); }, 'surface-review', true);
+      action('Open app yourself', () => { surfaceNotice = 'Fictional manual handoff only. Check the outcome before another attempt. No app is opened here.'; render(); announce(surfaceNotice); }, 'surface-manual');
+      action('Done', dismissSurface, 'surface-done');
+    } else {
+      c.append(node('p', '', task.text));
+      action('Done', dismissSurface, 'surface-done');
+    }
+    if (surfaceNotice) c.append(node('p', 'notice', surfaceNotice));
+    c.append(actions);
+    return c;
+  }
   function render(editing) {
+    const userChange = restoreFocus;
     const prior = document.activeElement;
-    const heldFocus = thread.contains(prior);
+    const heldFocus = thread.contains(prior) || $('home-secondary').contains(prior);
     const focusKey = prior?.dataset?.focusKey;
     const focusId = prior?.id;
     const selection = heldFocus && typeof prior.selectionStart === 'number'
@@ -595,49 +889,69 @@
                           : null;
     const position = scrollY;
     thread.replaceChildren();
-    $('welcome').hidden = runtimeMode || !!(state.turns && state.turns.length);
+    const emptyHome = idleHome();
+    const introductionView = homeView === 'introduction';
+    $('welcome').hidden = (homeView !== 'home' || !!menuPanel || runtimeMode) && !introductionView;
+    $('introduction').hidden = !introductionView;
+    $('home-secondary').hidden = !emptyHome;
+    $('continuation').hidden = !continuationVisible || !roomUI.continuation ||
+                                 homeFixture === 'continuation-hidden';
+    const kitchen = roomUI.continuation;
+    if(kitchen) {
+      $('continuation').querySelector('.eyebrow').textContent = 'Continue in ' + kitchen.name;
+      $('open-kitchen').textContent = 'Open ' + kitchen.name;
+      $('continuation').querySelector('.continuation-purpose').textContent = kitchen.name + ' · ' + kitchen.purpose;
+    }
+    document.body.dataset.home = String(emptyHome);
+    const hasOutcome = !runtimeMode && outcomeUI.supports(state.task) && dismissedTask !== state.task?.id;
+    const sharedTask = !runtimeMode && state.task?.kind === 'message' && dismissedTask !== state.task.id;
+    document.body.dataset.surface = speechState || (sharedTask ? 'task' : hasOutcome ? 'outcome' : '');
+    const browsing = ['rooms','room-search','all-items','unfiled','archived-rooms'].includes(homeView) || homeView.startsWith('item:');
+    $('room-content').hidden = !!menuPanel || runtimeMode ||
+        (!browsing && !homeView.startsWith('room:'));
+    const skipLink = document.querySelector('.skip-link');
+    skipLink.href = $('room-content').hidden ? '#conversation' : '#room-content';
+    skipLink.textContent = $('room-content').hidden ? 'Skip to conversation' : 'Skip to room content';
+    $('conversation').hidden = false;
+    document.querySelector('.composer-wrap').hidden = false;
+    document.body.dataset.libraryView = String(browsing && !menuPanel && !runtimeMode);
+    document.body.dataset.roomView = String(homeView.startsWith('room:') && !menuPanel && !runtimeMode);
+    document.body.dataset.roomPriority = !runtimeMode && homeView.startsWith('room:') ? homeView.slice(5) : '';
+    document.body.dataset.roomRoute = String(homeView.startsWith('room:') || browsing);
+    $('room-home').hidden = homeView === 'home' || homeView === 'introduction';
+    $('rooms-button').disabled = runtimeMode;
+    $('rooms-button').title = runtimeMode ? 'Return to the scripted prototype in Menu to browse fictional rooms.' : '';
     $('mode-notice').hidden = !runtimeMode && !runtimeQuarantined;
     $('mode-notice').textContent = runtimeQuarantined
       ? 'An earlier connected draft outcome is unknown. No retry or new connected session is available in this tab. Switching views does not undo a draft.'
       : (runtimeProviderMode === 'live' ? 'Live model · fictional text goes to OpenRouter · unsent demo drafts only' : 'Connected local demo · fictional people · unsent drafts only');
-    composerText.placeholder = runtimeMode
-      ? 'For example: Tell David Brother "Meet at six." via Example Messages'
-      : 'For example: Tell David I’ll call after dinner.';
-    if (runtimeMode) renderRuntime();
-    (!runtimeMode ? state.turns || [] : []).forEach(t => {
+    composerText.placeholder = roomUI.current && !runtimeMode ? 'Ask Granny in ' + roomUI.current.name + '…' : 'Ask me anything…';
+    if (runtimeMode && !speechState) renderRuntime();
+    (!runtimeMode && !speechState && !dismissedTask ? state.turns || [] : []).forEach(t => {
       const article = turn(t.role, t.text);
-      if (t.result && t.kind !== 'message')
-        article.append(resultView(t, true));
       thread.append(article);
     });
-    if (state.task && !runtimeMode) {
+    if (!runtimeMode)
+      renderHomeDestination();
+    if (state.task && !runtimeMode && dismissedTask !== state.task.id && !speechState && !menuPanel) {
       const task = state.task,
             editingTask = !!(editor && editor.taskId === task.id),
-            c = card('Granny', taskText(task));
+            c = task.kind === 'message' ? messageSurface(task, editingTask) : hasOutcome ? outcomeUI.render(task) : card('Granny', taskText(task));
+      if (hasOutcome) thread.append(turn('assistant', outcomeUI.response(task)));
+      else if (sharedTask && ['preview', 'completed'].includes(task.stage)) thread.append(turn('assistant', task.stage === 'preview'
+        ? 'I prepared the exact fictional draft for you to review.' : externalReturn===task.id ? 'Welcome back. I can’t confirm whether the message sent.' : task.result?.effect === 'open-unsent-draft' ? 'The fictional draft is ready.' : task.text));
       c.id = 'current-task';
       c.dataset.stage = task.stage;
       c.dataset.kind = task.kind;
       c.querySelector('h2').tabIndex = -1;
-      if (task.kind === 'message' && [
-            'preview', 'expired', 'acting', 'waiting', 'verifying', 'completed',
-            'unknown', 'stopped', 'failed'
-          ].includes(task.stage))
-        c.append(editingTask ? editablePreview(task) : preview(task));
       if (task.kind !== 'message' && task.stage === 'preview') {
         const slots = task.slots || {};
         c.append(card('Check this step', task.kind === 'photos' ? [slots.person && slots.person.name, slots.person && slots.person.detail, 'Example Messages', slots.date].filter(Boolean).join(' · ') + '. Opening this fictional source may mark it read while the selected photos are checked.' : 'Nothing will happen until you choose Continue.'));
       }
-      if (task.kind === 'readability' && task.stage === 'size-preview') {
-        const sample = node(
-            'p', 'preview-sample',
-            'This is a preview of Granny text. You can still change your mind.');
-        sample.style.fontSize = (state.previewScale / state.scale) + 'em';
-        c.append(sample);
-      }
-      if (task.kind !== 'message' &&
+      if (!hasOutcome && task.kind !== 'message' &&
           (task.result || [ 'completed', 'no-matches' ].includes(task.stage)))
         c.append(resultView(task));
-      if (!editingTask)
+      if (!hasOutcome && !editingTask && task.kind !== 'message')
         controls(task, c);
       thread.append(c);
 
@@ -645,58 +959,6 @@
         lastAnnouncement = taskText(task);
         announce(lastAnnouncement);
       }
-    }
-    if (menuPanel === 'history') {
-      const history =
-          card('Recent activity',
-               (state.history || []).length
-                   ? 'Scripted activity: this tab remembers only the kind of task and its outcome.'
-                   : 'There is no completed activity in this tab yet.');
-      history.dataset.panel = 'history';
-      if (runtimeMode) history.append(node('p', 'notice', 'Connected results remain in this temporary conversation, not in the scripted activity list.'));
-      (state.history || [])
-          .forEach(item => history.append(
-                       node('p', 'notice', item.job + ' — ' + item.outcome)));
-      if ((state.history || []).length)
-        history.append(button(
-            'Clear recent activity',
-            () => ask(
-                'Clear recent activity?',
-                'This removes the short outcome list from this tab. It does not change any other app.',
-                () => dispatch('clearHistory'))));
-      history.append(button('Return to conversation', returnToConversation));
-      thread.append(history);
-    }
-    if (menuPanel === 'text') {
-      const settings = card(
-          'Text size',
-          'Choose a comfortable size for this prototype. Other apps are unchanged.');
-      settings.dataset.panel = 'text';
-      const sample = node(
-          'p', 'preview-sample',
-          'This is a preview of your text size. Nothing changes until you apply it.');
-      sample.style.fontSize = (state.previewScale / state.scale) + 'em';
-      settings.append(sample);
-      const actions = node('div', 'inline-actions');
-      [1, 1.15, 1.3, 1.5].forEach(
-          scale => actions.append(button(
-              Math.round(scale * 100) + '%', () => dispatch('setScale', scale),
-              state.previewScale === scale ? 'primary' : '')));
-      settings.append(
-          actions,
-          button('Apply this size', () => dispatch('applyScale'), 'primary'),
-          button('Restore previous size', () => dispatch('restoreScale')),
-          button('Return to conversation', returnToConversation));
-      thread.append(settings);
-    }
-    if (menuPanel === 'help') {
-      const help = card(
-          'What you can ask',
-          'You can ask to find fictional family photos, explain a supplied screen, play a fictional song, make Granny’s text easier to read, or open an unsent fictional message draft.');
-      help.dataset.panel = 'help';
-      if (runtimeMode) help.append(node('p', 'notice', 'Connected mode currently prepares unsent drafts for fictional contacts only. The other four workflows are in the separate scripted demo.'));
-      help.append(button('Return to conversation', returnToConversation));
-      thread.append(help);
     }
     if (menuPanel === 'preferences') {
       const preferences =
@@ -773,24 +1035,6 @@
           aliases, button('Return to conversation', returnToConversation));
       thread.append(preferences);
     }
-    if (menuPanel === 'privacy') {
-      const privacy = card(
-          'Privacy in this prototype',
-          runtimeMode ? (runtimeProviderMode === 'live' ? 'Live synthetic conversation: your new text and bounded conversation history go through the local runtime to OpenRouter/Qwen. Only fictional details are permitted. No microphone, screen, real contacts or Android access occurs. Browser reset does not delete provider-held data.' : 'Connected local demo: fictional requests go to the loopback runtime. Demo drafts are stored by that process, not sent. No microphone or Android access occurs.') : 'Scripted data stays in this tab’s memory. No microphone, account, tracking or background storage is used. Please use fictional details.');
-      privacy.dataset.panel = 'privacy';
-      privacy.append(node(
-          'p', '',
-          runtimeMode ? 'Reset clears this browser view, not saved demo drafts or the backend session. The runtime keeps synthetic drafts for its process lifetime; restarting it creates a new demo store. A lost connection is not proof an action stopped.' : 'Recent activity keeps up to 20 task/outcome summaries, without message words or people. Your visible conversation is temporary. Reloading clears the scripted state.'));
-      privacy.append(button(
-          'Reset everything',
-          () => ask(
-              'Reset this prototype?',
-              'This clears the conversation, activity, entered words, changed names and preferences, and restores the fictional starting examples. Nothing in another app changes.',
-              fullReset),
-          'danger'));
-      privacy.append(button('Return to conversation', returnToConversation));
-      thread.append(privacy);
-    }
     if (menuPanel === 'connection') {
       const connection = card('Demo connection', runtimeMode
         ? (runtimeProviderMode === 'live' ? 'You are using live synthetic conversation through OpenRouter/Qwen. Draft creation and verification stay in the local demo; no message is sent.' : 'You are using the connected local demo. Its runtime creates and independently reads back a real local demo draft; no message is sent.')
@@ -817,7 +1061,7 @@
       connection.append(button('Return to conversation', returnToConversation));
       thread.append(connection);
     }
-    if (!runtimeMode && state.player &&
+    if (!runtimeMode && !hasOutcome && !sharedTask && !speechState && state.player &&
         !(state.task?.kind === 'media' && state.task.stage === 'completed' &&
           state.task.result?.track?.id === state.player.id)) {
       const player = card('Your music',
@@ -837,14 +1081,20 @@
       heading.tabIndex = -1;
       heading.dataset.focusKey = 'panel-' + panel.dataset.panel;
     });
-    $('stop-button').hidden = !active();
-    $('stop-dock').hidden = !active();
+    $('stop-button').hidden = !active() || !!speechState;
+    document.querySelector('.send-action').hidden = active() || !!speechState;
+    $('composer').dataset.active = String(active());
+    $('composer').dataset.speech = speechState;
+    $('composer').querySelector(':scope > label').textContent = sharedTask && state.task.stage.startsWith('clarify') ? 'Type your answer' : 'Type a request';
+    if (sharedTask && state.task.stage.startsWith('clarify')) composerText.placeholder = 'You can also answer in your own words…';
+    if (sharedTask && ['preview', 'expired'].includes(state.task.stage)) composerText.placeholder = 'Ask to change this draft…';
+    updateStopFallback();
     $('menu-button').setAttribute('aria-expanded', String(!$('menu').hidden));
     document.documentElement.style.setProperty('--app-scale',
                                                String(state.scale || 1));
     if (heldFocus) {
       const target = (focusId && $(focusId)) || (focusKey && [
-                       ...thread.querySelectorAll('[data-focus-key]')
+                       ...document.querySelectorAll('[data-focus-key]')
                      ].find(n => n.dataset.focusKey === focusKey));
       focus(target || thread.querySelector('#current-task h2') || composerText);
       if (target && selection && typeof target.setSelectionRange === 'function')
@@ -852,6 +1102,18 @@
     }
     window.scrollTo(0, position);
     restoreFocus = false;
+    const surfaceKey = speechState || (sharedTask || hasOutcome ? state.task.id + ':' + state.task.stage : '');
+    if (userChange && surfaceKey && surfaceKey !== lastSurfaceKey && !active() && !menuPanel && !heldFocus) {
+      const title = $('surface-heading');
+      if (title) requestAnimationFrame(() => {
+        if(scrollY!==position) return; // A later explicit scroll owns reading position.
+        focus(title); title.scrollIntoView({block: 'nearest'});
+      });
+    }
+    lastSurfaceKey = surfaceKey;
+    if (emptyHome)
+      requestAnimationFrame(updateRoomLayout);
+    supportUI.shell();
   }
   function hasWork() {
     if (runtimeMode) return active() || !!runtimeEditor;
@@ -861,9 +1123,19 @@
             state.task.stage));
   }
   function clearLocalView() {
+    supportUI.forgetSearch();
+    externalReturn = null;
+    speechState = '';
+    surfaceOrigin = null;
+    speechReturn = null;
+    dismissedTask = null;
+    $('speech-surface').hidden = true;
+    roomUI.clearConversation();
     composerText.value = '';
     editor = null;
     menuPanel = '';
+    homeView = 'home';
+    homeReturn = null;
     editingAliasId = null;
     aliasDraft = null;
     $('menu').hidden = true;
@@ -877,29 +1149,45 @@
   }
   function fullReset() {
     if (runtimeMode) { leaveRuntime(fullReset); return; }
+    pending=null;
+    if($('confirm-dialog').open)$('confirm-dialog').close('cancel');
+    supportUI.reset();
+    supportUI.forgetSearch();
     clearLocalView();
+    roomUI.reset();
+    continuationVisible = true;
+    homeFixture = 'default';
+    document.body.dataset.roomArt = '';
     dispatch('reset');
-    document.body.dataset.territory = 'neutral';
     document.documentElement.style.setProperty('--review-scale', '1');
     if ($('review-panel')) {
       $('review-delay').value = '650';
       $('review-fault').value = '';
       $('review-screen').value = 'display-settings';
-      $('review-territory').value = 'neutral';
+      $('review-home-fixture').value = 'default';
       $('review-scale').value = '1';
+      $('review-room-art').value = '';
       $('review-send').checked = false;
     }
-    $('introduction').hidden = false;
+    renderRooms();
+    $('introduction').hidden = true;
     focus(composerText);
   }
   function ask(title, text, fn, source) {
+    $('support-confirm-cancel')?.remove();
+    if ($('menu').open) supportUI.closeMenu(false);
     pending = fn;
     dialogReturn = source || document.activeElement;
     $('confirm-title').textContent = title;
     $('confirm-text').textContent = text;
+    $('confirm-dialog').querySelector('[value=confirm]').textContent = 'Continue';
+    $('confirm-dialog').querySelector('[value=confirm]').className = 'primary';
+    $('confirm-dialog').querySelector('[value=cancel]').textContent = 'Keep working';
     $('confirm-dialog').returnValue = '';
     $('confirm-stop').hidden = !active();
     $('confirm-dialog').showModal();
+    $('confirm-title').focus({preventScroll:true});
+    $('confirm-dialog').scrollTop = 0;
   }
   function contextualReply(text) {
     const task = state.task;
@@ -912,9 +1200,18 @@
     return false;
   }
   function newRequest(text) {
-    if (!text.trim())
+    if(supportUI.active) supportUI.finish(false);
+    if (speechState) return;
+    if (!text.trim()) {
+      composerText.setCustomValidity('Type a request before choosing Send.');
+      composerText.reportValidity();
+      announce('Type a request before choosing Send.');
       return;
+    }
+    composerText.setCustomValidity('');
     if (runtimeMode) {
+      homeView = 'home';
+      homeReturn = null;
       if (runtimeQuarantined || runtimeView?.connection !== 'connected' || runtimeView?.stopping) {
         announce('Keep your words here until the connection and draft outcome are known.');
         return;
@@ -942,7 +1239,7 @@
       return;
     }
     const navigationRequests = {
-      'settings' : 'preferences',
+      'settings' : 'settings',
       'preferences' : 'preferences',
       'saved names' : 'preferences',
       'privacy' : 'privacy',
@@ -959,16 +1256,25 @@
       composerText.value = '';
       panelReturn = composerText;
       panelScroll = scrollY;
-      menuPanel = navigation;
-      render();
-      thread.querySelector('[data-panel="' + navigation + '"] h2')?.focus();
+      if(navigation==='preferences'){menuPanel=navigation;render();}
+      else supportUI.open(navigation);
       return;
     }
     if (contextualReply(text)) {
       composerText.value = '';
       return;
     }
+    if (homeView.startsWith('room:') && !hasWork() &&
+        window.GrannyIntent.parse(text).kind === 'unsupported') {
+      roomUI.reply(text);
+      composerText.value = '';
+      focus(composerText);
+      return;
+    }
     const submit = () => {
+      rememberSurface(composerText);
+      dismissedTask = null;
+      surfaceNotice = '';
       composerText.value = '';
       menuPanel = '';
       editor = null;
@@ -985,94 +1291,178 @@
     event.preventDefault();
     newRequest(composerText.value);
   });
+  composerText.addEventListener('input', () => composerText.setCustomValidity(''));
+  $('open-kitchen').addEventListener(
+      'click', event => openHomeDestination('kitchen', event.currentTarget));
+  $('hide-continuation').addEventListener('click', () => {
+    continuationVisible = false;
+    $('continuation').hidden = true;
+    $('room-viewport').scrollLeft = 0;
+    updateRoomLayout();
+    announce('Kitchen continuation hidden for this session.');
+    focus(composerText);
+  });
+  $('see-all-rooms').addEventListener(
+      'click', event => openHomeDestination('rooms', event.currentTarget));
+  $('rooms-button').addEventListener(
+      'click', event => openHomeDestination('rooms', event.currentTarget));
+  $('room-home').addEventListener('click', backToHome);
+  $('room-content').addEventListener('click', event => {
+    const target = event.target.closest('button, a');
+    if (target && (speechState || hasWork() || pendingResult())) {
+      event.preventDefault(); event.stopImmediatePropagation();
+      interruptPlace(() => target.isConnected && target.click());
+    }
+  }, true);
+  $('rooms-previous').addEventListener(
+      'click', event => moveRooms(-1, event.currentTarget));
+  $('rooms-next').addEventListener(
+      'click', event => moveRooms(1, event.currentTarget));
+  $('room-viewport').addEventListener('scroll', () => {
+    cancelAnimationFrame(roomScrollFrame);
+    roomScrollFrame = requestAnimationFrame(updateRoomPosition);
+  }, {passive : true});
+  function showSpeech(kind) {
+    speechState = kind;
+    const listening = kind === 'listening';
+    $('speech-surface').hidden = false;
+    $('speech-surface').dataset.state = kind;
+    $('speech-place').textContent = (roomUI.current?.name || 'Home') + ' · Granny';
+    $('speech-heading').textContent = listening ? 'Listening' : 'Check what I heard';
+    $('speech-instruction').textContent = listening ? 'Say what you would like to do.' : 'You can change the words before Granny uses the request.';
+    $('speech-label').textContent = listening ? 'Heard so far' : 'Request';
+    $('speech-disclosure').textContent = listening ? 'Provisional example words. Nothing is submitted while listening.' : 'This asks Granny to understand the request. It does not send anything.';
+    $('talk-text').readOnly = listening;
+    $('talk-text').hidden = listening;
+    $('heard-copy').hidden = !listening;
+    $('heard-words').textContent = $('talk-text').value;
+    $('speech-done').hidden = !listening;
+    $('speech-type').hidden = !listening;
+    $('speech-use').hidden = listening;
+    $('speech-again').hidden = listening;
+    render();
+    // The persistent fields already exist after render. Set entry focus now,
+    // not in a later frame that could undo the person's next scroll/action.
+    focus(listening ? $('speech-heading') : $('talk-text'));
+    if (!listening) $('talk-text').setSelectionRange($('talk-text').value.length, $('talk-text').value.length);
+    const wrap = document.querySelector('.composer-wrap');
+    if (wrap.offsetHeight < innerHeight) wrap.scrollIntoView({block: 'end'});
+    else $('speech-heading').scrollIntoView({block: 'start'});
+    announce(listening ? 'Listening, simulated. No microphone is used.' : 'Check what I heard. Request is editable.');
+  }
+  function endSpeech(typing = false, restore = true) {
+    speechState = '';
+    $('speech-surface').hidden = true;
+    $('talk-text').value = '';
+    render();
+    if (restore && speechReturn) {
+      const origin = speechReturn;
+      requestAnimationFrame(() => { focus(typing ? composerText : origin.source); window.scrollTo(0, origin.scroll); });
+      if (!state.task || dismissedTask === state.task.id) surfaceOrigin = null;
+    }
+    speechReturn = null;
+  }
   function openTalk(source) {
-    dialogReturn = source;
-    $('talk-dialog').returnValue = '';
-    $('talk-title').textContent = 'Listening · simulated';
-    $('talk-dialog').showModal();
+    if(supportUI.active) supportUI.finish(false);
+    if (active()) {
+      ask('Stop before listening?', 'Listening to another request stops the current task first.', async () => {
+        if (runtimeMode) {
+          await runtime?.cancel();
+          if (active() || runtimeQuarantined) {
+            announce('Review the current stopping or unknown result before listening again.');
+            return;
+          }
+        } else dispatch('stop');
+        if (state.task?.stage !== 'unknown') openTalk(source);
+      }, source);
+      return;
+    }
+    rememberSurface(source);
+    speechReturn = {source, scroll: scrollY};
+    $('talk-text').value = state.task?.stage === 'clarify-person' ? 'Brother' : window.GrannyFixtures.speechRequest;
+    showSpeech('listening');
   }
   $('talk').addEventListener('click', () => openTalk($('talk')));
   $('intro-talk').addEventListener('click', () => openTalk($('intro-talk')));
-  $('talk-text').addEventListener('input', () => {
-    $('talk-title').textContent = 'Your transcript · simulated';
-  });
-  $('talk-stop').addEventListener('click', () => {
-    if (hasWork())
-      dispatch('stop');
+  $('speech-done').addEventListener('click', () => showSpeech('transcript'));
+  $('speech-again').addEventListener('click', () => showSpeech('listening'));
+  $('speech-cancel').addEventListener('click', () => endSpeech());
+  $('speech-type').addEventListener('click', () => endSpeech(true));
+  $('speech-use').addEventListener('click', () => {
+    const text = $('talk-text').value;
+    if (!text.trim()) { announce('Write a request before using it.'); focus($('talk-text')); return; }
+    endSpeech(false, false);
+    newRequest(text);
   });
   $('intro-skip').addEventListener('click', () => {
-    $('introduction').hidden = true;
-    composerText.focus();
+    homeView = 'home';
+    render();
+    focus(composerText);
   });
-  $('talk-dialog').addEventListener('close', () => {
-    const result = $('talk-dialog').returnValue;
-    if (result === 'use')
-      newRequest($('talk-text').value);
-    if (result === 'decline')
-      focus(composerText);
-    else
-      focus(dialogReturn);
+  $('confirm-dialog').querySelector('form').addEventListener('submit', event => {
+    event.preventDefault();
+    if(!$('confirm-dialog').open)return;
+    const value=event.submitter?.value || 'cancel';
+    const callback = pending, source = dialogReturn;
+    pending = null;dialogReturn=null;
+    $('confirm-dialog').close(value);
+    focus(source?.getClientRects().length ? source : composerText);
+    if(value==='confirm' && callback)callback();
   });
   $('confirm-dialog').addEventListener('close', () => {
-    const callback = pending, source = dialogReturn;
-    pending = null;
-    if ($('confirm-dialog').returnValue === 'confirm' && callback)
-      callback();
-    focus(source?.getClientRects().length ? source : composerText);
+    if($('confirm-dialog').open)return;
+    const source=dialogReturn;pending=null;dialogReturn=null;
+    if(source)focus(source.getClientRects().length ? source : composerText);
+  });
+  $('confirm-dialog').addEventListener('keydown', event => {
+    if (event.key !== 'Tab') return;
+    const targets = [...$('confirm-dialog').querySelectorAll('button, input, textarea, select, [tabindex="0"]')]
+      .filter(el => !el.disabled && el.getClientRects().length);
+    const first = targets[0], last = targets.at(-1);
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault(); focus(last);
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault(); focus(first);
+    }
   });
   $('confirm-stop').addEventListener('click', () => {
     dispatch('stop');
     $('confirm-dialog').close('cancel');
   });
   $('stop-button').addEventListener('click', () => dispatch('stop'));
-  $('menu-button').addEventListener('click', () => {
-    if ($('menu').hidden) {
-      panelReturn = $('menu-button');
-      panelScroll = scrollY;
+  $('stop-fallback').addEventListener('click', () => { dispatch('stop'); focus($('surface-heading') || composerText); });
+  function updateStopFallback() {
+    const rect = $('stop-button').getBoundingClientRect();
+    const outside = rect.top < 0 || rect.bottom > innerHeight;
+    $('stop-dock').hidden = !active() || !!speechState || !outside;
+    $('stop-fallback').hidden = $('stop-dock').hidden;
+  }
+  window.addEventListener('scroll', updateStopFallback, {passive: true});
+  window.addEventListener('resize', updateStopFallback);
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' || document.querySelector('dialog[open]')) return;
+    if(supportUI.active){event.preventDefault();supportUI.back();return;}
+    if (speechState) { event.preventDefault(); endSpeech(); }
+    else if (state.task?.kind === 'message' && dismissedTask !== state.task.id) {
+      event.preventDefault();
+      if (active()) dispatch('stop'); else dismissSurface();
     }
-    $('menu').hidden = !$('menu').hidden;
-    $('menu-button').setAttribute('aria-expanded', String(!$('menu').hidden));
+  });
+  $('menu-button').addEventListener('click', () => {
+    if (speechState || active()) { interruptPlace(()=>supportUI.showMenu()); return; }
+    panelReturn=$('menu-button');panelScroll=scrollY;
+    supportUI.showMenu();
   });
   document.querySelectorAll('[data-menu]')
       .forEach(b => b.addEventListener('click', () => {
+        if (!runtimeMode && active() && b.dataset.menu !== 'return') {
+          interruptPlace(() => b.click()); return;
+        }
+        // Secondary settings may preserve an unfinished editor, but never a
+        // live approval while its exact consequence is out of view.
+        if (!runtimeMode && state.task?.stage === 'preview' && b.dataset.menu !== 'return') dispatch('expire');
         const what = b.dataset.menu;
-        $('menu').hidden = true;
-        if (what === 'return') {
-          returnToConversation();
-          return;
-        }
-        if (what === 'introduction') {
-          $('welcome').hidden = false;
-          $('introduction').hidden = false;
-          $('menu').hidden = true;
-          $('intro-talk').focus();
-          return;
-        }
-        if (what === 'new') {
-          const fn = () => {
-            if (runtimeMode) { leaveRuntime(() => { clearLocalView(); dispatch('clearSession'); }); return; }
-            clearLocalView();
-            dispatch('clearSession');
-            focus(composerText);
-          };
-          hasWork() || composerText.value.trim() || state.turns.length ||
-                  state.history.length
-              ? ask('Start a new conversation?',
-                    'This clears the conversation, unfinished input and recent activity. Text size and saved names stay in this tab.',
-                    fn, b)
-              : fn();
-        }
-        if ([ 'text', 'history', 'help', 'preferences', 'privacy', 'connection' ].includes(
-                what)) {
-          menuPanel = what;
-          render();
-          const heading =
-              thread.querySelector('[data-panel="' + what + '"] h2');
-          if (heading) {
-            heading.tabIndex = -1;
-            heading.focus();
-          }
-        }
+        supportUI.select(what);
       }));
   const review = new URLSearchParams(location.search).get('review') === '1';
   if (review) {
@@ -1080,8 +1470,15 @@
     panel.id = 'review-panel';
     panel.setAttribute('aria-label', 'Reviewer tools');
     panel.innerHTML =
-        '<h2>Review tools</h2><p>Reviewer-only metadata: J-001/002/003/005/006/007 · five fictional workflows. Fixed date: 14 September 2026. Local illustrations: Sophie Daughter / 13 Sep / Example Photos; Sophie Book club / 12 Sep / Example Messages (mark-read).</p><label>Sample <select id="review-sample"><option value="Tell David I’ll call after dinner.">Message</option><option value="Find photos from Sophie on yesterday">Photos</option><option value="Explain screen display-settings">Explain</option><option value="Play Nina Simone">Media</option><option value="Make Granny text larger">Readability</option></select></label><label>Screen fixture <select id="review-screen"><option value="display-settings">Confusing display settings</option><option value="signin">Protected sign-in</option><option value="unknown">Unknown screen</option></select></label><label>Delay <select id="review-delay"><option value="0">No delay</option><option value="650" selected>650 ms</option><option value="1500">1.5 seconds</option></select></label><label>Outcome fixture <select id="review-fault"><option value="">None</option><option value="unknown">Unknown</option><option value="partial">Partial</option><option value="offline">Offline</option><option value="permission">Permission</option><option value="auth">Authentication</option><option value="paywall">Paywall</option><option value="unavailable">Unavailable</option><option value="noPhotos">No photo matches</option><option value="uncertainDate">Uncertain photo date</option></select></label><label>Territory <select id="review-territory"><option value="neutral">Neutral</option><option value="open-day">Open Day</option><option value="bright-signal">Bright Signal</option></select></label><label>Review text scale <select id="review-scale"><option value="1">100%</option><option value="2">200%</option></select></label><label><input type="checkbox" id="review-send"> Hypothetical fictional send</label><div><button type="button" id="review-inject">Inject selected outcome now</button><button type="button" id="review-expire">Expire preview</button><button type="button" id="review-clock">Advance test clock</button><button type="button" id="review-reset">Full reset</button></div>';
+        '<h2>Review tools</h2><p>Reviewer-only metadata: J-001/002/003/005/006/007 · five fictional workflows. Fixed date: 14 September 2026. Home, continuation and room fixtures are fictional, in-memory and separate from model context.</p><label>Sample <select id="review-sample"><option value="Tell David I’ll call after dinner.">Message</option><option value="Find photos from Sophie on yesterday">Photos</option><option value="Explain screen display-settings">Explain</option><option value="Play Nina Simone">Media</option><option value="Make Granny text larger">Readability</option></select></label><label>Screen fixture <select id="review-screen"><option value="display-settings">Confusing display settings</option><option value="signin">Protected sign-in</option><option value="unknown">Unknown screen</option></select></label><label>Delay <select id="review-delay"><option value="0">No delay</option><option value="650" selected>650 ms</option><option value="1500">1.5 seconds</option></select></label><label>Outcome fixture <select id="review-fault"><option value="">None</option><option value="unknown">Unknown</option><option value="partial">Partial</option><option value="offline">Offline</option><option value="permission">Permission</option><option value="auth">Authentication</option><option value="paywall">Paywall</option><option value="unavailable">Unavailable</option><option value="noPhotos">No photo matches</option><option value="uncertainDate">Uncertain photo date</option></select></label><label>Home fixture <select id="review-home-fixture"><option value="default">Natural fit / overflow</option><option value="continuation-hidden">Continuation hidden</option><option value="no-rooms">No rooms</option><option value="one-room">One room</option><option value="all-fit">All rooms fit</option><option value="overflow">Forced overflow</option><option value="image-failure">Portrait failure</option></select></label><label>Review text scale <select id="review-scale"><option value="1">100%</option><option value="2">200%</option></select></label><label><input type="checkbox" id="review-send"> Hypothetical fictional send</label><div><button type="button" id="review-inject">Inject selected outcome now</button><button type="button" id="review-expire">Expire preview</button><button type="button" id="review-clock">Advance test clock</button><button type="button" id="review-reset">Full reset</button></div>';
     document.body.append(panel);
+    const artLabel = node('label', '', 'Room artwork ');
+    const artSelect = node('select'); artSelect.id = 'review-room-art';
+    for (const [value, text] of [['', 'Selected artwork'], ['hidden', 'Artwork disabled']]) {
+      const option = node('option', '', text); option.value = value; artSelect.append(option);
+    }
+    artSelect.addEventListener('change', () => { document.body.dataset.roomArt = artSelect.value; });
+    artLabel.append(artSelect); panel.append(artLabel);
     $('review-sample')
         .addEventListener('change',
                           e => { composerText.value = e.target.value; });
@@ -1096,9 +1493,11 @@
     $('review-fault').addEventListener('change', e => dispatch('reviewer', {
                                                    fault : e.target.value
                                                  }));
-    $('review-territory').addEventListener('change', e => {
-      document.body.dataset.territory = e.target.value;
-      dispatch('reviewer', {territory : e.target.value});
+    $('review-home-fixture').addEventListener('change', e => {
+      homeFixture = e.target.value;
+      continuationVisible = homeFixture !== 'continuation-hidden';
+      renderRooms();
+      render();
     });
     $('review-send').addEventListener('change', e => dispatch('reviewer', {
                                                   sendMode : e.target.checked
@@ -1106,6 +1505,7 @@
     $('review-scale').addEventListener('change', e => {
       document.documentElement.style.setProperty('--review-scale',
                                                  e.target.value);
+      updateRoomLayout();
     });
     $('review-inject')
         .addEventListener(
@@ -1139,10 +1539,46 @@
     document.body.dataset.compactComposer =
         String($('composer').offsetHeight > innerHeight * 0.42);
   };
+  const updateComposerFocus = () => {
+    const composer = $('composer');
+    if (!composer.offsetWidth) return;
+    const radius = parseFloat(getComputedStyle(composer).borderTopLeftRadius);
+    // One closed contour owns both the rounded body and its pointer. The
+    // transparent form supplies intrinsic layout; no border is masked over.
+    const contour = gap => {
+      const left = composer.offsetLeft - gap, top = composer.offsetTop - gap;
+      const right = composer.offsetLeft + composer.offsetWidth + gap;
+      const bottom = composer.offsetTop + composer.offsetHeight + gap;
+      const r = radius + gap, root = composer.offsetLeft + radius * 1.35;
+      const depth = radius * .45;
+      return `M ${left + r} ${top} H ${right - r} Q ${right} ${top} ${right} ${top + r} ` +
+        `V ${bottom - r} Q ${right} ${bottom} ${right - r} ${bottom} ` +
+        `H ${root + radius * .9 + gap} L ${root - gap} ${bottom + depth} ` +
+        `Q ${root - 3 - gap} ${bottom + depth + 1} ${root - 2 - gap} ${bottom + depth - 3} ` +
+        `L ${root + radius * .1 - gap} ${bottom} H ${left + r} ` +
+        `Q ${left} ${bottom} ${left} ${bottom - r} V ${top + r} ` +
+        `Q ${left} ${top} ${left + r} ${top} Z`;
+    };
+    $('composer-outline-path').setAttribute('d', contour(0));
+    $('composer-focus-path').setAttribute('d', contour(7));
+  };
   new ResizeObserver(fitComposer).observe($('composer'));
-  window.addEventListener('resize', fitComposer);
+  new ResizeObserver(updateComposerFocus).observe(
+      document.querySelector('.composer-wrap'));
+  new ResizeObserver(updateRoomLayout).observe($('room-viewport'));
+  window.addEventListener('resize', () => {
+    fitComposer();
+    updateComposerFocus();
+    updateRoomLayout();
+  });
+  renderRooms();
   render();
+  const roomsFixture = new URLSearchParams(location.search).get('roomsFixture');
+  if (review && ['empty', 'loading', 'offline', 'missing-art'].includes(roomsFixture))
+    roomUI.setAvailability(roomsFixture);
   fitComposer();
+  updateComposerFocus();
   if (scheduler && scheduler.sync)
     scheduler.sync();
+  supportUI.boot();
 })();

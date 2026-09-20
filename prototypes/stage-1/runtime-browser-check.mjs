@@ -57,7 +57,7 @@ try {
   await b.navigate();
   check(!b.network.some(url => url.includes('/api/')), 'scripted default performs no runtime request');
   await wire();
-  await menu('connection');
+  await menu('settings'); await b.click('#settings-about'); await b.click('#about-connection');
   check((await text()).includes('fictional details only'), 'connection has explicit fictional-data disclosure');
   await button('Connect to local demo');
   await waitState('idle');
@@ -73,8 +73,12 @@ try {
   check((await text()).includes(first.body) && (await text()).includes('Demo Messages'), 'exact runtime preview visible');
   await button('Change message');
   await b.fill('[aria-label="Message"]', '<b>Keep these exact words</b>');
-  await menu('text');
-  await button('150%'); await button('Apply this size'); await button('Return to conversation');
+  // A navigation request during a live preview must first use the same
+  // interruption confirmation; selecting Settings cannot hide active Stop.
+  await b.click('#menu-button'); await b.waitFor('!!document.querySelector("#confirm-dialog[open]")');
+  await b.click('#confirm-dialog button[value=confirm]'); await b.waitFor('document.querySelector("#menu").open');
+  await b.click('[data-menu="text"]');
+  await b.click('#pref-scale-15'); await b.click('#apply-preferences'); await button('Return to conversation');
   check(await b.evaluate('document.querySelector("[aria-label=Message]").value === "<b>Keep these exact words</b>"'), 'connected editor survives settings');
   await emit('preview', 'preview', preview('<b>Keep these exact words</b>', '00000000-0000-4000-8000-000000000005'), 2);
   await button('Review changes');
@@ -92,7 +96,8 @@ try {
   check(await b.evaluate('document.querySelector("#current-task").dataset.stage === "creating"'), 'no scripted timer manufactures backend completion');
   await emit('progress', 'verifying', {phase:'verifying'}, 2);
   await waitState('verifying');
-  check(await b.evaluate('document.activeElement.id === "request" && document.querySelector("#request").selectionStart === 3 && window.scrollY === 0'), 'runtime progress preserves focus selection and scroll');
+  const progressFocus = await b.evaluate('({active:document.activeElement.id,selection:document.querySelector("#request").selectionStart,scroll:window.scrollY})');
+  check(progressFocus.active === 'request' && progressFocus.selection === 3 && progressFocus.scroll === 0, 'runtime progress preserves focus selection and scroll: ' + JSON.stringify(progressFocus));
   await b.screenshot('connected-verifying-tablet');
   await emit('result', 'completed', {draftId:'00000000-0000-4000-8000-000000000007',recipientId:first.recipient.id,channelId:first.channel.id,
     body:'<b>Keep these exact words</b>', effect:'demo_draft_created',verified:true,sent:false,message:'Draft created in the demo. Not sent.'}, 2);
@@ -105,7 +110,7 @@ try {
   await command('Tell David Another fictional message.');
   await waitState('interpreting');
   check(await b.evaluate('document.documentElement.scrollWidth <= innerWidth'), 'connected large text narrow viewport has no page overflow');
-  check(await b.evaluate('(() => {const r=document.querySelector("#stop-button").getBoundingClientRect();return r.top>=0 && r.bottom<=innerHeight;})()'), 'Stop remains visible at narrow constrained height');
+  check(await b.evaluate('[...document.querySelectorAll("#stop-button,#stop-fallback")].some(e=>{const r=e.getBoundingClientRect();return e.getClientRects().length && r.top>=0 && r.bottom<=innerHeight && e.contains(document.elementFromPoint((r.left+r.right)/2,(r.top+r.bottom)/2));})'), 'Stop remains visible and hittable at narrow constrained height');
   await b.screenshot('connected-narrow-stop');
   await b.click('#stop-button');
   await waitState('stopped');
@@ -126,14 +131,15 @@ try {
   await command('Tell David Try again');
   check(await b.evaluate('document.querySelector("#request").value === "Tell David Try again"'), 'unknown prevents new consequential task and retains input');
   check(confirms === await b.evaluate('window.__wire.requests.filter(r=>r.body?.kind === "confirm").length'), 'recovery never resends confirmation');
+  await menu('settings'); await b.click('#settings-about'); await b.click('#about-connection');
   await menu('privacy');
-  await button('Reset everything');
+  await b.click('#privacy-delete');
   await b.click('#confirm-dialog button[value=confirm]');
   await b.waitFor('!document.querySelector("#current-task")');
   check(await b.evaluate('!document.querySelector("#mode-notice").hidden && document.querySelector("#mode-notice").textContent.includes("unknown")'), 'reset retains unknown-outcome warning');
-  await menu('connection');
+  await menu('settings'); await b.click('#settings-about'); await b.click('#about-connection');
   check(!await b.evaluate('[...document.querySelectorAll("button")].some(b=>b.textContent === "Connect to local demo")'), 'reset cannot create a new connected session after unknown');
-  await b.navigate(); await wire(); await menu('connection'); await button('Connect to local demo'); await waitState('idle');
+  await b.navigate(); await wire(); await menu('settings'); await b.click('#settings-about'); await b.click('#about-connection'); await button('Connect to local demo'); await waitState('idle');
   await emit('preview', 'preview', preview('Keep the expired words.'));
   await command('Tell David Keep the expired words.'); await waitState('preview');
   await b.evaluate('window.__wire.reject = {kind:"confirm",code:"confirmation_stale"}');
@@ -147,7 +153,7 @@ try {
   await b.click('#stop-button'); await waitState('stopped');
   check(!await b.evaluate('!!document.querySelector("#review-panel")'), 'reviewer controls absent from connected participant view');
   check(await b.evaluate('localStorage.length === 0 && sessionStorage.length === 0'), 'connected client adds no browser persistence');
-  await b.navigate(); await wire(); await menu('connection');
+  await b.navigate(); await wire(); await menu('settings'); await b.click('#settings-about'); await b.click('#about-connection');
   check(!await b.evaluate('[...document.querySelectorAll("button")].some(b=>b.textContent === "Review live conversation consent")'), 'live entry hidden before availability discovery');
   await button('Check live model availability');
   await b.waitFor('document.body.innerText.includes("The live model is unavailable")');

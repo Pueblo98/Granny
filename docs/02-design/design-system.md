@@ -22,6 +22,16 @@ This file owns semantic roles and reusable behavior. [Product design](product-de
 
 ## Token roles and provisional dimensions
 
+Browser visual revision, authorized by Simon on 20 September: CMP-010–012
+retain their interaction contracts, but Home/library entry decoration uses
+the selected transparent decor objects; portraits reinforce continuation and
+room-specific conversation instead. Overview backdrops use edge alpha fades,
+not additional corner object overlays. The mockup-inspired outline/important
+action role is currently `#0066DD`; ordinary text remains Ink, focus stays
+`#4930A1` and Stop stays `#962F43`. This supersedes the older browser outline
+assignment for this checkpoint only, not historical boards or final Android
+brand approval. See [browser evidence and limits](browser-prototype.md).
+
 Color: background, surface, surface-raised, text-primary, text-secondary, border, action-primary, action-on-primary, accent-decorative, success, warning, danger, focus, disabled. State always includes text/icon/position, never hue alone. Decorative accents cannot carry essential text without measured contrast. High-consequence is not automatically red: Send uses primary with explicit wording; deletion uses danger.
 
 Typography: display (32sp/40 line), heading (28/36), body (20/30), body-large (24/34), button (20/28), status (20/28), supporting (18/26). Values scale with user/system preference; do not cap font size. Body regular 400–450, labels 600, headings 600–700; do not rely on light weights. Numbers are proposed starting geometry, not external standards.

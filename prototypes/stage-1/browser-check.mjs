@@ -26,7 +26,25 @@ const key = async (key, code = key, modifiers = 0) => {
 };
 const fresh = async (review = false) => { await b.navigate(review ? '/?review=1' : '/'); if (review) await select('#review-delay', '0'); };
 const message = async (body = 'I’ll call after dinner.') => {
-  await request('Tell David ' + body); await choice('david-family'); await choice('Example Messages');
+  await request('Tell David ' + body); await choice('david-family');
+  await waitStage('preview');
+};
+const hittableStop = () => b.evaluate(`(() => {
+  for (const selector of ['#stop-button', '#stop-fallback']) {
+    const el = document.querySelector(selector), rect = el?.getBoundingClientRect();
+    if (el && !el.hidden && rect.width && rect.height && rect.top >= 0 &&
+        rect.bottom <= innerHeight && rect.left >= 0 && rect.right <= innerWidth &&
+        el.contains(document.elementFromPoint((rect.left + rect.right) / 2,
+                                             (rect.top + rect.bottom) / 2)))
+      return selector;
+  }
+  return '';
+})()`);
+const stop = async () => {
+  await b.evaluate('new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))');
+  const selector = await hittableStop();
+  if (!selector) throw Error('No hittable Stop control');
+  await b.click(selector);
 };
 const geometry = async label => {
   const result = await b.evaluate(`({
@@ -43,14 +61,16 @@ try {
   await b.viewport(840, 1100); await fresh();
   check(await b.evaluate("!document.querySelector('#review-panel')"), 'review tools absent from participant DOM');
   check(await b.evaluate("![...document.querySelectorAll('[tabindex]')].some(e=>e.tabIndex>0)"), 'natural keyboard order');
-  check(await b.evaluate("document.querySelectorAll('#welcome .task-card').length===0"), 'no feature Home');
+  check(await b.evaluate("document.querySelector('#welcome h1').textContent==='What would you like to do?' && document.querySelector('#request').placeholder==='Ask me anything…'"), 'selected Home invitation and composer copy');
+  check(await b.evaluate("document.querySelector('#stop-dock').hidden && document.querySelector('#stop-button').hidden"), 'idle Home has no Stop');
+  check(await b.evaluate("document.querySelectorAll('#room-list .room-entry').length===6 && document.querySelector('#continuation') && document.querySelector('#see-all-rooms')"), 'one continuation and explicit six-room row');
   await geometry('portrait home'); await b.screenshot('home-portrait');
   await request('Tell David I’ll call after dinner.');
   check(await stage() === 'clarify-person', 'direct intent, no category selection');
   await request('Brother'); check(await stage() === 'clarify-channel', 'typed person reply keeps task');
   await request('Example Mail'); check(await stage() === 'preview', 'typed channel reply reaches preview');
   check((await text()).includes('I’ll call after dinner.'), 'exact body retained');
-  await button('Change');
+  await button('Change it');
   await b.fill('[aria-label="Message"]', '<script>window.injection=1</script> Dinner at 7?');
   await select('[aria-label="Recipient"]', 'david-garden');
   await button('Save changes');
@@ -64,23 +84,22 @@ try {
   check(await b.evaluate("!document.querySelector('#current-task [data-action=approve]')"), 'no approval on completed task');
 
   await request('Show me the photos Sophie sent yesterday.'); await finish();
-  check(await b.evaluate("document.querySelectorAll('#current-task .photo-item').length===2"), 'actual filtered inline collection');
+  check(await b.evaluate("document.querySelector('#photo-position').textContent==='Photo 1 of 2' && document.querySelectorAll('#current-task img').length===1"), 'actual filtered collection shows one dominant image');
   check(/Sophie/.test(await text()) && /2026-09-13|13 September/.test(await text()) && /Example/.test(await text()), 'photo provenance visible');
   await b.screenshot('photos-portrait');
   const beforePhoto = await b.evaluate('scrollY');
-  await b.evaluate("document.querySelector('.photo-item').focus(); document.querySelector('.photo-item').click()");
+  await b.evaluate("document.querySelector('#outcome-full-size').focus(); document.querySelector('#outcome-full-size').click()");
   check(await b.evaluate("!!document.querySelector('dialog[open] img')"), 'image opens');
-  await button('Next', 'dialog[open]'); await button('Previous', 'dialog[open]');
-  await button('Close', 'dialog[open]');
-  await b.waitFor("!document.querySelector('dialog[open]') && document.activeElement.classList.contains('photo-item')");
-  check(await b.evaluate("document.activeElement.classList.contains('photo-item')"), 'photo focus restored');
+  await button('Back', 'dialog[open]');
+  await b.waitFor("!document.querySelector('dialog[open]') && document.activeElement.id==='outcome-full-size'");
+  check(await b.evaluate("document.activeElement.id==='outcome-full-size'"), 'photo focus restored');
   check(Math.abs(await b.evaluate('scrollY') - beforePhoto) < 3, 'photo return retains scroll');
 
   await request('What am I looking at?'); check(await stage() === 'clarify-screen', 'screen context explicitly supplied');
   await choice('display-settings'); await finish();
-  await button('Explain more simply');
+  await button('Explain text size'); await button('Back to explanation');
   check(await b.evaluate("document.querySelector('#current-task').dataset.kind==='explain'"), 'simpler is contextual');
-  check(/Text size/.test(await text()) && /Display size/.test(await text()), 'visible plain explanation distinguishes the two settings');
+  check(/Text size/.test(await text()) && /Screen zoom/.test(await text()) && /Dark theme/.test(await text()), 'visible plain explanation distinguishes all three settings');
   await b.screenshot('screen-explanation');
 
   await request('Play some Nina Simone.'); check(await stage() === 'clarify-media', 'ambiguous music resolved inline');
@@ -96,7 +115,7 @@ try {
   await request('Make this easier to read.'); await choice('granny');
   check(await stage() === 'size-preview', 'readability offers preview before applying');
   const original = await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)");
-  await button('Apply this size'); check(await stage() === 'completed', 'explicit local size apply');
+  await button('Apply'); check(await stage() === 'completed', 'explicit local size apply');
   check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)") > original, 'actual text scales');
   await button('Restore previous size');
   check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)") === original, 'restore exact previous size');
@@ -105,7 +124,7 @@ try {
   await b.evaluate("window.oldApproval=document.querySelector('[data-action=approve]')");
   await b.click('#review-expire'); check(await stage() === 'expired', 'review expiry works');
   check((await text()).includes('Retain this draft.'), 'expiry retains exact draft');
-  await button('Review again'); await button('Change');
+  await button('Review again'); await button('Change it');
   await b.fill('[aria-label="Message"]', 'Changed exact body.'); await button('Save changes');
   await b.evaluate('window.oldApproval.click()');
   check(!['planning','acting','waiting','verifying','completed'].includes(await stage()), 'historical button cannot approve current version');
@@ -117,8 +136,8 @@ try {
   await fresh(true); await select('#review-fault', 'unknown'); await message(); await b.click('[data-action=approve]');
   await waitStage('unknown');
   check(await b.evaluate("!document.querySelector('#current-task [data-action=approve]')"), 'unknown no resend button');
-  await button('I understand');
-  check(await stage() !== 'unknown', 'unknown acknowledgement has real exit');
+  await button('Done');
+  check(await b.evaluate("!document.querySelector('#current-task')"), 'unknown Done dismisses the surface without converting it to completed');
   await select('#review-fault','');
   await message(); await b.click('[data-action=approve]'); await finish();
   check((await text()).includes('not sent'), 'None clears prior injected outcome');
@@ -130,7 +149,7 @@ try {
   }
   for (const failure of ['offline','permission','auth']) {
     await fresh(true); await select('#review-fault',failure); await request('Show me the photos Sophie sent yesterday'); await waitStage('failed');
-    check(!await b.evaluate("document.querySelector('#current-task .photo-item')"),failure+' cannot expose successful photos');
+    check(!await b.evaluate("document.querySelector('#current-task [id=photo-position], #current-task img')"),failure+' cannot expose successful photos');
   }
   await fresh(true); await select('#review-screen','signin'); await b.click('#composer button[type=submit]'); await waitStage('failed');
   check((await text()).includes('protected'),'review screen selection supplies actual protected fixture');
@@ -145,10 +164,17 @@ try {
   await b.click('[data-action=approve]'); await finish();
   check((await text()).includes('may now be marked read'),'mark-read result reports side effect');
   await fresh(true); await message(); await select('#review-delay','1500'); await b.click('[data-action=approve]');
-  await b.click('#talk'); await b.click('#talk-stop'); await waitStage('stopped');
-  await b.evaluate('new Promise(resolve=>setTimeout(resolve,1700))'); check(await stage()==='stopped','Talk Stop cancels pending progression');
+  await b.click('#talk');
+  check(await b.evaluate("!!document.querySelector('#confirm-dialog[open]')"), 'Talk asks to interrupt active work before listening');
+  await b.click('#confirm-dialog button[value=confirm]');
+  await b.waitFor("!document.querySelector('#speech-surface').hidden");
+  check(await b.evaluate("!document.querySelector('#speech-surface').hidden"), 'confirmed interruption opens simulated listening after the task stops');
+  await b.click('#speech-cancel'); await waitStage('stopped');
+  await b.evaluate('new Promise(resolve=>setTimeout(resolve,1700))'); check(await stage()==='stopped','active Talk interruption prevents pending completion');
   await fresh(true); await select('#review-delay','1500'); await request('Show me the photos Sophie sent yesterday'); await menu('new');
   check(await b.evaluate("!!document.querySelector('#confirm-dialog[open]')"),'all-task unfinished protection');
+  await b.click('#confirm-dialog button[value=confirm]');
+  await b.waitFor("!!document.querySelector('#confirm-dialog[open]')");
   await b.click('#confirm-dialog button[value=confirm]'); await b.waitFor("!document.querySelector('#current-task')");
   await b.evaluate('new Promise(resolve=>setTimeout(resolve,1700))'); check(!await stage(),'new conversation prevents stale lookup callback');
   await b.fill('#request','Keep this input'); await menu('new'); await key('Escape');
@@ -156,32 +182,32 @@ try {
   check(await b.evaluate("document.querySelector('#request').value==='Keep this input'"),'Escape cannot replay prior dialog consent');
   await fresh(true); await message(); await b.click('[data-action=approve]'); await finish();
 
-  await menu('preferences');
+  await menu('settings'); await b.click('#settings-conversation'); await b.click('#conversation-aliases');
   await b.fill('#alias-label','Garden friend'); await select('#alias-person','david-garden'); await b.click('#alias-save');
   check((await text()).includes('Garden friend'), 'explicit alias saves locally');
   const editAlias = await b.evaluate("[...document.querySelectorAll('[id^=alias-edit-]')].find(e=>e.textContent.includes('Garden friend'))?.id");
   await b.click('#'+editAlias); await select('#alias-person','david-family'); await b.click('#alias-save');
   await button('Return to conversation'); await request('Tell Garden friend See you soon via Example Mail'); await waitStage('preview');
   check(/Brother/.test(await text()) && /See you soon/.test(await text()),'alias correction changes actual recipient routing');
-  await button('Cancel','#current-task'); await menu('preferences');
+  await button('Cancel','#current-task'); await menu('settings'); await b.click('#settings-conversation'); await b.click('#conversation-aliases');
   const aliasButton = await b.evaluate("[...document.querySelectorAll('[id^=alias-delete-]')].find(e=>e.textContent.includes('Garden friend'))?.id");
   check(!!aliasButton, 'new alias can be deleted'); await b.click('#' + aliasButton); await b.click('#confirm-dialog button[value=confirm]');
   await b.waitFor("!document.getElementById(" + JSON.stringify(aliasButton) + ")");
   check(await b.evaluate("!document.querySelector('[data-panel=preferences]').innerText.includes('Garden friend')"), 'alias deletion removes saved mapping without rewriting earlier conversation');
   await button('Return to conversation'); await menu('history');
-  check(await b.evaluate("!!document.querySelector('[data-panel=history]')"), 'history discoverable');
-  await button('Clear recent activity'); await b.click('#confirm-dialog button[value=confirm]');
-  await b.waitFor("!document.querySelector('#confirm-dialog[open]') && ![...document.querySelectorAll('[data-panel=history] button')].some(e=>e.textContent==='Clear recent activity')");
-  check((await text()).includes('no completed activity') || (await text()).includes('No recent'), 'history deletion takes effect');
-  await button('Return to conversation');
+  check(await b.evaluate("document.querySelector('#support-content')?.dataset.destination==='history'"), 'Today is discoverable from Menu');
+  await b.click('#clear-history'); await b.click('#confirm-dialog button[value=confirm]');
+  await b.waitFor("!document.querySelector('#confirm-dialog[open]') && !document.querySelector('#clear-history')");
+  check(await b.evaluate("document.querySelector('#support-content').innerText.includes('No saved task history')"), 'history deletion takes effect without a transcript');
+  await button('Back to Home');
 
   for (const [width,height] of [[1200,800],[600,960],[360,720],[360,480]]) {
     await b.viewport(width,height); await geometry(width+'x'+height);
     await b.screenshot('layout-'+width+'x'+height);
   }
-  await b.viewport(840,900); await menu('text'); await button('150%'); await button('Apply this size');
+  await b.viewport(840,900); await menu('text'); await b.click('#pref-scale-15'); await b.click('#apply-preferences');
   await button('Return to conversation'); await select('#review-scale','2');
-  check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===60"), 'combined 300% text genuinely applies');
+  check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===66"), 'combined 300% text genuinely applies');
   for (const [width,height] of [[840,900],[360,720],[600,520],[360,480]]) {
     await b.viewport(width,height); await geometry('300% '+width); await b.screenshot('large-text-'+width);
     for (const selector of ['#request','#talk','#composer button[type=submit]']) {
@@ -193,18 +219,22 @@ try {
   for (const [width,height] of [[360,480],[840,900]]) {
     await b.viewport(width,height);
     for (const where of ['0','document.documentElement.scrollHeight']) {
-      const visible = await b.evaluate(`(() => { scrollTo(0,${where}); const e=document.querySelector('#stop-button'),r=e.getBoundingClientRect(); return r.top>=0 && r.bottom<=innerHeight && e.contains(document.elementFromPoint((r.left+r.right)/2,(r.top+r.bottom)/2)); })()`);
-      check(visible,'300% Stop immediately reachable '+width+' at '+where);
+      await b.evaluate(`scrollTo(0,${where});new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))`);
+      check(await hittableStop(),'300% Stop immediately reachable '+width+' at '+where);
     }
   }
-  await b.click('#stop-button');
+  await stop();
   await select('#review-scale','1'); await b.viewport(840,1100);
-  for (const territory of ['open-day','bright-signal']) { await select('#review-territory',territory); await b.screenshot(territory); }
+  await b.screenshot('harbour-blue-active-task');
 
   await fresh();
-  await b.click('#talk'); check(await b.evaluate("!!document.querySelector('#talk-dialog[open]')"), 'simulated Talk opens');
-  const decline = await b.evaluate("[...document.querySelectorAll('#talk-dialog button')].find(x=>/touch|type|decline/i.test(x.textContent))?.textContent.trim()");
-  check(!!decline,'no-microphone path offered'); await button(decline,'#talk-dialog');
+  await b.click('#talk'); check(await b.evaluate("!document.querySelector('#speech-surface').hidden"), 'simulated Talk expands the composer surface');
+  await b.click('#speech-done');
+  check(await b.evaluate("document.querySelector('#speech-surface').dataset.state==='transcript' && !document.querySelector('#speech-use').hidden"), 'Done listening opens the editable transcript surface');
+  await b.click('#speech-use'); await waitStage('clarify-person');
+  check(await b.evaluate("document.querySelector('#speech-surface').hidden"), 'Use this request collapses the speech surface before interpretation');
+  await fresh(); await b.click('#talk');
+  check(await b.evaluate("!document.querySelector('#speech-type').hidden"), 'no-microphone Type instead path offered'); await b.click('#speech-type');
   await b.fill('#request','Unfinished words');
   await menu('new');
   check(await b.evaluate("!!document.querySelector('#confirm-dialog[open]')"), 'new conversation guards unfinished composer');
@@ -217,15 +247,15 @@ try {
   await key('Tab'); check(await b.evaluate("document.activeElement.id==='talk'"), 'keyboard reaches Talk after input');
   await key('Tab'); check(await b.evaluate("document.activeElement.matches('#composer button[type=submit]')"), 'keyboard reaches typed submission');
   await key('Enter'); await waitStage('clarify-person');
-  await b.evaluate("document.querySelector('[data-choice=david-family]').focus()"); await key('Enter'); await waitStage('clarify-channel');
-  await b.evaluate("document.querySelector('[data-choice]').focus()"); await key('Enter'); await waitStage('preview');
+  await b.evaluate("document.querySelector('[data-choice=david-family]').focus()"); await key('Enter'); await waitStage('preview');
+  check(await b.evaluate("document.querySelector('#current-task').innerText.includes('David') && document.querySelector('#current-task').innerText.includes('Example Messages')"), 'keyboard David row explicitly chooses the displayed person and destination');
   check(await stage()==='preview','keyboard-only activation reaches exact preview');
   await b.click('#talk'); await key('Escape');
-  await b.waitFor("!document.querySelector('#talk-dialog[open]') && document.activeElement.id==='talk'");
-  check(await b.evaluate("document.activeElement.id==='talk'"),'Escape returns dialog focus');
-  await menu('privacy'); await button('Reset everything'); await b.click('#confirm-dialog button[value=confirm]');
+  await b.waitFor("document.querySelector('#speech-surface').hidden && document.activeElement.id==='talk'");
+  check(await b.evaluate("document.activeElement.id==='talk'"),'Escape restores Talk focus after dismissing the speech surface');
+  await menu('privacy'); await b.click('#privacy-delete'); await b.click('#confirm-dialog button[value=confirm]');
   await b.waitFor("!document.querySelector('#current-task') && document.querySelector('#request').value===''");
-  check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===20"),'privacy reset restores local baseline');
+  check(await b.evaluate("parseFloat(getComputedStyle(document.body).fontSize)===22"),'privacy reset restores local baseline');
   await fresh(true); await select('#review-delay','1500'); await request('Show me the photos Sophie sent yesterday'); await menu('new');
   check(await b.evaluate("!document.querySelector('#confirm-stop').hidden"),'active interruption dialog keeps Stop available');
   await b.click('#confirm-stop'); await waitStage('stopped'); await b.waitFor("!document.querySelector('#confirm-dialog[open]')");
@@ -240,24 +270,19 @@ try {
   check(await b.evaluate("document.activeElement.id==='request' && document.querySelector('#request').value==='Keep these unfinished words while you work.'"),'progress preserves composer focus and unfinished words');
   check(await b.evaluate("document.querySelector('#request').selectionStart===5 && document.querySelector('#request').selectionEnd===10"),'progress retains composer selection');
   check(Math.abs(await b.evaluate('scrollY')-readingPosition)<3,'progress does not scroll a reader away from the top');
-  await fresh(true); await message('Original exact words.'); await button('Change');
+  await fresh(true); await message('Original exact words.'); await button('Change it');
   await b.fill('[aria-label=Message]','Uncommitted edit stays here.');
-  await menu('text'); await button('115%','[data-panel=text]'); await button('Apply this size','[data-panel=text]'); await button('Return to conversation','[data-panel=text]');
+  await menu('text'); await b.click('#pref-scale-115'); await b.click('#apply-preferences'); await button('Return to conversation');
   check(await b.evaluate("document.querySelector('[aria-label=Message]').value==='Uncommitted edit stays here.'"),'text settings retain unsaved draft editor');
   await button('Cancel editing');
   check((await text()).includes('Original exact words.') && !(await text()).includes('Uncommitted edit stays here.'),'cancel editing restores original exact draft');
   check(await stage()==='expired','cancel editing does not restore old approval authority');
   await b.viewport(840,1100); await fresh(true); await message();
-  const colors=[];
-  for (const territory of ['neutral','open-day','bright-signal']) {
-    await select('#review-territory',territory);
-    colors.push(await b.evaluate("getComputedStyle(document.body).backgroundColor"));
-    await b.evaluate("document.querySelector('#current-task').scrollIntoView({block:'start'})");
-    await b.screenshot('comparison-message-'+territory);
-  }
-  check(new Set(colors).size===3,'three proposed treatments actually differ on identical interaction');
-  await fresh(true); await select('#review-territory','open-day'); await request('Show me the photos Sophie sent yesterday'); await finish();
-  await b.evaluate('scrollTo(0,0)'); await b.screenshot('walkthrough-photos-open-day');
+  check(await b.evaluate("getComputedStyle(document.body).backgroundColor==='rgb(251, 246, 238)'"), 'Harbour Blue Linen canvas stays active in conversation');
+  await b.evaluate("document.querySelector('#current-task').scrollIntoView({block:'start'})");
+  await b.screenshot('harbour-blue-message');
+  await fresh(true); await request('Show me the photos Sophie sent yesterday'); await finish();
+  await b.evaluate('scrollTo(0,0)'); await b.screenshot('walkthrough-photos-harbour-blue');
   check(await b.evaluate("localStorage.length===0 && sessionStorage.length===0"), 'no persistent web storage');
   check(await b.evaluate("(async()=>!(await indexedDB.databases()).length)()"), 'no IndexedDB');
   check(await b.evaluate("(async()=>!(await navigator.serviceWorker.getRegistrations()).length)()"), 'no service worker');

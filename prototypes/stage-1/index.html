@@ -1,20 +1,168 @@
 <!doctype html>
-<html lang="en"><head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light">
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>Granny · conversation study</title><link rel="stylesheet" href="styles.css">
-  <script src="fixtures.js" defer></script><script src="intent.js" defer></script><script src="model.js" defer></script><script src="scheduler.js" defer></script><script src="cloud.js" defer></script><script src="app.js" defer></script>
-</head><body>
-  <div id="stop-dock" class="stop-dock" hidden><button type="button" class="stop-button" id="stop-button" hidden>Stop</button></div>
+  <title>Granny · Home conversation study</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="fixtures.js" defer></script>
+  <script src="intent.js" defer></script>
+  <script src="model.js" defer></script>
+  <script src="scheduler.js" defer></script>
+  <script src="cloud.js" defer></script>
+  <script src="room-fixtures.js" defer></script>
+  <script src="rooms-store.js" defer></script>
+  <script src="room-dialog.js" defer></script>
+  <script src="room-create.js" defer></script>
+  <script src="room-library.js" defer></script>
+  <script src="room-ui.js" defer></script>
+  <script src="outcome-ui.js" defer></script>
+  <script src="support-state.js" defer></script>
+  <script src="support-ui.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div id="stop-dock" class="stop-dock" hidden>
+    <button type="button" class="stop-button" id="stop-fallback" hidden>■ Stop</button>
+  </div>
   <a class="skip-link" href="#conversation">Skip to conversation</a>
-  <p class="sandbox-notice">Design prototype — fictional data only. No recording, account, device access, or sending.</p>
-  <main class="app-shell" id="app-shell"><header class="app-header"><div><strong>Granny</strong><span>Conversation study</span></div><button type="button" class="quiet-button" id="menu-button" aria-expanded="false" aria-controls="menu">Menu</button></header>
-    <div class="menu" id="menu" hidden><button type="button" data-menu="return">Return to conversation</button><button type="button" data-menu="introduction">Introduction</button><button type="button" data-menu="new">Start a new conversation</button><button type="button" data-menu="text">Text size</button><button type="button" data-menu="history">Recent activity</button><button type="button" data-menu="help">What you can ask</button><button type="button" data-menu="preferences">Preferences</button><button type="button" data-menu="privacy">Privacy and reset</button><button type="button" data-menu="connection">Demo connection</button></div>
+  <main class="app-shell" id="app-shell">
+    <header class="app-header">
+      <div class="product-marker">
+        <strong>Granny</strong>
+        <span>Design prototype</span>
+      </div>
+      <nav class="header-actions" aria-label="Main navigation">
+        <button type="button" class="quiet-button" id="room-home" hidden>Home</button>
+        <button type="button" class="quiet-button" id="rooms-button">Rooms</button>
+        <button type="button" class="quiet-button" id="menu-button" aria-expanded="false" aria-controls="menu">Menu</button>
+      </nav>
+    </header>
+
+    <dialog class="support-menu" id="menu" aria-labelledby="menu-heading" hidden>
+      <div class="support-heading-row"><h2 id="menu-heading" tabindex="-1">Menu</h2><button type="button" data-menu="return">Close</button></div>
+      <h3>Go to</h3>
+      <button type="button" data-menu="history">Today</button>
+      <button type="button" data-menu="search">Search</button>
+      <button type="button" data-menu="rooms">Rooms</button>
+      <h3>Preferences</h3>
+      <button type="button" data-menu="settings">Settings</button>
+      <button type="button" data-menu="text">Accessibility</button>
+      <button type="button" data-menu="privacy">Privacy and data</button>
+      <h3>Support</h3>
+      <button type="button" data-menu="help">What can I ask?</button>
+      <button type="button" data-menu="new">Start a new conversation</button>
+    </dialog>
+
+    <section id="support-content" class="support-content" hidden aria-labelledby="support-heading"></section>
+
     <p id="mode-notice" class="notice mode-notice" hidden></p>
-    <section class="conversation" id="conversation" tabindex="-1" aria-label="Conversation"><div class="welcome" id="welcome"><h1>How can I help?</h1><p>Tell me what you would like to do. We’ll take it one clear step at a time.</p><section class="introduction" id="introduction"><h2>A quick note</h2><p>This is a fictional design simulation. It does not record your voice, connect accounts, or send anything.</p><button type="button" id="intro-talk">Try Talk — simulated</button><button type="button" id="intro-skip">Use touch instead</button></section></div><div id="thread" aria-live="off"></div></section>
-    <div class="composer-wrap"><form class="composer" id="composer"><label for="request">What would you like help with?</label><textarea id="request" rows="2" maxlength="2000" placeholder="For example: Tell David I’ll call after dinner."></textarea><div class="composer-actions"><button type="button" id="talk">Talk <span>simulated</span></button><button type="submit" class="primary">Continue</button></div></form></div>
+    <button type="button" id="search-origin-return" hidden>Back to search results</button>
+    <div id="room-content" tabindex="-1" hidden></div>
+
+    <section class="conversation" id="conversation" tabindex="-1" aria-label="Conversation">
+      <div class="welcome" id="welcome">
+        <h1>What would you like to do?</h1>
+        <p>Ask in your own words. You can type or talk.</p>
+        <section class="introduction" id="introduction" hidden>
+          <h2>A quick note</h2>
+          <p>This is a fictional design simulation. It does not record your voice, connect accounts, or send anything.</p>
+          <button type="button" id="intro-talk">Try Talk — simulated</button>
+          <button type="button" id="intro-skip">Use touch instead</button>
+        </section>
+      </div>
+      <div id="thread" aria-live="off"></div>
+    </section>
+
+    <div id="organization-receipt" hidden></div>
+    <div class="composer-wrap">
+      <svg class="composer-focus-frame" aria-hidden="true" focusable="false">
+        <path id="composer-focus-path"></path>
+      </svg>
+      <svg class="composer-tail" aria-hidden="true" focusable="false">
+        <path id="composer-outline-path"></path>
+      </svg>
+      <form class="composer" id="composer" novalidate>
+        <section id="speech-surface" aria-labelledby="speech-heading" hidden>
+          <p id="speech-place" class="surface-place">Home · Granny</p>
+          <h2 id="speech-heading" tabindex="-1">Listening</h2>
+          <p id="speech-instruction">Say what you would like to do.</p>
+          <p class="notice">Simulated listening — no microphone is used.</p>
+          <label for="talk-text" id="speech-label">Heard so far</label>
+          <p id="heard-copy" aria-labelledby="speech-label" aria-describedby="speech-disclosure"><span id="heard-words"></span><span class="provisional-caret" aria-hidden="true">│</span></p>
+          <textarea id="talk-text" rows="2" maxlength="2000" aria-describedby="speech-disclosure"></textarea>
+          <p id="speech-disclosure">Provisional example words. Nothing is submitted while listening.</p>
+          <div class="surface-actions">
+            <button type="button" id="speech-done" class="primary">Done listening</button>
+            <button type="button" id="speech-use" class="primary" hidden>Use this request</button>
+            <button type="button" id="speech-again" hidden>Listen again</button>
+            <button type="button" id="speech-cancel">Cancel</button>
+            <button type="button" id="speech-type">Type instead</button>
+          </div>
+        </section>
+        <label for="request">Type a request</label>
+        <textarea id="request" rows="1" maxlength="2000" placeholder="Ask me anything…" aria-describedby="composer-help"></textarea>
+        <span class="sr-only" id="composer-help">Type a fictional request, then choose Send. Talk is simulated and does not use a microphone.</span>
+        <div class="composer-actions">
+          <button type="button" class="composer-action talk-action" id="talk" aria-describedby="composer-help">Talk</button>
+          <button type="submit" class="composer-action send-action primary">
+            <span class="send-symbol" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M3 11.2 20.5 4l-5.2 16-4.1-6.1L3 11.2Zm8.2 2.7 3.6-3.8"/></svg>
+            </span>
+            <span>Send</span>
+          </button>
+          <button type="button" class="composer-action stop-button" id="stop-button" hidden><span class="stop-symbol" aria-hidden="true">■</span>Stop</button>
+        </div>
+      </form>
+    </div>
+
+    <section class="home-secondary" id="home-secondary" aria-label="Continue and rooms">
+      <article class="continuation" id="continuation" data-home-continuation>
+        <div class="continuation-copy">
+          <img class="continuation-portrait" src="/assets/context-rooms/kitchen/room-kitchen-k01-portrait-i01.png" alt="" aria-hidden="true">
+          <p class="eyebrow">Continue in Kitchen</p>
+          <h2>Vegetable soup</h2>
+          <p class="continuation-purpose">Kitchen · Recipes, lists and cooking plans</p>
+        </div>
+        <div class="continuation-actions">
+          <button type="button" class="primary" id="open-kitchen">Open Kitchen</button>
+          <button type="button" class="text-button" id="hide-continuation">Hide</button>
+        </div>
+      </article>
+
+      <section class="rooms" id="rooms" aria-labelledby="rooms-heading">
+        <div class="rooms-heading-row">
+          <h2 id="rooms-heading" tabindex="-1">Other rooms</h2>
+          <div class="room-controls" id="room-controls">
+            <button type="button" id="rooms-previous" aria-describedby="rooms-position">Previous</button>
+            <button type="button" id="rooms-next" aria-describedby="rooms-position">Next</button>
+          </div>
+        </div>
+        <p class="room-position" id="rooms-position" hidden>All rooms are visible.</p>
+        <div class="room-viewport" id="room-viewport" data-room-row>
+          <div class="room-list" id="room-list"></div>
+        </div>
+        <p class="empty-rooms" id="empty-rooms" hidden>No rooms are available in this fictional fixture.</p>
+        <button type="button" class="rooms-route text-button" id="see-all-rooms">See all rooms</button>
+      </section>
+    </section>
+
   </main>
-  <dialog id="talk-dialog" aria-labelledby="talk-title"><form method="dialog"><h2 id="talk-title">Listening · simulated</h2><p>Your microphone is not being used. Edit this sample transcript, then choose Use transcript.</p><label for="talk-text">Transcript</label><textarea id="talk-text" rows="3">Tell David I’ll call after dinner.</textarea><div class="dialog-actions"><button value="decline">Microphone declined — use touch</button><button id="talk-stop" value="cancel">Stop</button><button value="use" class="primary">Use transcript</button></div></form></dialog>
-  <dialog id="confirm-dialog" aria-labelledby="confirm-title"><form method="dialog"><h2 id="confirm-title">Start something new?</h2><p id="confirm-text"></p><div class="dialog-actions"><button type="button" id="confirm-stop" class="stop-button" hidden>Stop current request</button><button value="cancel">Keep working</button><button value="confirm" class="danger">Continue</button></div></form></dialog>
+
+  <dialog id="confirm-dialog" aria-labelledby="confirm-title">
+    <form method="dialog">
+      <h2 id="confirm-title" tabindex="-1">Start something new?</h2>
+      <p id="confirm-text"></p>
+      <div class="dialog-actions">
+        <button type="button" id="confirm-stop" class="stop-button" hidden>Stop current request</button>
+        <button value="cancel">Keep working</button>
+        <button value="confirm" class="danger">Continue</button>
+      </div>
+    </form>
+  </dialog>
+
   <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
-</body></html>
+</body>
+</html>
