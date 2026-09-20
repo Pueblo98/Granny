@@ -132,6 +132,7 @@ or lockfile changed.
 | Conversation-runtime `browser-check.mjs` | 19 checks passed | Actual browser → HTTP → runtime → MCP/store path, including current-Room context |
 | `live-consent-check.mjs` | 10 checks passed, one stub-provider call | Explicit live mode/consent and unchanged verified draft path; no paid request |
 | One explicit `live-smoke.mjs --live` using the existing private env | `idle` / `chat`, source bound, grounded answer, 3,121 ms, one provider call, zero draft writes | Single synthetic Kitchen question only; no retry and no transcript/key output |
+| Restarted `127.0.0.1:4173` browser smoke through **Use live AI chat** | Corrected harness observed a 913-character cookie-recipe answer, no fixed-stub fallback and no browser errors | Two synthetic provider turns were incurred: the first completed but the harness selected helper copy; one corrected rerun verified the generated answer. No action or draft request was made |
 | Documentation/cockpit/handoff checks | documentation PASS; 283 Markdown files; cockpit 104 records; handoff PASS at final commit | Structural repository evidence only |
 
 The final connected-Room screenshot was visually inspected at 840×1000. It
