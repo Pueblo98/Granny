@@ -10,6 +10,7 @@ related:
   - 2026-09-19-t101-route-inventory.md
   - 2026-09-20-native-tablet-smoke-feedback.md
   - 2026-09-20-native-tablet-followup-feedback.md
+  - 2026-09-20-t124-media-handoff-device-evidence.md
   - source-material/initialization-handoff.md
   - source-material/planning-conversation.md
   - source-material/2026-09-17-class-brainstorming.md
@@ -21,7 +22,7 @@ related:
 
 Workflow-tool source, accessed 2026-09-14: OpenAI [Build skills](https://learn.chatgpt.com/docs/build-skills) documents repo-local .agents/skills discovery, SKILL.md name/description metadata and optional UI settings. This establishes the packaging convention, not successful discovery or behavioral reliability in a fresh session. Repository skills are instruction-only and do not install global plugins/configuration.
 
-[Research plan](research-plan.md) owns hypotheses, methods, ethics and evidence gates. No completed user study is implied by a specification. [Android feasibility](android-stage-1-feasibility.md) owns platform/policy conclusions; the [2026-09-19 T-101 route inventory](2026-09-19-t101-route-inventory.md) records the five-workflow source recheck and synthetic worksheets, while the [partial manual physical inventory](2026-09-19-t101-physical-inventory.md) records non-identifying Settings observations. The [initial native smoke feedback](2026-09-20-native-tablet-smoke-feedback.md) and [repaired follow-up](2026-09-20-native-tablet-followup-feedback.md) preserve Simon-reported device observations and their missing configuration/denominator limits; neither is a complete EVAL or participant study. [Naming](../02-design/naming-exploration.md) owns preliminary candidate screening. Store future dated observations using the [research template](../_templates/research-note.md), not by editing source history.
+[Research plan](research-plan.md) owns hypotheses, methods, ethics and evidence gates. No completed user study is implied by a specification. [Android feasibility](android-stage-1-feasibility.md) owns platform/policy conclusions; the [2026-09-19 T-101 route inventory](2026-09-19-t101-route-inventory.md) records the five-workflow source recheck and synthetic worksheets, while the [partial manual physical inventory](2026-09-19-t101-physical-inventory.md) records non-identifying Settings observations. The [initial native smoke feedback](2026-09-20-native-tablet-smoke-feedback.md) and [repaired follow-up](2026-09-20-native-tablet-followup-feedback.md) preserve Simon-reported device observations and their missing configuration/denominator limits. The [T-124 media handoff run](2026-09-20-t124-media-handoff-device-evidence.md) records one exact-artifact synthetic-device safe partial: YT Music received the handoff but its selected session remained paused. None is a complete EVAL or participant study. [Naming](../02-design/naming-exploration.md) owns preliminary candidate screening. Store future dated observations using the [research template](../_templates/research-note.md), not by editing source history.
 
 ## Preserved inputs
 

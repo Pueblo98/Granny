@@ -86,11 +86,15 @@ cannot verify what is playing or Pause it. Candidate builds deny the route. No
 provider SDK, account, Internet/media-control permission or persistent service
 preference is added.
 
-Host evidence and documentation review can establish adapter mechanics only.
-No tablet/provider app is authorized or exercised. Exact handler/version,
-provider terms, account/auth/offline/ad behavior, independent content/playing
-state and Pause remain open, so T-106, CAP-10 play/pause, GATE-04 and
-ADR-0009's external-workflow bar remain incomplete.
+Host evidence establishes adapter mechanics. A later exactly authorized
+[TBL-01 smoke attempt](../08-research/2026-09-20-t124-media-handoff-device-evidence.md)
+found three app-visible handlers, previewed and opened YT Music 9.37.55, and
+observed its package-matched media session. The session remained paused at both
+bounded checks; Granny returned with honest unknown/no-retry copy. No account,
+catalog metadata, personal content or screenshot was inspected. Provider terms,
+account/auth/offline/ad behavior, exact content identity, active playback and
+Pause remain open, so T-106, CAP-10 play/pause, GATE-04 and ADR-0009's
+external-workflow bar remain incomplete.
 
 ## Native voice continuity repair — 2026-09-20
 

@@ -486,12 +486,13 @@ one-use/no retry and candidate denial. Surface tests require the handoff versus
 playback distinction. Setup reports `Evidence lab only` only in a debug build
 with at least one compatible handler.
 
-**Unrun device/provider evidence:** Named package/component/version; whether it
-advertises and correctly interprets artist focus; signed-in/out, offline,
-ad/paywall and ambiguity behavior; lifecycle/return; independent media identity
-and playing state; Pause; provider terms; TalkBack/large-text/rotation. Until
-those are reviewed, this does not admit CAP-10 play/pause, complete T-106 or
-count toward ADR-0009's external workflow bar.
+**Device/provider evidence:** One [exact TBL-01 attempt](../08-research/2026-09-20-t124-media-handoff-device-evidence.md)
+showed that YT Music advertised the action, received the reviewed artist
+handoff and exposed a package-matched media session; that session remained
+paused. Still unrun: exact content identity, active playing, signed-in/out,
+offline, ad/paywall and ambiguity behavior, Pause, provider terms and
+TalkBack/large-text/rotation. This does not admit CAP-10 play/pause, complete
+T-106 or count toward ADR-0009's external workflow bar.
 
 **Rollback and completion:** Remove the adapter, manifest query and finite media
 surfaces without affecting T-122/T-123, speech or C5. Host completion requires

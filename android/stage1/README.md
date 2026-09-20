@@ -81,8 +81,9 @@ retried. Candidate builds deny the route. No preferred app is persisted.
 
 The manifest adds only the exact media-intent package-visibility query. It adds
 no permission, provider SDK, account/auth, Internet path, notification listener
-or media-control privilege. No tablet/provider app was exercised by the source
-slice; named-handler behavior, provider terms, independent playback evidence
+or media-control privilege. A later [exact TBL-01/YT Music smoke attempt](../../docs/08-research/2026-09-20-t124-media-handoff-device-evidence.md)
+verified handler discovery, exact preview and external handoff, but the selected
+media session remained paused. Provider terms, exact-content/playing evidence
 and Pause remain T-106/T-101 work.
 
 ## Boundary
@@ -135,7 +136,7 @@ app, installed media handler, playback/Pause or external message send.
 
 ## Device evidence still required
 
-No Android device was attached at handoff. The exact T-120/T-121 packets define
+No Android device was attached for the T-120/T-121 source handoff. Their exact packets define
 the later Samsung input/output matrix. Use synthetic phrases and text
 and retain no raw audio or personal transcript. Record exact app SHA, device,
 OS/API, recognizer component, locale/model status, permission path, offline

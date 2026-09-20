@@ -15,7 +15,7 @@ session_state: review
 record_basis: contemporaneous
 agent: Codex
 branch: feature/t124-media-play-search
-next_action: Review the pushed T-124 source branch; authorize an exact named-handler device run separately if desired
+next_action: Review the pushed T-124 branch and safe-partial YT Music evidence; define provider terms and a non-personal playback oracle before another run
 changed_paths:
   - android/stage1/README.md
   - android/stage1/app/build.gradle.kts
@@ -33,6 +33,8 @@ changed_paths:
   - docs/03-agent/tool-contracts.md
   - docs/04-architecture/capability-admission.md
   - docs/08-research/2026-09-19-t101-route-inventory.md
+  - docs/08-research/2026-09-20-t124-media-handoff-device-evidence.md
+  - docs/08-research/README.md
   - docs/10-execution/backlog.md
   - docs/10-execution/current-milestone.md
   - docs/10-execution/open-questions.md
@@ -108,10 +110,18 @@ used the wrong empty temporary Gradle cache, downloaded the Gradle wrapper and
 then failed offline plugin resolution; it changed no repository file. The
 reported clean result uses the prepared cache above.
 
-No tablet, emulator, provider app/account, media catalog, playback, Pause,
-TalkBack, large text, rotation, policy approval or independent player/session
-oracle was exercised. Static Android documentation and host fakes do not prove
-that any installed app advertises or correctly handles the intent.
+After the source handoff, Simon separately authorized one exact TBL-01 smoke
+attempt. The reviewed APK updated successfully. Granny saw three compatible
+handlers, previewed the exact synthetic artist and selected YT Music 9.37.55,
+and opened its exact component. Android exposed a package-matched media session,
+but its state remained `PAUSED(2)` at both bounded checks. On return Granny
+showed honest unknown/no-retry copy. The [evidence record](../../08-research/2026-09-20-t124-media-handoff-device-evidence.md)
+owns exact configuration, procedure, privacy boundary and interpretation.
+
+No account state, catalog metadata, personal media, screenshot, audible result,
+exact-content oracle, active playback, Pause, TalkBack, large-text behavior,
+provider-policy approval or candidate route was established. The device result
+is safe partial for EVAL-004 and does not change any gate.
 
 ## Handoff
 
