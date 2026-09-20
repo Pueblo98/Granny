@@ -238,8 +238,11 @@ fully closed. T-101 and GATE-03/04/06 remain open.
 The [2026-09-20 perception implementation](sessions/2026-09-20-screen-understanding.md)
 adds a separate host OCR/semantic-fusion/annotation lab and a buildable read-only
 Android fixture observer. Existing browser guidance and C2 evidence were
-reconciled first. This is source/host evidence only; on-device perception,
-arbitrary-app access and production admission remain unrun/open.
+reconciled first. The [v0.3 supervised retest](sessions/2026-09-20-perception-v03-retest.md)
+now has positive owner reports for Baseline → Disabled → Canvas → Disabled and
+immediate Stop. The earlier intermittent empty-map failure remains recorded;
+its cause and complete resolution are unproven. Android OCR, arbitrary-app
+access and production admission remain unimplemented/unrun/open respectively.
 
 The [current-source route assessment](../08-research/2026-09-19-t101-route-inventory.md) now covers all five ADR-0009 experiments and prepares the non-identifying physical inventory and smallest synthetic experiments. It finds a go route for Granny-local text, a conditional route for scoped screen explanation, conditional honest message compose handoff but no send claim, and no ordinary candidate route for sent-photo provenance. The 2026-09-20 refresh found Spotify technically plausible but prohibited by its current policy for Granny's accepted voice-assistant control behavior. Apple MusicKit remains an unreviewed desk lead, not a selected route. The current named plan therefore reaches ADR-0009's explicit revisit point; no scope or gate changes without Simon's decision.
 

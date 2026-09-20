@@ -98,7 +98,7 @@ in any future device consent and independently checked before claiming isolation
 
 ## Modules and limits
 
-### Fresh semantics (version 0.3, device retest pending)
+### Fresh semantics (version 0.3, owner-reported smoke retest)
 
 Explicit inspection now clears the service's accessibility cache and refreshes
 nodes; obsolete/invisible roots and missing children yield unavailable rather
@@ -110,8 +110,12 @@ fences still apply. These reads can increase latency; no tablet timing claim.
 An empty stable tree remains possible (including Canvas only), but now explicitly
 reports **coverage unknown**, not that the visible screen has no controls.
 Two agreeing reads cannot establish completeness or detect every transition.
-The reported transient Case 4 failure is not reproduced on device; these are
-defensive fixes for concrete source gaps, not a proven root-cause resolution.
+The reported transient Case 4 failure did not recur in the short
+[owner-reported v0.3 sequence](../../docs/10-execution/sessions/2026-09-20-perception-v03-retest.md).
+These are defensive fixes for concrete source gaps, not a proven root-cause
+resolution. Four ordered inspections and one immediate-Stop prompt had positive
+reports; no instrumented timing/geometry or broad reliability claim is made.
+Simon reported disabling the service afterward.
 
 ### Adverse fixture cases (version 0.2)
 
