@@ -370,6 +370,49 @@ naturalness remains unsatisfactory. Missing configuration, case-level results,
 repetitions and timings mean the complete matrices remain open. Any new device
 action still needs exact scope and artifact identity.
 
+<a id="t-122-packet"></a>
+## T-122 packet — Native Setup and Capability Center
+
+**Requested mode and outcome:** Implement one optional own-app destination from
+Home that answers “what works here?” without requiring setup before Type works.
+It covers PRD-FR-003/016/017, PRD-ACC-003, PRD-NFR-005 and PRD-DST-004 through
+UC-014/017/020/022, J-007, SCR-002/011/014/015 and CMP-008.
+
+**Entry and boundary:** Build on the integrated Views/manual-injection shell.
+Reuse the actual recognizer, speech adapter and local preference controllers;
+do not infer readiness from a saved label. Add no library, permission, service,
+provider, account, model or network route. Type and written output remain
+complete without setup.
+
+**State contract:** Refresh after foreground return. Distinguish: Type ready;
+microphone allowed versus not allowed; on-device recognizer available versus
+unavailable; offline-eligible spoken output installed versus unavailable;
+Sound on/off; current closed speech rate and Granny text size. State external
+message/media/screen operation as unavailable or under evidence review, never
+as supported. A fixed synthetic spoken sample is explicit and does not become
+task content or approval.
+
+**Controls:** Back to conversation; Try voice; Try spoken answer; Granny text
+size; Speech speed; Sound on/off; and Open Android app settings. The settings
+handoff is a direct user-owned repair action and the app rechecks actual state
+on return. No permission loop, automatic settings launch or download prompt.
+
+**Host fixture and oracle:** A pure model projects status rows from independent
+boolean/enumerated inputs. Cover ready, permission-missing, recognizer-missing,
+spoken-output-missing, Sound-off and closed preference labels. Extend speech
+tests so fixed sample start/Stop/late callback behavior remains generation-safe.
+
+**Unrun device matrix:** Exact reference-tablet review must record app SHA,
+permission and recognizer state, TTS engine/eligible voice metadata, offline
+state, each repair return, TalkBack/keyboard order, 200% text and narrow/rotated
+layout. Host checks cannot prove device availability, egress, spoken quality or
+GATE-05/06/07.
+
+**Rollback and completion:** The center is optional and removable. Host handoff
+requires unit tests, assemble, lint, permission/dependency/data inspection,
+documentation validation and exact unrun gaps. It does not complete T-101 or
+admit an external route.
+
 ## Restart prompts
 
 These are scoped examples, not standing authorization:

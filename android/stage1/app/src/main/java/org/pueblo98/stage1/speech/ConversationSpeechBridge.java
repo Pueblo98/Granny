@@ -51,6 +51,13 @@ public final class ConversationSpeechBridge implements SpeechOutputAdapter.Liste
         previewRate = rate;
         return start(output.beginRatePreview("This is how Granny will sound at " + rate.label() + " speed.", rate.multiplier()));
     }
+    public boolean sample() {
+        stop();
+        if (!available()) return false;
+        return start(output.beginCapabilitySample(
+                "Hello. This is a spoken answer from Granny. Nothing will be sent or changed.",
+                settings.snapshot().currentRate.multiplier()));
+    }
     private boolean start(SpeechOutputController.Request request) {
         if (request == null) return false;
         adapter.stop(); focus.release();

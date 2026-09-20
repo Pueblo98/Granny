@@ -42,6 +42,17 @@ public final class ConversationSpeechBridgeTest {
         long old=f.adapter.generation; f.bridge.visibleText("Result"); f.bridge.onCompleted(old);
         assertFalse(f.settings.snapshot().previewHeard);
     }
+    @Test public void capabilitySampleUsesFixedSyntheticTextAndDoesNotAuthorizeRateApplyOrRepeat() {
+        Fixture f=fixture(); assertTrue(f.bridge.sample());
+        assertEquals("Hello. This is a spoken answer from Granny. Nothing will be sent or changed.",f.adapter.text);
+        long g=f.adapter.generation; f.bridge.onCompleted(g);
+        assertFalse(f.bridge.canRepeat());
+        assertEquals(SpeechSettingsController.OperationResult.PREVIEW_REQUIRED,f.settings.applyRate());
+    }
+    @Test public void stoppedCapabilitySampleRejectsLateCompletion() {
+        Fixture f=fixture(); assertTrue(f.bridge.sample()); long old=f.adapter.generation;
+        f.bridge.stop(); f.bridge.onCompleted(old); assertFalse(f.output.isActive());
+    }
     private static Fixture fixture(){ Fixture f=new Fixture(); f.output.availabilityChanged(true,"ready"); f.bridge.environment(true,false); return f; }
     private static final class Fixture { final SpeechOutputController output=new SpeechOutputController(); final Store store=new Store(); final SpeechSettingsController settings=new SpeechSettingsController(store); final Adapter adapter=new Adapter(); final Focus focus=new Focus(); int inputStops; final ConversationSpeechBridge bridge=new ConversationSpeechBridge(output,settings,adapter,null,focus,()->inputStops++); }
     private static final class Focus implements ConversationSpeechBridge.Focus { boolean allow=true; int releases; public boolean acquire(){return allow;} public void release(){releases++;} }

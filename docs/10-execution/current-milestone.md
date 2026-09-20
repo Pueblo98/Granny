@@ -33,6 +33,24 @@ status, local fictional draft/clarification/preview, then recent activity only
 after its storage/backup/retention packet. T-101 still separately owns
 selected-package, retention, egress and external-route evidence.
 
+## T-122 Setup and Capability Center — 2026-09-20
+
+Simon selected the first candidate native slice. The review branch adds one
+optional Setup and capabilities destination over the integrated Views shell.
+It reports Type, microphone/on-device recognizer, installed offline-eligible
+spoken output, Sound, Granny text size and speech-rate state from the actual
+app/platform controllers; offers explicit voice/spoken-answer tests and a
+manual Android app-settings handoff; and labels external message, media and
+screen routes unavailable in this build. Type remains usable without setup.
+
+The fixed spoken sample cannot become task content, Repeat authority or a rate
+approval. Host evidence covers 146 cases across 17 suites plus debug build,
+lint, manifest and empty runtime-dependency inspection. Tablet layout,
+TalkBack/keyboard, permission repair return, recognizer/TTS state, audible
+quality and independent egress remain unrun. T-122 does not admit a route or
+complete T-101. The next ordered work is the narrow T-101 C2 evidence packet,
+then a separate fictional local draft/clarification/exact-preview slice.
+
 ## Native voice continuity repair — 2026-09-20
 
 [Simon-reported smoke feedback](../08-research/2026-09-20-native-tablet-smoke-feedback.md)

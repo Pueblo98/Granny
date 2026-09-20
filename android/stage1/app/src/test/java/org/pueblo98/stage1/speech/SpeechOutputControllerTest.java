@@ -95,6 +95,18 @@ public final class SpeechOutputControllerTest {
         assertNull(controller.repeat("Current text", 1, 1f));
     }
 
+    @Test public void capabilitySampleIsExplicitNonRepeatableAndRejectsLateCompletion() {
+        SpeechOutputController controller = availableController();
+        SpeechOutputController.Request sample = controller.beginCapabilitySample("Synthetic sample.", 1f);
+
+        assertEquals(SpeechOutputController.Purpose.CAPABILITY_SAMPLE, sample.purpose);
+        assertEquals("Synthetic sample.", sample.exactText);
+        assertTrue(controller.started(sample.generation));
+        assertTrue(controller.stop("Stopped."));
+        assertFalse(controller.completed(sample.generation));
+        assertFalse(controller.snapshot().canRepeat);
+    }
+
     @Test
     public void replacementGenerationRejectsOldCallbacks() {
         SpeechOutputController controller = availableController();

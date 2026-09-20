@@ -28,6 +28,23 @@ capture, wake word, persistent transcript or analytics. Submitting exact fixture
 requests opens clarification; only a separately approved exact C5 preview can
 change the local text preference in debug builds.
 
+## Setup and capabilities
+
+The optional **Setup and capabilities** destination reports live state from the
+same platform adapters and local preference controllers used by the app. Type
+is always shown as ready. Talk separates microphone grant from on-device
+recognizer availability. Spoken answers separate installed offline-eligible
+voice availability from the app's Sound setting. The page also reads back the
+current Granny text size and closed speech-rate choice.
+
+**Try voice** enters the existing permission/on-device-recognizer path. **Try
+spoken answer** speaks one fixed synthetic sentence only after a tap and cannot
+be repeated as task content or authorize a setting/action. Android app settings
+opens only after a direct tap; actual state is rechecked when the app returns.
+Message, media and screen routes are explicitly unavailable in this build.
+There is no forced onboarding, permission loop, download, network diagnosis or
+claim that host inspection proves installed-engine privacy or quality.
+
 ## Boundary
 
 - `minSdk 31`, `compileSdk/targetSdk 36`.
@@ -59,7 +76,7 @@ Use the already prepared JDK 17 / API 36 toolchain:
 ./gradlew --no-daemon clean testDebugUnitTest assembleDebug lintDebug
 ```
 
-The integrated command passes 138 cases across 16 suites, debug assembly and
+The T-122 host command passes 146 cases across 17 suites, debug assembly and
 lint with zero errors. Remaining lint warnings concern API targeting, the
 API-33 Back attribute on minSdk 31, and English fixture strings. This shell
 targets the selected Android 16/API 36 reference configuration. `aapt2 dump permissions` reports only `RECORD_AUDIO`, and the

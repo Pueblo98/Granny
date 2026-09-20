@@ -267,6 +267,17 @@ is positive for the repaired flow and requested access checks, but readback is
 only slightly better and still below the desired naturalness. A different local
 or cloud voice remains a separately scoped dependency/privacy/product decision.
 
+<a id="t-122"></a>
+## T-122 — Implement native Setup and Capability Center
+
+- **Scope / authority:** Simon explicitly requested this as the next native slice on 2026-09-20. Add one own-app destination that truthfully reports and exercises capabilities already present in the integrated shell; it does not admit a new external capability.
+- **Trace / owner:** PRD-FR-003/016/017, PRD-ACC-003, PRD-NFR-005, PRD-DST-004; UC-014/017/020/022; J-007; SCR-002/011/014/015; CMP-008; EVAL-005/007/009.
+- **Dependencies / entry:** Current integrated `android/stage1` Views shell, T-120/T-121 status and local text/speech preference stores. Android platform intents only; no new dependency, permission or Internet route.
+- **Deliverables:** Scrollable Setup and capabilities destination; live written status for Type, microphone grant/on-device recognizer, installed offline-eligible spoken output, Granny text size, speech rate and Sound; explicit Try voice/Try spoken answer/settings controls; direct manual app-settings repair handoff; clear external-capability boundary.
+- **Acceptance:** Status refreshes after foreground return; unavailable/denied paths retain Type and written output; spoken test is explicit and contains only fixed synthetic text; opening Android settings requires a direct tap; unit tests cover status combinations and stale speech callbacks; build/lint/manifest/dependency/docs checks pass. Exact tablet/TalkBack behavior remains device evidence.
+- **Status:** review — the bounded native destination and fixed spoken sample are implemented on `feature/t122-setup-capability-center`. 146 host cases across 17 suites, debug assembly and lint pass; the debug runtime dependency graph remains empty and the APK still declares only `RECORD_AUDIO`. Exact device, TalkBack, large-text and repair-return evidence is unrun, and no external route is admitted.
+- **Excluded / rollback:** No forced onboarding, automatic permission prompt, settings mutation, voice/model download, network diagnosis, cloud voice, external-app action, persistent setup profile, analytics or gate promotion. Remove the destination/model without changing the conversation path.
+
 ## Session handoff
 
 Each implementation session selects **one bounded slice**, reads its PRD/UC/J, canonical interface/screen and policy, checks current gates and Git, then writes tests and implementation together. Review-only sessions remain read-only. Add actual source/test links to traceability only when they exist. If feasibility changes the intended outcome, amend canonical behavior and gate decision before widening code. Do not turn an unsuccessful integration into silent Stage 2 work.

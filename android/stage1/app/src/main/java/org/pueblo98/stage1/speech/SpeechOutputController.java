@@ -13,7 +13,7 @@ public final class SpeechOutputController {
         ERROR
     }
 
-    public enum Purpose { READBACK, RATE_PREVIEW }
+    public enum Purpose { READBACK, RATE_PREVIEW, CAPABILITY_SAMPLE }
 
     public static final class Request {
         public final long generation;
@@ -119,6 +119,18 @@ public final class SpeechOutputController {
         return new Request(generation, sample, rate, -1, purpose);
     }
 
+    public synchronized Request beginCapabilitySample(String sample, float rate) {
+        if (!available || sample == null || sample.isBlank() || !validRate(rate)) {
+            return null;
+        }
+        generation += 1;
+        phase = Phase.STARTING;
+        purpose = Purpose.CAPABILITY_SAMPLE;
+        activeRevision = -1;
+        message = "Starting the spoken-answer sample…";
+        return new Request(generation, sample, rate, -1, purpose);
+    }
+
     public synchronized Request repeat(String visibleText, long visibleRevision, float rate) {
         if (lastReadbackText.isBlank() || !lastReadbackText.equals(visibleText) || lastReadbackRevision != visibleRevision) {
             return null;
@@ -133,7 +145,9 @@ public final class SpeechOutputController {
         phase = Phase.SPEAKING;
         message = purpose == Purpose.RATE_PREVIEW
                 ? "Previewing the selected speech rate."
-                : "Reading aloud. Choose Stop speaking to keep the text on screen.";
+                : purpose == Purpose.CAPABILITY_SAMPLE
+                        ? "Playing the spoken-answer sample."
+                        : "Reading aloud. Choose Stop speaking to keep the text on screen.";
         return true;
     }
 
@@ -145,7 +159,9 @@ public final class SpeechOutputController {
         phase = Phase.COMPLETED;
         message = purpose == Purpose.RATE_PREVIEW
                 ? "Speech-rate preview finished. You can now apply it."
-                : "Readback finished. You can repeat it or continue reading on screen.";
+                : purpose == Purpose.CAPABILITY_SAMPLE
+                        ? "Spoken-answer sample finished. Nothing was sent or changed."
+                        : "Readback finished. You can repeat it or continue reading on screen.";
         return true;
     }
 

@@ -2,8 +2,10 @@ package org.pueblo98.stage1;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
+import android.net.Uri;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -18,6 +20,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.provider.Settings;
 import org.pueblo98.stage1.voice.DictationSession;
 import org.pueblo98.stage1.voice.VoiceTurnScheduler;
 import android.text.Editable;
@@ -40,6 +43,7 @@ import org.pueblo98.stage1.conversation.ConversationSessionCoordinator.Surface;
 import org.pueblo98.stage1.readability.SharedPreferencesTextScaleStore;
 import org.pueblo98.stage1.readability.TextScale;
 import org.pueblo98.stage1.readability.TextScaleController;
+import org.pueblo98.stage1.setup.CapabilityCenterModel;
 import org.pueblo98.stage1.ui.ConversationSurfaceModel;
 import org.pueblo98.stage1.ui.ConversationSurfaceModel.Action;
 import org.pueblo98.stage1.voice.AndroidOnDeviceVoiceRecognizer;
@@ -81,10 +85,13 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private boolean speechSettingsOpen;
     private TextView placeTitle, placeDescription, heading, explanation, outcome, provisional;
     private TextView requestLabel, sizeSample;
-    private LinearLayout taskSurface, actions, composer;
+    private TextView capabilityStatus;
+    private LinearLayout taskSurface, actions, composer, conversationContent, capabilityCenter, capabilityRows;
     private ScrollView scroll;
     private EditText editor;
-    private Button talk, type, use, escape, textSettings, home, kitchen;
+    private Button talk, type, use, escape, textSettings, home, kitchen, setup;
+    private Button tryVoice, trySpokenAnswer, stopSample, capabilitySound;
+    private boolean capabilityCenterOpen;
 
     @Override protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -118,25 +125,22 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         placeTitle = text("Home", 28);
         placeTitle.setAccessibilityHeading(true);
         root.addView(placeTitle, wrap());
-        LinearLayout content = column();
-        content.setPadding(dp(16), dp(12), dp(16), dp(16));
+        conversationContent = column();
+        conversationContent.setPadding(dp(16), dp(12), dp(16), dp(16));
         placeDescription = text("", 20);
-        content.addView(placeDescription, wrap());
+        conversationContent.addView(placeDescription, wrap());
         home = button("Home", () -> switchPlace("Home"));
         kitchen = button("Kitchen — fictional room", () -> switchPlace("Kitchen"));
-        content.addView(home, wrap());
-        content.addView(kitchen, wrap());
-        textSettings = button("Granny text size", () -> {
-            rememberOrigin("text-size");
-            replaceInput("make text larger", false);
-            conversation.submit();
-            render();
-        });
-        content.addView(textSettings, wrap());
+        conversationContent.addView(home, wrap());
+        conversationContent.addView(kitchen, wrap());
+        setup = button("Setup and capabilities", this::openCapabilityCenter);
+        conversationContent.addView(setup, wrap());
+        textSettings = button("Granny text size", this::openTextSettings);
+        conversationContent.addView(textSettings, wrap());
         TextView boundary = text("Native integration fixture: no external app control or message sending. Screen explanation is unavailable.", 18);
-        content.addView(boundary, spaced());
+        conversationContent.addView(boundary, spaced());
         View space = new View(this);
-        content.addView(space, new LinearLayout.LayoutParams(-1, 0, 1));
+        conversationContent.addView(space, new LinearLayout.LayoutParams(-1, 0, 1));
 
         taskSurface = column();
         taskSurface.setPadding(dp(16), dp(16), dp(16), dp(16));
@@ -158,7 +162,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         taskSurface.addView(provisional, spaced());
         taskSurface.addView(sizeSample, spaced());
         taskSurface.addView(actions, spaced());
-        content.addView(taskSurface, spaced());
+        conversationContent.addView(taskSurface, spaced());
 
         composer = column();
         composer.setPadding(dp(16), dp(12), dp(16), dp(12));
@@ -197,11 +201,15 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         composer.addView(talk, wrap());
         composer.addView(type, wrap());
         composer.addView(use, wrap());
-        content.addView(composer, spaced());
-        content.addView(buildSpeechControls(), spaced());
+        conversationContent.addView(composer, spaced());
+        conversationContent.addView(buildSpeechControls(), spaced());
+        capabilityCenter = buildCapabilityCenter();
+        LinearLayout screenStack = column();
+        screenStack.addView(conversationContent, wrap());
+        screenStack.addView(capabilityCenter, wrap());
         scroll = new ScrollView(this);
         scroll.setFillViewport(true);
-        scroll.addView(content);
+        scroll.addView(screenStack);
         root.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
         escape = button("Cancel", () -> stopEverything(conversation.snapshot().surface == Surface.LISTENING ? "Stopped." : "Cancelled."));
         root.addView(escape, wrap());
@@ -212,6 +220,99 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
             return WindowInsets.CONSUMED;
         });
         return root;
+    }
+
+    private void openTextSettings() {
+        capabilityCenterOpen = false;
+        rememberOrigin("text-size");
+        replaceInput("make text larger", false);
+        conversation.submit();
+        render();
+    }
+
+    private void openCapabilityCenter() {
+        if (conversation.snapshot().surface != Surface.IDLE) return;
+        stopSpokenOutput();
+        capabilityCenterOpen = true;
+        render();
+        scroll.post(() -> { scroll.scrollTo(0, 0); capabilityStatus.requestFocus(); });
+    }
+
+    private void closeCapabilityCenter() {
+        stopSpokenOutput();
+        capabilityCenterOpen = false;
+        render();
+        scroll.post(() -> { scroll.scrollTo(0, 0); setup.requestFocus(); });
+    }
+
+    private LinearLayout buildCapabilityCenter() {
+        LinearLayout center = column();
+        center.setPadding(dp(16), dp(12), dp(16), dp(24));
+        capabilityStatus = text(
+                "Type works immediately. Voice and spoken answers are optional and checked on this tablet.", 20);
+        capabilityStatus.setFocusable(true);
+        capabilityStatus.setFocusableInTouchMode(true);
+        center.addView(capabilityStatus, wrap());
+        capabilityRows = column();
+        center.addView(capabilityRows, spaced());
+        tryVoice = button("Try voice", () -> {
+            capabilityCenterOpen = false;
+            render();
+            startTalk();
+        });
+        trySpokenAnswer = button("Try spoken answer", () -> { speechBridge.sample(); render(); });
+        stopSample = button("Stop spoken sample", () -> { stopSpokenOutput(); render(); });
+        capabilitySound = button("Sound off", () -> {
+            speechBridge.sound(!speechSettings.snapshot().soundEnabled);
+            render();
+        });
+        center.addView(tryVoice, spaced());
+        center.addView(trySpokenAnswer, wrap());
+        center.addView(stopSample, wrap());
+        center.addView(capabilitySound, wrap());
+        center.addView(button("Change Granny text size", this::openTextSettings), wrap());
+        center.addView(button("Open speech speed controls", () -> {
+            capabilityCenterOpen = false;
+            speechSettingsOpen = true;
+            render();
+            scroll.post(() -> scroll.fullScroll(View.FOCUS_DOWN));
+        }), wrap());
+        center.addView(button("Open Android app settings", this::openAppSettings), wrap());
+        center.addView(button("Back to conversation", this::closeCapabilityCenter), spaced());
+        return center;
+    }
+
+    private void openAppSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", getPackageName(), null));
+        startActivity(intent);
+    }
+
+    private void renderCapabilityCenter() {
+        CapabilityCenterModel model = CapabilityCenterModel.from(new CapabilityCenterModel.Input(
+                checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED,
+                recognizer.isAvailable(),
+                speechAdapter.availability() == SpeechOutputAdapter.Availability.AVAILABLE,
+                speechSettings.snapshot().soundEnabled,
+                textScale.snapshot().current.label(),
+                speechSettings.snapshot().currentRate.label()));
+        for (int i = 0; i < capabilityRows.getChildCount(); i++) {
+            View child = capabilityRows.getChildAt(i);
+            if (child instanceof TextView) textSizes.remove((TextView) child);
+        }
+        capabilityRows.removeAllViews();
+        for (CapabilityCenterModel.Row row : model.rows) {
+            TextView item = text(row.label + " — " + row.status + "\n" + row.detail, 20);
+            item.setPadding(dp(12), dp(12), dp(12), dp(12));
+            item.setBackground(surfaceBackground(12));
+            capabilityRows.addView(item, spaced());
+        }
+        capabilityStatus.setText("Type works immediately. Voice and spoken answers are optional.\n\n"
+                + speech.snapshot().message + " " + speechSettings.snapshot().message);
+        tryVoice.setEnabled(model.canTryVoice);
+        trySpokenAnswer.setEnabled(model.canTrySpokenAnswer && !speech.isActive());
+        stopSample.setVisibility(speech.isActive() ? View.VISIBLE : View.GONE);
+        capabilitySound.setText(speechSettings.snapshot().soundEnabled ? "Sound off" : "Sound on");
     }
 
     private void rememberOrigin(String focus) {
@@ -465,7 +566,9 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         ConversationSessionCoordinator.Snapshot state = conversation.snapshot();
         ConversationSurfaceModel model = ConversationSurfaceModel.forSurface(state.surface);
         rendering = true;
-        placeTitle.setText(state.place);
+        placeTitle.setText(capabilityCenterOpen ? "Setup and capabilities" : state.place);
+        conversationContent.setVisibility(capabilityCenterOpen ? View.GONE : View.VISIBLE);
+        capabilityCenter.setVisibility(capabilityCenterOpen ? View.VISIBLE : View.GONE);
         placeDescription.setText("Kitchen".equals(state.place)
                 ? "Kitchen\nA fictional room for this integration. Granny remains the same assistant."
                 : "Home\nYour conversation starts here. Rooms are optional.");
@@ -515,6 +618,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         use.setVisibility(state.surface == Surface.TRANSCRIPT ? View.VISIBLE : View.GONE);
         use.setEnabled(!state.editableRequest.isBlank());
         home.setEnabled(!busy); kitchen.setEnabled(!busy); textSettings.setEnabled(!busy);
+        setup.setEnabled(state.surface == Surface.IDLE);
         escape.setVisibility(state.surface == Surface.IDLE ? View.GONE : View.VISIBLE);
         escape.setText(state.surface == Surface.ACTIVE || state.surface == Surface.LISTENING ? "■ Stop" : "Cancel");
         escape.setTextColor(state.surface == Surface.ACTIVE || state.surface == Surface.LISTENING ? 0xff962f43 : BLUE);
@@ -542,6 +646,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
             actions.addView(control, wrap());
         }
         renderSpeech(state);
+        renderCapabilityCenter();
         rendering = false;
         if (state.surface != renderedSurface) {
             renderedSurface = state.surface;
@@ -662,7 +767,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         super.onDestroy();
     }
     private void back() {
-        if (conversation.snapshot().surface == Surface.IDLE) finish();
+        if (capabilityCenterOpen) closeCapabilityCenter();
+        else if (conversation.snapshot().surface == Surface.IDLE) finish();
         else if (conversation.snapshot().surface == Surface.KNOWN || conversation.snapshot().surface == Surface.UNKNOWN) {
             conversation.dismissResult(); render(); restoreOrigin();
         } else stopEverything("Cancelled.");
