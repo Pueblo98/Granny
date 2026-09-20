@@ -29,6 +29,15 @@ request and remain a later bounded batch. The next step is Simon's review of
 which modules can proceed unchanged and which should be simplified while
 preserving source, state, consequence and recovery language.
 
+Simon subsequently authorized the active frontend session to implement all ten
+references through the bounded
+[core outcome-module implementation metaprompt](../02-design/mockups/2026-09-20-core-outcome-modules/iteration-1/CORE-OUTCOME-MODULES-IMPLEMENTATION-METAPROMPT.md).
+The handoff treats them as five reusable inline module families over the
+existing Home/Room conversation, specifies deterministic fictional fixtures,
+state transitions, responsive/accessibility checks and full prototype
+regression coverage, and stops before navigation/supporting surfaces, real
+services or Android work.
+
 ## T-120 native on-device voice decision and implementation — 2026-09-20
 
 Simon accepted [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md):
