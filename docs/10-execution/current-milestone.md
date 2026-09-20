@@ -34,6 +34,31 @@ output, engine egress/offline behavior, language packs, audio focus, Stop
 latency, rate fidelity and TalkBack interaction remain unrun under
 EVAL-007/009 and RES-06. No gate passes from this implementation.
 
+## Core outcome modules visual review — 2026-09-20
+
+The proposed [core outcome modules iteration 1](../02-design/mockups/2026-09-20-core-outcome-modules/iteration-1/README.md)
+applies the Harbour Blue conversation shell to Photos, screen explanation,
+message drafting, media and reading assistance. Ten fictional-data frames pair
+each useful state with a no-result, guidance, prepared-handoff, unavailable or
+restore state. Each outcome remains one inline contextual module above the
+stable Round composer; none is a separate mini-app dashboard.
+
+This is a visual-review checkpoint only. It does not implement the modules,
+prove external retrieval or action, accept raster geometry, or change product
+contracts. Navigation and supporting surfaces were not specified in the
+request and remain a later bounded batch. The next step is Simon's review of
+which modules can proceed unchanged and which should be simplified while
+preserving source, state, consequence and recovery language.
+
+Simon subsequently authorized the active frontend session to implement all ten
+references through the bounded
+[core outcome-module implementation metaprompt](../02-design/mockups/2026-09-20-core-outcome-modules/iteration-1/CORE-OUTCOME-MODULES-IMPLEMENTATION-METAPROMPT.md).
+The handoff treats them as five reusable inline module families over the
+existing Home/Room conversation, specifies deterministic fictional fixtures,
+state transitions, responsive/accessibility checks and full prototype
+regression coverage, and stops before navigation/supporting surfaces, real
+services or Android work.
+
 ## T-120 native on-device voice decision and implementation — 2026-09-20
 
 Simon accepted [ADR-0011](../09-decisions/ADR-0011-explicit-activation-and-access.md):
@@ -59,6 +84,30 @@ EVAL-005/007/009/012; no gate passes from the decision or scaffold.
 The task branch starts from the latest committed Explicit Scroll Row Home and
 merges current `origin/main`. The owner's later uncommitted Context Rooms work
 remains untouched and is not claimed as part of T-120.
+
+## Rooms system visual review — 2026-09-20
+
+The proposed [Rooms system iteration 1](../02-design/mockups/2026-09-20-rooms-system/iteration-1/README.md)
+now covers 17 missing library and lifecycle states: full library, search, All
+items/Unfiled, create/edit/organize with Undo, archive/restore, separate room and
+underlying-data deletion, cross-room disclosure, sensitive-source denial, and
+empty/loading/offline/missing-art fallbacks. It preserves Harbour Blue, open
+room portraits, direct browse rows and the stable conversation shell.
+
+This is the visual-review checkpoint Simon requested. No frame is accepted by
+generation alone, and canonical PRD/design-system propagation waits for his
+feedback. The next bounded step is to select, simplify or combine these
+structures without turning Rooms into a busier dashboard, then record only the
+accepted behavior and replicable UI rules in their canonical owners.
+
+Simon subsequently authorized the active frontend session to implement the
+complete fictional Rooms slice from a bounded
+[implementation metaprompt](../02-design/mockups/2026-09-20-rooms-system/iteration-1/ROOMS-SYSTEM-IMPLEMENTATION-METAPROMPT.md).
+The handoff requires reusable in-memory Room/item/membership state, direct
+browse/search, reversible organization, separated deletion scopes, disclosed or
+denied cross-room sources, degraded fixtures and regression/accessibility
+coverage. It does not authorize persistent personal data, backend retrieval,
+Android work or automatic main integration.
 
 ## Shared conversation state pack — 2026-09-20
 

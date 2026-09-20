@@ -1,0 +1,32 @@
+{
+  "iteration": "rooms-system-iteration-1",
+  "status": "proposed",
+  "generated_on": "2026-09-20",
+  "visual_system": "Harbour Blue",
+  "prompt_log": "prompts.md",
+  "selected_images": [
+    {"id":"rooms-library","path":"01-full-rooms-library.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"search-all-rooms","path":"02-search-all-rooms.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"all-items-unfiled","path":"03-all-items-and-unfiled.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"create-room","path":"04-create-room.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"rename-purpose","path":"05-rename-and-purpose.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"organize-item","path":"06-organize-item.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"move-undo","path":"07-move-item-undo.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"archive-room","path":"08-archive-room.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"restore-room","path":"09-restore-room.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"delete-room-only","path":"10-delete-room-only.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"delete-underlying-items","path":"11-delete-underlying-items.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"cross-room-source","path":"12-cross-room-source.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review-after-targeted-retry"},
+    {"id":"sensitive-source-denied","path":"13-sensitive-source-denied.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"empty-library","path":"14-empty-library.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"loading","path":"15-loading.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"offline","path":"16-offline.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"},
+    {"id":"missing-artwork","path":"17-missing-artwork.png","width":1586,"height":992,"alpha":false,"review":"selected-for-review"}
+  ],
+  "derived_images": [
+    {"id":"comparison","path":"comparison.png","width":1696,"height":1630,"alpha":false,"review":"derived-review-sheet"}
+  ],
+  "rejected_images": [
+    {"id":"cross-room-source-trips-scenery","path":"rejected/12-cross-room-source-trips-scenery-rejected.png","width":1586,"height":992,"alpha":false,"reason":"Trips scenery visually displaced the current Kitchen context"}
+  ]
+}
