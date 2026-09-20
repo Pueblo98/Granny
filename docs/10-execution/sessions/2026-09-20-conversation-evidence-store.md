@@ -16,6 +16,7 @@ session_state: review
 record_basis: contemporaneous
 agent: Codex
 branch: feature/conversation-evidence-store
+artifact_commit: fb3a7c89a0ee792080746dde29167bb9d3da0fea
 next_action: review the message-owned citation and Today flows at the loopback UI, then decide whether to accept ADR-0017 for this prototype boundary
 changed_paths:
   - .github/workflows/conversation-runtime.yml
@@ -82,6 +83,8 @@ This branch and dedicated worktree were created from that unmerged dependency:
 - branch `feature/conversation-evidence-store`;
 - worktree `/home/lgtw/Work/granny-worktrees/conversation-evidence-store`;
 - base `origin/feature/room-chat-openrouter` at `a55fc011b207484374d69855d98b765eb6e748fa`.
+- implementation commit `fb3a7c89a0ee792080746dde29167bb9d3da0fea`;
+  the later handoff-only commit refreshes this record and cockpit snapshot.
 
 ## Prior ownership and defect
 
