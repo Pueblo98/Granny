@@ -14,7 +14,7 @@ session_state: review
 record_basis: contemporaneous
 agent: Codex
 branch: feature/room-chat-openrouter
-artifact_commit: 75490c56b3188a2d3158a73d916af8ba16408d74
+artifact_commit: 6452b620bb2d36c9ef1cbd4a295cd380b26f483a
 next_action: Simon reloads the loopback UI, asks two sourced recipe questions, then opens both a prior and a fictional Today conversation
 changed_paths:
   - docs/01-product/traceability.md
