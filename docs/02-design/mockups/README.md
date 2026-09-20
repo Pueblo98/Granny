@@ -5,6 +5,7 @@ owner: Simon
 last_updated: 2026-09-20
 tags: [design, mockups]
 related:
+  - 2026-09-20-core-outcome-modules/iteration-1/README.md
   - 2026-09-20-rooms-system/iteration-1/README.md
   - 2026-09-20-shared-state-pack/iteration-1/README.md
   - 2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md
@@ -16,6 +17,13 @@ related:
 ---
 
 # Mockup gallery
+
+**Current core outcome-module review:** [iteration 1](2026-09-20-core-outcome-modules/iteration-1/README.md)
+places Photos, screen explanation, message drafting, media and reading
+assistance inside the existing Harbour Blue conversation rather than turning
+them into five mini-app dashboards. Ten fictional-data frames pair each module
+with a no-result, guidance, handoff, unavailable or restore state. Navigation
+and additional supporting surfaces remain outside this bounded checkpoint.
 
 **Current Rooms-system review:** [iteration 1](2026-09-20-rooms-system/iteration-1/README.md)
 extends the selected Harbour Blue shell through the full library, global search,
