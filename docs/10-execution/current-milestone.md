@@ -1,5 +1,5 @@
 ---
-title: "Current milestone — Context Rooms and the first native voice shell"
+title: "Current milestone — Context Rooms and native voice/readback shells"
 status: proposed
 owner: Simon
 last_updated: 2026-09-20
@@ -11,7 +11,28 @@ related:
   - ../01-product/prd.md
 ---
 
-# Current milestone — Context Rooms and the first native voice shell
+# Current milestone — Context Rooms and native voice/readback shells
+
+## T-121 explicit spoken readback and speech controls — 2026-09-20
+
+Simon authorized the first standalone spoken-output tablet slice. [T-121](backlog.md#t-121)
+is implemented for review on top of the published T-120/C5 Android shell. It
+adds explicit Read request aloud, Stop speaking, revision-bound Repeat, Sound
+off/on and four closed speech-rate choices with listen-before-Apply and
+one-step Restore. Nothing is read automatically. Talk/Type stops output, the
+global Stop interrupts it, editing invalidates the old utterance and late
+engine callbacks cannot revive stopped speech.
+
+The Android adapter accepts only an installed locale-compatible voice reporting
+that it does not require a network connection. There is no Internet permission,
+provider SDK, model, generated audio file or network fallback; the written path
+remains complete whenever speech is unavailable. Speech settings use private,
+versioned storage with compare-and-set and explicit readback. Host tests cover
+state, stale callbacks, exact revisions and persistence failure handling, while
+debug assembly and lint pass. No device or TTS engine was exercised, so audible
+output, engine egress/offline behavior, language packs, audio focus, Stop
+latency, rate fidelity and TalkBack interaction remain unrun under
+EVAL-007/009 and RES-06. No gate passes from this implementation.
 
 ## Core outcome modules visual review — 2026-09-20
 

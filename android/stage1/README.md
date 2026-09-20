@@ -1,25 +1,30 @@
 ---
-title: "T-120 native on-device voice shell"
+title: "T-120/T-121 native voice and spoken-readback shell"
 status: review
 owner: Simon
 last_updated: 2026-09-20
-tags: [android, voice, implementation]
+tags: [android, voice, speech, accessibility, implementation]
 related:
   - ../../docs/09-decisions/ADR-0011-explicit-activation-and-access.md
   - ../../docs/10-execution/backlog.md
   - ../../docs/10-execution/task-packets.md
 ---
 
-# T-120 native on-device voice shell
+# T-120/T-121 native voice and spoken-readback shell
 
-This is the first bounded own-app Android shell. It implements explicit
+This is the first bounded own-app Android shell. T-120 implements explicit
 tap-to-talk with Android's on-device `SpeechRecognizer`, a complete typed
 fallback, visible partial/final transcript states, Done listening, Stop,
 editable final text and conservative non-model cleanup.
 
+T-121 adds explicit Android `TextToSpeech` readback of the visible request,
+Stop speaking, revision-bound Repeat, persistent Sound off/on and four closed
+speech-rate choices with preview-before-Apply and one-step Restore. Written
+text remains visible and complete; the app never starts readback automatically.
+
 It is not a complete Granny app. It has no planner, external app adapter,
-message send, model, cloud speech, TTS voice selection, background capture,
-wake word, persistent transcript or analytics. Submitting a request only
+message send, model, cloud speech, downloadable TTS voice management, background
+capture, wake word, persistent transcript or analytics. Submitting a request only
 freezes and displays the exact local text revision.
 
 ## Boundary
@@ -35,6 +40,15 @@ freezes and displays the exact local text revision.
   on-device recognition service owns capture for the active foreground session.
 - Transcript state is process memory only. Backup and device transfer exclude
   every app data domain.
+- Spoken output accepts only an installed locale-compatible TTS voice whose
+  Android metadata reports no network requirement. Absence/failure keeps the
+  written route and does not fall back to a network voice.
+- Read/Repeat sends the exact selected text revision to the installed Android
+  TTS service for that utterance. The app creates no speech audio file and
+  clears its repeat copy on edit, lifecycle exit or output-route loss.
+- Speech rate and Sound are stored in private versioned preferences with
+  synchronous compare-and-set/readback. The manifest TTS service query is
+  package visibility metadata, not an additional permission.
 
 ## Host evidence — 2026-09-20
 
@@ -44,25 +58,31 @@ Use the already prepared JDK 17 / API 36 toolchain:
 ./gradlew --no-daemon clean testDebugUnitTest assembleDebug lintDebug
 ```
 
-The command above passes: 16 JUnit cases, debug assembly and lint with zero
+The latest command passes 55 cases across the combined voice, text-size and speech suites,
+debug assembly and lint with zero
 errors. Lint retains two deliberate version notices because this shell targets
 the selected Android 16/API 36 reference configuration while API 37 is present
 in the local SDK. `aapt2 dump permissions` reports only `RECORD_AUDIO`, and the
 debug runtime dependency report is empty.
 
-Host tests cover the pure generation/state, hypothesis-selection and cleanup
-contracts. They do not exercise a microphone, recognition service, Android
-permission UI, locale pack, acoustic condition, TalkBack or process lifecycle.
+Host tests cover input/output generation state, stale callback and revision
+rejection, hypothesis selection, cleanup, and settings failure/readback
+contracts. They do not exercise a microphone, recognizer/TTS service, Android
+permission UI, installed voice/locale pack, acoustic condition, audible
+output, audio focus, TalkBack or process lifecycle.
 
 ## Device evidence still required
 
-No Android device was attached at handoff. The exact T-120 packet defines the
-later Samsung matrix. Use synthetic phrases
+No Android device was attached at handoff. The exact T-120/T-121 packets define
+the later Samsung input/output matrix. Use synthetic phrases and text
 and retain no raw audio or personal transcript. Record exact app SHA, device,
 OS/API, recognizer component, locale/model status, permission path, offline
 state, partial/final result, correction effort, Stop/lifecycle result and
-timings. A successful install or one correct transcript does not pass RES-06,
-EVAL-005/007/009/012 or a release gate.
+timings. For output also record TTS engine/voice, its network-required metadata,
+airplane-mode behavior, exact spoken fixture, Stop latency, each rate, audio
+focus and TalkBack interaction. A successful install, one correct transcript or
+one audible utterance does not pass RES-06, EVAL-005/007/009/012 or a release
+gate.
 
 ## C5 Granny-local text size
 
