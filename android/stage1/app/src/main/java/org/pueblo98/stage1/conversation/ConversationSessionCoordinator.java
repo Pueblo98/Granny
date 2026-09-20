@@ -8,9 +8,12 @@ import org.pueblo98.stage1.readability.TextScaleStore;
 
 /** Main-thread process-local authority. Input/interpretation is never an execution permit. */
 public final class ConversationSessionCoordinator {
-    public enum Surface { IDLE, LISTENING, TRANSCRIPT, CLARIFICATION, PREVIEW, ACTIVE, KNOWN, UNKNOWN }
+    public enum Surface {
+        IDLE, LISTENING, TRANSCRIPT, CLARIFICATION, PREVIEW, ACTIVE, KNOWN, UNKNOWN,
+        DRAFT_RECIPIENT, DRAFT_PREVIEW, DRAFT_READY
+    }
     public enum Provenance { TYPED, PARTIAL_VOICE, FINAL_VOICE, EDITED_TRANSCRIPT, DIRECT_CONTROL }
-    public enum Capability { TEXT_SCALE, SCREEN_EXPLANATION }
+    public enum Capability { TEXT_SCALE, LOCAL_DRAFT, SCREEN_EXPLANATION }
     public enum BuildMode { SYNTHETIC_LAB, CANDIDATE }
     public enum Result { ACCEPTED, STALE, DENIED, QUEUED, DISPATCHED, KNOWN, UNKNOWN }
 
@@ -25,12 +28,24 @@ public final class ConversationSessionCoordinator {
     public static final class FixtureInterpreter implements InterpreterPort {
         public Proposal propose(String exact, long generation, long revision) {
             String request = exact.trim();
-            boolean supported = request.equalsIgnoreCase("make text larger")
+            boolean textScale = request.equalsIgnoreCase("make text larger")
                     || request.equalsIgnoreCase("make granny text larger")
                     || request.equalsIgnoreCase("make this bigger");
-            return new Proposal(supported ? Capability.TEXT_SCALE : null);
+            boolean localDraft = request.replace('\'', '’')
+                    .equalsIgnoreCase("Tell David I’ll call after dinner.");
+            return new Proposal(textScale ? Capability.TEXT_SCALE
+                    : localDraft ? Capability.LOCAL_DRAFT : null);
         }
     }
+    public static final class DraftRecipient {
+        public final String endpointId, label, channel;
+        public DraftRecipient(String endpointId, String label, String channel) {
+            this.endpointId = endpointId; this.label = label; this.channel = channel;
+        }
+    }
+    private static final List<DraftRecipient> DRAFT_RECIPIENTS = List.of(
+            new DraftRecipient("person-a", "David — brother", "Fixture messages"),
+            new DraftRecipient("person-b", "David — neighbour", "Fixture messages"));
     public static final class CapabilityMetadata {
         public final Capability capability;
         public final boolean enabled;
@@ -40,10 +55,15 @@ public final class ConversationSessionCoordinator {
         private CapabilityMetadata(Capability capability, boolean enabled) {
             this.capability = capability; this.enabled = enabled;
             permissions = List.of();
-            schema = capability == Capability.TEXT_SCALE ? "closed TextScale / Restore; exact prior version" : "unavailable";
-            cancellation = "Cancel before entry; unknown after entry until independent verification";
-            outcomeOracle = capability == Capability.TEXT_SCALE ? "private preference readback" : "unadmitted";
-            admittedModes = capability == Capability.TEXT_SCALE ? List.of(BuildMode.SYNTHETIC_LAB) : List.of();
+            schema = capability == Capability.TEXT_SCALE ? "closed TextScale / Restore; exact prior version"
+                    : capability == Capability.LOCAL_DRAFT ? "two fictional endpoints; exact in-memory body; no dispatch" : "unavailable";
+            cancellation = capability == Capability.LOCAL_DRAFT
+                    ? "Edit, Cancel, Stop or background clears process-only state; no external entry"
+                    : "Cancel before entry; unknown after entry until independent verification";
+            outcomeOracle = capability == Capability.TEXT_SCALE ? "private preference readback"
+                    : capability == Capability.LOCAL_DRAFT ? "coordinator snapshot only; no external effect" : "unadmitted";
+            admittedModes = capability == Capability.TEXT_SCALE || capability == Capability.LOCAL_DRAFT
+                    ? List.of(BuildMode.SYNTHETIC_LAB) : List.of();
         }
     }
     public static final class ReturnAnchor {
@@ -56,6 +76,8 @@ public final class ConversationSessionCoordinator {
     }
     public static final class Snapshot {
         public final String place, editableRequest, heardSoFar, consequence, message;
+        public final String draftBody, draftRecipientId, draftRecipientLabel, draftChannel;
+        public final List<DraftRecipient> draftRecipients;
         public final ReturnAnchor returnAnchor;
         public final Surface surface;
         public final long generation, revision;
@@ -66,6 +88,11 @@ public final class ConversationSessionCoordinator {
             generation = c.generation; revision = c.revision; provenance = c.provenance;
             editableRequest = c.editable; heardSoFar = c.partial; consequence = c.consequence;
             message = c.message; permitQueued = c.permit != null; choicesAvailable = c.choicesAvailable;
+            draftBody = c.draftBody;
+            draftRecipientId = c.draftRecipient == null ? "" : c.draftRecipient.endpointId;
+            draftRecipientLabel = c.draftRecipient == null ? "" : c.draftRecipient.label;
+            draftChannel = c.draftRecipient == null ? "" : c.draftRecipient.channel;
+            draftRecipients = c.surface == Surface.DRAFT_RECIPIENT ? DRAFT_RECIPIENTS : List.of();
         }
     }
     private final CapabilityPorts.CapabilityAdapter adapter;
@@ -75,6 +102,8 @@ public final class ConversationSessionCoordinator {
     private final BuildMode mode;
     private final Thread owner = Thread.currentThread();
     private String place = "Home", editable = "", partial = "", consequence = "";
+    private String draftBody = "";
+    private DraftRecipient draftRecipient;
     private String message = "Type or talk to make a request.";
     private ReturnAnchor anchor = new ReturnAnchor("Home", "composer", 0);
     private Surface surface = Surface.IDLE;
@@ -167,11 +196,48 @@ public final class ConversationSessionCoordinator {
         proposalPending = false;
         if (proposal == null || !isEnabled(proposal.capability)) {
             choicesAvailable = false;
-            message = "That request is unavailable in this fixture. You can edit it or open Granny text size.";
+            message = "That request is unavailable in this fixture. You can edit it or use an available local control.";
             return Result.DENIED;
+        }
+        if (proposal.capability == Capability.LOCAL_DRAFT) {
+            draftBody = "I’ll call after dinner.";
+            surface = Surface.DRAFT_RECIPIENT;
+            choicesAvailable = true;
+            message = "Two fictional Davids match. Choose one before the local draft is prepared.";
+            return Result.ACCEPTED;
         }
         choicesAvailable = true; message = "Choose Standard, Larger, Larger still, or Largest.";
         return Result.ACCEPTED;
+    }
+    public Result chooseDraftRecipient(String endpointId) { checkThread();
+        if (surface != Surface.DRAFT_RECIPIENT || !choicesAvailable || !isEnabled(Capability.LOCAL_DRAFT)) {
+            return Result.DENIED;
+        }
+        DraftRecipient chosen = null;
+        for (DraftRecipient recipient : DRAFT_RECIPIENTS) {
+            if (recipient.endpointId.equals(endpointId)) chosen = recipient;
+        }
+        if (chosen == null) return Result.DENIED;
+        String body = draftBody;
+        invalidate();
+        revision++;
+        draftBody = body;
+        draftRecipient = chosen;
+        consequence = "Fictional local draft — not sent\nTo: " + chosen.label
+                + " (" + chosen.endpointId + ")\nChannel: " + chosen.channel + "\nMessage: " + body;
+        surface = Surface.DRAFT_PREVIEW;
+        message = "Check the exact recipient, channel and words. Nothing will leave Granny.";
+        return Result.ACCEPTED;
+    }
+    public Result keepLocalDraft() { checkThread();
+        if (surface != Surface.DRAFT_PREVIEW || draftRecipient == null || draftBody.isEmpty()
+                || !isEnabled(Capability.LOCAL_DRAFT)) return Result.DENIED;
+        generation++;
+        choicesAvailable = false;
+        proposalPending = false;
+        surface = Surface.DRAFT_READY;
+        message = "Draft ready here — not sent. It will be cleared when you leave this session.";
+        return Result.KNOWN;
     }
     public Result chooseTextScale(TextScale scale) { checkThread(); return prepare(scale, false); }
     public Result chooseRestore() { checkThread(); return prepare(null, true); }
@@ -246,7 +312,7 @@ public final class ConversationSessionCoordinator {
         return Result.ACCEPTED;
     }
     public Result dismissResult() { checkThread();
-        if (surface != Surface.KNOWN && surface != Surface.UNKNOWN) return Result.DENIED;
+        if (surface != Surface.KNOWN && surface != Surface.UNKNOWN && surface != Surface.DRAFT_READY) return Result.DENIED;
         invalidate(); surface = Surface.IDLE; editable = ""; message = "Type or talk to make a request.";
         return Result.ACCEPTED;
     }
@@ -261,14 +327,17 @@ public final class ConversationSessionCoordinator {
                 : "The earlier result remains unknown. No change or retry was requested.";
         return Result.UNKNOWN;
     }
-    public boolean isEnabled(Capability capability) { checkThread(); return capability == Capability.TEXT_SCALE && mode == BuildMode.SYNTHETIC_LAB; }
+    public boolean isEnabled(Capability capability) { checkThread();
+        return (capability == Capability.TEXT_SCALE || capability == Capability.LOCAL_DRAFT)
+                && mode == BuildMode.SYNTHETIC_LAB;
+    }
     public CapabilityMetadata metadata(Capability capability) { checkThread(); return new CapabilityMetadata(capability, isEnabled(capability)); }
     private void checkThread() {
         if (Thread.currentThread() != owner) throw new IllegalStateException("Conversation calls must use their creating thread");
     }
     private void invalidate() {
         generation++; permit = null; prepared = null; proposalPending = false; choicesAvailable = false;
-        partial = ""; consequence = ""; entered = false; safeCancel();
+        partial = ""; consequence = ""; entered = false; draftBody = ""; draftRecipient = null; safeCancel();
     }
     private void safeCancel() { try { adapter.cancel(); } catch (RuntimeException ignored) { /* Authority was already removed. */ } }
     private void runCleanup(Runnable extra) {

@@ -103,6 +103,60 @@ public final class ConversationSessionCoordinatorTest {
         assertEquals(ConversationSessionCoordinator.Surface.PREVIEW,c.snapshot().surface);
         assertTrue(c.metadata(ConversationSessionCoordinator.Capability.TEXT_SCALE).enabled);
     }
+    @Test public void localDraftClarifiesTwoFictionalDavidsAndPreservesExactBody() {
+        ConversationSessionCoordinator c=coordinator();
+        c.typed("Tell David I’ll call after dinner.");
+        assertEquals(ConversationSessionCoordinator.Result.ACCEPTED,c.submit());
+        assertEquals(ConversationSessionCoordinator.Surface.DRAFT_RECIPIENT,c.snapshot().surface);
+        assertEquals(2,c.snapshot().draftRecipients.size());
+        assertEquals("person-a",c.snapshot().draftRecipients.get(0).endpointId);
+        assertEquals("person-b",c.snapshot().draftRecipients.get(1).endpointId);
+        assertEquals(ConversationSessionCoordinator.Result.ACCEPTED,c.chooseDraftRecipient("person-b"));
+        assertEquals("David — neighbour",c.snapshot().draftRecipientLabel);
+        assertEquals("Fixture messages",c.snapshot().draftChannel);
+        assertEquals("I’ll call after dinner.",c.snapshot().draftBody);
+        assertTrue(c.snapshot().consequence.contains("not sent"));
+        assertTrue(c.snapshot().consequence.contains("person-b"));
+        assertFalse(c.snapshot().permitQueued);
+    }
+    @Test public void typedAndFinalVoiceUseSameLocalDraftFixture() {
+        ConversationSessionCoordinator typed=coordinator(); typed.typed("Tell David I'll call after dinner."); typed.submit();
+        ConversationSessionCoordinator voice=coordinator(); long g=voice.beginListening();
+        voice.finalVoice(g,"Tell David I’ll call after dinner."); voice.submit();
+        assertEquals(ConversationSessionCoordinator.Surface.DRAFT_RECIPIENT,typed.snapshot().surface);
+        assertEquals(typed.snapshot().draftRecipients.get(0).label,voice.snapshot().draftRecipients.get(0).label);
+    }
+    @Test public void localDraftReadyIsProcessOnlyAndNeverCreatesDispatchAuthority() {
+        ConversationSessionCoordinator c=coordinator(); c.typed("Tell David I’ll call after dinner."); c.submit();
+        c.chooseDraftRecipient("person-a");
+        assertEquals(ConversationSessionCoordinator.Result.KNOWN,c.keepLocalDraft());
+        assertEquals(ConversationSessionCoordinator.Surface.DRAFT_READY,c.snapshot().surface);
+        assertFalse(c.snapshot().permitQueued);
+        assertEquals(ConversationSessionCoordinator.Result.STALE,c.dispatchApproved());
+        c.clearForBackground(null);
+        assertEquals("",c.snapshot().draftBody);
+        assertEquals("",c.snapshot().draftRecipientId);
+        assertEquals("",c.snapshot().editableRequest);
+    }
+    @Test public void editingOrStopInvalidatesRecipientBinding() {
+        ConversationSessionCoordinator c=coordinator(); c.typed("Tell David I’ll call after dinner."); c.submit();
+        c.chooseDraftRecipient("person-a"); c.edit("Tell David I’ll call tomorrow.");
+        assertEquals(ConversationSessionCoordinator.Surface.TRANSCRIPT,c.snapshot().surface);
+        assertEquals("",c.snapshot().draftRecipientId);
+        assertEquals(ConversationSessionCoordinator.Result.DENIED,c.keepLocalDraft());
+        c.typed("Tell David I’ll call after dinner."); c.submit(); c.stop();
+        assertEquals("",c.snapshot().draftBody);
+    }
+    @Test public void candidateModeDeniesFictionalDraftCapability() {
+        FakeStore store=new FakeStore();
+        ConversationSessionCoordinator c=new ConversationSessionCoordinator(
+                new TextScaleController(store),store,ConversationSessionCoordinator.BuildMode.CANDIDATE);
+        c.typed("Tell David I’ll call after dinner.");
+        assertEquals(ConversationSessionCoordinator.Result.DENIED,c.submit());
+        assertEquals(ConversationSessionCoordinator.Surface.CLARIFICATION,c.snapshot().surface);
+        assertFalse(c.metadata(ConversationSessionCoordinator.Capability.LOCAL_DRAFT).enabled);
+        assertEquals(ConversationSessionCoordinator.Result.DENIED,c.chooseDraftRecipient("person-a"));
+    }
     private static ConversationSessionCoordinator coordinator() { FakeStore store = new FakeStore(); return new ConversationSessionCoordinator(new TextScaleController(store), store); }
     private static final class FakeStore implements TextScaleStore {
         StoredValue value; int writes; boolean readbackMismatch;

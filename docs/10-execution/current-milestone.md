@@ -49,8 +49,26 @@ approval. Host evidence covers 146 cases across 17 suites plus debug build,
 lint, manifest and empty runtime-dependency inspection. Tablet layout,
 TalkBack/keyboard, permission repair return, recognizer/TTS state, audible
 quality and independent egress remain unrun. T-122 does not admit a route or
-complete T-101. The next ordered work is the narrow T-101 C2 evidence packet,
-then a separate fictional local draft/clarification/exact-preview slice.
+complete T-101. The narrow T-101 C2 evidence packet is now merged; T-123 is the
+separate fictional local draft/clarification/exact-preview slice in progress.
+
+## T-123 fictional local message draft — 2026-09-20
+
+[T-123](backlog.md#t-123) adds one debug-only finite request to the native
+conversation coordinator. Typed and final spoken `Tell David I’ll call after
+dinner.` clarify between two opaque fictional David endpoints, then display the
+exact chosen endpoint, `Fixture messages` channel and body under `not sent`.
+Keeping the draft creates only a process-local ready state; edit, Stop,
+background, recreation, place change and Done clear it.
+
+There is no contacts lookup, messaging intent/app, account, provider, network,
+persistence, execution permit, handoff, send or delivery claim. Candidate mode
+denies the fixture. Host checks can establish only the deterministic local
+state contract. The clean host run passes 153 cases across 17 suites, debug
+assembly and lint; the runtime dependency graph is empty and the APK still
+declares only `RECORD_AUDIO`. Device/accessibility and external-message evidence remain
+unrun, T-105 remains incomplete and this slice does not count toward ADR-0009's
+external-workflow bar.
 
 ## Native voice continuity repair — 2026-09-20
 

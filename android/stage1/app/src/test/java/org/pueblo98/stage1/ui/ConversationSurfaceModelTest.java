@@ -51,4 +51,22 @@ public final class ConversationSurfaceModelTest {
         assertFalse(model.explanation.contains("sent"));
         assertTrue(model.actions.contains(Action.RESTORE));
     }
+    @Test public void draftClarificationAndPreviewStayExplicitlyLocal() {
+        ConversationSurfaceModel choice=ConversationSurfaceModel.forSurface(Surface.DRAFT_RECIPIENT);
+        assertTrue(choice.choices);
+        assertTrue(choice.explanation.contains("fictional"));
+        assertTrue(choice.explanation.contains("nothing is sent"));
+        ConversationSurfaceModel preview=ConversationSurfaceModel.forSurface(Surface.DRAFT_PREVIEW);
+        assertTrue(preview.explanation.contains("not sent"));
+        assertTrue(preview.explanation.contains("no messaging app"));
+        assertTrue(preview.actions.contains(Action.KEEP_DRAFT));
+        assertFalse(preview.actions.contains(Action.APPLY));
+    }
+    @Test public void readyDraftClaimsNeitherSendNorHandoff() {
+        ConversationSurfaceModel model=ConversationSurfaceModel.forSurface(Surface.DRAFT_READY);
+        assertTrue(model.explanation.contains("Not sent"));
+        assertTrue(model.explanation.contains("not handed off"));
+        assertFalse(model.actions.contains(Action.KEEP_DRAFT));
+        assertFalse(model.actions.contains(Action.STOP));
+    }
 }

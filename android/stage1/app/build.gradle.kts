@@ -10,8 +10,8 @@ android {
         applicationId = "org.pueblo98.stage1"
         minSdk = 31
         targetSdk = 36
-        versionCode = 3
-        versionName = "0.3-setup-capabilities"
+        versionCode = 4
+        versionName = "0.4-local-draft"
     }
 
     buildTypes {

@@ -89,7 +89,7 @@ an admitted external workflow or finish T-101.
 - **Bounded deliverable:** Start local synthetic draft and two Davids, edit and bind preview, then independently gated external draft handoff. Add send adapter only when admitted; independent ledger/second endpoint verifies once.
 - **Acceptance / evidence:** No wrong/duplicate/unconfirmed effect; handoff never labeled sent; expiry/touch/restart/outage variants pass; exact confirmation comprehension remains human evidence gap.
 - **Excluded / rollback:** No generic text injection, silent draft sync, real recipients, unknown-outcome resend or implied delivery. Keep capability disabled by default until gate passes; fake work remains separable/deletable. No implicit rollout.
-- **Status:** planned; no code, test result or assigned staffed team claimed.
+- **Status:** partial local fixture in review through [T-123](backlog.md#t-123): ambiguity and exact preview are implemented with fictional process-only data. External compose/handoff, send, route admission and independent external outcome evidence remain unimplemented.
 
 <a id="t-106"></a>
 ## T-106 — Prove requested media and dependency behavior slice
@@ -277,6 +277,17 @@ or cloud voice remains a separately scoped dependency/privacy/product decision.
 - **Acceptance:** Status refreshes after foreground return; unavailable/denied paths retain Type and written output; spoken test is explicit and contains only fixed synthetic text; opening Android settings requires a direct tap; unit tests cover status combinations and stale speech callbacks; build/lint/manifest/dependency/docs checks pass. Exact tablet/TalkBack behavior remains device evidence.
 - **Status:** review — the bounded native destination and fixed spoken sample are implemented on `feature/t122-setup-capability-center`. 146 host cases across 17 suites, debug assembly and lint pass; the debug runtime dependency graph remains empty and the APK still declares only `RECORD_AUDIO`. Exact device, TalkBack, large-text and repair-return evidence is unrun, and no external route is admitted.
 - **Excluded / rollback:** No forced onboarding, automatic permission prompt, settings mutation, voice/model download, network diagnosis, cloud voice, external-app action, persistent setup profile, analytics or gate promotion. Remove the destination/model without changing the conversation path.
+
+<a id="t-123"></a>
+## T-123 — Implement fictional local message draft
+
+- **Scope / authority:** Simon explicitly requested the local draft after T-122 on 2026-09-20 while media-route evidence continues separately. Implement the local clarification/exact-preview subset only.
+- **Trace / owner:** PRD-FR-007/008/009/SAF-002; UC-006/015/016; J-003; SCR-007; CMP-003; POL-02; EVAL-003/010.
+- **Dependencies / entry:** T-122 native branch plus the existing shared coordinator; [T-123 packet](task-packets.md#t-123-packet). No external route or T-101 admission is needed for a synthetic in-memory fixture.
+- **Deliverables:** One finite typed/final-voice request, two same-name fictional David endpoints, explicit choice, exact recipient/channel/body preview and process-local `not sent` ready state.
+- **Acceptance:** Host tests cover ambiguity, exact binding, voice/typed parity, edit/Stop/background invalidation and candidate denial; no permit, external dispatch, persistence, dependency, network or new permission; build/lint/docs checks pass.
+- **Status:** review on `feature/t123-local-draft` — 153 host cases across 17 suites, debug assembly and lint pass; the debug runtime graph remains empty and the APK declares only `RECORD_AUDIO`. Device/accessibility behavior and any external message route remain unrun.
+- **Excluded / rollback:** No contact lookup, external compose/handoff, send/delivery, real identity, account, package, provider, network, durable draft, audit/history or claim toward the two-external-workflow bar. Remove the finite fixture path without changing T-122 or C5.
 
 ## Session handoff
 

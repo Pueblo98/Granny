@@ -413,6 +413,43 @@ requires unit tests, assemble, lint, permission/dependency/data inspection,
 documentation validation and exact unrun gaps. It does not complete T-101 or
 admit an external route.
 
+<a id="t-123-packet"></a>
+## T-123 packet — Fictional local message draft
+
+**Requested mode and outcome:** Implement only the local portion of T-105 in
+the integrated native shell. The exact fixture request `Tell David I’ll call
+after dinner.` must ask which of two same-name fictional endpoints is intended,
+then show the chosen fixture endpoint/channel and exact body before keeping an
+in-memory draft marked not sent.
+
+**Boundary:** Debug/synthetic-lab build only. No contacts permission, resolver,
+external intent, messaging package, account, provider, network, send, delivery,
+durable draft or action permit. Candidate mode denies the fixture. Editing,
+Stop, background, recreation or place change clears recipient binding and any
+locally kept draft.
+
+**Fixture:** `person-a` / `David — brother` and `person-b` / `David — neighbour`,
+both on `Fixture messages`; body `I’ll call after dinner.`. Labels are fictional
+and do not infer a real relationship or contact identity.
+
+**State and copy:** Typed and final voice revisions share the same finite
+interpreter. Clarification names both David choices and offers edit/cancel.
+Preview shows exact label, opaque fixture endpoint, channel and body plus
+`Fictional local draft — not sent`. `Keep this draft here` creates only a
+process-local ready state; Done/Stop/background destroys it. No screen may say
+sent, delivered or handed off.
+
+**Host oracle:** Pure coordinator tests cover both same-name endpoints, exact
+body preservation, typed/voice parity, edit/Stop/background invalidation,
+candidate-mode denial and absence of permit/dispatch. Surface tests cover the
+written not-sent boundary and no Apply/Send action. Build/lint, manifest,
+dependency and documentation checks remain required.
+
+**Completion limit:** Passing host tests establishes only deterministic local
+fixture behavior. It does not complete T-105, prove external compose/send,
+resolve an actual contact, pass EVAL-003/010 or count toward ADR-0009's external
+workflow bar.
+
 ## Restart prompts
 
 These are scoped examples, not standing authorization:

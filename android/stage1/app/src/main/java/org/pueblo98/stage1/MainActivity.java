@@ -548,6 +548,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
                     render();
                 });
                 return;
+            case KEEP_DRAFT:
+                conversation.keepLocalDraft(); break;
             case RESTORE:
                 conversation.dismissResult();
                 conversation.chooseRestore(); break;
@@ -626,14 +628,26 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         for (int i = 0; i < actions.getChildCount(); i++) textSizes.remove(actions.getChildAt(i));
         actions.removeAllViews();
         if (model.choices && state.choicesAvailable) {
-            for (TextScale choice : TextScale.values()) {
-                Button pick = button(choice.label(), () -> {
-                    if (conversation.snapshot().generation != state.generation
-                            || conversation.snapshot().revision != state.revision) return;
-                    conversation.chooseTextScale(choice); render();
-                });
-                pick.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20 * size.current.multiplier());
-                actions.addView(pick, wrap());
+            if (state.surface == Surface.DRAFT_RECIPIENT) {
+                for (ConversationSessionCoordinator.DraftRecipient recipient : state.draftRecipients) {
+                    Button pick = button(recipient.label + "\n" + recipient.channel, () -> {
+                        ConversationSessionCoordinator.Snapshot latest = conversation.snapshot();
+                        if (latest.generation != state.generation || latest.revision != state.revision) return;
+                        conversation.chooseDraftRecipient(recipient.endpointId); render();
+                    });
+                    pick.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20 * size.current.multiplier());
+                    actions.addView(pick, wrap());
+                }
+            } else {
+                for (TextScale choice : TextScale.values()) {
+                    Button pick = button(choice.label(), () -> {
+                        if (conversation.snapshot().generation != state.generation
+                                || conversation.snapshot().revision != state.revision) return;
+                        conversation.chooseTextScale(choice); render();
+                    });
+                    pick.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20 * size.current.multiplier());
+                    actions.addView(pick, wrap());
+                }
             }
         }
         for (Action action : model.actions) {

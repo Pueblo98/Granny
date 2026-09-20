@@ -9,7 +9,7 @@ public final class ConversationSurfaceModel {
         USE_REQUEST("Use this request"), LISTEN_AGAIN("Add more"),
         DONE_LISTENING("Done listening"), TYPE("Type instead"), CANCEL("Cancel"),
         EDIT("Edit request"), NONE("None of these"), APPLY("Apply this text size"),
-        CHANGE("Change it"), REPEAT("Repeat"), STOP("■ Stop"),
+        CHANGE("Change it"), KEEP_DRAFT("Keep this draft here"), REPEAT("Repeat"), STOP("■ Stop"),
         RESTORE("Restore previous size"), REVIEW("Review status"), DONE("Done");
         public final String label;
         Action(String label) { this.label = label; }
@@ -63,9 +63,21 @@ public final class ConversationSurfaceModel {
                 return new ConversationSurfaceModel("I can’t confirm the text size change",
                         "Unknown outcome. Known: a local change was requested. Unknown: whether the intended value was saved. Granny will not retry automatically. Next step: review the current status.",
                         false, false, Action.REVIEW, Action.DONE);
+            case DRAFT_RECIPIENT:
+                return new ConversationSurfaceModel("Which David?",
+                        "These are fictional fixture contacts. Choose the intended endpoint; nothing is sent or handed to another app.",
+                        true, false, Action.EDIT, Action.CANCEL);
+            case DRAFT_PREVIEW:
+                return new ConversationSurfaceModel("Check this local draft",
+                        "Fictional local draft — not sent. Keeping it stores it only in this open session; no messaging app is opened.",
+                        false, false, Action.KEEP_DRAFT, Action.CHANGE, Action.REPEAT, Action.CANCEL);
+            case DRAFT_READY:
+                return new ConversationSurfaceModel("Local draft ready",
+                        "Not sent and not handed off. This fictional draft exists only in the current session and clears when you leave.",
+                        false, false, Action.CHANGE, Action.REPEAT, Action.DONE);
             default:
                 return new ConversationSurfaceModel("How can I help?",
-                        "Try “make text larger” or “make this bigger”. This bounded fixture understands Granny text size only.",
+                        "Try “make text larger” or “Tell David I’ll call after dinner.” This bounded fixture uses local fictional data only.",
                         false, false);
         }
     }

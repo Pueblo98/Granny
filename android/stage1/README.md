@@ -25,8 +25,23 @@ text remains visible and complete; the app never starts readback automatically.
 It is not a complete Granny app. It has no planner, external app adapter,
 message send, model, cloud speech, downloadable TTS voice management, background
 capture, wake word, persistent transcript or analytics. Submitting exact fixture
-requests opens clarification; only a separately approved exact C5 preview can
-change the local text preference in debug builds.
+requests opens clarification. A separately approved exact C5 preview can change
+the local text preference in debug builds; the fictional draft path below has
+no action permit or external dispatch.
+
+## Fictional local message draft
+
+In debug/synthetic-lab builds, the exact typed or final spoken fixture request
+`Tell David I’ll call after dinner.` asks the user to choose between `person-a`
+(`David — brother`) and `person-b` (`David — neighbour`) on `Fixture messages`.
+The preview shows the opaque fixture endpoint, channel and exact body
+`I’ll call after dinner.` under `Fictional local draft — not sent`.
+
+**Keep this draft here** produces only an in-memory ready state. Editing, Stop,
+backgrounding, recreation, place change or Done clears the recipient/body.
+Candidate builds deny the finite fixture. No contact lookup, messaging intent,
+package, account, provider, network, persistent draft, action permit, send or
+delivery claim exists in this flow. The labels and relationships are fabricated.
 
 ## Setup and capabilities
 
@@ -76,7 +91,7 @@ Use the already prepared JDK 17 / API 36 toolchain:
 ./gradlew --no-daemon clean testDebugUnitTest assembleDebug lintDebug
 ```
 
-The T-122 host command passes 146 cases across 17 suites, debug assembly and
+The T-123 host command passes 153 cases across 17 suites, debug assembly and
 lint with zero errors. Remaining lint warnings concern API targeting, the
 API-33 Back attribute on minSdk 31, and English fixture strings. This shell
 targets the selected Android 16/API 36 reference configuration. `aapt2 dump permissions` reports only `RECORD_AUDIO`, and the
@@ -84,9 +99,12 @@ debug runtime dependency report is empty.
 
 Host tests cover input/output generation state, stale callback and revision
 rejection, hypothesis selection, cleanup, and settings failure/readback
-contracts. They do not exercise a microphone, recognizer/TTS service, Android
+contracts. The local-draft cases cover same-name fictional endpoints, exact
+body binding, typed/voice parity, edit/Stop/background invalidation and
+candidate denial. They do not exercise a microphone, recognizer/TTS service, Android
 permission UI, installed voice/locale pack, acoustic condition, audible
-output, audio focus, TalkBack or process lifecycle.
+output, audio focus, TalkBack, process lifecycle, contact resolver, messaging
+app or external handoff/send.
 
 ## Device evidence still required
 
