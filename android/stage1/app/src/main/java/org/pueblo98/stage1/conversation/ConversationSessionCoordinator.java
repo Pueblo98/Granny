@@ -127,6 +127,12 @@ public final class ConversationSessionCoordinator {
         if (candidate != generation || surface != Surface.LISTENING) return Result.STALE;
         return replace(cleaned, Provenance.FINAL_VOICE);
     }
+    public Result completeVoice(long candidate, String exactDraft, String explanation) { checkThread();
+        if (candidate != generation || surface != Surface.LISTENING) return Result.STALE;
+        Result result = replace(exactDraft, Provenance.FINAL_VOICE);
+        if (result == Result.ACCEPTED && explanation != null) message = explanation;
+        return result;
+    }
     public Result voiceUnavailable(String reason) { checkThread();
         invalidate(); surface = Surface.TRANSCRIPT;
         message = reason == null ? "Talk is unavailable. You can type instead." : reason;

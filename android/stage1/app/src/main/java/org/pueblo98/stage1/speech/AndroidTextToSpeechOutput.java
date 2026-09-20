@@ -167,7 +167,7 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
         for (Voice voice : voices) {
             if (voice != null) metadata.add(new OfflineVoiceSelection.VoiceMetadata(voice.getName(), voice.getLocale(),
                     voice.getQuality(), voice.equals(defaultVoice), voice.isNetworkConnectionRequired(),
-                    !voice.getFeatures().contains("notInstalled")));
+                    (voice.getFeatures() == null || !voice.getFeatures().contains(TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED))));
         }
         OfflineVoiceSelection.VoiceMetadata selected = OfflineVoiceSelection.select(metadata, locale);
         if (selected == null) return null;

@@ -52,6 +52,7 @@ public final class DictationSession {
     public long promptRemaining(long now) { return Math.max(0, deadline - MAX_MILLIS + 10_000 - now); }
     public String visibleText() { return join(draft, partial); }
     public boolean active() { return active; }
+    public long deadline() { return deadline; }
     public long turn() { return turn; }
     public long remaining(long now) { return Math.max(0, deadline - now); }
     public void clear() {

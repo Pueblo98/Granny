@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import org.pueblo98.stage1.voice.DictationSession;
+import org.pueblo98.stage1.voice.VoiceTurnScheduler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -51,6 +52,9 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     private static final int MIC_REQUEST = 120;
     private static final int INK = 0xff2e2d32, BLUE = 0xff2c5981, LINEN = 0xfffbf6ee;
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private final Handler turnHandler = new Handler(Looper.getMainLooper());
+    private final VoiceTurnScheduler turnScheduler = new VoiceTurnScheduler(
+            SystemClock::elapsedRealtime, (delay, work) -> turnHandler.postDelayed(work, delay));
     private final DictationSession dictation = new DictationSession();
     private final VoiceSessionController voice = new VoiceSessionController();
     private final Map<TextView, Float> textSizes = new LinkedHashMap<>();
@@ -252,6 +256,8 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         speech.stop("Input changed.");
         stopSpokenOutput();
         recognizer.cancel();
+        turnScheduler.begin(dictation.deadline(), () -> finishDictation(
+                "The 30-second listening limit was reached. Your completed words are kept; choose Add more to continue."));
         if (!recognizer.isAvailable()) {
             voice.recognizerUnavailable();
             finishDictation("On-device recognition is unavailable. Your draft is kept; you can type instead.");
@@ -299,12 +305,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         }
         recognizer.start(generation, this);
         scheduleStartTimeout(generation);
-        long turn = dictation.turn();
-        handler.postDelayed(() -> {
-            if (dictation.active() && dictation.turn() == turn) {
-                finishDictation("The 30-second listening limit was reached. Your words are kept; choose Add more to continue.");
-            }
-        }, dictation.remaining(SystemClock.elapsedRealtime()));
+
     }
 
     private void scheduleStartTimeout(long generation) {
@@ -322,11 +323,6 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         handler.postDelayed(() -> {
             if (dictation.shouldPrompt() && voice.noSpeechPrompt(generation)) render();
         }, dictation.promptRemaining(SystemClock.elapsedRealtime()));
-        long turn = dictation.turn();
-        handler.postDelayed(() -> {
-            if (dictation.active() && dictation.turn() == turn) finishDictation(
-                    "The 30-second listening limit was reached. Your words are kept; choose Add more to continue.");
-        }, dictation.remaining(SystemClock.elapsedRealtime()));
         render();
     }
 
@@ -352,13 +348,14 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
             long turn = dictation.turn();
             render();
             // Only a successful segment continues this same explicit, bounded Talk turn.
-            handler.postDelayed(() -> {
-                if (!foreground || !dictation.active() || dictation.turn() != turn
-                        || conversation.snapshot().generation != conversationVoiceGeneration) return;
-                startSegment(voice.beginVoice(checkSelfPermission(Manifest.permission.RECORD_AUDIO)
-                        == PackageManager.PERMISSION_GRANTED));
-                render();
-            }, 150);
+            turnScheduler.restartAfter(150,
+                    () -> foreground && dictation.active() && dictation.turn() == turn
+                            && conversation.snapshot().generation == conversationVoiceGeneration,
+                    () -> {
+                        startSegment(voice.beginVoice(checkSelfPermission(Manifest.permission.RECORD_AUDIO)
+                                == PackageManager.PERMISSION_GRANTED));
+                        render();
+                    });
         } else finishDictation("Review your words before using this request. Choose Add more to continue.");
     }
 
@@ -371,9 +368,9 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         String draft = dictation.finish();
         // Invalidate capture before cleanup; no final/timeout can reopen this turn.
         voice.stop("Finished listening."); pendingPermission = -1;
+        turnScheduler.cancel(); turnHandler.removeCallbacksAndMessages(null);
         handler.removeCallbacksAndMessages(null); recognizer.cancel();
-        conversation.finalVoice(conversationVoiceGeneration, draft);
-        conversation.voiceUnavailable(message);
+        conversation.completeVoice(conversationVoiceGeneration, draft, message);
         dictation.clear(); render();
     }
 
@@ -395,6 +392,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
     }
 
     private void cancelAudioForRevision() {
+        turnScheduler.cancel(); turnHandler.removeCallbacksAndMessages(null);
         dictation.clear();
         voice.stop("Request changed.");
         pendingPermission = -1;
@@ -583,6 +581,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
                     public boolean acquire() { return audioManager != null && audioManager.requestAudioFocus(audioFocus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED; }
                     public void release() { if (audioManager != null) audioManager.abandonAudioFocusRequest(audioFocus); }
                 }, () -> {
+                    turnScheduler.cancel(); turnHandler.removeCallbacksAndMessages(null);
                     dictation.clear(); voice.stop("Reading aloud."); pendingPermission = -1;
                     handler.removeCallbacksAndMessages(null); recognizer.cancel();
                 });
@@ -640,7 +639,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         if (conversation != null) { textScale.reload(); render(); }
     }
     @Override protected void onStop() {
-        foreground = false; dictation.clear();
+        foreground = false; turnScheduler.cancel(); turnHandler.removeCallbacksAndMessages(null); dictation.clear();
         speechBridge.environment(false, accessibility != null && accessibility.isTouchExplorationEnabled());
         conversation.clearForBackground(() -> cancelAudioForRevision());
         voice.beginTyping(""); voice.stop("App left the foreground.");
@@ -656,6 +655,7 @@ public final class MainActivity extends Activity implements VoiceRecognizerAdapt
         super.onSaveInstanceState(out);
     }
     @Override protected void onDestroy() {
+        turnScheduler.cancel(); turnHandler.removeCallbacksAndMessages(null);
         handler.removeCallbacksAndMessages(null);
         recognizer.destroy(); stopSpokenOutput(); speechAdapter.destroy();
         if (accessibility != null) accessibility.removeTouchExplorationStateChangeListener(explorationListener);
