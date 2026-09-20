@@ -15,7 +15,7 @@ session_state: review
 record_basis: contemporaneous
 agent: Codex
 branch: feature/t125-local-device-bridge
-next_action: Review and rerun the bounded Samsung resumed-activity oracle repair through the exact closed T01-T20 catalog, retaining both failed passes
+next_action: Publish and rerun the bounded cold-start and YouTube-oracle repair through the closed T01-T20 catalog, retaining every prior pass
 changed_paths:
   - experiments/local-device-bridge/README.md
   - experiments/local-device-bridge/bridge.py
@@ -93,12 +93,30 @@ window markers, still returning only allowlisted package names. Regression
 fixtures require a true top-resumed marker and reject incidental background
 package mentions. A fresh device rerun is required from the repaired commit.
 
+Device pass 2 ran from published repair commit
+`cb81cbb79f912fda5acf754f166fdd5c7b5c9359`. Foreground verification worked:
+T01–T03, T06 and T16–T20 verified. Granny/Spotify semantic cases failed safely
+because hot app state did not expose the expected registered node; T14's
+launcher resolution returned a normalized transport failure. T15 opened
+YouTube with the fixed public query and verified its foreground package, but
+the independent query predicate was false. The bridge incorrectly returned
+`verified_complete` despite `resultObserved=false`. Evidence review therefore
+downgrades the reported 10 complete / 10 failed / 0 unsafe to 9 verified
+complete / 11 failed safely / 0 unsafe. This false nonconsequential completion
+is retained as a verifier defect.
+
+The next bounded repair cold-starts Granny, Spotify and YouTube through exact
+package-bound MAIN/LAUNCHER intents, removing hot-state dependence and the
+failing YouTube component-resolution path. T15 now raises a normalized failure
+when its query predicate is false. No arbitrary package, component or intent is
+added. The repaired suite passes 26/26 host contract tests before device rerun.
+
 ## Handoff
 
-Publish the foreground-oracle repair, then rerun `run-all` only through the
-model-facing bridge and retain all twenty terminal outcomes. Do not bypass a
-failed case with direct ADB. Any further correction requires fresh host checks
-and a new source commit before another claim-bearing device run.
+Publish the cold-start/query-oracle repair, then rerun `run-all` only through
+the model-facing bridge and retain all twenty terminal outcomes. Do not bypass
+a failed case with direct ADB. Any further correction requires fresh host
+checks and a new source commit before another claim-bearing device run.
 
 This mixed code/documentation task may be pushed under standing task-branch
 authority. It is not authorized for PR merge, main integration, Pi purchase/

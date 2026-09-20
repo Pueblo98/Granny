@@ -241,24 +241,29 @@ class DeviceBridge:
             self._sleep(0.25)
         raise BridgeError("foreground_not_verified")
 
-    def open_app(self, app: str) -> dict[str, object]:
+    def open_app(self, app: str, cold_start: bool = False) -> dict[str, object]:
         if app not in self.APP_PACKAGES:
             raise BridgeError("app_not_allowlisted")
         self.ensure_single_device()
-        component = self._resolve_activity(app)
+        package = self.APP_PACKAGES[app]
+        if cold_start:
+            self._shell("am", "force-stop", package)
         self._shell(
             "am",
             "start",
             "-W",
             "--windowingMode",
             "1",
-            "-n",
-            component,
+            "-a",
+            "android.intent.action.MAIN",
+            "-c",
+            "android.intent.category.LAUNCHER",
+            "-p",
+            package,
             timeout=20,
         )
-        package = self.APP_PACKAGES[app]
         self._wait_for_package(package)
-        return {"app": app, "foregroundVerified": True}
+        return {"app": app, "foregroundVerified": True, "coldStart": cold_start}
 
     @staticmethod
     def _parse_bounds(value: str) -> tuple[int, int, int, int]:
@@ -415,11 +420,14 @@ class DeviceBridge:
         )
         self._wait_for_package(package)
         self._sleep(3.0)
+        result_observed = self.ui_contains("youtube", query)
+        if not result_observed:
+            raise BridgeError("youtube_query_not_verified")
         return {
             "app": "youtube",
             "fixture": "youtube_query",
             "foregroundVerified": True,
-            "resultObserved": self.ui_contains("youtube", query),
+            "resultObserved": True,
         }
 
     def open_public_page(self) -> dict[str, object]:
@@ -532,7 +540,7 @@ class TaskSuite:
         if case_id == "T02":
             return b.show_home()
         if case_id == "T03":
-            return b.open_app("granny")
+            return b.open_app("granny", cold_start=True)
         if case_id == "T04":
             b.activate("granny_setup")
             if not b.ui_contains("granny", "Type works immediately"):
@@ -544,7 +552,7 @@ class TaskSuite:
                 raise BridgeError("granny_conversation_not_verified")
             return {"screen": "granny_conversation", "setupEntryObserved": True}
         if case_id == "T06":
-            return b.open_app("spotify")
+            return b.open_app("spotify", cold_start=True)
         if case_id == "T07":
             b.activate("spotify_search_tab")
             if not b.ui_contains("spotify", "What do you want to listen to?"):
@@ -571,7 +579,7 @@ class TaskSuite:
             b.activate("spotify_pause", wait_seconds=2.0)
             return b.require_spotify_media("PAUSED")
         if case_id == "T14":
-            return b.open_app("youtube")
+            return b.open_app("youtube", cold_start=True)
         if case_id == "T15":
             return b.search_youtube_fixture()
         if case_id == "T16":

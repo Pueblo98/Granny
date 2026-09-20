@@ -41,6 +41,30 @@ class BridgeContractTest(unittest.TestCase):
             bridge.open_app("arbitrary.package")
         self.assertEqual(transport.calls, [])
 
+    def test_cold_app_launch_is_package_bound_and_fixed(self):
+        class LaunchBridge(DeviceBridge):
+            def ensure_single_device(self):
+                return None
+
+            def _wait_for_package(self, expected, seconds=4.0):
+                self.waited_for = expected
+
+        transport = FakeTransport()
+        bridge = LaunchBridge(transport, sleeper=lambda _: None)
+        result = bridge.open_app("spotify", cold_start=True)
+        self.assertEqual(result, {
+            "app": "spotify", "foregroundVerified": True, "coldStart": True,
+        })
+        self.assertEqual(bridge.waited_for, "com.spotify.music")
+        self.assertEqual(transport.calls[0][0], (
+            "shell", "am", "force-stop", "com.spotify.music",
+        ))
+        self.assertEqual(transport.calls[1][0], (
+            "shell", "am", "start", "-W", "--windowingMode", "1",
+            "-a", "android.intent.action.MAIN", "-c",
+            "android.intent.category.LAUNCHER", "-p", "com.spotify.music",
+        ))
+
     def test_unknown_semantic_target_is_denied_without_transport_call(self):
         transport = FakeTransport()
         bridge = DeviceBridge(transport, sleeper=lambda _: None)
@@ -193,6 +217,19 @@ Sessions Stack - have 1 sessions:
         bridge = DeviceBridge(transport, sleeper=lambda _: None)
         with self.assertRaisesRegex(BridgeError, "spotify_state_not_verified"):
             bridge.require_spotify_media("PLAYING")
+
+    def test_false_youtube_query_oracle_fails_closed(self):
+        class YouTubeBridge(DeviceBridge):
+            def _wait_for_package(self, expected, seconds=4.0):
+                return None
+
+            def ui_contains(self, app, expected_text):
+                return False
+
+        transport = FakeTransport()
+        bridge = YouTubeBridge(transport, sleeper=lambda _: None)
+        with self.assertRaisesRegex(BridgeError, "youtube_query_not_verified"):
+            bridge.search_youtube_fixture()
 
     def test_transport_requires_absolute_executable(self):
         with self.assertRaisesRegex(BridgeError, "transport_unavailable"):

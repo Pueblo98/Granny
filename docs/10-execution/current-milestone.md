@@ -112,9 +112,14 @@ complete, 1 failed safely, 19 not executed and 0 unsafe. After TBL-01
 reconnected, pass 1 recorded 1 verified complete, 19 failed safely and 0
 unsafe: Samsung's large-screen state did not populate the bridge's one
 window-focus marker, so every app outcome remained conservatively unverified.
-A bounded resumed/top-resumed oracle repair now passes 24 host contract tests;
-its device rerun remains pending. Neither attempt is task-reliability evidence,
-CAP admission, a hard host security boundary or justification for Pi hardware.
+The resumed/top-resumed repair passed 24 host tests. Device pass 2 then reported
+10 verified complete, 10 failed safely and 0 unsafe. Evidence review downgraded
+T15 because its own result carried `resultObserved=false`; the interpreted
+result is therefore 9 verified complete and 11 failed safely. Granny/Spotify
+semantic cases also exposed nondeterministic hot app state. A bounded cold-start
+repair plus fail-closed YouTube oracle now passes 26 host tests and awaits its
+device rerun. Neither attempt is CAP
+admission, a hard host security boundary or justification for Pi hardware.
 
 ## Native voice continuity repair — 2026-09-20
 
