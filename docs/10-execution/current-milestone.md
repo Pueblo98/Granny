@@ -27,11 +27,12 @@ captures the narrow positive observations and missing configuration/case data.
 Spoken readback is slightly improved but still below the desired naturalness.
 No cloud voice, alternate engine or provider/data-flow change is selected.
 
-The next discussion should choose one bounded product-app slice and the next
-feasibility evidence target. Candidate implementation order is setup/capability
-status, local fictional draft/clarification/preview, then recent activity only
-after its storage/backup/retention packet. T-101 still separately owns
-selected-package, retention, egress and external-route evidence.
+Simon selected setup/capability status followed by a local fictional
+draft/clarification/preview as the next bounded product-app work. The draft
+slice may proceed entirely offline and must stop before external handoff or
+send. Recent activity still waits for its storage/backup/retention packet.
+T-101 separately owns selected-package, retention, egress and external-route
+evidence.
 
 ## Native voice continuity repair — 2026-09-20
 
@@ -234,11 +235,11 @@ fully closed. T-101 and GATE-03/04/06 remain open.
 
 ## T-101 route and partial physical inventory — 2026-09-19
 
-The [current-source route assessment](../08-research/2026-09-19-t101-route-inventory.md) now covers all five ADR-0009 experiments and prepares the non-identifying physical inventory and smallest synthetic experiments. It finds a go route for Granny-local text, conditional routes for scoped screen explanation and named media integration, conditional honest message compose handoff but no send claim, and no ordinary candidate route for sent-photo provenance. Only screen explanation and media remain plausible external candidates; screen explanation has bounded but non-admitting device evidence and media remains unrun, so the accepted two-external-workflow kill criterion is at high risk.
+The [current-source route assessment](../08-research/2026-09-19-t101-route-inventory.md) now covers all five ADR-0009 experiments and prepares the non-identifying physical inventory and smallest synthetic experiments. It finds a go route for Granny-local text, a conditional route for scoped screen explanation, conditional honest message compose handoff but no send claim, and no ordinary candidate route for sent-photo provenance. The 2026-09-20 refresh found Spotify technically plausible but prohibited by its current policy for Granny's accepted voice-assistant control behavior. Apple MusicKit remains an unreviewed desk lead, not a selected route. The current named plan therefore reaches ADR-0009's explicit revisit point; no scope or gate changes without Simon's decision.
 
 Simon then manually read non-identifying Settings values from `TBL-01`: Samsung `SM-X238U` / Galaxy Tab A11+ 5G, Android 16, One UI 8.0, build/patch, English (United States), partial display/input/access state and installed-app versions. The [physical record](../08-research/2026-09-19-t101-physical-inventory.md) is user-reported and incomplete; Codex did not connect to or operate the tablet. No command, install, update, grant, account/content inspection, external-app actuation or capability experiment occurred.
 
-T-101 remains in progress; GATE-03/04 and GATE-06 device/real-data conditions remain open. The [lab-only Android 16 scaffold](../../experiments/c2-screen-explanation/README.md) now has four bounded [C2 device runs](../08-research/2026-09-19-t101-c2-device-evidence.md). Across the repaired runs, the synthetic protected-scene and ordered stale-result regressions closed; visible Stop, lock cleanup, resize/result recovery and task-removal cleanup produced positive observations. The merged [C2 local safety repair](sessions/2026-09-20-android-c2-local-safety-sprint.md) passes 49 host cases; its additional source changes remain unrun on Android. Selected-package identity and independent retention/egress evidence remain unresolved. Both latest-run packages were removed; debugging authorization, USB debugging and Developer options were disabled, and the cable was disconnected. T-104 still waits for actual sent-photo route and device-safety evidence.
+T-101 remains in progress; GATE-03/04 and GATE-06 device/real-data conditions remain open. The [lab-only Android 16 scaffold](../../experiments/c2-screen-explanation/README.md) now has four bounded [C2 device runs](../08-research/2026-09-19-t101-c2-device-evidence.md). Across the repaired runs, the synthetic protected-scene and ordered stale-result regressions closed; visible Stop, lock cleanup, resize/result recovery and task-removal cleanup produced positive observations. The merged [C2 local safety repair](sessions/2026-09-20-android-c2-local-safety-sprint.md) passes 49 host cases; its additional source changes remain unrun on Android. The [narrow C2 packet](t101-c2-identity-retention-egress-packet.md) now makes the blocker executable: the current observer/API cannot prove selected-package identity, and source-reviewed fixture-origin plus metadata-only retention/per-UID egress harnesses must precede another claim-bearing run. Both latest-run packages were removed; debugging authorization, USB debugging and Developer options were disabled, and the cable was disconnected. T-104 still waits for actual sent-photo route and device-safety evidence; T-106 waits for a policy-compatible named media decision.
 
 ## Active Context Rooms plan — 2026-09-19
 
@@ -407,7 +408,7 @@ Current official Play policy does not permit a general-assistant AccessibilitySe
 
 ## Proposed next milestone
 
-Evidence-led foundation: MVP/control review T-100 and the bounded offline T-103 core are complete. T-101 Step A/C plans, partial Step B inventory and four bounded C2 device runs now exist. The Stop-control state repair passes host checks; separately plan independent selected-package, retention and egress oracles before any admission claim. Any tablet access still requires fresh exact authority. T-104 waits for sent-photo route/device evidence. Produce/test low-fi interaction and iterate naming/identity (T-102/108) within their authorization and evidence boundaries. Do not begin broad MVP implementation or personal-data automation.
+Evidence-led foundation: MVP/control review T-100 and the bounded offline T-103 core are complete. T-101 Step A/C plans, partial Step B inventory, four bounded C2 device runs and the unrun identity/retention/egress packet now exist. Build the controlled fixture-origin and privacy-audit harnesses before another C2 claim-bearing run; any tablet access still requires fresh exact authority. Proceed with the bounded local fictional draft without external handoff/send. T-104 waits for sent-photo route/device evidence; T-106 waits for Simon's media-route decision. Do not begin broad MVP implementation or personal-data automation.
 
 Naming recommendation: Daykind / Handspan / Clearfold, all uncleared with documented concerns. Identity recommendation: test Open Day against challengers. Neither is accepted. That initial browser used provisional grayscale; the current conversation build adds reviewer-only territory comparisons. Figma remains a partial paused artifact.
 
