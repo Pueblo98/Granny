@@ -1,0 +1,3 @@
+<resources>
+    <string name="service_description">Read-only developer lab. Only after Inspect, reads this lab’s fictional controls and captures its window once for numbered annotations. No other app is supported. No gestures, network, saved screenshots, background reading or automatic actions. Stop or leaving the lab clears the result. Enable only for a supervised synthetic test.</string>
+</resources>
