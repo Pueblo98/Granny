@@ -29,6 +29,7 @@ public final class MainActivity extends Activity {
     private TextView report;
     private ImageView preview;
     private Bitmap retained;
+    private LocalOcr.Request ocrRequest;
     private long generation;
     private int scene;
     private Button sceneButton;
@@ -42,7 +43,7 @@ public final class MainActivity extends Activity {
             view.setPadding(bars.left + 16, bars.top + 8, bars.right + 16, bars.bottom + 8); return insets;
         });
         TextView title = new TextView(this);
-        title.setText("Read-only perception lab — fictional controls only. Enable the lab service manually, then Inspect. No actions, network, files or background capture.");
+        title.setText("Read-only perception lab — fictional controls only. Bundled English OCR; no network or saved observations. Only the OCR model is stored locally. Stop discards results; native processing may finish later.");
         root.addView(title);
         button(root, "Open accessibility settings", () -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
         button(root, "Inspect fixture once", this::inspect);
@@ -56,7 +57,7 @@ public final class MainActivity extends Activity {
         fixture.setBackgroundColor(Color.rgb(244, 247, 250));
         populateFixture();
         body.addView(fixture);
-        report = new TextView(this); report.setText("No observation. Select a fixture case, then Inspect. Android OCR is not implemented.");
+        report = new TextView(this); report.setText("No observation. Select a fixture case, then Inspect for accessibility + local OCR.");
         body.addView(report);
         preview = new ImageView(this); preview.setAdjustViewBounds(true);
         preview.setContentDescription("Numbered fixture screenshot; equivalent element labels are in the text report.");
@@ -105,6 +106,7 @@ public final class MainActivity extends Activity {
     private void fixtureChanged() { clear(); report.setText("Fictional control touched. No setting changed; previous observation cleared."); }
     private void clear() {
         generation++; main.removeCallbacksAndMessages(null);
+        if (ocrRequest != null) { ocrRequest.cancel(); ocrRequest = null; }
         FixtureAccessibilityService service = FixtureAccessibilityService.current(); if (service != null) service.stop();
         if (preview != null) preview.setImageDrawable(null);
         if (retained != null) { retained.recycle(); retained = null; }
@@ -132,6 +134,32 @@ public final class MainActivity extends Activity {
                         retained = Bitmap.createBitmap(crop.width(), crop.height(), Bitmap.Config.ARGB_8888);
                         Canvas canvas = new Canvas(retained);
                         canvas.drawBitmap(image, new Rect(crop.left, crop.top, crop.right, crop.bottom), new Rect(0, 0, crop.width(), crop.height()), null);
+                        // Copy before drawing annotations; OCR never reads its own numbered overlay.
+                        if ((long) crop.width() * crop.height() > 2_000_000) throw new IllegalArgumentException("OCR pixel limit");
+                        Bitmap ocrInput = retained.copy(Bitmap.Config.ARGB_8888, false);
+                        ocrRequest = LocalOcr.start(MainActivity.this, ocrInput, (lines, elapsed, status) -> {
+                            if (request != generation || retained == null || FixtureAccessibilityService.current() == null) return;
+                            try {
+                                JSONArray visual = new JSONArray();
+                                Canvas overlay = new Canvas(retained);
+                                Paint ink = new Paint(Paint.ANTI_ALIAS_FLAG); ink.setColor(Color.rgb(150, 40, 0)); ink.setStrokeWidth(2); ink.setTextSize(22);
+                                int index = 0;
+                                for (LocalOcr.Line line : lines) {
+                                    Rect b = line.bounds; String id = "ocr-" + (++index);
+                                    ink.setStyle(Paint.Style.STROKE); overlay.drawRect(b, ink);
+                                    ink.setStyle(Paint.Style.FILL); overlay.drawText(id, b.left, Math.max(22, b.top), ink);
+                                    visual.put(new JSONObject().put("id", map.observationId + ":" + id).put("label", line.text)
+                                            .put("bounds", new JSONArray(new int[]{b.left, b.top, b.right, b.bottom}))
+                                            .put("source", "tesseract-local").put("role", "visual-text")
+                                            .put("rawScoreNotProbability", line.score).put("executionAuthorized", false));
+                                }
+                                JSONObject result = new JSONObject().put("observationId", map.observationId)
+                                        .put("coordinateSpace", "fixture-image-pixels").put("status", status).put("elapsedMs", elapsed)
+                                        .put("executionAuthorized", false).put("visualText", visual);
+                                report.append("\n\nOCR snapshot supplement (may duplicate native labels; not live targets):\n" + result.toString(2));
+                                preview.invalidate();
+                            } catch (Exception error) { clear(); report.setText("OCR result invalid; observation cleared."); }
+                        });
                         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG); paint.setStrokeWidth(3); paint.setTextSize(24);
                         JSONArray elements = new JSONArray(); int number = 0;
                         for (ScreenMap.Element element : map.elements) {
@@ -150,7 +178,7 @@ public final class MainActivity extends Activity {
                                 .put("windowId", map.windowId).put("coordinateSpace", "fixture-image-pixels")
                                 .put("completeness", "partial")
                                 .put("semanticStatus", map.elements.isEmpty() ? "no-semantic-elements-coverage-unknown" : "observed-partial")
-                                .put("ocr", "not-implemented-on-device")
+                                .put("ocr", "pending-local-supplement")
                                 .put("executionAuthorized", false).put("elements", elements);
                         long now = SystemClock.elapsedRealtime();
                         String textSize = map.lookup("Text size", now, map.windowId);
