@@ -256,6 +256,12 @@ combines T-120, C5 and committed T-121 in one source-reviewed shell with shared
 conversation authority and Stop. T-120/T-121 remain in review; all physical
 verification is deliberately on hold. No T-101 completion or gate promotion.
 
+T-120/T-121 follow-up: [reported smoke feedback](../08-research/2026-09-20-native-tablet-smoke-feedback.md)
+identified draft loss, premature end of input and unacceptable readback quality.
+The [continuity repair](sessions/2026-09-20-native-voice-continuity.md) preserves
+completed text and bounds sentence continuation; eligible offline voice ranking
+is improved. Repaired device behavior and audible quality remain unrun.
+
 ## Session handoff
 
 Each implementation session selects **one bounded slice**, reads its PRD/UC/J, canonical interface/screen and policy, checks current gates and Git, then writes tests and implementation together. Review-only sessions remain read-only. Add actual source/test links to traceability only when they exist. If feasibility changes the intended outcome, amend canonical behavior and gate decision before widening code. Do not turn an unsuccessful integration into silent Stage 2 work.

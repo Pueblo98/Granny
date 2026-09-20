@@ -59,7 +59,7 @@ Use the already prepared JDK 17 / API 36 toolchain:
 ./gradlew --no-daemon clean testDebugUnitTest assembleDebug lintDebug
 ```
 
-The integrated command passes 110 cases across 13 suites, debug assembly and
+The integrated command passes 138 cases across 16 suites, debug assembly and
 lint with zero errors. Remaining lint warnings concern API targeting, the
 API-33 Back attribute on minSdk 31, and English fixture strings. This shell
 targets the selected Android 16/API 36 reference configuration. `aapt2 dump permissions` reports only `RECORD_AUDIO`, and the
@@ -116,3 +116,20 @@ shared conversation surfaces and C5 preference authority. The
 [integration record](../../docs/10-execution/sessions/2026-09-20-native-conversation-integration.md)
 records the exact committed speech dependency and all source/host checks.
 Physical tablet testing is on hold at Simon's direction.
+
+## Voice continuity repair
+
+Talk/Add more preserves the existing edited draft. Successful recognizer finals
+append once and start another segment within the same explicit 30-second turn
+(maximum eight segments). Partial hypotheses remain provisional. Done/Stop,
+error, permission loss and lifecycle exit prevent another segment; no error
+retry or background capture is introduced. Completed text survives a foreground
+interruption, while background/recreation still clears private draft state.
+Cancel/Back restores the exact pre-Talk draft. A short restart gap is announced;
+actual multi-sentence/latency behavior needs the repaired tablet run.
+
+Offline TTS selection now ranks eligible voices by locale and declared quality
+before default/name ties instead of name alone. No extra engine, download,
+network permission or naturalness guarantee is added. See the
+[repair handoff](../../docs/10-execution/sessions/2026-09-20-native-voice-continuity.md)
+and [reported original smoke observations](../../docs/08-research/2026-09-20-native-tablet-smoke-feedback.md).

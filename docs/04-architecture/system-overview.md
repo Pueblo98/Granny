@@ -74,6 +74,15 @@ approves a capability. Only place/scroll and an uncertain-operation flag enter
 Activity state; transcripts, previews and permits are discarded on recreation.
 These are implemented source contracts, not physical lifecycle/audio evidence.
 
+[DictationSession](../../android/stage1/app/src/main/java/org/pueblo98/stage1/voice/DictationSession.java)
+owns one explicit Talk turn across up to eight successful recognizer segments,
+an absolute monotonic 30-second deadline, exact prior draft, completed sentence
+accumulation and a provisional current sentence. Each segment uses a fresh
+VoiceSessionController generation. Queued restart callbacks also bind the turn
+and conversation generation and recheck foreground/permission. Failure never
+retries. Only completed words enter editable transcript review; no partial
+becomes interpretation or action authority. Lifecycle exit clears the turn.
+
 <a id="voice"></a>
 ### Voice input/output
 

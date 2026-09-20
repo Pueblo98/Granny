@@ -13,6 +13,18 @@ related:
 
 # Current milestone — Context Rooms and native voice/readback shells
 
+## Native voice continuity repair — 2026-09-20
+
+[Simon-reported smoke feedback](../08-research/2026-09-20-native-tablet-smoke-feedback.md)
+is positive for text-size cancellation, Apply/Restore and the background case,
+but identifies lost voice drafts, single-sentence cutoff and robotic readback.
+The [source repair](sessions/2026-09-20-native-voice-continuity.md) preserves
+existing words, collects bounded successful recognizer segments until Done/Stop,
+and ranks eligible offline voices by locale and declared quality. The repaired
+APK is host-checked, not yet device-tested or installed; no quality or gate
+acceptance is claimed. The earlier blanket testing hold was lifted for the
+reported smoke run only; new device actions remain separately scoped.
+
 ## Native conversation integration — 2026-09-20
 
 The [integration session](sessions/2026-09-20-native-conversation-integration.md)

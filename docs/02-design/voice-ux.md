@@ -22,6 +22,18 @@ In the authorized [conversation browser prototype](browser-prototype.md), Talk p
 
 MVP is tap-to-talk, not wake-word or ambient listening. Talk changes to Listening with words/icon and optional short cue; Done listening ends capture. Proposed cap 30s, with gentle no-speech prompt at 10s and typed alternative. Partial text is provisional; final text can be edited. No hidden capture after app exits, lock, Stop or revoked permission. Speaker mute and microphone off are distinct.
 
+The native continuity repair preserves the exact existing typed/edited draft
+when Talk or **Add more** starts. Within that one explicit foreground turn,
+completed recognizer sentences append once; partial hypotheses replace only
+the provisional current sentence. Successful finals may continue capture with
+fresh segment generations, bounded by the original 30-second deadline and at
+most eight segments. Done, Stop, error, permission loss or lifecycle exit
+prevents another segment. No retry follows recognition failure. Done/Type/Stop
+keep completed words for review; unfinished partials are not silently submitted.
+Cancel/Back restores the pre-Talk draft, while background/recreation still
+clears ephemeral text. There may be a short, visibly announced recognizer gap;
+seamless long-form dictation is not yet device-verified.
+
 The first Android slice uses only an available on-device `SpeechRecognizer`; no network recognizer fallback is allowed. On-device unavailability, unsupported locale, permission denial or recognition failure returns to the editable typed path. Where Android returns formatted and raw final hypotheses, the formatted hypothesis may seed the visible transcript and the raw hypothesis remains ephemeral session evidence. Otherwise the single final hypothesis is used for both.
 
 Initial cleanup is deliberately narrow: collapse repeated whitespace, remove whitespace before ordinary punctuation and ensure readable spacing after punctuation. It may use Android's own formatted hypothesis, but it does not remove arbitrary words, infer a user's intended tone or rewrite names, numbers, dates, recipients or message meaning. No cleanup language model is part of T-120. The user can edit the visible final transcript; submission binds that exact revision and invalidates any older interpretation or approval.
@@ -51,6 +63,12 @@ such voice exists, initialization fails, speech controls remain unavailable and
 the written path remains complete. Host evidence cannot establish what an
 installed engine does at runtime, so offline/egress behavior remains a device
 test rather than a product claim.
+
+Voice selection now prefers exact locale, then higher engine-reported quality,
+then the engine default among equivalent choices, with a deterministic name
+tie-break. Network-required or advertised-not-installed voices are excluded.
+This is an initial selection policy, not an accepted human naturalness result;
+no voice engine/model is installed or downloaded by the app.
 
 Speech rate is a closed set: Slower (0.75), Normal (1.0), Faster (1.25) and
 Fastest (1.5). A person selects and hears a short fixed sample before Apply is
