@@ -138,7 +138,7 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
             }
         });
 
-        Voice selected = selectInstalledVoice(engine.getVoices(), Locale.getDefault());
+        Voice selected = selectInstalledVoice(engine.getVoices(), engine.getDefaultVoice(), Locale.getDefault());
         if (selected == null || engine.setVoice(selected) != TextToSpeech.SUCCESS) {
             unavailable("No installed offline voice matches this tablet language. Written text is still available.");
             return;
@@ -159,20 +159,19 @@ public final class AndroidTextToSpeechOutput implements SpeechOutputAdapter {
         availabilityListener.onAvailabilityChanged(availability, explanation);
     }
 
-    static Voice selectInstalledVoice(Set<Voice> voices, Locale locale) {
+    static Voice selectInstalledVoice(Set<Voice> voices, Voice defaultVoice, Locale locale) {
         if (voices == null || locale == null) {
             return null;
         }
-        List<Voice> candidates = new ArrayList<>();
+        List<OfflineVoiceSelection.VoiceMetadata> metadata = new ArrayList<>();
         for (Voice voice : voices) {
-            if (voice != null && !voice.isNetworkConnectionRequired()
-                    && locale.getLanguage().equals(voice.getLocale().getLanguage())) {
-                candidates.add(voice);
-            }
+            if (voice != null) metadata.add(new OfflineVoiceSelection.VoiceMetadata(voice.getName(), voice.getLocale(),
+                    voice.getQuality(), voice.equals(defaultVoice), voice.isNetworkConnectionRequired(),
+                    !voice.getFeatures().contains("notInstalled")));
         }
-        candidates.sort(Comparator
-                .comparing((Voice voice) -> !locale.equals(voice.getLocale()))
-                .thenComparing(Voice::getName));
-        return candidates.isEmpty() ? null : candidates.get(0);
+        OfflineVoiceSelection.VoiceMetadata selected = OfflineVoiceSelection.select(metadata, locale);
+        if (selected == null) return null;
+        for (Voice voice : voices) if (selected.name.equals(voice.getName())) return voice;
+        return null;
     }
 }
