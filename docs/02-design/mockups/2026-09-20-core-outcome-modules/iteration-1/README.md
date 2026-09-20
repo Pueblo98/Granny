@@ -5,6 +5,7 @@ owner: Simon
 last_updated: 2026-09-20
 tags: [design, mockups, conversation, outcomes]
 related:
+  - CORE-OUTCOME-MODULES-IMPLEMENTATION-METAPROMPT.md
   - ../../2026-09-19-style-boards/final-harbour-blue/README.md
   - ../../2026-09-19-harbour-blue-home/selected-explicit-scroll-row/README.md
   - ../../2026-09-20-shared-state-pack/iteration-1/README.md
@@ -25,6 +26,14 @@ and next action stated plainly instead of becoming a mini-app dashboard.**
 All people, apps, dates, messages, photos and appointments are fictional. The
 frames are proposed visual references, not implementation, capability evidence
 or production acceptance. “Granny” remains a codename.
+
+Simon subsequently authorized the active frontend session to implement this
+family through the bounded
+[core outcome-module implementation metaprompt](CORE-OUTCOME-MODULES-IMPLEMENTATION-METAPROMPT.md).
+That handoff explains every frame's entry, content, actions, semantics,
+responsive behavior and tests while preserving one inline module inside the
+conversation. It explicitly stops before the unspecified navigation and
+supporting-surface batch.
 
 ## Comparison
 
