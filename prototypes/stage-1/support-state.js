@@ -18,6 +18,19 @@
       outcome: 'Large · restored available', time: '08:30', source: 'Granny',
       evidence: 'changed'}
   ]);
+  const CONVERSATIONS = Object.freeze([
+    {id: 'sample-soup-substitution', title: 'Soup without tomatoes', time: 'Earlier today',
+      place: 'Kitchen', fixture: true, turns: [
+        {role: 'user', text: 'Can I make the vegetable soup without tomatoes?'},
+        {role: 'assistant', text: 'Yes. Leave them out and add a little more vegetable stock. The soup will be lighter, but the carrots and onion will still give it flavour.',
+          sources: [{itemId: 'vegetable-soup', title: 'Vegetable soup', roomName: 'Kitchen', collectionLabel: 'Recipes'}]}
+      ]},
+    {id: 'sample-garden-basil', title: 'Basil plant help', time: 'Earlier today',
+      place: 'Garden', fixture: true, turns: [
+        {role: 'user', text: 'Why are the leaves on my basil drooping?'},
+        {role: 'assistant', text: 'Check whether the soil is very dry or waterlogged first. This fictional example does not diagnose the plant from a photo.'}
+      ]}
+  ]);
   const TASK_SUMMARY = Object.freeze({
     id: 'search-shopping-list-prepared', kind: 'history',
     title: 'Shopping list prepared', detail: 'Vegetable soup · Today 09:15',
@@ -60,6 +73,7 @@
     let applied = preferences(scale), staged = copy(applied), previous = copy(applied);
     let setup = {step: 0, status: 'not-needed', staged: setupPreferences()};
     let records = historyFixture === 'default' ? copy(HISTORY) : [];
+    let conversations = historyFixture === 'default' ? copy(CONVERSATIONS) : [];
     let searchSummaryAvailable = historyFixture === 'default';
 
     const api = {
@@ -68,6 +82,7 @@
       get staged() { return copy(staged); },
       get setup() { return copy(setup); },
       get records() { return copy(records); },
+      get conversations() { return copy(conversations); },
       get historyFixture() { return historyFixture; },
 
       stage(key, value) {
@@ -128,7 +143,7 @@
       },
       reviewAccess() { return false; }, // A review never grants a simulated permission.
 
-      clearHistory() { records = []; searchSummaryAvailable = false; },
+      clearHistory() { records = []; conversations = []; searchSummaryAvailable = false; },
       summary(id) {
         if (id === TASK_SUMMARY.id && searchSummaryAvailable) return copy(TASK_SUMMARY);
         const record = records.find(entry => entry.id === id);
@@ -168,6 +183,7 @@
         previous = copy(applied);
         setup = {step: 0, status: 'not-needed', staged: setupPreferences()};
         records = initial.historyFixture === 'default' ? copy(HISTORY) : [];
+        conversations = initial.historyFixture === 'default' ? copy(CONVERSATIONS) : [];
         searchSummaryAvailable = initial.historyFixture === 'default';
         return copy(applied);
       }

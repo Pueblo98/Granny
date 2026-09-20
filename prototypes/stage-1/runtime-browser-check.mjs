@@ -203,6 +203,13 @@ try {
     return sessions.length === 2 && sessions.at(-1).body.mode === 'live' &&
       document.querySelector('#mode-notice').textContent.includes('Live model');
   })()`), 'New conversation starts a fresh session without dropping live mode');
+  await menu('history');
+  await b.waitFor('document.querySelector("#conversation-conversation-1")');
+  await b.click('#conversation-conversation-1');
+  await b.waitFor('!!document.querySelector(".support-transcript")');
+  check(await b.evaluate('document.querySelector(".support-transcript")?.innerText.includes("Hello from Help")'), 'Today opens the prior live conversation as its own tab-memory transcript');
+  await b.click('#support-back'); await b.waitFor('document.querySelector("#support-heading")?.textContent === "Today"');
+  await b.click('#support-back'); await waitState('idle');
   const roomIds = ['kitchen','fitness','trips','garden','reading','projects'];
   for (const id of roomIds) {
     await b.click('#rooms-button'); await b.click('#library-room-' + id);
@@ -229,14 +236,18 @@ try {
   await command('Please use the vegetable soup card.');
   await b.waitFor('document.querySelector("#current-task")?.textContent.includes("The Vegetable soup card includes carrots.")');
   check(await b.evaluate(`(() => {
-    const paragraphs = [...document.querySelectorAll('#current-task p:not(.notice)')];
+    const paragraphs = [...document.querySelectorAll('#current-task > p:not(.notice)')];
     return paragraphs.length === 1 && paragraphs[0].textContent === 'The Vegetable soup card includes carrots.' &&
       !document.querySelector('#current-task').textContent.includes('What would you like help with?');
   })()`), 'chat card renders one model response without a duplicate generic prompt');
-  await b.waitFor('document.body.innerText.includes("Used fictional Room source: Vegetable soup")');
+  await command('Continue once more.');
+  await b.waitFor('!!document.querySelector(".turn.assistant .answer-source-receipt")');
+  await b.waitFor('document.querySelector(".answer-source-receipt")?.textContent.includes("Vegetable soup · Kitchen · Recipes")');
+  check(await b.evaluate('document.querySelector(".turn.assistant .answer-source-receipt")?.textContent.includes("Source used for this answer")'), 'the archived model answer retains its own source receipt after the conversation continues');
+  check(await b.evaluate('[...document.querySelectorAll(".turn.assistant > p")].filter(p=>p.textContent==="The Vegetable soup card includes carrots.").length===1 && !document.querySelector("#current-task")'), 'continuing does not duplicate the archived answer as a second current card');
   check(await b.evaluate('document.querySelector("#room-surface")?.dataset.roomState === "conversation"'), 'live answer renders inside the current Room');
   check((await text()).includes('Assistant text, not a verified action result.'), 'Room model answer remains explicitly non-action text');
-  await b.evaluate('document.querySelector("#current-task").scrollIntoView({block:"center"})');
+  await b.evaluate('document.querySelector(".answer-source-receipt").scrollIntoView({block:"center"})');
   await b.screenshot('connected-room-answer');
   check(b.errors.length === 0, 'no browser exceptions');
   check(b.network.every(url => url.startsWith(b.base) || url === 'about:blank'), 'no external runtime requests');

@@ -39,6 +39,7 @@
       else if(route==='privacy') renderPrivacy();
       else if(route==='history') renderHistory();
       else if(route==='summary') renderSummary();
+      else if(route==='saved-conversation') renderSavedConversation();
       else if(route==='help') renderHelp();
       else if(route==='search') renderSearch();
       else if(route==='voice') renderVoice();
@@ -87,25 +88,64 @@
     }
     function newConversation() {
       if(!o.hasConversation()){finish();o.fresh();return;}
-      confirm('Start a new conversation?',[
-        'This clears the current conversation from the screen and returns Home to a fresh start.',
-        'What stays\nRooms and saved items\nAccessibility preferences\nMinimal task history',
+      confirm('Start a new conversation?', [
+        'This moves the current conversation into Today for this tab, then returns Home to a fresh conversation.',
+        'What stays\nEarlier conversations in this tab\nRooms and saved items\nAccessibility preferences\nMinimal task history',
         'Nothing is deleted from another app.'
       ],'Start new conversation',()=>{finish();o.fresh();},false,'Keep this conversation');
     }
     function clearHistory() {
-      confirm('Clear history?', ['Remove only the minimal task summaries in this tab. Message words, photos and audio are not stored here.', 'Rooms, saved items, preferences and the current conversation stay. Nothing in another app is deleted.'], 'Clear history',()=>{model.clearHistory();o.clearHistory();notice='History cleared.';render();o.announce(notice);},true);
+      confirm('Clear history?', ['Remove prior conversation transcripts and minimal task summaries in this tab. The current conversation stays.', 'Rooms, saved items and preferences stay. Nothing in another app is deleted.'], 'Clear history',()=>{model.clearHistory();o.clearHistory();notice='History cleared.';render();o.announce(notice);},true);
     }
+    const conversations = () => [...(o.conversations?.() || []), ...model.conversations];
     function renderHistory(){
-      heading('Today','A short record of what happened. Message words and photos are not saved here.');
-      host.append(el('p','Fictional example history · stored only in this tab.','support-caption'));
+      heading('Today','Open this conversation, a prior tab-memory conversation, or a clearly labelled fictional sample.');
+      host.append(el('p','Nothing here is saved to browser storage. Reloading clears real conversation transcripts.','support-caption'));
       const list=el('div','','support-list');
-      if(fixture==='history-error')list.append(el('p','Task history could not be read. No entries have been invented.'),btn('history-retry','Try again',()=>{fixture='';render();}));
-      else if(!model.records.length)list.append(el('h2','No saved task history'));
-      else for(const record of model.records) {
-        const b=row('history-'+record.id,record.title,`${record.outcome} · ${record.time} · ${record.source} · Open summary`,()=>{open('summary');detail=record.id;render(true);});list.append(b);
+      const chats=conversations();
+      list.append(el('h2','Conversations'));
+      if(!chats.length) list.append(el('p','No previous conversations in this tab.'));
+      for(const conversation of chats) {
+        const label = conversation.active ? 'Current conversation · Continue' : conversation.fixture
+          ? `${conversation.time} · ${conversation.place} · Fictional sample`
+          : `${conversation.time} · ${conversation.place} · Open transcript`;
+        list.append(row('conversation-'+conversation.id,conversation.title,label,()=>{
+          if(conversation.active){finish();return;}
+          open('saved-conversation');detail=conversation.id;render(true);
+        }));
       }
-      host.append(list,actions(...(model.records.length?[btn('clear-history','Clear history',clearHistory)]:[]),backButton(o.place()==='home'?'Back to Home':'Back to conversation')));
+      list.append(el('h2','Activity'));
+      if(fixture==='history-error')list.append(el('p','Task history could not be read. No entries have been invented.'),btn('history-retry','Try again',()=>{fixture='';render();}));
+      else if(!model.records.length)list.append(el('p','No saved task history'));
+      else for(const record of model.records) list.append(row('history-'+record.id,record.title,
+        `${record.outcome} · ${record.time} · ${record.source} · Open summary`,()=>{open('summary');detail=record.id;render(true);}));
+      const hasClearableHistory=model.records.length||chats.some(conversation=>!conversation.active);
+      host.append(list,actions(...(hasClearableHistory?[btn('clear-history','Clear history',clearHistory)]:[]),backButton(o.place()==='home'?'Back to Home':'Back to conversation')));
+    }
+    function renderSavedConversation(){
+      const conversation=conversations().find(entry=>entry.id===detail);
+      heading(conversation?.title||'Conversation unavailable',conversation?.fixture
+        ? 'Fictional sample conversation — it was not generated from your messages.'
+        : 'Earlier conversation kept only in memory for this browser tab.');
+      if(conversation){
+        const transcript=el('section','','support-transcript');transcript.setAttribute('aria-label','Conversation transcript');
+        let sourceCount=0;
+        for(const entry of conversation.turns||[]){
+          const message=el('article','',`support-chat-turn ${entry.role}`);
+          message.append(el('p',entry.role==='user'?'You':'Granny','turn-label'),el('p',entry.text));
+          if(entry.role==='assistant'&&entry.unverified)
+            message.append(el('p','Assistant text, not a verified action result.','notice'));
+          for(const source of entry.sources||[]){
+            const receipt=el('aside','','support-source-receipt');
+            receipt.append(el('strong','Source used for this answer'),el('p',[source.title,source.roomName,source.collectionLabel].filter(Boolean).join(' · ')));
+            if(source.itemId)receipt.append(btn('saved-source-'+source.itemId+'-'+sourceCount++,'View source',()=>{finish();o.explore({kind:'saved-item',id:source.itemId});}));
+            message.append(receipt);
+          }
+          transcript.append(message);
+        }
+        host.append(transcript);
+      }
+      host.append(actions(btn('saved-conversation-new','Start a new conversation',newConversation,'primary'),backButton('Back to Today')));
     }
     function renderSummary(){
       const record=model.summary(detail);heading(record?.title||'Summary unavailable');

@@ -19,6 +19,8 @@
       runtimeQuarantined = false, runtimeProviderMode = "demo",
       runtimeConfig = null, runtimeConfigPending = false, runtimeConfigError = false,
       runtimeConfigPromise = null, liveEntryPending = false;
+  let conversationNumber = 1, activeConversationId = 'conversation-1',
+      conversationArchives = [];
   let scheduler, pending = null, dialogReturn = null, menuPanel = '',
                  lastAnnouncement = '', restoreFocus = false, editor = null,
                  editingAliasId = null, panelReturn = null, panelScroll = 0,
@@ -118,8 +120,12 @@
     rooms:()=>roomUI.rooms, items:()=>roomUI.supportItems,
     render:()=>render(), announce, draft:value=>{composerText.value=value;focus(composerText);},
     applyScale:value=>{dispatch('setScale',value);dispatch('applyScale');},
-    clearHistory:()=>dispatch('clearHistory'), reset:fullReset,
+    conversations:()=>conversationList(),
+    clearHistory:()=>{conversationArchives=[];dispatch('clearHistory');}, reset:fullReset,
     fresh:()=>{
+      archiveCurrentConversation();
+      conversationNumber += 1;
+      activeConversationId = 'conversation-' + conversationNumber;
       const reset=()=>{clearLocalView();dispatch('clearSession');focus(composerText);};
       if(runtimeMode){
         const mode=runtimeProviderMode;
@@ -404,6 +410,53 @@
              node('p', '', text));
     return c;
   }
+  const copyTurn = value => ({role: value.role, text: value.text,
+    ...(value.eventId ? {eventId: value.eventId} : {}),
+    ...(value.unverified ? {unverified: true} : {}),
+    ...(value.place ? {place: structuredClone(value.place)} : {}),
+    ...(value.sources?.length ? {sources: structuredClone(value.sources)} : {})});
+  function currentRuntimeTurns() {
+    const turns = runtimeTurns.map(copyTurn), event = runtimeView?.current;
+    if (event?.type === 'chat' && !turns.some(turn => turn.eventId === event.eventId))
+      turns.push(copyTurn({role: 'assistant', text: event.data.text, eventId: event.eventId, unverified: true,
+        place: event.data.place, sources: event.data.sources}));
+    return turns;
+  }
+  function conversationTitle(turns) {
+    const first = turns.find(turn => turn.role === 'user')?.text?.trim() || 'New conversation';
+    return first.length > 54 ? first.slice(0, 51) + '…' : first;
+  }
+  function currentConversation() {
+    const turns = runtimeMode ? currentRuntimeTurns() : [];
+    if (!turns.some(entry => entry.role === 'user')) return null;
+    const room = [...turns].reverse().find(entry => entry.place?.kind === 'room')?.place?.roomName;
+    return {id: activeConversationId, title: conversationTitle(turns), time: 'Now',
+      place: room || 'Home', active: true, fixture: false, turns};
+  }
+  function conversationList() {
+    const activeConversation = currentConversation();
+    return [...(activeConversation ? [activeConversation] : []),
+      ...conversationArchives.map(conversation => structuredClone(conversation))];
+  }
+  function archiveCurrentConversation() {
+    const current = currentConversation();
+    if (!current) return;
+    conversationArchives = [{...current, active: false,
+      time: new Intl.DateTimeFormat([], {hour: 'numeric', minute: '2-digit'}).format(new Date())},
+      ...conversationArchives.filter(conversation => conversation.id !== current.id)];
+  }
+  function runtimeTurn(entry, responseId) {
+    const article = turn(entry.role, entry.text);
+    if (entry.role === 'assistant' && entry.unverified)
+      article.append(node('p', 'notice', 'Assistant text, not a verified action result.'));
+    if (entry.role === 'assistant' && entry.sources?.length) {
+      const receipts = node('div', 'answer-sources');
+      entry.sources.forEach((source, index) => receipts.append(roomUI.sourceReceipt(source,
+        responseId + '-' + index)));
+      article.append(receipts);
+    }
+    return article;
+  }
   function card(title, text) {
     const c = node('section', 'task-card');
     if (title)
@@ -461,18 +514,24 @@
   }
   function renderRuntime(target = thread) {
     const v = runtimeView, event = v?.current;
-    runtimeTurns.forEach(t => target.append(turn(t.role, t.text)));
-    const c = card('Granny', event?.type === 'chat' ? event.data.text : runtimeCopy());
+    runtimeTurns.forEach((entry, index) => target.append(runtimeTurn(entry, 'archived-' + index)));
+    const archivedCurrent = event?.eventId && runtimeTurns.some(entry => entry.eventId === event.eventId);
+    if (archivedCurrent && !v?.pending) return;
+    const currentChat = event?.type === 'chat' && !archivedCurrent;
+    const c = card('Granny', currentChat ? event.data.text : runtimeCopy());
     c.id = 'current-task';
     c.dataset.kind = 'runtime-message';
     c.dataset.stage = v?.snapshot?.state || 'connecting';
     c.querySelector('h2').tabIndex = -1;
-    if (event?.type === 'chat') {
+    if (currentChat) {
       c.append(node('p', 'notice', 'Assistant text, not a verified action result.'));
-      if (event.data.place?.kind === 'room') c.append(node('p', 'notice', event.data.sources.length
-        ? 'Used fictional Room ' + (event.data.sources.length === 1 ? 'source: ' : 'sources: ') +
-          event.data.sources.map(source => source.title + ' · ' + source.roomName + ' · ' + source.collectionLabel).join('; ')
-        : 'No Room reference was sent for this answer.'));
+      if (event.data.sources?.length) {
+        const receipts = node('div', 'answer-sources');
+        event.data.sources.forEach((source, index) => receipts.append(roomUI.sourceReceipt(source,
+          'current-' + event.turnId + '-' + index)));
+        c.append(receipts);
+      } else if (event.data.place?.kind === 'room')
+        c.append(node('p', 'notice', 'No Room reference was sent for this answer.'));
     }
     if (runtimePreview) {
       const draft = runtimeDraft(runtimePreview, v?.snapshot?.state === 'completed');
@@ -1199,6 +1258,9 @@
   function fullReset() {
     if (runtimeMode) { leaveRuntime(fullReset); return; }
     pending=null;
+    conversationNumber = 1;
+    activeConversationId = 'conversation-1';
+    conversationArchives = [];
     if($('confirm-dialog').open)$('confirm-dialog').close('cancel');
     supportUI.reset();
     supportUI.forgetSearch();
@@ -1268,10 +1330,17 @@
       const send = async () => {
         if (runtimeView?.snapshot?.state === 'unknown') return;
         const context = roomUI.assistantContext(text);
+        roomUI.markAssistantSourcesUsed(context.sources);
         roomUI.showAssistant();
         if (runtimeTurns.length && runtimeView?.current)
           runtimeTurns.push({role: 'assistant', text: runtimeView.current.type === 'chat'
-            ? runtimeView.current.data.text : runtimeCopy()});
+            ? runtimeView.current.data.text : runtimeCopy(),
+            ...(runtimeView.current.type === 'chat' ? {
+              eventId: runtimeView.current.eventId,
+              unverified: true,
+              place: structuredClone(runtimeView.current.data.place),
+              sources: structuredClone(runtimeView.current.data.sources || [])
+            } : {})});
         const submitted = {role: 'user', text};
         runtimeTurns.push(submitted);
         runtimePreview = null;

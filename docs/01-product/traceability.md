@@ -38,8 +38,9 @@ Problem/job chain: PROB-01→JOB-01 delegation; PROB-02→JOB-02 understanding/r
 The [Room-aware extension](../10-execution/sessions/2026-09-20-room-chat-openrouter.md)
 links the same bounded T-117 runtime to T-119's Home and six fictional Rooms
 for PRD-FR-022/UC-026/J-009/SCR-016/017/CMP-011/012 design themes. Its strict
-context schema, current-Room fixture selector, visible source receipts and
-browser checks are local-prototype evidence only. One paid synthetic Room turn
+context schema, current-Room fixture selector, answer-owned source receipts,
+tab-memory conversation separation in Today and browser checks are
+local-prototype evidence only. One paid synthetic Room turn
 succeeded; production retrieval/privacy enforcement and EVAL-008/012 remain
 unrun.
 

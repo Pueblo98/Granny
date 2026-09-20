@@ -137,9 +137,11 @@ The Kitchen vertical-slice references are integrated design dependencies at
 One reusable room renderer implements their overview → collection → detail →
 conversation grammar. It preserves canonical truth where raster copy differs:
 fictional stopping points are labelled as fixtures, controls use actual
-overflow state, and Ask pre-fills a question but requires Send. Source exclusion
-affects later answers, while earlier sourced answers remain identified as
-history. Returning Home clears room priority; ordinary scripted requests still
+overflow state, and Ask pre-fills a question but requires Send. Each sourced
+answer owns its source receipt and inspection control; the receipt remains
+beside that answer as the conversation grows. Source exclusion affects only
+later answers, while the earlier receipt remains unchanged and says that the
+source is excluded from new replies. Returning Home clears room priority; ordinary scripted requests still
 work inside a room with the same task/Stop controls.
 
 Current connected runtime: [versioned local backend/MCP contract](../04-architecture/conversation-runtime-contract.md). Scripted remains default; local demo uses a stub model with actual MCP/store operations. Explicit live synthetic consent is available only when the backend enables it. One assistant session now follows Home and all fictional Rooms; Home sends no Room sources and a Room sends at most three non-private current-Room fixtures. One paid synthetic Room question succeeded on 2026-09-20, which does not establish general model reliability.
@@ -257,4 +259,13 @@ Canonical EVAL-001–017, physical Android tests and human studies remain unrun.
 
 Under Simon's backend integration mission and 2026-09-20 Room extension, the first composer submission from Home, a Room or an item-level **Ask Granny** checks only the same-origin runtime configuration. If the backend reports `liveAvailable`, the submitted words remain in place while a separate consent names synthetic conversation and bounded current-Room fixture egress to OpenRouter/Qwen. Cancel makes no session or model call and preserves the question. Confirming creates a live session and sends that original question with Home/no-source or the current bounded Room source envelope; it must not fall through to a scripted Room reply. Menu → Settings → About Granny → **AI connection** remains an explicit alternate entry and exposes the clearly labelled offline fixed-response test. If no live backend is available, the existing static scripted prototype remains usable. Keys never enter the browser. No recording, account access, real sending, new capabilities or increased caps.
 
-Live-mode snapshots must match the explicitly consented mode. Mode labels and privacy text disclose provider egress, while exact draft confirmation and backend verification stay unchanged. Unknown/Stop/replay fences remain in force. Client/wire and actual live-mode HTTP/MCP tests use a stub provider. A separate one-call paid Qwen Room smoke returned the expected grounded ingredient answer and source binding with no draft write; it does not imply reliable general interpretation. Existing interaction layout/style is unchanged apart from enabling the shared connected conversation, direct first-question entry and source receipt inside Rooms.
+Live-mode snapshots must match the explicitly consented mode. Mode labels and privacy text disclose provider egress, while exact draft confirmation and backend verification stay unchanged. Unknown/Stop/replay fences remain in force. Client/wire and actual live-mode HTTP/MCP tests use a stub provider. A separate one-call paid Qwen Room smoke returned the expected grounded ingredient answer and source binding with no draft write; it does not imply reliable general interpretation. Existing interaction layout/style is unchanged apart from enabling the shared connected conversation, direct first-question entry and answer-owned source receipts inside Rooms.
+
+For this local prototype only, **Today** now separates conversations from
+minimal task activity. Starting a new connected conversation snapshots the
+prior transcript in browser-tab memory, opens a fresh backend session in the
+already selected mode and leaves the prior transcript readable until reload or
+**Clear history**. Seeded rows are labelled **Fictional sample** and open their
+own distinct transcript rather than returning to the active chat. No transcript
+is written to browser storage; this does not define production retention,
+backup, search or multi-session continuation.

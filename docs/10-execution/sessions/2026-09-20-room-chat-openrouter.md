@@ -15,7 +15,7 @@ record_basis: contemporaneous
 agent: Codex
 branch: feature/room-chat-openrouter
 artifact_commit: 75490c56b3188a2d3158a73d916af8ba16408d74
-next_action: Simon reloads the loopback UI and submits one recipe question directly from the composer, then accepts the live-provider disclosure
+next_action: Simon reloads the loopback UI, asks two sourced recipe questions, then opens both a prior and a fictional Today conversation
 changed_paths:
   - docs/01-product/traceability.md
   - docs/02-design/browser-prototype.md
@@ -46,8 +46,13 @@ changed_paths:
   - prototypes/stage-1/cloud.test.mjs
   - prototypes/stage-1/home-browser-check.mjs
   - prototypes/stage-1/room-ui.js
+  - prototypes/stage-1/rooms-browser-check.mjs
   - prototypes/stage-1/runtime-browser-check.mjs
   - prototypes/stage-1/runtime-integration-check.mjs
+  - prototypes/stage-1/styles.css
+  - prototypes/stage-1/support-browser-check.mjs
+  - prototypes/stage-1/support-state.js
+  - prototypes/stage-1/support-state.test.mjs
   - prototypes/stage-1/support-ui.js
 ---
 
@@ -139,6 +144,28 @@ session/model turn. The live path cannot fall through to the scripted Room
 responder; the scripted prototype remains the fallback when live availability
 is absent.
 
+Simon's follow-up review found that the selected recipe source behaved like a
+single floating panel beneath the conversation and that the fictional Today
+rows reopened the current chat instead of distinct conversations. Source
+metadata is now frozen onto the assistant turn that used it. The receipt,
+source inspection and **Stop using for new replies** control stay inside that
+answer as later turns arrive; exclusion changes future retrieval without
+rewriting prior provenance. An explicitly selected item has a separate
+**Source ready for the next answer** cue only until its question is submitted.
+Event identity also prevents an archived model answer from briefly rendering a
+second time as the current card during a follow-up.
+
+Today now separates **Conversations** from minimal **Activity**. The active
+conversation resumes directly. Starting a new connected conversation snapshots
+the prior visible transcript in tab memory, starts a fresh backend session in
+the selected live/offline mode and exposes the prior transcript as its own
+read-only Today detail. Two seeded rows are explicitly labelled fictional and
+open different transcripts. Source receipts remain attached inside transcript
+answers and can open the corresponding fictional item. Reload and full reset
+clear these snapshots; **Clear history** removes prior transcripts and task
+summaries while retaining the active conversation. No browser persistence or
+production retention contract was added.
+
 ## Actual validation
 
 Node 26.8.1 and Chromium 151.0.7922.173 were used. Dependencies were installed
@@ -148,10 +175,11 @@ or lockfile changed.
 | Check | Observed result | Boundary |
 |---|---|---|
 | Provider, runtime and HTTP tests run as three isolated Node test files | 6 + 18 + 4 = 28 passed | Strict context, prompt ordering, secret omission, caps, MCP action invariants and loopback API |
-| Stage-1 model/scheduler/cloud/rooms-store/outcomes/serve checks | 67 + 7 + 28 + 58 + 11 + 1 passed | Scripted regressions, frontend receipt validation, Room state and static allowlist |
+| Stage-1 model/scheduler/cloud/support-state/rooms-store/outcomes/serve checks | 67 + 7 + 28 + 36 assertions + 58 assertions + 11 + 1 passed | Scripted regressions, frontend receipt validation, Today fixture separation, Room state and static allowlist |
 | `rooms-browser-check.mjs` | 350 checks passed | Existing six-Room fictional fixture and adverse UI states |
 | `home-browser-check.mjs` | 158 checks passed, 0 browser errors | Selected Home and navigation regressions |
-| `runtime-browser-check.mjs` | 70 checks passed, 0 browser errors | First recipe submit offers consent, creates no session/turn before approval, preserves the question/source after approval and never creates a scripted Room reply; connected-entry and duplicate-output coverage remains |
+| `support-browser-check.mjs` | 71 checks passed, 0 browser errors | Separate soup/basil fixture transcripts, answer-bound source receipt, clear-history scope, focus and large-text support regressions |
+| `runtime-browser-check.mjs` | 73 checks passed, 0 browser errors | First recipe submit offers consent, prior live chat opens as a distinct Today transcript, source receipt remains attached after another turn, stale current-event duplication is suppressed, and no scripted Room reply is created |
 | Stage-1 `browser-check.mjs` | 137 checks passed, 0 browser errors | Existing conversation-first interaction regression |
 | Conversation-runtime `browser-check.mjs` | 19 checks passed | Actual browser → HTTP → runtime → MCP/store path, including current-Room context |
 | `live-consent-check.mjs` | 10 checks passed, one stub-provider call | Explicit live mode/consent and unchanged verified draft path; no paid request |

@@ -42,7 +42,7 @@
     const current = () => store.activeRooms.find(room => route === 'room:' + room.id);
     const stateFor = room => {
       if (!states.has(room.id)) states.set(room.id, {view: 'overview', collection: '', item: '', query: '',
-        source: null, excluded: new Set(), turns: [], itemReturn: null, fromSource: false, expanded: false, crossSource: null, inspectSource: null});
+        source: null, sourcePending: false, excluded: new Set(), turns: [], itemReturn: null, fromSource: false, expanded: false, crossSource: null, inspectSource: null});
       return states.get(room.id);
     };
     function focus(selector, top = false) {
@@ -302,7 +302,7 @@
         s.expanded = !s.expanded; render(); focus('#show-item-details');
       }, 'primary'), action('ask-room-item', 'Ask Granny about this', () => {
         if(s.inspectSource){s.inspectSource=null;change(room,'conversation','#view-cross-source');return;}
-        s.source = {collectionId: collection?.id, itemId: item.id}; s.excluded.delete(item.id);
+        s.source = {collectionId: collection?.id, itemId: item.id}; s.sourcePending = true; s.excluded.delete(item.id);
         s.turns = []; s.view = 'conversation'; render();
         options.compose(item.question || 'What is in the ' + item.title + ' example?');
         options.announce(item.title + ' is selected as a source. Review your question and choose Send.');
@@ -313,6 +313,50 @@
         (item.details || [item.body]).forEach(line => more.append(el('p', '', line))); paper.append(more);
       }
       detail.append(paper); surface.append(detail);
+    }
+    function sourceLocation(source) {
+      if (!source?.itemId) return null;
+      const preferred = store.activeRooms.find(room => room.name === source.roomName &&
+        room.collections.some(collection => collection.items.some(item => item.id === source.itemId)));
+      const room = preferred || store.activeRooms.find(candidate => candidate.collections.some(collection =>
+        collection.items.some(item => item.id === source.itemId)));
+      const collection = room?.collections.find(candidate => candidate.items.some(item => item.id === source.itemId));
+      const item = collection?.items.find(candidate => candidate.id === source.itemId && candidate.sensitivity !== 'private');
+      return room && collection && item ? {room, collection, item, state: stateFor(room)} : null;
+    }
+    function sourceReceipt(source, {pending = false, primary = false, responseId = ''} = {}) {
+      const location = sourceLocation(source), cue = el('aside', 'room-source-cue answer-source-receipt');
+      cue.dataset.sourceItem = source.itemId || '';
+      if (primary) cue.id = 'room-source-cue';
+      const copy = el('div');
+      copy.append(el('p', 'eyebrow', pending ? 'Source ready for the next answer' : 'Source used for this answer'),
+        el('p', '', [source.title, source.roomName, source.collectionLabel].filter(Boolean).join(' · ')),
+        el('p', 'notice', pending
+          ? 'This fictional Room item will be included only when you choose Send.'
+          : 'This receipt stays with the answer. The fictional Room item was sent as untrusted reference text, not as an instruction.'));
+      cue.append(copy);
+      if (!location) return cue;
+      const controls = el('div', 'room-source-actions');
+      const suffix = responseId ? '-' + String(responseId).replace(/[^a-z0-9-]/gi, '') : '';
+      const excluded = location.state.excluded.has(location.item.id);
+      controls.append(action(primary ? 'view-room-source' : 'view-room-source' + suffix, 'View source', () => {
+        if (current()?.id !== location.room.id) options.open('room:' + location.room.id);
+        openItem(location.room, location.collection.id, location.item.id, 'conversation');
+      }));
+      if (excluded) controls.append(el('p', 'notice', 'Excluded from new replies. This earlier receipt is unchanged.'));
+      else controls.append(action(primary ? 'stop-room-source' : 'stop-room-source' + suffix,
+        pending ? 'Stop using this source' : 'Stop using for new replies', () => {
+          location.state.excluded.add(location.item.id);
+          if (location.state.source?.itemId === location.item.id) {
+            location.state.source = null; location.state.sourcePending = false;
+          }
+          render();
+          options.refresh?.();
+          options.announce('Source excluded from new replies. Earlier answers keep their source receipts.');
+          options.compose(null);
+        }));
+      cue.append(controls);
+      return cue;
     }
     function conversationView(room, surface) {
       const s = stateFor(room), connected = options.assistantActive?.() === true,
@@ -325,23 +369,17 @@
         const reply = el('article', 'room-reply'); reply.tabIndex = -1;
         reply.append(el('p', 'eyebrow', 'You asked'), el('p', 'room-question', turn.question),
           el('p', 'eyebrow', 'Granny · scripted fictional response'), el('p', 'room-answer', turn.answer));
-        if (turn.source && !s.source) reply.append(el('p', 'notice', 'Earlier answer used ' + turn.source + '. That source is now excluded from new replies.'));
+        if (turn.source) reply.append(sourceReceipt(turn.source, {
+          primary: index === s.turns.length - 1, responseId: 'scripted-' + index
+        }));
         if (index !== s.turns.length - 1) reply.classList.add('earlier-room-turn'); region.append(reply);
       });
-      if (s.source) {
+      if (s.source && s.sourcePending && !s.turns.some(turn => turn.source?.itemId === s.source.itemId)) {
         const collection = room.collections.find(c => c.id === s.source.collectionId);
         const item = collection?.items.find(i => i.id === s.source.itemId);
         if (item) {
-          const cue = el('aside', 'room-source-cue'); cue.id = 'room-source-cue';
-          const copy = el('div'); copy.append(el('p', '', 'Using ' + item.title + ' · ' + room.name + ' · ' + collection.label),
-            el('p', 'notice', item.sourceExplanation || 'This fictional item is the reference for the scripted answer. No other room or personal history was consulted.'));
-          const controls = el('div', 'room-source-actions');
-          controls.append(action('view-room-source', 'View source', () => openItem(room, collection.id, item.id, 'conversation')),
-            action('stop-room-source', 'Stop using this source', () => {
-              s.excluded.add(item.id); s.source = null; render();
-              options.announce('Source excluded from new replies. Earlier answers remain labelled as history.'); options.compose(null);
-            }));
-          cue.append(copy, controls); region.append(cue);
+          region.append(sourceReceipt({itemId: item.id, title: item.title, roomName: room.name,
+            collectionLabel: collection.label}, {pending: true, primary: true}));
         }
       }
       if (s.crossSource) {
@@ -472,6 +510,12 @@
       show(next) { if (route !== next) { releaseSource(); route = next; render(); } else if (options.assistantActive?.()) render(); },
       showAssistant() { const room=current();if(!room)return false;stateFor(room).view='conversation';render();return true; },
       assistantContext,
+      markAssistantSourcesUsed(sources = []) {
+        const room=current();if(!room)return;
+        const s=stateFor(room);
+        if(s.source && sources.some(source=>source.itemId===s.source.itemId))s.sourcePending=false;
+      },
+      sourceReceipt(source, responseId) { return sourceReceipt(source, {responseId}); },
       reply(question) {
         const room = current(); if (!room) return false;
         const s = stateFor(room), collection = room.collections.find(c => c.id === s.source?.collectionId);
@@ -485,7 +529,9 @@
         const exact = item && normalize(question) === normalize(item.question || '');
         const answer = item ? (exact && item.answer ? item.answer : 'The fictional ' + item.title + ' example is open as your reference. ' + item.summary + ' This prototype can show its details, but does not generate new advice or change it.') :
           'You are in ' + room.name + '. The same Granny assistant is here. No item is being used as a source for this reply. Browse a collection directly, or ask an ordinary scripted request. This is a local fictional response, not a model answer.';
-        s.turns.push({question, answer, source: item ? item.title + ' · ' + room.name + ' · ' + collection.label : null});
+        if(item)s.sourcePending=false;
+        s.turns.push({question, answer, source: item ? {itemId: item.id, title: item.title,
+          roomName: room.name, collectionLabel: collection.label} : null});
         s.view = 'conversation'; render(); focus('.room-reply:last-of-type', true); options.announce(answer); return true;
       },
       reset() { store.reset(); states.clear(); route = ''; modal.close(false); receiptView(); },

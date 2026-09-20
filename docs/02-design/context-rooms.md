@@ -241,8 +241,12 @@ sends no Room references. A Room turn deterministically selects at most three
 non-private, non-excluded references from that current Room, preferring the
 item the person explicitly chose; the live consent and persistent mode label
 name this OpenRouter egress. The answer shows the source titles returned by the
-backend. References are separate untrusted prompt data, never instructions or
-action authority.
+backend. The executable prototype keeps each returned source receipt inside the
+answer that used it instead of moving one source panel beneath the newest turn.
+Inspecting or excluding a source remains available from that receipt; exclusion
+changes future retrieval only and does not rewrite the earlier answer.
+References are separate untrusted prompt data, never instructions or action
+authority.
 
 This is a reversible synthetic exception to the earlier no-provider T-119
 prototype boundary. It does not implement the broader accepted design above:

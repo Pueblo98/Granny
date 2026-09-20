@@ -141,13 +141,20 @@ try {
   // Today keeps summaries content-minimal; canceling Clear keeps all records.
   await menuItem('history'); await heading('Today');
   check(await b.evaluate('document.querySelectorAll("[id^=history-]").length === 3 && !document.querySelector("#support-content").innerText.includes("I’ll call")'), 'Today contains three minimal summaries and no message body');
+  check(await b.evaluate('!!document.querySelector("#conversation-sample-soup-substitution") && !!document.querySelector("#conversation-sample-garden-basil")'), 'Today exposes separately addressable fictional conversation fixtures');
+  await click('#conversation-sample-soup-substitution'); await heading('Soup without tomatoes');
+  check(await b.evaluate('document.querySelector(".support-transcript")?.innerText.includes("Can I make the vegetable soup without tomatoes?") && document.querySelector(".support-source-receipt")?.innerText.includes("Vegetable soup · Kitchen · Recipes")'), 'opening the soup row shows its own transcript and answer-bound source receipt');
+  await click('#support-back'); await heading('Today');
+  await click('#conversation-sample-garden-basil'); await heading('Basil plant help');
+  check(await b.evaluate('document.querySelector(".support-transcript")?.innerText.includes("Why are the leaves on my basil drooping?") && !document.querySelector(".support-transcript")?.innerText.includes("without tomatoes")'), 'opening a different row shows a distinct transcript instead of returning to the prior chat');
+  await click('#support-back'); await heading('Today');
   await click('#history-today-draft-opened'); await heading('Draft opened'); await click('#support-back'); await heading('Today');
   await click('#clear-history'); await b.waitFor('document.querySelector("#confirm-dialog").open'); await click('#confirm-dialog [value=cancel]');
   await b.waitFor('!document.querySelector("#confirm-dialog").open');
   check(await b.evaluate('document.querySelectorAll("[id^=history-]").length === 3'), 'Cancelling Clear history preserves every Today summary');
   await click('#clear-history'); await b.waitFor('document.querySelector("#confirm-dialog").open'); await click('#confirm-dialog [value=confirm]');
   await b.waitFor('document.querySelectorAll("[id^=history-]").length === 0');
-  check(await b.evaluate('document.querySelectorAll("[id^=history-]").length === 0 && document.querySelector("#support-content").innerText.includes("History cleared.")'), 'Confirming Clear history leaves an explicit empty Today state');
+  check(await b.evaluate('document.querySelectorAll("[id^=history-]").length === 0 && document.querySelectorAll("[id^=conversation-sample-]").length === 0 && document.querySelector("#support-content").innerText.includes("History cleared.")'), 'Confirming Clear history removes prior conversations and leaves an explicit empty Today state');
   await b.navigate('/?supportFixture=history-error'); await menuItem('history'); await heading('Today');
   check(await b.evaluate('document.querySelector("#support-content").innerText.includes("Task history could not be read. No entries have been invented.") && !!document.querySelector("#history-retry")'), 'History error fixture does not invent entries and provides bounded retry');
 

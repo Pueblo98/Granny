@@ -38,6 +38,11 @@
 .support-actions > input { flex: 1 1 14em; }
 .support-caption { color: var(--muted); font-size: .85em; }
 .support-paper, .support-sample { background: var(--paper); border: 1px solid var(--outcome-outline); border-radius: .65em; padding: 1.2em; white-space: pre-line; }
+.support-transcript { display: grid; gap: 1em; margin: 1.2em 0; }
+.support-chat-turn { max-width: 44em; padding: 1em 1.15em; border-radius: .8em; background: var(--paper); border: 1px solid var(--outcome-outline); }
+.support-chat-turn.user { margin-left: min(4em, 10%); }
+.support-chat-turn p { margin: .25em 0; white-space: pre-wrap; }
+.support-source-receipt { margin-top: 1em; padding-top: .8em; border-top: 1px solid var(--outcome-outline); color: var(--muted); }
 .support-choice { min-width: 0; border: 0; border-bottom: 1px solid var(--outcome-outline); padding: .7em 0 1em; margin: 0 0 1em; display: flex; flex-wrap: wrap; gap: .6em; }
 .support-choice legend { font-weight: 600; padding: 0; }
 .support-choice { margin-bottom: .65em; }
@@ -930,6 +935,11 @@ body[data-room-view="true"] .composer-wrap {
 .room-source-cue p { margin: 0 0 8px; }
 .room-source-actions { display: grid; gap: 8px; }
 .room-source-actions button { font-size: .85em; }
+.answer-sources { display: grid; gap: 12px; margin-top: 16px; }
+.answer-source-receipt { width: 100%; max-width: 46em; grid-template-columns: minmax(0, 1fr); gap: 8px; border-width: 1px; }
+.turn .answer-source-receipt { margin-top: 14px; }
+.task-card .answer-source-receipt p { margin-bottom: 8px; }
+.answer-source-receipt .room-source-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .room-conversation .room-source-cue { grid-template-columns: minmax(0, 1fr); gap: 8px; }
 .room-conversation .room-source-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .room-followup { margin: 22px 0 0; }

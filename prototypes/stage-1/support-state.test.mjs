@@ -10,12 +10,17 @@ const deepEqual = (actual, expected, message) => { assertions += 1; assert.deepE
 {
   const state = create();
   equal(state.records.length, 3, 'the deterministic Today fixture has three minimal rows');
+  equal(state.conversations.length, 2, 'Today has two clearly separate fictional conversation fixtures');
+  equal(state.conversations[0].fixture, true, 'sample transcripts are explicitly fictional');
+  equal(state.conversations[0].turns[1].sources[0].itemId, 'vegetable-soup',
+    'a sample answer owns its source receipt');
   deepEqual(Object.keys(state.records[0]).sort(), ['evidence', 'id', 'kind', 'outcome', 'source', 'time', 'title'],
     'history records contain only the approved minimal fields');
   equal(state.summary('today-draft-opened').title, 'Draft opened');
   equal(state.summary('missing'), null);
   state.clearHistory();
   equal(state.records.length, 0, 'clearing is isolated to minimal records');
+  equal(state.conversations.length, 0, 'clearing history removes fictional conversation fixtures');
   equal(state.search('soup', {items: [], rooms: []}).some(result => result.id === 'search-shopping-list-prepared'), false,
     'clearing history also removes its separate safe search summary');
 }
@@ -33,6 +38,7 @@ const deepEqual = (actual, expected, message) => { assertions += 1; assert.deepE
   equal(state.stage('scale', 1.2), false, 'only the four selected scale fixtures are accepted');
   state.clearHistory(); state.stage('captions', false); state.reset();
   equal(state.records.length, 3, 'reset restores deterministic history');
+  equal(state.conversations.length, 2, 'reset restores deterministic conversation fixtures');
   equal(state.prefs.captions, true, 'reset restores deterministic preferences');
 }
 
